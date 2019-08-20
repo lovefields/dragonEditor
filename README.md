@@ -10,5 +10,6 @@
     - Android 6+
  - License : MIT
  - Version : 0.1
+ - Using Plugin : highlight.js
 
 ## Using
