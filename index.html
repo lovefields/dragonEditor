@@ -111,19 +111,49 @@
 		</g>
 	</defs>
 </svg>
-<div class="wrap aditor_area">
-	<section class="aditor_section">
+<div class="wrap aditor_area" data-device="pc">
+	<section class="aditor_section" data-status="editor">
 		<div class="textbox">
 			<h1 class="title" contentEditable="true"></h1>
 		</div>
+		<div class="options_area">
+
+		</div>
 	</section>
+
+	<button class="btn_bottom btn_pop btn_media" data-target=".pop_media">
+		<svg class="icon" viewbox="0 0 50 50">
+			<use class="path" xlink:href="#folder" href="#folder" />
+		</svg>
+	</button>
+	
+	<button class="btn_bottom btn_pop btn_lang" data-target=".pop_lang">
+		<svg class="icon" viewbox="0 0 50 50">
+			<use class="path" xlink:href="#language" href="#language" />
+		</svg>
+	</button>
+
+	<button class="btn_bottom btn_mod">
+		<svg class="icon" viewbox="0 0 50 50">
+			<use class="path mod_pc" xlink:href="#pc" href="#pc" />
+			<use class="path mod_mobile" xlink:href="#mobile" href="#mobile" />
+		</svg>
+	</button>
+
+	<button class="btn_bottom btn_pop btn_history" data-target=".pop_history">
+		<svg class="icon" viewbox="0 0 50 50">
+			<use class="path" xlink:href="#history" href="#history" />
+		</svg>
+	</button>
+
+	<button class="btn_bottom btn_change_area" data-text="PREV">NEXT</button>
 </div>
 <div class="pop pop_bg act"></div>
 <div class="pop pop_loding act"></div>
 <script src="./common/js/editor.js"></script>
 <script>
 	const editor = new dragonEditor('.aditor_area', {
-		"lodingArea" : ".php_loding"
+		"lodingArea" : ".pop_loding"
 	});
 </script>
 </body>

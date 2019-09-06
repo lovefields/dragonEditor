@@ -2,6 +2,7 @@ class dragonEditor{
 	constructor(wrap, options){
 		this.setting(options);
 		console.log(wrap);
+		console.log(this);
 		console.log(this.lodingArea);
 		this.closeLoding();
 	}
@@ -13,7 +14,13 @@ class dragonEditor{
 	}
 
 	getEl(name){
-		return document.querySelector(name);
+		let $el = document.querySelector(name);
+
+		if($el === null){
+			console.error('Can not find Element : ' + name);
+		}else{
+			return $el;
+		}
 	}
 
 	closeLoding(){
