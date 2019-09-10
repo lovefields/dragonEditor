@@ -1,5 +1,13 @@
 .svg_icon{display:none}
 
+.aditor_section{position:relative;width:810px;padding:80px 40px;margin:0 auto}
+.content_area{color:#555;font-size:16px;line-height:1.6}
+.content_area *[contentEditable]{outline:0}
+.content_area .item{position:relative;padding:10px}
+.content_area .item:hover{background:#f4f4f4}
+.content_area .title{height:50px;padding:0 10px;margin-bottom:50px;border-bottom:1px solid #e5e5e5;font-size:24px;font-weight:bold;line-height:50px}
+.content_area .title:empty::after{display:inline;content:"Title";color:#999}
+.content_area .item_text:empty::after{display:inline;content:"Add text";color:#999;cursor:text}
 
 
 
@@ -17,12 +25,25 @@
 .btn_mod.act .mod_pc{display:none}
 .btn_history{right:160px}
 .btn_change_area{right:20px;width:120px;background:#38b7ea;color:#fff;border:0;border-radius:5px;font-size:18px}
+.btn_add_content{display:block;position:fixed;top:190px;left:50%;width:20px;height:20px;background:#fff;color:transparent;border:1px solid #999;font-size:0;box-sizing:border-box;transform:translateX(-485px)}
+.btn_add_content::after{display:block;content:'';position:absolute;top:3px;left:8px;width:2px;height:12px;background:#999}
+.btn_add_content::before{display:block;content:'';position:absolute;top:8px;left:3px;width:12px;height:2px;background:#999}
 
 .pop{display:none;position:fixed;z-index:1000}
 .pop.act{display:block}
 .pop_bg{top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5)}
 .pop_loding{top:50%;left:0;width:100%;height:30px;color:#fff;font-size:20px;font-weight:bold;text-align:center;line-height:30px;transform:translateY(-50%)}
 .pop_loding::after{display:block;content:'Loding';animation:loding 1s ease infinite}
+
+.pop_content_list{top:220px;left:50%;width:200px;padding:10px;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25);box-sizing:border-box;transform:translateX(-665px)}
+.pop_content_list .btn{display:block;width:100%;height:40px;padding:5px 0;margin-top:-2px;text-align:left;line-height:30px;box-sizing:border-box}
+.pop_content_list .btn:hover{background:#f4f4f4}
+.pop_content_list .btn .icon{display:inline-block;width:30px;margin-right:10px;vertical-align:middle}
+.pop_content_list .icon .path{fill:#555}
+
+.pop_options{position:absolute;top:0;left:50px;height:30px;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25)}
+.pop_options .icon{height:20px}
+.pop_options .icon .path{fill:#555}
 
 @keyframes loding{
 	25%{content:'Loding.'}
