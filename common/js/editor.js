@@ -1,14 +1,13 @@
 class dragonEditor{
-	constructor(wrap, options){
-		this.setting(options);
-		console.log(wrap);
-		console.log(this);
-		console.log(this.lodingArea);
+	constructor(wrap = '.aditor_area', options = {}){
+		this.setting(wrap, options);
+		this.bindingEvent();
 		this.closeLoding();
 	}
 
-	setting(options){
+	setting(wrap, options){
 		let $this = this;
+		$this.wrap = wrap === '' ? $this.getEl('.pop_bg') : $this.getEl(wrap);
 		$this.popBgArea = options.popBgArea === undefined ? $this.getEl('.pop_bg') : $this.getEl(options.popBgArea);
 		$this.lodingArea = options.lodingArea === undefined ? $this.getEl('.pop_loding') : $this.getEl(options.lodingArea);
 	}
@@ -21,6 +20,14 @@ class dragonEditor{
 		}else{
 			return $el;
 		}
+	}
+
+	bindingEvent(){
+		let $this = this;
+
+		document.addEventListener('contextmenu', function(e){
+			e.preventDefault();
+		});
 	}
 
 	closeLoding(){
