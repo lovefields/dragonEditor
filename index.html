@@ -121,32 +121,87 @@
 </svg>
 <div class="wrap aditor_area">
 	<section class="aditor_section" data-status="editor">
-		<div class="content_area" data-lang="ko">
-			<h1 class="title" contentEditable="true"></h1>
-			<p class="item item_text">가나다라 마바사 나는 디자인을 하는데 내가 디자인을 하는것인가 나는 무엇을 하고 있는걸까, 매우 매우 힘이 든다 디자인 잘하고싶다 일하기 싫다 매우.</p>
-			<p class="item item_text" contenteditable="true"></p>
-			<button class="btn upload_image">
-				<svg viewbox="0 0 50 50" class="icon">
-					<use class="path" xlink:href="#image" href="#image" />
-				</svg>
-				Add on image
-			</button>
-			<button class="btn btn_youtube">
-				<svg viewbox="0 0 50 50" class="icon">
-					<use class="path" xlink:href="#youtube" href="#youtube" />
-				</svg>
-				Add Youtube
-			</button>
-			<button class="btn btn_codepen">
-				<svg viewbox="0 0 50 50" class="icon">
-					<use class="path" xlink:href="#codepen" href="#codepen" />
-				</svg>
-				Add Codepen
-			</button>
+		<div class="slider_wrap ts clearfix">
+			<div class="content_area" data-lang="ko">
+				<h1 class="title" contentEditable="true"></h1>
+				<p class="item item_text">가나다라 마바사 나는 디자인을 하는데 내가 디자인을 하는것인가 나는 무엇을 하고 있는걸까, 매우 매우 힘이 든다 디자인 잘하고싶다 일하기 싫다 매우.</p>
+				<p class="item item_text" contenteditable="true"></p>
+				<button class="btn upload_image">
+					<svg viewbox="0 0 50 50" class="icon">
+						<use class="path" xlink:href="#image" href="#image" />
+					</svg>
+					Add on image
+				</button>
+				<button class="btn btn_youtube">
+					<svg viewbox="0 0 50 50" class="icon">
+						<use class="path" xlink:href="#youtube" href="#youtube" />
+					</svg>
+					Add Youtube
+				</button>
+				<button class="btn btn_codepen">
+					<svg viewbox="0 0 50 50" class="icon">
+						<use class="path" xlink:href="#codepen" href="#codepen" />
+					</svg>
+					Add Codepen
+				</button>
+			</div>
+
+			<form action="#" enctype="multipart/form-data" method="post" class="options_area">
+				<input type="hidden" name="type">
+				<div class="row">
+					<p class="name">커버 이미지</p>
+					<div class="item_area">
+						<label>
+							<img src="" alt="">
+							<input type="file" accept="image/*">
+						</label>
+						<button type="button" class="btn_remove_cover">remove</button>
+					</div>
+				</div>
+
+				<div class="row">
+					<p class="name">설명</p>
+					<div class="item_are">
+						<textarea></textarea>
+					</div>
+				</div>
+
+				<div class="row">
+					<p class="name">키워드</p>
+					<div class="item_are">
+						<textarea></textarea>
+					</div>
+				</div>
+
+				<div class="row">
+					<p class="name">카테고리</p>
+					<div class="item_area">
+						<select>
+							<options>Select category</options>
+						</select>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="name">게시글 타입</div>
+					<div class="item_area">
+						<label class="raidobox"><input type="radio"><span class="box"></span> 발행</label>
+						<label class="raidobox"><input type="radio"><span class="box"></span> 비공개</label>
+						<label class="raidobox"><input type="radio"><span class="box"></span> 임시글</label>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="name">댓글 사용 유무</div>
+					<div class="item_area">
+						<label class="raidobox"><input type="radio"><span class="box"></span> 사용</label>
+						<label class="raidobox"><input type="radio"><span class="box"></span> 미사용</label>
+					</div>
+				</div>
+
+				<button type="button" class="btn_submit">publish</button>
+			</form>
 		</div>
-		<form action="#" class="options_area">
-			<button type="button" class="btn_submit">publish</button>
-		</form>
 		<button class="btn_add_content ts">컨텐츠 추가</button>
 		<div class="pop pop_options clearfix ts act">
 			<label class="item select_area">
