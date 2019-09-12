@@ -20,6 +20,13 @@
 .content_area .item_text:empty::after{display:inline;content:"Add text";color:#999;cursor:text}
 
 .options_area{transform:translateX(0)}
+.options_area .row{padding:10px 0}
+.options_area .name{margin-bottom:10px;font-size:14px;font-weight:bold}
+.options_area .cover_ima_area{display:inline-block;width:300px;height:150px;border:1px solid #999;border-radius:5px;overflow:hidden;vertical-align:bottom}
+.options_area .cover_ima_area input{display:none}
+.options_area .cover_ima_area .img{width:100%;height:100%}
+.options_area .btn_remove_cover{width:80px;height:30px;margin-left:10px;background:#eee;color:#555;border-radius:5px;vertical-align:bottom}
+.options_area .textarea{min-width:100%;max-width:100%;min-height:120px;padding:10px;border:1px solid #999;border-radius:5px;box-sizing:border-box}
 
 
 
