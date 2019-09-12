@@ -120,7 +120,7 @@
 	</defs>
 </svg>
 <div class="wrap aditor_area">
-	<section class="aditor_section" data-status="editor">
+	<section class="aditor_section" data-status="options">
 		<div class="slider_wrap ts clearfix">
 			<div class="content_area" data-lang="ko">
 				<h1 class="title" contentEditable="true"></h1>
@@ -151,9 +151,9 @@
 				<div class="row">
 					<p class="name">커버 이미지</p>
 					<div class="item_area">
-						<label>
-							<img src="" alt="">
-							<input type="file" accept="image/*">
+						<label class="cover_ima_area" data-default="">
+							<img src="" alt="" class="img">
+							<input type="file" accept="image/*" name="cover_img" class="cover_img">
 						</label>
 						<button type="button" class="btn_remove_cover">remove</button>
 					</div>
@@ -162,14 +162,14 @@
 				<div class="row">
 					<p class="name">설명</p>
 					<div class="item_are">
-						<textarea></textarea>
+						<textarea class="textarea"></textarea>
 					</div>
 				</div>
 
 				<div class="row">
-					<p class="name">키워드</p>
+					<p class="name">키워드<small>(컴마로 구분)</small></p>
 					<div class="item_are">
-						<textarea></textarea>
+						<textarea class="textarea"></textarea>
 					</div>
 				</div>
 
