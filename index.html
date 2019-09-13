@@ -120,7 +120,7 @@
 	</defs>
 </svg>
 <div class="wrap aditor_area">
-	<section class="aditor_section" data-status="options">
+	<section class="aditor_section" data-status="editor">
 		<div class="slider_wrap ts clearfix">
 			<div class="content_area" data-lang="ko">
 				<h1 class="title" contentEditable="true"></h1>
@@ -185,17 +185,17 @@
 				<div class="row">
 					<div class="name">게시글 타입</div>
 					<div class="item_area">
-						<label class="raidobox"><input type="radio"><span class="box"></span> 발행</label>
-						<label class="raidobox"><input type="radio"><span class="box"></span> 비공개</label>
-						<label class="raidobox"><input type="radio"><span class="box"></span> 임시글</label>
+						<label class="raidobox"><input type="radio" name="article_type" checked><span class="box"></span> 발행</label>
+						<label class="raidobox"><input type="radio" name="article_type"><span class="box"></span> 비공개</label>
+						<label class="raidobox"><input type="radio" name="article_type"><span class="box"></span> 임시글</label>
 					</div>
 				</div>
 
 				<div class="row">
 					<div class="name">댓글 사용 유무</div>
 					<div class="item_area">
-						<label class="raidobox"><input type="radio"><span class="box"></span> 사용</label>
-						<label class="raidobox"><input type="radio"><span class="box"></span> 미사용</label>
+						<label class="raidobox"><input type="radio" name="comment" checked><span class="box"></span> 사용</label>
+						<label class="raidobox"><input type="radio" name="comment"><span class="box"></span> 미사용</label>
 					</div>
 				</div>
 
@@ -203,7 +203,7 @@
 			</form>
 		</div>
 		<button class="btn_add_content ts">컨텐츠 추가</button>
-		<div class="pop pop_options clearfix ts act">
+		<div class="pop pop_options clearfix ts">
 			<label class="item select_area">
 				<select class="select select_font_size">
 					<option value="none">Default</option>
@@ -341,6 +341,15 @@
 		</svg>
 		Code Block
 	</button>
+</div>
+<div class="pop pop_media act">
+	<div class="media_list">
+		<button class="btn_add_media">
+			<img src="" alt="" class="img">
+			<p class="name">name</p>
+		</button>
+	</div>
+	<button class="btn_add_media_list">미디어 추가</button>
 </div>
 <script src="./common/js/editor.js"></script>
 <script>
