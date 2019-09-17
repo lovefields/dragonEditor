@@ -14,3 +14,6 @@
  - Using Plugin : highlight.js
 
 ## Using
+```js
+const editor = new dragonEditor();
+```
