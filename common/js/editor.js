@@ -9,10 +9,9 @@ class dragonEditor{
 	setting(wrap, options){
 		let $this = this;
 		$this.wrap = $this.checkOptionElement(wrap, '.aditor_area');
+		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
 
-
-
-
+		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
 		$this.popBgArea = $this.checkOptionElement(options.popBgArea, '.pop_bg');
 		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
@@ -49,6 +48,24 @@ class dragonEditor{
 	bindingEvent(){
 		let $this = this;
 
+		// right click block
+		document.addEventListener('contextmenu', function(e){
+			e.preventDefault();
+		});
+
+		// switch editor section
+		$this.changeAreaBtn.addEventListener('click', function(){
+			let status = $this.editorSection.dataset['status'];
+			let value = status === 'editor' ? 'options' : 'editor';
+			let nowText = this.textContent;
+			let saveText = this.dataset['text'];
+
+			$this.editorSection.dataset['status'] = value;
+			this.dataset['text'] = nowText;
+			this.textContent = saveText;
+		});
+
+		// pop btns work
 		$this.popBtns.forEach(function(btn){
 			btn.addEventListener('click', function(){
 				let target = this.dataset['target'];
@@ -59,9 +76,7 @@ class dragonEditor{
 			});
 		});
 
-		document.addEventListener('contextmenu', function(e){
-			e.preventDefault();
-		});
+		
 	}
 
 	closeLoding(){

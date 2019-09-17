@@ -6,12 +6,12 @@
 .raidobox input:checked + .box{border-color:#38b7ea}
 .raidobox input:checked + .box::before{display:block;content:'';position:absolute;top:2px;left:2px;width:4px;height:4px;background:#38b7ea;border-radius:50%}
 
-.aditor_section{position:relative;width:810px;padding:80px;margin:0 auto;overflow-x:hidden}
-.aditor_section .slider_wrap{width:calc(200% + 80px)}
-.aditor_section .slider_wrap > *{float:left;width:calc(50% - 40px)}
-.aditor_section .slider_wrap > *:first-child{margin-right:80px}
-.aditor_section[data-status="editor"] .slider_wrap{transform:translateX(0)}
-.aditor_section[data-status="options"] .slider_wrap{max-height:800px;transform:translateX(calc(-50% - 80px))}
+.editor_section{position:relative;width:810px;padding:80px;margin:0 auto;overflow-x:hidden}
+.editor_section .slider_wrap{width:calc(200% + 80px)}
+.editor_section .slider_wrap > *{float:left;width:calc(50% - 40px)}
+.editor_section .slider_wrap > *:first-child{margin-right:80px}
+.editor_section[data-status="editor"] .slider_wrap{transform:translateX(0)}
+.editor_section[data-status="options"] .slider_wrap{max-height:800px;transform:translateX(calc(-50% - 80px))}
 
 .content_area{color:#555;font-size:16px;line-height:1.6}
 .content_area *[contentEditable]{outline:0}
