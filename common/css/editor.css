@@ -7,6 +7,7 @@
 .raidobox input:checked + .box::before{display:block;content:'';position:absolute;top:2px;left:2px;width:4px;height:4px;background:#38b7ea;border-radius:50%}
 
 .editor_section{position:relative;width:810px;padding:80px;margin:0 auto;overflow-x:hidden}
+.editor_section.mobile{width:320px}
 .editor_section .slider_wrap{width:calc(200% + 80px)}
 .editor_section .slider_wrap > *{float:left;width:calc(50% - 40px)}
 .editor_section .slider_wrap > *:first-child{margin-right:80px}

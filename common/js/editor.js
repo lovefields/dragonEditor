@@ -11,6 +11,7 @@ class dragonEditor{
 		$this.wrap = $this.checkOptionElement(wrap, '.aditor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
 
+		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
 		$this.popBgArea = $this.checkOptionElement(options.popBgArea, '.pop_bg');
@@ -86,6 +87,12 @@ class dragonEditor{
 					break;
 				}
 			}
+		});
+
+		// change view size
+		$this.viewBtn.addEventListener('click', function(){
+			$this.editorSection.classList.toggle('mobile');
+			this.classList.toggle('act');
 		});
 
 		// switch editor section
