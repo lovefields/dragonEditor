@@ -12,6 +12,8 @@
 .editor_section .slider_wrap > *:first-child{margin-right:80px}
 .editor_section[data-status="editor"] .slider_wrap{transform:translateX(0)}
 .editor_section[data-status="options"] .slider_wrap{max-height:800px;transform:translateX(calc(-50% - 80px))}
+.editor_section[data-status="options"] ~ .btn_bottom:not(.btn_change_area){opacity:0.5;cursor:default}
+.editor_section[data-status="options"] .btn_add_content{display:none}
 
 .content_area{color:#555;font-size:16px;line-height:1.6}
 .content_area *[contentEditable]{outline:0}
@@ -51,6 +53,8 @@
 .btn_mod.act .mod_pc{display:none}
 .btn_history{right:160px}
 .btn_change_area{right:20px;width:120px;background:#38b7ea;color:#fff;border:0;border-radius:5px;font-size:18px}
+.btn_change_area::after{display:inline;content:'NEXT'}
+.btn_change_area.act::after{content:'PREV'}
 
 .btn_add_content{display:block;position:fixed;top:190px;left:50%;width:20px;height:20px;background:#fff;color:transparent;border:1px solid #999;font-size:0;box-sizing:border-box;transform:translateX(-485px)}
 .btn_add_content.hidden{display:none}
@@ -84,7 +88,7 @@
 .pop_media{display:block;top:0;left:0;bottom:0;width:300px;padding-bottom:100px;background:#fff;border-right:1px solid #999;overflow-y:scroll;transform:translateX(-300px)}
 .pop_media.act{transform:translateX(0)}
 .pop_media .media_list{display:flex;flex-wrap:wrap}
-.pop_media .btn_add_media{flex:1 0 130px;margin:10px}
+.pop_media .btn_add_media{flex:1 0 120px;margin:10px}
 .pop_media .btn_add_media .img{max-width:100%;;max-height:100px}
 .pop_media .btn_add_media:empty{height:0}
 .pop_media .btn_add_media_list{margin:50px auto 0}

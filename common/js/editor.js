@@ -48,35 +48,89 @@ class dragonEditor{
 	bindingEvent(){
 		let $this = this;
 
-		// right click block
+		// right click block and content menu open
 		document.addEventListener('contextmenu', function(e){
 			e.preventDefault();
+		});
+
+		document.addEventListener('mouseup', function(e){
+			if(typeof e === 'object'){
+				let target = e.target;
+				switch(e.button){
+					case 0 : 
+						let $pop = $this.findParent(target, 'pop');
+						let $popEl = $this.getElList('.pop');
+
+						$popEl.forEach(function(item){
+							item.classList.remove('act');
+						});
+
+						if($pop !== false){
+							$pop.classList.add('act');
+						}
+					break;
+
+					case 2 : 
+						let $area = $this.findParent(target, 'content_area');
+						let x = e.pageX;
+						let y = e.pageY;
+						let $list = $this.getEl('.pop_content_list');
+
+						if($area !== false){
+							$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
+							$list.classList.add('act');
+						}
+					break;
+				}
+			}
 		});
 
 		// switch editor section
 		$this.changeAreaBtn.addEventListener('click', function(){
 			let status = $this.editorSection.dataset['status'];
 			let value = status === 'editor' ? 'options' : 'editor';
-			let nowText = this.textContent;
-			let saveText = this.dataset['text'];
+			let pop = $this.getElList('.pop.act');
 
 			$this.editorSection.dataset['status'] = value;
-			this.dataset['text'] = nowText;
-			this.textContent = saveText;
+			this.classList.toggle('act');
+
+			pop.forEach(function(item){
+				item.classList.remove('act');
+			});
 		});
 
 		// pop btns work
 		$this.popBtns.forEach(function(btn){
 			btn.addEventListener('click', function(){
+				let status = $this.editorSection.dataset['status'];
 				let target = this.dataset['target'];
 				let $el = $this.getEl(target);
 
-				this.classList.toggle('act');
-				$el.classList.toggle('act');
+				if(status !== 'options'){
+					this.classList.toggle('act');
+					$el.removeAttribute('style');
+					$el.classList.toggle('act');
+				}else{
+					return false;
+				}
 			});
 		});
 
 		
+	}
+
+	findParent($el, name){
+		if($el.constructor.name !== 'HTMLBodyElement'){
+			let check = $el.classList.contains(name);
+
+			if(check === true){
+				return $el;
+			}else{
+				return this.findParent($el.parentElement, name);
+			}
+		}else{
+			return false;
+		}
 	}
 
 	closeLoding(){
