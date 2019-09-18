@@ -59,11 +59,14 @@ class dragonEditor{
 				switch(e.button){
 					case 0 : 
 						let $pop = $this.findParent(target, 'pop');
+						let $btnPop = $this.findParent(target, 'btn_pop');
 						let $popEl = $this.getElList('.pop');
 
-						$popEl.forEach(function(item){
-							item.classList.remove('act');
-						});
+	 					if($btnPop === false){
+							$popEl.forEach(function(item){
+								item.classList.remove('act');
+							});
+						}
 
 						if($pop !== false){
 							$pop.classList.add('act');
