@@ -19,10 +19,17 @@ class dragonEditor{
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
+		let $item;
 		if(type ===  'single'){
-			return name === undefined ? this.getEl(defaultName) : this.getEl(name);
+			$item = name === undefined ? this.getEl(defaultName) : this.getEl(name);
 		}else{
-			return name === undefined ? this.getElList(defaultName) : this.getElList(name);
+			$item = name === undefined ? this.getElList(defaultName) : this.getElList(name);
+		}
+
+		if($item === false){
+			console.error('Can not find Element : ' + name);
+		}else{
+			return $item;
 		}
 	}
 
@@ -30,7 +37,7 @@ class dragonEditor{
 		let $el = document.querySelector(name);
 
 		if($el === null){
-			console.error('Can not find Element : ' + name);
+			return false;
 		}else{
 			return $el;
 		}
@@ -40,7 +47,7 @@ class dragonEditor{
 		let $el = document.querySelectorAll(name);
 
 		if($el.length < 1){
-			console.error('Can not find Element List : ' + name);
+			return false;
 		}else{
 			return $el;
 		}
@@ -63,11 +70,17 @@ class dragonEditor{
 						let $btnPop = $this.findParent(target, 'btn_pop');
 						let $popEl = $this.getElList('.pop');
 
-	 					if($btnPop === false){
-							$popEl.forEach(function(item){
+						$popEl.forEach(function(item){
+							if($btnPop === false){
 								item.classList.remove('act');
-							});
-						}
+							}else{
+								let name = $btnPop.dataset['target'];
+
+								if(item !== $this.getEl(name)){
+									item.classList.remove('act');
+								}
+							}
+						});
 
 						if($pop !== false){
 							$pop.classList.add('act');
@@ -97,16 +110,24 @@ class dragonEditor{
 
 		// switch editor section
 		$this.changeAreaBtn.addEventListener('click', function(){
-			let status = $this.editorSection.dataset['status'];
+			let $target = $this.editorSection;
+			let status = $target.dataset['status'];
 			let value = status === 'editor' ? 'options' : 'editor';
-			let pop = $this.getElList('.pop.act');
+			let $pop = $this.getElList('.pop.act');
 
 			$this.editorSection.dataset['status'] = value;
 			this.classList.toggle('act');
 
-			pop.forEach(function(item){
-				item.classList.remove('act');
-			});
+			if($pop !== false){
+				$pop.forEach(function(item){
+					item.classList.remove('act');
+				});
+			}
+
+			if($target.classList.contains('mobile') === true){
+				$target.classList.remove('mobile');
+				$this.viewBtn.classList.remove('act');
+			}
 		});
 
 		// pop btns work
