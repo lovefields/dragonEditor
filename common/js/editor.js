@@ -10,10 +10,13 @@ class dragonEditor{
 		let $this = this;
 		$this.wrap = $this.checkOptionElement(wrap, '.aditor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
+		$this.contentArea = $this.checkOptionElement(options.contentArea, '.content_area');
 
+		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi')
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
+
 		$this.popBgArea = $this.checkOptionElement(options.popBgArea, '.pop_bg');
 		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
 	}
@@ -102,6 +105,34 @@ class dragonEditor{
 			}
 		});
 
+		$this.contentArea.addEventListener('mouseup', function(e){
+			console.log('up');
+			console.log(e.target);
+		});
+
+		$this.contentArea.addEventListener('mousedown', function(e){
+			console.log('down');
+			console.log(e.target);
+		});
+
+		$this.contentArea.addEventListener('keyup', function(e){
+			console.log('keyup');
+			console.log(e.target);
+		});
+
+		$this.contentAddBtn.forEach(function($btn){
+			$btn.addEventListener('click', function(){
+				let type = this.dataset['value'];
+
+				switch(type){
+					case 'image':
+						$this.addImageBtn();
+					break;
+				}
+				console.log(type);
+			});
+		});
+
 		// change view size
 		$this.viewBtn.addEventListener('click', function(){
 			$this.editorSection.classList.toggle('mobile');
@@ -146,8 +177,6 @@ class dragonEditor{
 				}
 			});
 		});
-
-		
 	}
 
 	findParent($el, name){
@@ -167,5 +196,9 @@ class dragonEditor{
 	closeLoding(){
 		this.popBgArea.classList.remove('act');
 		this.lodingArea.classList.remove('act');
+	}
+
+	addImageBtn(){
+
 	}
 }
