@@ -17,7 +17,7 @@
 ```js
 const editor = new dragonEditor(wrap, options);
 ```
-`wrap` = class name
+`wrap` = class name <br>
 `options` = object
 
 ## Options
