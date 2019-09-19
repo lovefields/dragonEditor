@@ -15,5 +15,9 @@
 
 ## Using
 ```js
-const editor = new dragonEditor();
+const editor = new dragonEditor(wrap, options);
 ```
+`wrap` = class name
+`options` = object
+
+## Options

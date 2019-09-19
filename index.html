@@ -147,7 +147,10 @@
 			</div>
 
 			<form action="#" enctype="multipart/form-data" method="post" class="options_area">
-				<input type="hidden" name="type">
+				<input type="hidden" name="type" value="">
+				<input type="hidden" name="article_idx" value="">
+				<input type="hidden" name="user_idx" value="">
+				<input type="hidden" name="content_data" value="">
 				<div class="row">
 					<p class="name">커버 이미지</p>
 					<div class="item_area">
@@ -202,7 +205,7 @@
 				<button type="button" class="btn_submit">publish</button>
 			</form>
 		</div>
-		<button class="btn_pop btn_add_content ts" data-target=".pop_content_list">컨텐츠 추가</button>
+		<button class="btn_pop btn_content_list ts" data-target=".pop_content_list">컨텐츠 추가</button>
 		<div class="pop pop_options clearfix ts">
 			<label class="item select_area">
 				<select class="select select_font_size">
@@ -287,55 +290,55 @@
 <div class="pop pop_bg act"></div>
 <div class="pop pop_loding act"></div>
 <div class="pop pop_content_list">
-	<button class="btn add_img">
+	<button class="btn btn_add_content" data-value="image">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#image" href="#image" />
 		</svg>
 		Image
 	</button>
-	<button class="btn add_sticker">
+	<button class="btn btn_add_content" data-value="sticker">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#emotion" href="#emotion" />
 		</svg>
 		Sticker
 	</button>
-	<button class="btn add_youtube">
+	<button class="btn btn_add_content" data-value="youtube">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#youtube" href="#youtube" />
 		</svg>
 		Youtube
 	</button>
-	<button class="btn add_codepen">
+	<button class="btn btn_add_content" data-value="codepen">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#codepen" href="#codepen" />
 		</svg>
 		Codepen
 	</button>
-	<button class="btn add_bulletedlist">
+	<button class="btn btn_add_content" data-value="bulletedlist">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#list_bulleted" href="#list_bulleted" />
 		</svg>
 		Bulleted List
 	</button>
-	<button class="btn add_numberedlist">
+	<button class="btn btn_add_content" data-value="numberedlist">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#list_numbered" href="#list_numbered" />
 		</svg>
 		Numbered List
 	</button>
-	<button class="btn add_quote">
+	<button class="btn btn_add_content" data-value="quote">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#quote" href="#quote" />
 		</svg>
 		Quote
 	</button>
-	<button class="btn add_table">
+	<button class="btn btn_add_content" data-value="table">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#table" href="#table" />
 		</svg>
 		Table
 	</button>
-	<button class="btn add_codeblock">
+	<button class="btn btn_add_content" data-value="codeblock">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#codeblock" href="#codeblock" />
 		</svg>
@@ -359,10 +362,23 @@
 	</div>
 	<button class="btn_add_media_list">미디어 추가</button>
 </div>
-<div class="pop pop_lang act">
+<div class="pop pop_lang">
 	<button class="btn_chang_lang ts act" data-value="ko">KO</button>
 	<button class="btn_chang_lang ts" data-value="en">EN</button>
 	<button class="btn_chang_lang ts" data-value="ja">JA</button>
+</div>
+<div class="pop pop_history">
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
+	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
 </div>
 <script src="./common/js/editor.js"></script>
 <script>
