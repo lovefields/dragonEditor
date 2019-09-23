@@ -13,3 +13,4 @@ img{border:0;vertical-align:top}
 .clearfix::after{display:block;content:'';clear:both}
 .blind{color:transparent;font-size:0}
 .ts,.ts::after,.ts::before{-o-transition:all 0.5s ease;-moz-transition:all 0.5s ease;-webkit-transition:all 0.5s ease;transition:all 0.5s ease}
+.hidden{display:none}
