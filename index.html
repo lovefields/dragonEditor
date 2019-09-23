@@ -168,19 +168,19 @@
 				<h1 class="title" contentEditable="true"></h1>
 				<p class="item item_text" contenteditable="true">가나다라 마바사 나는 디자인을 하는데 내가 디자인을 하는것인가 나는 무엇을 하고 있는걸까, 매우 매우 힘이 든다 디자인 잘하고싶다 일하기 싫다 매우.</p>
 				<p class="item item_text" contenteditable="true"></p>
-				<button class="btn upload_image">
+				<button class="btn" data-type="image">
 					<svg viewbox="0 0 50 50" class="icon">
 						<use class="path" xlink:href="#image" href="#image" />
 					</svg>
 					Add on image
 				</button>
-				<button class="btn btn_youtube">
+				<button class="btn">
 					<svg viewbox="0 0 50 50" class="icon">
 						<use class="path" xlink:href="#youtube" href="#youtube" />
 					</svg>
 					Add Youtube
 				</button>
-				<button class="btn btn_codepen">
+				<button class="btn">
 					<svg viewbox="0 0 50 50" class="icon">
 						<use class="path" xlink:href="#codepen" href="#codepen" />
 					</svg>
@@ -448,6 +448,9 @@
 	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
 	<button class="btn_temp" data-idx="">2019.09.19 11:12:32</button>
 </div>
+<form action="#" enctype="multipart/form-data" method="post" class="file_uploader">
+	<input type="file" class="file_check">
+</form>
 <script src="./common/js/editor.js"></script>
 <script>
 	const editor = new dragonEditor();

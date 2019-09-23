@@ -71,6 +71,7 @@
 .btn_chang_lang{width:50px;height:50px;background:#fff;color:#555;border:1px solid #999;border-radius:50%;font-size:14px;font-weight:bold;text-align:center;line-height:48px;box-sizing:border-box}
 .btn_chang_lang.act{background:#38b7ea;color:#fff;border-color:#38b7ea}
 
+.file_uploader{display:none}
 .pop{display:none;position:fixed;z-index:100}
 .pop.act{display:block}
 .pop_bg{top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5)}
