@@ -103,9 +103,10 @@ class dragonEditor{
 
 					case 2 : 
 						let $area = $this.findParent(target, 'content_area');
-						let x = e.pageX;
-						let y = e.pageY;
+						let x = e.clientX;
+						let y = e.clientY;
 						let $list = $this.getEl('.pop_content_list');
+						console.log(e);
 
 						if($area !== false){
 							$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
