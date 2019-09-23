@@ -10,6 +10,8 @@ class dragonEditor{
 		let $this = this;
 		$this.stickerListName = options.stickerListName === undefined ? '.pop_sticker' : options.stickerListName;
 		$this.imageIconId = options.imageIconId === undefined ? '#icon_image' : options.imageIconId;
+		$this.youtubeIconId = options.youtubeIconId === undefined ? '#icon_youtube' : options.youtubeIconId;
+		$this.codepenIconId = options.codepenIconId === undefined ? '#icon_codepen' : options.codepenIconId;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.aditor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -28,7 +30,7 @@ class dragonEditor{
 		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
 
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
-		$this.HTMLImageBtn = '<button class="btn" data-type="image"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>Add on image</button>';
+		$this.HTMLBtn = '<button class="btn" data-type="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
 		$this.HTMLSvgSticker = '<svg viewbox="0 0 58 90" class="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
 	}
 
@@ -146,7 +148,7 @@ class dragonEditor{
 						$this.addTextBlock(target);
 					break;
 					case 'image':
-						$this.addImageBtn(target);
+						$this.addBtn(target, $this.imageIconId, 'image', 'Add on image');
 						$this.fileInput.setAttribute('accept', 'image/*');
 						$this.fileInput.click();
 					break;
@@ -155,8 +157,10 @@ class dragonEditor{
 						$this.addSticker(target, url);
 					break;
 					case 'youtube':
+						$this.addBtn(target, $this.youtubeIconId, 'youtube', 'Add Youtube');
 					break;
 					case 'codepen':
+						$this.addBtn(target, $this.codepenIconId, 'codepen', 'Add Codepen');
 					break;
 					case 'bulletedlist':
 					break;
@@ -249,8 +253,10 @@ class dragonEditor{
 		target.nextElementSibling.focus();
 	}
 
-	addImageBtn(target){
-		let html = this.HTMLImageBtn.replace(/\[icon_id\]/g, this.imageIconId);
+	addBtn(target, icon, type, text){
+		let html = this.HTMLBtn.replace(/\[icon_id\]/g, icon)
+					.replace(/\[type\]/g, type)
+					.replace(/\[text\]/g, text);
 
 		target.insertAdjacentHTML('afterend', html);
 	}
