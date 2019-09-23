@@ -125,8 +125,26 @@ class dragonEditor{
 				let type = this.dataset['value'];
 
 				switch(type){
+					case 'text':
+					break;
 					case 'image':
-						$this.addImageBtn();
+						//$this.addImageBtn();
+					break;
+					case 'sticker':
+					break;
+					case 'youtube':
+					break;
+					case 'codepen':
+					break;
+					case 'bulletedlist':
+					break;
+					case 'numberedlist':
+					break;
+					case 'quote':
+					break;
+					case 'table':
+					break;
+					case 'codeblock':
 					break;
 				}
 				console.log(type);
