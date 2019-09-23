@@ -12,6 +12,7 @@ class dragonEditor{
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
 		$this.contentArea = $this.checkOptionElement(options.contentArea, '.content_area');
 		$this.contentAddList = $this.checkOptionElement(options.contentAddList, '.pop_content_list');
+		$this.stickerListName = options.stickerListName === undefined ? '.pop_sticker' : options.stickerListName;
 
 		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi');
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
@@ -195,6 +196,10 @@ class dragonEditor{
 					this.classList.toggle('act');
 					$el.removeAttribute('style');
 					$el.classList.toggle('act');
+
+					if(target === $this.stickerListName){
+						$this.contentAddList.classList.remove('act');
+					}
 				}else{
 					return false;
 				}
