@@ -29,6 +29,7 @@ class dragonEditor{
 
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
 		$this.HTMLImageBtn = '<button class="btn" data-type="image"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>Add on image</button>';
+		$this.HTMLSvgSticker = '<svg viewbox="0 0 58 90" class="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
@@ -134,18 +135,22 @@ class dragonEditor{
 			$btn.addEventListener('click', function(){
 				let type = this.dataset['value'];
 				let childCount = $this.contentArea.childElementCount;
+				let $lastEl = $this.contentArea.querySelector('.lastset');
+				let target = $lastEl === null ? $this.contentArea.querySelector('*:nth-child('+ childCount +')') : $lastEl
 
 				$this.contentAddList.classList.remove('act');
 				switch(type){
 					case 'text':
-						$this.addTextBlock(childCount);
+						$this.addTextBlock(target);
 					break;
 					case 'image':
-						$this.addImageBtn(childCount);
+						$this.addImageBtn(target);
 						$this.fileInput.setAttribute('accept', 'image/*');
 						$this.fileInput.click();
 					break;
 					case 'sticker':
+						let url = this.dataset['url'];
+						$this.addSticker(target, url);
 					break;
 					case 'youtube':
 					break;
@@ -235,19 +240,21 @@ class dragonEditor{
 		this.lodingArea.classList.remove('act');
 	}
 
-	addTextBlock(number, content = ''){
-		let $lastEl = this.contentArea.querySelector('.lastset');
+	addTextBlock(target, content = ''){
 		let html = this.HTMLTextBlock.replace('[content]', content);
-		let target = $lastEl === null ? this.contentArea.querySelector('*:nth-child('+ number +')') : $lastEl
 
 		target.insertAdjacentHTML('afterend', html);
 		target.nextElementSibling.focus();
 	}
 
-	addImageBtn(number){
-		let $lastEl = this.contentArea.querySelector('.lastset');
+	addImageBtn(target){
 		let html = this.HTMLImageBtn.replace(/\[icon_id\]/g, this.imageIconId);
-		let target = $lastEl === null ? this.contentArea.querySelector('*:nth-child('+ number +')') : $lastEl
+
+		target.insertAdjacentHTML('afterend', html);
+	}
+
+	addSticker(target, url, type = 'svg'){
+		let html = this.HTMLSvgSticker.replace(/\[url\]/g, url);
 
 		target.insertAdjacentHTML('afterend', html);
 	}
