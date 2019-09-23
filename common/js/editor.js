@@ -9,7 +9,7 @@ class dragonEditor{
 	setting(wrap, options){
 		let $this = this;
 		$this.stickerListName = options.stickerListName === undefined ? '.pop_sticker' : options.stickerListName;
-		$this.imageIconId = options.imageIconId === undefined ? '#image' : options.imageIconId;
+		$this.imageIconId = options.imageIconId === undefined ? '#icon_image' : options.imageIconId;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.aditor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -132,6 +132,7 @@ class dragonEditor{
 			console.log(e.target);
 		});
 
+		// content add event
 		$this.contentAddBtn.forEach(function($btn){
 			$btn.addEventListener('click', function(){
 				let type = this.dataset['value'];
