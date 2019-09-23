@@ -12,6 +12,10 @@
 <body>
 <svg viewBox="0 0 50 50" class="svg_icon">
 	<defs>
+		<g id="text">
+			<path class="st0" d="M45,17V5H5v12v5.3v8.1v3.2V45h40v-8.6v-6v-8.1V17z M42.1,17v5.3v8.1v3.2v8.4H7.9v-5.7v-6v-8.1V17V7.9h34.3V17z"/>
+			<polygon class="st0" points="16.4,16.4 22.1,16.4 22.1,33.6 19.3,33.6 19.3,36.4 30.7,36.4 30.7,33.6 27.9,33.6 27.9,16.4 33.6,16.4 33.6,19.3 36.4,19.3 36.4,16.4 36.4,13.6 13.6,13.6 13.6,16.4 13.6,19.3 16.4,19.3"/>
+		</g>
 		<g id="image">
 			<path d="M38.5,40.5h-27A6.5,6.5,0,0,1,5,34V16a6.5,6.5,0,0,1,6.5-6.5h27A6.5,6.5,0,0,1,45,16V34A6.5,6.5,0,0,1,38.5,40.5Zm-27-28A3.5,3.5,0,0,0,8,16V34a3.5,3.5,0,0,0,3.5,3.5h27A3.5,3.5,0,0,0,42,34V16a3.5,3.5,0,0,0-3.5-3.5Z"/>
 			<path d="M15,18a2,2,0,1,1-2,2,2,2,0,0,1,2-2m0-3a5,5,0,1,0,5,5,5,5,0,0,0-5-5Z"/>
@@ -290,6 +294,12 @@
 <div class="pop pop_bg act"></div>
 <div class="pop pop_loding act"></div>
 <div class="pop pop_content_list">
+	<button class="btn btn_add_content" data-value="text">
+		<svg viewbox="0 0 50 50" class="icon">
+			<use class="path" xlink:href="#text" href="#text" />
+		</svg>
+		Text
+	</button>
 	<button class="btn btn_add_content" data-value="image">
 		<svg viewbox="0 0 50 50" class="icon">
 			<use class="path" xlink:href="#image" href="#image" />
