@@ -258,7 +258,7 @@
 		</g>
 	</defs>
 </svg>
-<div class="wrap aditor_area">
+<div class="wrap editor_area">
 	<section class="editor_section ts" data-status="editor">
 		<div class="slider_wrap ts clearfix">
 			<div class="content_area" data-lang="ko">
@@ -564,7 +564,9 @@
 </form>
 <script src="./common/js/editor.js"></script>
 <script>
-	const editor = new dragonEditor();
+	const editor = new dragonEditor('.editor_area', {
+		'stickerSize' : '0 0 58 90'
+	});
 </script>
 </body>
 </html>
