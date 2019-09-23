@@ -11,14 +11,17 @@ class dragonEditor{
 		$this.wrap = $this.checkOptionElement(wrap, '.aditor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
 		$this.contentArea = $this.checkOptionElement(options.contentArea, '.content_area');
+		$this.contentAddList = $this.checkOptionElement(options.contentAddList, '.pop_content_list');
 
-		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi')
+		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi');
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
 
 		$this.popBgArea = $this.checkOptionElement(options.popBgArea, '.pop_bg');
 		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
+
+		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
@@ -124,8 +127,10 @@ class dragonEditor{
 			$btn.addEventListener('click', function(){
 				let type = this.dataset['value'];
 
+				$this.contentAddList.classList.remove('act');
 				switch(type){
 					case 'text':
+						$this.addTextBlock();
 					break;
 					case 'image':
 						//$this.addImageBtn();
@@ -214,6 +219,16 @@ class dragonEditor{
 	closeLoding(){
 		this.popBgArea.classList.remove('act');
 		this.lodingArea.classList.remove('act');
+	}
+
+	addTextBlock(content = ''){
+		let $lastEl = this.contentArea.querySelector('.lastset');
+		let childCount = this.contentArea.childElementCount;
+		let html = this.HTMLTextBlock.replace('[content]', content);
+		let target = $lastEl === null ? this.contentArea.querySelector('*:nth-child('+ childCount +')') : $lastEl
+
+		target.insertAdjacentHTML('afterend', html);
+		target.nextElementSibling.focus();
 	}
 
 	addImageBtn(){
