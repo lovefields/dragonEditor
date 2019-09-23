@@ -1,5 +1,5 @@
 class dragonEditor{
-	constructor(wrap = '.aditor_area', options = {}){
+	constructor(wrap = '.editor_area', options = {}){
 		this.setting(wrap, options);
 		console.log(this.wrap);
 		this.bindingEvent();
@@ -12,8 +12,10 @@ class dragonEditor{
 		$this.imageIconId = options.imageIconId === undefined ? '#icon_image' : options.imageIconId;
 		$this.youtubeIconId = options.youtubeIconId === undefined ? '#icon_youtube' : options.youtubeIconId;
 		$this.codepenIconId = options.codepenIconId === undefined ? '#icon_codepen' : options.codepenIconId;
+		$this.stickerSize = options.stickerSize === undefined ? '0 0 100 100' : options.stickerSize;
+		$this.stickerType = options.stickerType === undefined ? 'svg' : options.stickerType;
 
-		$this.wrap = $this.checkOptionElement(wrap, '.aditor_area');
+		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
 		$this.contentArea = $this.checkOptionElement(options.contentArea, '.content_area');
 		$this.contentAddList = $this.checkOptionElement(options.contentAddList, '.pop_content_list');
@@ -31,7 +33,7 @@ class dragonEditor{
 
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
 		$this.HTMLBtn = '<button class="btn" data-type="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
-		$this.HTMLSvgSticker = '<svg viewbox="0 0 58 90" class="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
+		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
@@ -154,7 +156,7 @@ class dragonEditor{
 					break;
 					case 'sticker':
 						let url = this.dataset['url'];
-						$this.addSticker(target, url);
+						$this.addSticker(target, url, $this.stickerSize, $this.stickerType);
 					break;
 					case 'youtube':
 						$this.addBtn(target, $this.youtubeIconId, 'youtube', 'Add Youtube');
@@ -261,8 +263,9 @@ class dragonEditor{
 		target.insertAdjacentHTML('afterend', html);
 	}
 
-	addSticker(target, url, type = 'svg'){
-		let html = this.HTMLSvgSticker.replace(/\[url\]/g, url);
+	addSticker(target, url, size, type){
+		let html = this.HTMLSvgSticker.replace(/\[url\]/g, url)
+					.replace(/\[size\]/g, size);
 
 		target.insertAdjacentHTML('afterend', html);
 	}
