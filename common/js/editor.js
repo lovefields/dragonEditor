@@ -34,6 +34,8 @@ class dragonEditor{
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
 		$this.HTMLBtn = '<button class="btn" data-type="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
 		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
+		$this.HTMLList = '<[tag] [type] class="item item_list">[child]</[tag]>';
+		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
@@ -110,7 +112,6 @@ class dragonEditor{
 						let x = e.clientX;
 						let y = e.clientY;
 						let $list = $this.getEl('.pop_content_list');
-						console.log(e);
 
 						if($area !== false){
 							$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
@@ -165,8 +166,10 @@ class dragonEditor{
 						$this.addBtn(target, $this.codepenIconId, 'codepen', 'Add Codepen');
 					break;
 					case 'bulletedlist':
+						$this.addList(target, 'ul');
 					break;
 					case 'numberedlist':
+						$this.addList(target, 'ol', '1');
 					break;
 					case 'quote':
 					break;
@@ -266,6 +269,16 @@ class dragonEditor{
 	addSticker(target, url, size, type){
 		let html = this.HTMLSvgSticker.replace(/\[url\]/g, url)
 					.replace(/\[size\]/g, size);
+
+		target.insertAdjacentHTML('afterend', html);
+	}
+
+	addList(target, tag, type = null, content = ''){
+		let attribute = type === null ? '' : 'type="'+ type +'"';
+		let child = this.HTMLChildList.replace(/\[content\]/g, content);
+		let html = this.HTMLList.replace(/\[tag\]/g, tag)
+					.replace('[type]', attribute)
+					.replace('[child]', child);
 
 		target.insertAdjacentHTML('afterend', html);
 	}
