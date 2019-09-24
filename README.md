@@ -15,13 +15,12 @@
 
 ## Using
 ```js
-const editor = new dragonEditor(wrap, options);
+const editor = new dragonEditor(wrap, {
+   'options' : 'value'
+});
 ```
 #### `wrap`
 CSS Selector.<br>
 default = `.editor_area`
-
-#### `options`
-Object.
 
 ## Options
