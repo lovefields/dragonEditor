@@ -36,6 +36,7 @@ class dragonEditor{
 		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
 		$this.HTMLList = '<[tag] [type] class="item item_list">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
+		$this.HTMLQuote = '<blockquote class="item item_quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
@@ -132,8 +133,8 @@ class dragonEditor{
 			console.log(e.target);
 		});
 
-		$this.contentArea.addEventListener('keyup', function(e){
-			console.log('keyup');
+		$this.contentArea.addEventListener('keydown', function(e){
+			console.log('keydown');
 			console.log(e.target);
 		});
 
@@ -172,6 +173,7 @@ class dragonEditor{
 						$this.addList(target, 'ol', '1');
 					break;
 					case 'quote':
+						$this.addQuote(target);
 					break;
 					case 'table':
 					break;
@@ -281,5 +283,11 @@ class dragonEditor{
 					.replace('[child]', child);
 
 		target.insertAdjacentHTML('afterend', html);
+		target.nextElementSibling.childNodes[0].focus();
+	}
+
+	addQuote(target){
+		target.insertAdjacentHTML('afterend', this.HTMLQuote);
+		target.nextElementSibling.childNodes[0].focus();
 	}
 }

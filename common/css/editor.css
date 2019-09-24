@@ -15,6 +15,7 @@
 .editor_section[data-status="options"] .btn_content_list{display:none}
 
 .content_area{color:#555;font-size:16px;line-height:1.6}
+.content_area *{word-wrap:break-word}
 .content_area *[contentEditable]{outline:0}
 .content_area *[contentEditable]:empty::after{display:inline;content:"Add text";color:#999;cursor:text}
 .content_area > *{margin-bottom:5px}
@@ -40,6 +41,20 @@
 .content_area .item_quote .author:empty::after{content:"Author"}
 .content_area .item_quote .author:not(:empty)::before{content:'- '}
 .content_area .item_quote .author:not(:empty)::after{content:' -'}
+.content_area .item_table_area{overflow-y:auto}
+.content_area .item_table .size_auto{width:auto}
+.content_area .item_table .size_600{width:600px}
+.content_area .item_table .size_500{width:500px}
+.content_area .item_table .size_400{width:400px}
+.content_area .item_table .size_300{width:300px}
+.content_area .item_table .size_200{width:200px}
+.content_area .item_table .size_100{width:100px}
+.content_area .item_table,
+.content_area .item_table th,
+.content_area .item_table td{padding:5px;border:1px solid #555;table-layout:fixed}
+.content_area .item_table th[contentEditable]:empty::after,
+.content_area .item_table td[contentEditable]:empty::after{display:none}
+.content_area .item_table caption:empty::after{display:inline;content:"Table name"}
 
 
 
