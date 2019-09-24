@@ -42,6 +42,7 @@
 .content_area .item_quote .author:not(:empty)::before{content:'- '}
 .content_area .item_quote .author:not(:empty)::after{content:' -'}
 .content_area .item_table_area{overflow-y:auto}
+.content_area .item_table{width:100%}
 .content_area .item_table .size_auto{width:auto}
 .content_area .item_table .size_600{width:600px}
 .content_area .item_table .size_500{width:500px}
@@ -90,6 +91,10 @@
 .btn_change_area::after{display:inline;content:'NEXT'}
 .btn_change_area.act::after{content:'PREV'}
 
+.btn_del_content{position:absolute;top:0;right:50px;width:24px;visibility:hidden}
+.btn_del_content.act{visibility:visible}
+.btn_del_content .path{fill:#f00}
+
 .btn_content_list{display:block;position:fixed;top:190px;left:50%;width:20px;height:20px;background:#fff;color:transparent;border:1px solid #999;font-size:0;box-sizing:border-box;transform:translateX(-485px)}
 .btn_content_list.hidden{display:none}
 .btn_content_list::after{display:block;content:'';position:absolute;top:3px;left:8px;width:2px;height:12px;background:#999}
@@ -109,7 +114,7 @@
 .pop_loding{top:50%;left:0;width:100%;height:30px;color:#fff;font-size:20px;font-weight:bold;text-align:center;line-height:30px;transform:translateY(-50%)}
 .pop_loding::after{display:block;content:'Loding';animation:loding 1s ease infinite}
 
-.pop_content_list{top:220px;left:50%;width:200px;padding:10px;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25);box-sizing:border-box;transform:translateX(-665px)}
+.pop_content_list{top:220px;left:50%;width:200px;padding:10px;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25);box-sizing:border-box;transform:translateX(-485px)}
 .pop_content_list .btn{display:block;width:100%;height:40px;padding:5px 0;margin-top:-2px;text-align:left;line-height:30px;box-sizing:border-box}
 .pop_content_list .btn:hover{background:#f4f4f4}
 .pop_content_list .btn .icon{display:inline-block;width:30px;margin-right:10px;vertical-align:middle}
@@ -154,4 +159,8 @@
 	50%{content:'Loding..'}
 	75%{content:'Loding...'}
 	100%{content:'Loding....'}
+}
+
+@media all and (max-width:70em){
+
 }

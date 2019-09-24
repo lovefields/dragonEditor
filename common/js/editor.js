@@ -8,6 +8,11 @@ class dragonEditor{
 
 	setting(wrap, options){
 		let $this = this;
+
+		$this.windowWidth = window.innerWidth;
+		$this.windowHeight = window.innerHeight;
+		$this.changePint = options.changePint === undefined ? 1120 : options.changePint;
+
 		$this.stickerListName = options.stickerListName === undefined ? '.pop_sticker' : options.stickerListName;
 		$this.imageIconId = options.imageIconId === undefined ? '#icon_image' : options.imageIconId;
 		$this.youtubeIconId = options.youtubeIconId === undefined ? '#icon_youtube' : options.youtubeIconId;
@@ -138,6 +143,13 @@ class dragonEditor{
 			console.log(e.target);
 		});
 
+		$this.contentArea.addEventListener('mouseover', function(e){
+			if($this.windowWidth > $this.changePint){
+				console.log('over');
+				console.log(e.target, $this.windowWidth);
+			}
+		});
+
 		// content add event
 		$this.contentAddBtn.forEach(function($btn){
 			$btn.addEventListener('click', function(){
@@ -231,6 +243,12 @@ class dragonEditor{
 					return false;
 				}
 			});
+		});
+
+		window.addEventListener('resize', function(){
+			$this.windowWidth = window.innerWidth;
+			$this.windowHeight = window.innerHeight;
+			return;
 		});
 	}
 
