@@ -24,6 +24,7 @@ class dragonEditor{
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
 		$this.contentArea = $this.checkOptionElement(options.contentArea, '.content_area');
 		$this.contentAddList = $this.checkOptionElement(options.contentAddList, '.pop_content_list');
+		$this.popLang = $this.checkOptionElement(options.popLang, '.pop_lang');
 
 		$this.uploadForm = $this.checkOptionElement(options.uploadForm, '.file_uploader');
 		$this.fileInput = $this.checkOptionElement(options.fileInput, '.file_check');
@@ -114,14 +115,16 @@ class dragonEditor{
 					break;
 
 					case 2 : 
-						let $area = $this.findParent(target, 'content_area');
-						let x = e.clientX;
-						let y = e.clientY;
-						let $list = $this.getEl('.pop_content_list');
+						if($this.windowWidth > $this.changePint){
+							let $area = $this.findParent(target, 'content_area');
+							let x = e.clientX;
+							let y = e.clientY;
+							let $list = $this.getEl('.pop_content_list');
 
-						if($area !== false){
-							$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
-							$list.classList.add('act');
+							if($area !== false){
+								$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
+								$list.classList.add('act');
+							}
 						}
 					break;
 				}
@@ -210,6 +213,7 @@ class dragonEditor{
 			let $pop = $this.getElList('.pop.act');
 
 			$this.editorSection.dataset['status'] = value;
+			$this.popLang.classList.toggle('hidden');
 			this.classList.toggle('act');
 
 			if($pop !== false){
