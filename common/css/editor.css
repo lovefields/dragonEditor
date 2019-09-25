@@ -92,10 +92,6 @@
 .btn_change_area::after{display:inline;content:'NEXT'}
 .btn_change_area.act::after{content:'PREV'}
 
-.btn_del_content{position:absolute;top:0;right:50px;width:24px;visibility:hidden}
-.btn_del_content.act{visibility:visible}
-.btn_del_content .path{fill:#f00}
-
 .btn_content_list{display:block;position:fixed;top:190px;left:50%;width:20px;height:20px;background:#fff;color:transparent;border:1px solid #999;font-size:0;box-sizing:border-box;transform:translateX(-485px)}
 .btn_content_list.hidden{display:none}
 .btn_content_list::after{display:block;content:'';position:absolute;top:3px;left:8px;width:2px;height:12px;background:#999}
@@ -128,6 +124,7 @@
 .pop_options .select_area{position:relative;padding:0}
 .pop_options .select_area::before{display:block;content:'';position:absolute;top:50%;right:6px;width:4px;height:4px;margin-top:-4px;border:1px solid transparent;border-bottom-color:#555;border-right-color:#555;transform:rotate(45deg)}
 .pop_options .select{height:30px;padding:0 20px 0 10px;background:transparent;border:0;line-height:30px;-moz-appearance:none;-webkit-appearance:none}
+.pop_options .btn_del_content .path{fill:#f00}
 
 .pop_media{display:block;top:0;left:0;bottom:0;width:300px;padding-bottom:100px;background:#fff;border-right:1px solid #999;overflow-y:scroll;transform:translateX(-301px)}
 .pop_media.act{transform:translateX(0)}
