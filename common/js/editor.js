@@ -19,6 +19,7 @@ class dragonEditor{
 		$this.codepenIconId = typeof options.codepenIconId !== 'string' ? '#icon_codepen' : options.codepenIconId;
 		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
 		$this.stickerType = typeof options.stickerType !== 'string' ? 'svg' : options.stickerType;
+		$this.contentAreaName = typeof options.contentAreaName !== 'string' ? '.content_area' : options.contentAreaName;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -29,6 +30,7 @@ class dragonEditor{
 		$this.uploadForm = $this.checkOptionElement(options.uploadForm, '.file_uploader');
 		$this.fileInput = $this.checkOptionElement(options.fileInput, '.file_check');
 
+		$this.contentDelBtn = $this.checkOptionElement(options.contentDelBtn, '.btn_del_content');
 		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi');
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
@@ -119,8 +121,7 @@ class dragonEditor{
 
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
-				console.log('over');
-				console.log(e.target, $this.windowWidth);
+				
 			}
 		});
 
@@ -130,36 +131,36 @@ class dragonEditor{
 				let type = this.dataset['value'];
 				let childCount = $this.contentArea.childElementCount;
 				let $lastEl = $this.contentArea.querySelector('.lastset');
-				let target = $lastEl === null ? $this.contentArea.querySelector('*:nth-child('+ childCount +')') : $lastEl
+				let $target = $lastEl === null ? $this.contentArea.children[childCount - 1] : $lastEl
 
 				$this.contentAddList.classList.remove('act');
 				switch(type){
 					case 'text':
-						$this.addTextBlock(target);
+						$this.addTextBlock($target);
 					break;
 					case 'image':
-						$this.addBtn(target, $this.imageIconId, 'image', 'Add on image');
+						$this.addBtn($target, $this.imageIconId, 'image', 'Add on image');
 						$this.fileInput.setAttribute('accept', 'image/*');
 						$this.fileInput.click();
 					break;
 					case 'sticker':
 						let url = this.dataset['url'];
-						$this.addSticker(target, url, $this.stickerSize, $this.stickerType);
+						$this.addSticker($target, url, $this.stickerSize, $this.stickerType);
 					break;
 					case 'youtube':
-						$this.addBtn(target, $this.youtubeIconId, 'youtube', 'Add Youtube');
+						$this.addBtn($target, $this.youtubeIconId, 'youtube', 'Add Youtube');
 					break;
 					case 'codepen':
-						$this.addBtn(target, $this.codepenIconId, 'codepen', 'Add Codepen');
+						$this.addBtn($target, $this.codepenIconId, 'codepen', 'Add Codepen');
 					break;
 					case 'bulletedlist':
-						$this.addList(target, 'ul');
+						$this.addList($target, 'ul');
 					break;
 					case 'numberedlist':
-						$this.addList(target, 'ol', '1');
+						$this.addList($target, 'ol', '1');
 					break;
 					case 'quote':
-						$this.addQuote(target);
+						$this.addQuote($target);
 					break;
 					case 'table':
 					break;
@@ -223,6 +224,9 @@ class dragonEditor{
 		window.addEventListener('resize', function(){
 			$this.windowWidth = window.innerWidth;
 			$this.windowHeight = window.innerHeight;
+
+			$this.contentDelBtn.removeAttribute('style');
+
 			return;
 		});
 	}
