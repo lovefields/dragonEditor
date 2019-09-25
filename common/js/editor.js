@@ -45,6 +45,8 @@ class dragonEditor{
 		$this.HTMLList = '<[tag] [type] class="item item_list">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
+		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
+		$this.HTMLCodeBlock = '<pre class="item item_codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
 	}
 
 	bindingEvent(){
@@ -163,8 +165,10 @@ class dragonEditor{
 						$this.addQuote($target);
 					break;
 					case 'table':
+						$this.addTable($target);
 					break;
 					case 'codeblock':
+						$this.addCodeBlock($target);
 					break;
 				}
 				console.log(type);
@@ -315,11 +319,21 @@ class dragonEditor{
 					.replace('[child]', child);
 
 		target.insertAdjacentHTML('afterend', html);
-		target.nextElementSibling.childNodes[0].focus();
+		target.nextElementSibling.children[0].focus();
 	}
 
 	addQuote(target){
 		target.insertAdjacentHTML('afterend', this.HTMLQuote);
-		target.nextElementSibling.childNodes[0].focus();
+		target.nextElementSibling.children[0].focus();
+	}
+
+	addTable(target){
+		target.insertAdjacentHTML('afterend', this.HTMLTable);
+		target.nextElementSibling.querySelector('caption').focus();
+	}
+
+	addCodeBlock(target){
+		target.insertAdjacentHTML('afterend', this.HTMLCodeBlock);
+		target.nextElementSibling.children[0].focus();
 	}
 }
