@@ -123,7 +123,7 @@ class dragonEditor{
 
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
-				
+				//$el.getBoundingClientRect();
 			}
 		});
 
@@ -171,7 +171,6 @@ class dragonEditor{
 						$this.addCodeBlock($target);
 					break;
 				}
-				console.log(type);
 			});
 		});
 
