@@ -12,7 +12,7 @@
 .editor_section[data-status="editor"] .slider_wrap{transform:translateX(0)}
 .editor_section[data-status="options"] .slider_wrap{max-height:800px;transform:translateX(calc(-50% - 80px))}
 .editor_section[data-status="options"] ~ .btn_bottom:not(.btn_change_area),
-.editor_section[data-status="options"] .btn_content_list{display:none}
+.editor_section[data-status="options"] ~ .btn_content_list{display:none}
 
 .content_area{color:#555;font-size:16px;line-height:1.6}
 .content_area *{word-wrap:break-word}
@@ -43,6 +43,7 @@
 .content_area .item_quote .author:not(:empty)::after{content:' -'}
 .content_area .item_table_area{overflow-y:auto}
 .content_area .item_table{width:100%}
+.content_area .item_table caption{text-align:left}
 .content_area .item_table .size_auto{width:auto}
 .content_area .item_table .size_600{width:600px}
 .content_area .item_table .size_500{width:500px}
