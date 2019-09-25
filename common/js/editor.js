@@ -109,6 +109,12 @@ class dragonEditor{
 							}
 						});
 
+						$this.popBtns.forEach(function(btn){
+							if($btnPop !== btn){
+								btn.classList.remove('act');
+							}
+						});
+
 						if($pop !== false){
 							$pop.classList.add('act');
 						}
