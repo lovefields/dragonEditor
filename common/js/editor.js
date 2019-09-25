@@ -11,14 +11,14 @@ class dragonEditor{
 
 		$this.windowWidth = window.innerWidth;
 		$this.windowHeight = window.innerHeight;
-		$this.changePint = options.changePint === undefined ? 1120 : options.changePint;
+		$this.changePint = typeof options.changePint !== 'string' ? 1120 : options.changePint;
 
-		$this.stickerListName = options.stickerListName === undefined ? '.pop_sticker' : options.stickerListName;
-		$this.imageIconId = options.imageIconId === undefined ? '#icon_image' : options.imageIconId;
-		$this.youtubeIconId = options.youtubeIconId === undefined ? '#icon_youtube' : options.youtubeIconId;
-		$this.codepenIconId = options.codepenIconId === undefined ? '#icon_codepen' : options.codepenIconId;
-		$this.stickerSize = options.stickerSize === undefined ? '0 0 100 100' : options.stickerSize;
-		$this.stickerType = options.stickerType === undefined ? 'svg' : options.stickerType;
+		$this.stickerListName = typeof options.stickerListName !== 'string' ? '.pop_sticker' : options.stickerListName;
+		$this.imageIconId = typeof options.imageIconId !== 'string' ? '#icon_image' : options.imageIconId;
+		$this.youtubeIconId = typeof options.youtubeIconId !== 'string' ? '#icon_youtube' : options.youtubeIconId;
+		$this.codepenIconId = typeof options.codepenIconId !== 'string' ? '#icon_codepen' : options.codepenIconId;
+		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
+		$this.stickerType = typeof options.stickerType !== 'string' ? 'svg' : options.stickerType;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -43,41 +43,6 @@ class dragonEditor{
 		$this.HTMLList = '<[tag] [type] class="item item_list">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
-	}
-
-	checkOptionElement(name, defaultName, type = 'single'){
-		let $item;
-		if(type ===  'single'){
-			$item = name === undefined ? this.getEl(defaultName) : this.getEl(name);
-		}else{
-			$item = name === undefined ? this.getElList(defaultName) : this.getElList(name);
-		}
-
-		if($item === false){
-			console.error('Can not find Element : ' + name);
-		}else{
-			return $item;
-		}
-	}
-
-	getEl(name){
-		let $el = document.querySelector(name);
-
-		if($el === null){
-			return false;
-		}else{
-			return $el;
-		}
-	}
-
-	getElList(name){
-		let $el = document.querySelectorAll(name);
-
-		if($el.length < 1){
-			return false;
-		}else{
-			return $el;
-		}
 	}
 
 	bindingEvent(){
@@ -260,6 +225,41 @@ class dragonEditor{
 			$this.windowHeight = window.innerHeight;
 			return;
 		});
+	}
+
+	checkOptionElement(name, defaultName, type = 'single'){
+		let $item;
+		if(type ===  'single'){
+			$item = typeof name !== 'string' ? this.getEl(defaultName) : this.getEl(name);
+		}else{
+			$item = typeof name !== 'string' ? this.getElList(defaultName) : this.getElList(name);
+		}
+
+		if($item === false){
+			console.error('Can not find Element : ' + name);
+		}else{
+			return $item;
+		}
+	}
+
+	getEl(name){
+		let $el = document.querySelector(name);
+
+		if($el === null){
+			return false;
+		}else{
+			return $el;
+		}
+	}
+
+	getElList(name){
+		let $el = document.querySelectorAll(name);
+
+		if($el.length < 1){
+			return false;
+		}else{
+			return $el;
+		}
 	}
 
 	findParent($el, name){
