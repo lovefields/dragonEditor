@@ -249,6 +249,13 @@ class dragonEditor{
 		if($linkCheckBtn !== false){
 			$linkCheckBtn.addEventListener('click', function(){
 				let url = $this.getEl($this.popLinkName + ' .url').value;
+
+				//fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://archive.org/')}`)
+				//.then(response => {
+				//	if (response.ok) return response.json()
+				//	throw new Error('Network response was not ok.')
+				//})
+				//.then(data => console.log(data.contents));
 			});
 		}else{
 			console.warn('We need link check btn from ' + $this.popLinkName);
