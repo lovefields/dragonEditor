@@ -18,9 +18,10 @@ class dragonEditor{
 		$this.youtubeIconId = typeof options.youtubeIconId !== 'string' ? '#icon_youtube' : options.youtubeIconId;
 		$this.codepenIconId = typeof options.codepenIconId !== 'string' ? '#icon_codepen' : options.codepenIconId;
 		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
-		$this.stickerType = typeof options.stickerType !== 'string' ? 'svg' : options.stickerType;
+		$this.stickerType = options.stickerType === 'image' ? 'image' : 'svg';
 		$this.contentAreaName = typeof options.contentAreaName !== 'string' ? '.content_area' : options.contentAreaName;
 		$this.popOptionsName = typeof options.popOptionsName !== 'string' ? '.pop_options' : options.popOptionsName;
+		$this.popLinkName = typeof options.popLinkName !== 'string' ? '.pop_link_box' : options.popLinkName;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -40,7 +41,7 @@ class dragonEditor{
 
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
 		$this.HTMLBtn = '<button class="btn" data-type="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
-		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
+		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
 		$this.HTMLList = '<[tag] [type] class="item item_list">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
@@ -112,7 +113,9 @@ class dragonEditor{
 
 			if($target !== false){
 				let offset = $target.getBoundingClientRect();
-				$this.openOptionPop(offset);
+				let type = $target.dataset['type']
+				$this.openOptionPop(offset, type);
+				console.log("up");
 			}
 		});
 
@@ -127,12 +130,13 @@ class dragonEditor{
 
 				if($target !== false){
 					let offset = $target.getBoundingClientRect();
-					$this.openOptionPop(offset);
+					let type = $target.dataset['type']
+					$this.openOptionPop(offset, type);
 				}
 			}
 		});
 
-		$this.contentArea.addEventListener('mouseleave', function(e){
+		$this.editorSection.addEventListener('mouseleave', function(e){
 			if($this.windowWidth > $this.changePint){
 				$this.popOptions.classList.remove('act');
 			}
@@ -232,7 +236,7 @@ class dragonEditor{
 					$el.removeAttribute('style');
 					$el.classList.toggle('act');
 
-					if(target === $this.stickerListName){
+					if(target === $this.stickerListName || target === $this.popLinkName){
 						$this.contentAddList.classList.remove('act');
 					}
 				}else{
@@ -240,6 +244,27 @@ class dragonEditor{
 				}
 			});
 		});
+
+		let $linkCheckBtn = $this.getEl($this.popLinkName + ' .btn_check');
+		if($linkCheckBtn !== false){
+			$linkCheckBtn.addEventListener('click', function(){
+				let url = $this.getEl($this.popLinkName + ' .url').value;
+			});
+		}else{
+			console.warn('We need link check btn from ' + $this.popLinkName);
+		}
+
+
+
+
+
+
+
+
+
+
+
+
 
 		window.addEventListener('resize', function(){
 			$this.windowWidth = window.innerWidth;
@@ -353,6 +378,10 @@ class dragonEditor{
 		$target.nextElementSibling.children[0].focus();
 	}
 
+	addLink($target){
+		
+	}
+
 	getLastSetOrFocus($target){
 		let $activeEl = document.activeElement;
 
@@ -365,8 +394,11 @@ class dragonEditor{
 		}
 	}
 
-	openOptionPop(offset){
+	openOptionPop(offset, type){
 		let top = offset.top + offset.height + 10;
+
+		console.log(type);
+
 		this.popOptions.classList.add('act');
 		this.popOptions.style.cssText = 'transform:translate(-50%, '+ top +'px)';
 	}

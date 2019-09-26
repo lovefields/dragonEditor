@@ -27,7 +27,7 @@
 .content_area .item:not(.item_codeblock):hover{background:#f4f4f4}
 .content_area .title{height:50px;padding:0 10px;margin-bottom:50px;border-bottom:1px solid #e5e5e5;font-size:24px;font-weight:bold;line-height:50px}
 .content_area .title:empty::after{display:inline;content:'Title';color:#999}
-.content_area .sticker{display:block;max-width:100px;margin:0 auto}
+.content_area .item_sticker{display:block;max-width:100px;margin:0 auto}
 .content_area .item_list{padding-left:20px}
 .content_area ul.item_list,
 .content_area ul.item_list li{list-style:disc}
@@ -318,6 +318,8 @@
 .pop_history::after{display:block;content:'';position:absolute;top:100%;left:50%;width:0;height:0;margin-left:-6px;border:6px solid transparent;border-top-color:#999;z-index:10}
 .pop_history .btn_temp{width:100%;padding:3px 0;font-size:14px;text-align:center}
 .pop_history .btn_temp:hover{background:#f4f4f4}
+
+.pop_link_box{top:50%;left:50%;width:400px;padding:10px;background:#fff;border:1px solid #999;border-radius:5px;transform:translate(-50%, -50%)}
 
 @keyframes loding{
 	25%{content:'Loding.'}
