@@ -3,12 +3,12 @@
  - Author : Lovefield
  - Co-Author : hwhinowa
  - Support browser
-    - Chrome 49+
-    - Safari 11+
-    - Firefox 44+
+    - Chrome 53+
+    - Safari 13+
+    - Firefox 63+
     - Edge 18+ (44+)
     - IOS 11+
-    - Android 6+
+    - Android 7+
  - License : MIT
  - Version : 0.1
  - Using Plugin : highlight.js

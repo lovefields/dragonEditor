@@ -284,7 +284,7 @@
 .pop_content_list .btn .icon{display:inline-block;width:30px;margin-right:10px;vertical-align:middle}
 .pop_content_list .icon .path{fill:#555}
 
-.pop_options{position:absolute;top:0;left:50px;height:30px;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25)}
+.pop_options{top:0;left:50%;height:30px;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25)}
 .pop_options .icon{height:20px;vertical-align:middle}
 .pop_options .icon .path{fill:#555}
 .pop_options .item{display:block;float:left;height:30px;padding:0 8px;border-right:1px solid #ccc;line-height:30px}

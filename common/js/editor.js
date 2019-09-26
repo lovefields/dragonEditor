@@ -20,24 +20,23 @@ class dragonEditor{
 		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
 		$this.stickerType = typeof options.stickerType !== 'string' ? 'svg' : options.stickerType;
 		$this.contentAreaName = typeof options.contentAreaName !== 'string' ? '.content_area' : options.contentAreaName;
+		$this.popOptionsName = typeof options.popOptionsName !== 'string' ? '.pop_options' : options.popOptionsName;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
 		$this.contentArea = $this.checkOptionElement(options.contentArea, '.content_area');
 		$this.contentAddList = $this.checkOptionElement(options.contentAddList, '.pop_content_list');
 		$this.popLang = $this.checkOptionElement(options.popLang, '.pop_lang');
-
-		$this.uploadForm = $this.checkOptionElement(options.uploadForm, '.file_uploader');
+		$this.popBgArea = $this.checkOptionElement(options.popBgArea, '.pop_bg');
+		$this.popOptions = $this.checkOptionElement(options.popOptions, '.pop_options');
+		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
 		$this.fileInput = $this.checkOptionElement(options.fileInput, '.file_check');
-
+		$this.uploadForm = $this.checkOptionElement(options.uploadForm, '.file_uploader');
 		$this.contentDelBtn = $this.checkOptionElement(options.contentDelBtn, '.btn_del_content');
 		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi');
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
-		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
-		
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
-		$this.popBgArea = $this.checkOptionElement(options.popBgArea, '.pop_bg');
-		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
+		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
 		$this.HTMLBtn = '<button class="btn" data-type="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
@@ -68,7 +67,9 @@ class dragonEditor{
 
 						$popEl.forEach(function(item){
 							if($btnPop === false){
-								item.classList.remove('act');
+								if(!item.classList.contains($this.popOptionsName.substr(1))){
+									item.classList.remove('act');
+								}
 							}else{
 								let name = $btnPop.dataset['target'];
 
@@ -107,8 +108,12 @@ class dragonEditor{
 		});
 
 		$this.contentArea.addEventListener('mouseup', function(e){
-			console.log('up');
-			console.log(e.target);
+			let $target = $this.getLastSetOrFocus(e.target);
+
+			if($target !== false){
+				let offset = $target.getBoundingClientRect();
+				$this.openOptionPop(offset);
+			}
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
@@ -116,15 +121,27 @@ class dragonEditor{
 			console.log(e.target);
 		});
 
+		$this.contentArea.addEventListener('mouseover', function(e){
+			if($this.windowWidth > $this.changePint){
+				let $target = $this.getLastSetOrFocus(e.target);
+
+				if($target !== false){
+					let offset = $target.getBoundingClientRect();
+					$this.openOptionPop(offset);
+				}
+			}
+		});
+
+		$this.contentArea.addEventListener('mouseleave', function(e){
+			if($this.windowWidth > $this.changePint){
+				$this.popOptions.classList.remove('act');
+			}
+		});
+
+		// key event control
 		$this.contentArea.addEventListener('keydown', function(e){
 			console.log('keydown');
 			console.log(e.target);
-		});
-
-		$this.contentArea.addEventListener('mouseover', function(e){
-			if($this.windowWidth > $this.changePint){
-				//$el.getBoundingClientRect();
-			}
 		});
 
 		// content add event
@@ -288,51 +305,69 @@ class dragonEditor{
 		this.lodingArea.classList.remove('act');
 	}
 
-	addTextBlock(target, content = ''){
+	addTextBlock($target, content = ''){
 		let html = this.HTMLTextBlock.replace('[content]', content);
 
-		target.insertAdjacentHTML('afterend', html);
-		target.nextElementSibling.focus();
+		$target.insertAdjacentHTML('afterend', html);
+		$target.nextElementSibling.focus();
 	}
 
-	addBtn(target, icon, type, text){
+	addBtn($target, icon, type, text){
 		let html = this.HTMLBtn.replace(/\[icon_id\]/g, icon)
 					.replace(/\[type\]/g, type)
 					.replace(/\[text\]/g, text);
 
-		target.insertAdjacentHTML('afterend', html);
+		$target.insertAdjacentHTML('afterend', html);
 	}
 
-	addSticker(target, url, size, type){
+	addSticker($target, url, size, type){
 		let html = this.HTMLSvgSticker.replace(/\[url\]/g, url)
 					.replace(/\[size\]/g, size);
 
-		target.insertAdjacentHTML('afterend', html);
+		$target.insertAdjacentHTML('afterend', html);
 	}
 
-	addList(target, tag, type = null, content = ''){
+	addList($target, tag, type = null, content = ''){
 		let attribute = type === null ? '' : 'type="'+ type +'"';
 		let child = this.HTMLChildList.replace(/\[content\]/g, content);
 		let html = this.HTMLList.replace(/\[tag\]/g, tag)
 					.replace('[type]', attribute)
 					.replace('[child]', child);
 
-		target.insertAdjacentHTML('afterend', html);
-		target.nextElementSibling.children[0].focus();
+		$target.insertAdjacentHTML('afterend', html);
+		$target.nextElementSibling.children[0].focus();
 	}
 
-	addQuote(target){
-		target.insertAdjacentHTML('afterend', this.HTMLQuote);
-		target.nextElementSibling.children[0].focus();
+	addQuote($target){
+		$target.insertAdjacentHTML('afterend', this.HTMLQuote);
+		$target.nextElementSibling.children[0].focus();
 	}
 
-	addTable(target){
-		target.insertAdjacentHTML('afterend', this.HTMLTable);
-		target.nextElementSibling.querySelector('caption').focus();
+	addTable($target){
+		$target.insertAdjacentHTML('afterend', this.HTMLTable);
+		$target.nextElementSibling.querySelector('caption').focus();
 	}
 
-	addCodeBlock(target){
-		target.insertAdjacentHTML('afterend', this.HTMLCodeBlock);
-		target.nextElementSibling.children[0].focus();
+	addCodeBlock($target){
+		$target.insertAdjacentHTML('afterend', this.HTMLCodeBlock);
+		$target.nextElementSibling.children[0].focus();
+	}
+
+	getLastSetOrFocus($target){
+		let $activeEl = document.activeElement;
+
+		if($activeEl.constructor.name !== 'HTMLBodyElement'){
+			return this.findParent($activeEl, 'item');
+		}else{
+			let $item = this.findParent($target, 'item');
+			let $el = $item === false ? this.findParent($target, 'btn') : $item;
+			return $el;
+		}
+	}
+
+	openOptionPop(offset){
+		let top = offset.top + offset.height + 10;
+		this.popOptions.classList.add('act');
+		this.popOptions.style.cssText = 'transform:translate(-50%, '+ top +'px)';
 	}
 }
