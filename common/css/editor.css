@@ -284,10 +284,10 @@
 .pop_content_list .btn .icon{display:inline-block;width:30px;margin-right:10px;vertical-align:middle}
 .pop_content_list .icon .path{fill:#555}
 
-.pop_options{top:0;left:50%;height:30px;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25)}
+.pop_options{top:0;left:50%;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25)}
 .pop_options .icon{height:20px;vertical-align:middle}
 .pop_options .icon .path{fill:#555}
-.pop_options .item{display:block;float:left;height:30px;padding:0 8px;border-right:1px solid #ccc;line-height:30px}
+.pop_options .col{display:block;float:left;height:30px;padding:0 8px;border-right:1px solid #ccc;line-height:30px}
 .pop_options .select_area{position:relative;padding:0}
 .pop_options .select_area::before{display:block;content:'';position:absolute;top:50%;right:6px;width:4px;height:4px;margin-top:-4px;border:1px solid transparent;border-bottom-color:#555;border-right-color:#555;transform:rotate(45deg)}
 .pop_options .select{height:30px;padding:0 20px 0 10px;background:transparent;border:0;line-height:30px;-moz-appearance:none;-webkit-appearance:none}
@@ -319,7 +319,13 @@
 .pop_history .btn_temp{width:100%;padding:3px 0;font-size:14px;text-align:center}
 .pop_history .btn_temp:hover{background:#f4f4f4}
 
-.pop_link_box{top:50%;left:50%;width:400px;padding:10px;background:#fff;border:1px solid #999;border-radius:5px;transform:translate(-50%, -50%)}
+.pop_link_box{top:50%;left:50%;width:400px;padding:10px;background:#fff;border:1px solid #999;border-radius:5px;text-align:center;transform:translate(-50%, -50%)}
+.pop_link_box .top{font-size:0}
+.pop_link_box .url{width:300px;height:30px;padding:0 10px;font-size:14px;box-sizing:border-box}
+.pop_link_box .btn_check{width:70px;height:30px;font-size:14px;line-height:30px}
+.pop_link_box .view{padding:25px 0}
+.pop_link_box .btn_area .btn{width:50px;font-size:14px}
+.pop_link_box .btn_submit[disabled]{color:#999;cursor:default}
 
 @keyframes loding{
 	25%{content:'Loding.'}

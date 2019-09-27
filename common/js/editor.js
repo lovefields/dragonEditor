@@ -47,6 +47,8 @@ class dragonEditor{
 		$this.HTMLQuote = '<blockquote class="item item_quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
+
+		$this.linkBoxData = {};
 	}
 
 	bindingEvent(){
@@ -248,14 +250,78 @@ class dragonEditor{
 		let $linkCheckBtn = $this.getEl($this.popLinkName + ' .btn_check');
 		if($linkCheckBtn !== false){
 			$linkCheckBtn.addEventListener('click', function(){
+				let json = {};
 				let url = $this.getEl($this.popLinkName + ' .url').value;
+				let urlReg = new RegExp('(https?:\\/\\/(\\w*:\\w*@)?)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 
-				//fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://archive.org/')}`)
-				//.then(response => {
-				//	if (response.ok) return response.json()
-				//	throw new Error('Network response was not ok.')
-				//})
-				//.then(data => console.log(data.contents));
+				if(urlReg.test(url)){
+					fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
+					.then(response => {
+						if (response.ok) return response.json();
+						throw new Error('Network response was not ok.')
+					})
+					.then((data) => {
+						let contents = data.contents;
+						
+						if(contents !== null){
+							let regTitleCheck = new RegExp('property=\\"og:title\\"', 'g');
+							let regTitle01 = new RegExp('([^])*\\<title>([^"]*)<\\/title>([^]*)', 'g');
+							let regTitle02 = new RegExp('([^])*\\<meta property=\\"og:title\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+							let regImgCheck = new RegExp('property=\\"og:image\\"', 'g');
+							let regImg01 = new RegExp('([^])*\\<meta name=\\"image\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+							let regImg02 = new RegExp('([^])*\\<meta property=\\"og:image\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+							let regDecripCheck = new RegExp('property=\\"og:description\\"', 'g');
+							let regDecrip01 = new RegExp('([^])*\\<meta name=\\"description\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+							let regDecrip02 = new RegExp('([^])*\\<meta property=\\"og:description\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+
+							if(regTitleCheck.test(contents)){
+								json.title = contents.replace(regTitle02, '$2');
+							}else{
+								json.title = contents.replace(regTitle01, '$2');
+							}
+
+							if(regImgCheck.test(contents)){
+								json.img = contents.replace(regImg02, '$2');
+							}else{
+								let img = contents.replace(regImg01, '$2');
+
+								if(img.length > 500){
+									json.img = '';
+								}else{
+									json.img = img;
+								}
+							}
+
+							if(regDecripCheck.test(contents)){
+								json.description = contents.replace(regDecrip02, '$2');
+							}else{
+								let description = contents.replace(regDecrip01, '$2');
+
+								if(description.length > 500){
+									json.description = '';
+								}else{
+									json.description = description;
+								}
+							}
+
+							if (url.indexOf("://") > -1) {
+								json.domain = url.split('/')[2];
+							}
+							else {
+								json.domain = url.split('/')[0];
+							}
+						
+							json.domain = json.domain.split(':')[0];
+
+							$this.linkBoxData = json;
+						}else{
+							$this.getEl($this.popLinkName + ' .btn_submit').setAttribute('disabled', 'true');
+							$this.getEl($this.popLinkName + ' .view').innerHTML = '데이터를 가져올 수 없습니다.';
+						}
+					});
+				}else{
+					alert('URL을 정확히 입력하세요.');
+				}
 			});
 		}else{
 			console.warn('We need link check btn from ' + $this.popLinkName);
@@ -391,14 +457,16 @@ class dragonEditor{
 
 	getLastSetOrFocus($target){
 		let $activeEl = document.activeElement;
+		let $item, $btn = false;
 
 		if($activeEl.constructor.name !== 'HTMLBodyElement'){
-			return this.findParent($activeEl, 'item');
+			$item = this.findParent($activeEl, 'item');
 		}else{
-			let $item = this.findParent($target, 'item');
-			let $el = $item === false ? this.findParent($target, 'btn') : $item;
-			return $el;
+			$item = this.findParent($target, 'item');
+			$btn = $item === false ? this.findParent($target, 'btn') : $item;
 		}
+		let $el = $item === false ? $btn : $item;
+		return $el;
 	}
 
 	openOptionPop(offset, type){
