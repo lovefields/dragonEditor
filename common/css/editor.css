@@ -239,7 +239,13 @@
 .options_area .raidobox{margin:10px 10px 0 0}
 .options_area .btn_submit{display:block;width:120px;height:50px;margin:20px auto 0;background:#38b7ea;color:#fff;border:0;border-radius:5px;font-size:18px}
 
-
+.link_box{display:block;width:300px;margin:0 auto;background:#fff;color:#555;border:1px solid #999;border-radius:5px}
+.link_box .img_area{position:relative;width:100%;height:150px;border-radius:5px 5px 0 0;overflow:hidden}
+.link_box .img_area .img{position:absolute;top:0;left:50%;width:auto;height:100%;transform:translateX(-50%)}
+.link_box .text_area{padding:10px;border-top:1px solid #999}
+.link_box .title{font-size:14px;text-align:left}
+.link_box .description{padding:5px 0;color:#888;font-size:12px;text-align:left}
+.link_box .domain{color:#ccc;font-size:12px;text-align:right}
 
 
 

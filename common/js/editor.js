@@ -47,6 +47,7 @@ class dragonEditor{
 		$this.HTMLQuote = '<blockquote class="item item_quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
+		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="link_box"><div class="img_area"><img src="[img_src]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="title ellipsis">[title]</p><p class="description ellipsis">[description]</p><p class="domain">[domain]</p></div></a>';
 
 		$this.linkBoxData = {};
 	}
@@ -251,10 +252,14 @@ class dragonEditor{
 		if($linkCheckBtn !== false){
 			$linkCheckBtn.addEventListener('click', function(){
 				let json = {};
+				let $viewEl = $this.getEl($this.popLinkName + ' .view');
+				let $submitBtn = $this.getEl($this.popLinkName + ' .btn_submit');
 				let url = $this.getEl($this.popLinkName + ' .url').value;
 				let urlReg = new RegExp('(https?:\\/\\/(\\w*:\\w*@)?)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 
 				if(urlReg.test(url)){
+					json.url = url;
+
 					fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
 					.then(response => {
 						if (response.ok) return response.json();
@@ -314,9 +319,11 @@ class dragonEditor{
 							json.domain = json.domain.split(':')[0];
 
 							$this.linkBoxData = json;
+							$submitBtn.removeAttribute('disabled');
+							$this.addLinkBox($viewEl, json, 'afterbegin');
 						}else{
-							$this.getEl($this.popLinkName + ' .btn_submit').setAttribute('disabled', 'true');
-							$this.getEl($this.popLinkName + ' .view').innerHTML = '데이터를 가져올 수 없습니다.';
+							$submitBtn.setAttribute('disabled', 'true');
+							$viewEl.innerHTML = '데이터를 가져올 수 없습니다.';
 						}
 					});
 				}else{
@@ -451,8 +458,17 @@ class dragonEditor{
 		$target.nextElementSibling.children[0].focus();
 	}
 
-	addLink($target){
-		
+	addLinkBox($target, data, position = 'afterend'){
+		if(data.img === ''){
+			data.img = './common/img/img_cover.png';
+		}
+		let html = this.HTMLLinkBox.replace('[url]', data.url)
+					.replace('[img_src]', data.img)
+					.replace('[title]', data.title)
+					.replace('[description]', data.description)
+					.replace('[domain]', data.domain);
+
+		$target.insertAdjacentHTML(position, html);
 	}
 
 	getLastSetOrFocus($target){
