@@ -13,15 +13,15 @@ class dragonEditor{
 		$this.windowHeight = window.innerHeight;
 		$this.changePint = typeof options.changePint !== 'string' ? 1120 : options.changePint;
 
-		$this.stickerListName = typeof options.stickerListName !== 'string' ? '.pop_sticker' : options.stickerListName;
+		$this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
 		$this.imageIconId = typeof options.imageIconId !== 'string' ? '#icon_image' : options.imageIconId;
 		$this.youtubeIconId = typeof options.youtubeIconId !== 'string' ? '#icon_youtube' : options.youtubeIconId;
 		$this.codepenIconId = typeof options.codepenIconId !== 'string' ? '#icon_codepen' : options.codepenIconId;
 		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
 		$this.stickerType = options.stickerType === 'image' ? 'image' : 'svg';
-		$this.contentAreaName = typeof options.contentAreaName !== 'string' ? '.content_area' : options.contentAreaName;
-		$this.popOptionsName = typeof options.popOptionsName !== 'string' ? '.pop_options' : options.popOptionsName;
-		$this.popLinkName = typeof options.popLinkName !== 'string' ? '.pop_link_box' : options.popLinkName;
+		$this.contentAreaName = typeof options.contentArea !== 'string' ? '.content_area' : options.contentArea;
+		$this.popOptionsName = typeof options.popOptions !== 'string' ? '.pop_options' : options.popOptions;
+		$this.popLinkName = typeof options.popLink !== 'string' ? '.pop_link_box' : options.popLink;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -30,6 +30,7 @@ class dragonEditor{
 		$this.popLang = $this.checkOptionElement(options.popLang, '.pop_lang');
 		$this.popBgArea = $this.checkOptionElement(options.popBgArea, '.pop_bg');
 		$this.popOptions = $this.checkOptionElement(options.popOptions, '.pop_options');
+		$this.popLink = $this.checkOptionElement(options.popLink, '.pop_link_box');
 		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
 		$this.fileInput = $this.checkOptionElement(options.fileInput, '.file_check');
 		$this.uploadForm = $this.checkOptionElement(options.uploadForm, '.file_uploader');
@@ -37,17 +38,18 @@ class dragonEditor{
 		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi');
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
+		$this.popCloseBtns = $this.checkOptionElement(options.popCloseBtns, '.btn_pop_close', 'multi');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 
-		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true">[content]</p>';
-		$this.HTMLBtn = '<button class="btn" data-type="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
+		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true" data-type="text">[content]</p>';
+		$this.HTMLBtn = '<button class="btn" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
 		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
-		$this.HTMLList = '<[tag] [type] class="item item_list">[child]</[tag]>';
+		$this.HTMLList = '<[tag] [type] class="item item_list" data-type="list">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
-		$this.HTMLQuote = '<blockquote class="item item_quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
+		$this.HTMLQuote = '<blockquote class="item item_quote" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
-		$this.HTMLCodeBlock = '<pre class="item item_codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
-		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="link_box"><div class="img_area"><img src="[img_src]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="title ellipsis">[title]</p><p class="description ellipsis">[description]</p><p class="domain">[domain]</p></div></a>';
+		$this.HTMLCodeBlock = '<pre class="item item_codeblock" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
+		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
 
 		$this.linkBoxData = {};
 	}
@@ -112,13 +114,20 @@ class dragonEditor{
 		});
 
 		$this.contentArea.addEventListener('mouseup', function(e){
-			let $target = $this.getLastSetOrFocus(e.target);
+			if(e.button === 0){
+				let $target = $this.getLastSetOrFocus(e.target);
 
-			if($target !== false){
-				let offset = $target.getBoundingClientRect();
-				let type = $target.dataset['type']
-				$this.openOptionPop(offset, type);
-				console.log("up");
+				if($target !== false){
+					let offset = $target.getBoundingClientRect();
+					let type = $target.dataset['type'];
+					let children = $this.getElList($this.contentAreaName + ' > *');
+
+					children.forEach(function($child){
+						$child.classList.remove('lastset');
+					});
+					$target.classList.add('lastset');
+					$this.openOptionPop(offset, type);
+				}
 			}
 		});
 
@@ -133,7 +142,7 @@ class dragonEditor{
 
 				if($target !== false){
 					let offset = $target.getBoundingClientRect();
-					let type = $target.dataset['type']
+					let type = $target.dataset['type'];
 					$this.openOptionPop(offset, type);
 				}
 			}
@@ -194,6 +203,13 @@ class dragonEditor{
 					case 'codeblock':
 						$this.addCodeBlock($target);
 					break;
+					case 'link':
+						$this.addLinkBox($target, $this.linkBoxData);
+						$this.popLink.classList.remove('act');
+						$this.popLink.querySelector('.url').value = '';
+						$this.popLink.querySelector('.view').innerHTML = '';
+						$this.popLink.querySelector('.btn_submit').setAttribute('disabled', 'true');
+					break;
 				}
 			});
 		});
@@ -228,8 +244,8 @@ class dragonEditor{
 		});
 
 		// pop btns work
-		$this.popBtns.forEach(function(btn){
-			btn.addEventListener('click', function(){
+		$this.popBtns.forEach(function($btn){
+			$btn.addEventListener('click', function(){
 				let status = $this.editorSection.dataset['status'];
 				let target = this.dataset['target'];
 				let $el = $this.getEl(target);
@@ -248,6 +264,21 @@ class dragonEditor{
 			});
 		});
 
+		$this.popCloseBtns.forEach(function($btn){
+			$btn.addEventListener('click', function(){
+				let status = $this.editorSection.dataset['status'];
+				let target = this.dataset['target'];
+				let $el = $this.getEl(target);
+
+				if(status !== 'options'){
+					$el.removeAttribute('style');
+					$el.classList.toggle('act');
+				}else{
+					return false;
+				}
+			});
+		});
+
 		let $linkCheckBtn = $this.getEl($this.popLinkName + ' .btn_check');
 		if($linkCheckBtn !== false){
 			$linkCheckBtn.addEventListener('click', function(){
@@ -255,11 +286,10 @@ class dragonEditor{
 				let $viewEl = $this.getEl($this.popLinkName + ' .view');
 				let $submitBtn = $this.getEl($this.popLinkName + ' .btn_submit');
 				let url = $this.getEl($this.popLinkName + ' .url').value;
-				let urlReg = new RegExp('(https?:\\/\\/(\\w*:\\w*@)?)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
+				let urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 
 				if(urlReg.test(url)){
 					json.url = url;
-
 					fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
 					.then(response => {
 						if (response.ok) return response.json();
@@ -309,10 +339,9 @@ class dragonEditor{
 								}
 							}
 
-							if (url.indexOf("://") > -1) {
+							if(url.indexOf("://") > -1){
 								json.domain = url.split('/')[2];
-							}
-							else {
+							}else{
 								json.domain = url.split('/')[0];
 							}
 						
@@ -327,7 +356,7 @@ class dragonEditor{
 						}
 					});
 				}else{
-					alert('URL을 정확히 입력하세요.');
+					alert('URL을 정확히 입력하세요.\nhttp 혹은 https 부터 입력하셔야 합니다.');
 				}
 			});
 		}else{
@@ -463,7 +492,7 @@ class dragonEditor{
 			data.img = './common/img/img_cover.png';
 		}
 		let html = this.HTMLLinkBox.replace('[url]', data.url)
-					.replace('[img_src]', data.img)
+					.replace('[imgSrc]', data.img)
 					.replace('[title]', data.title)
 					.replace('[description]', data.description)
 					.replace('[domain]', data.domain);
