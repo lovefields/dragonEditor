@@ -102,10 +102,15 @@ class dragonEditor{
 							let x = e.clientX;
 							let y = e.clientY;
 							let $list = $this.getEl('.pop_content_list');
+							let listHeight = $list.offsetHeight;
 
 							if($area !== false){
-								$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
 								$list.classList.add('act');
+								if(listHeight > $this.windowHeight - y){
+									$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ ($this.windowHeight - listHeight - 40) + 'px)';
+								}else{
+									$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
+								}
 							}
 						}
 					break;
@@ -147,6 +152,20 @@ class dragonEditor{
 				}
 			}
 		});
+
+		// mobile scroll event
+		if($this.windowWidth < $this.changePint){
+			window.addEventListener('scroll', function(){
+				let $target = $this.getLastSetOrFocus($this.contentArea);
+
+				if($target !== false){
+					let offset = $target.getBoundingClientRect();
+					let type = $target.dataset['type'];
+					$this.openOptionPop(offset, type);
+				}
+			});
+		}
+	
 
 		$this.editorSection.addEventListener('mouseleave', function(e){
 			if($this.windowWidth > $this.changePint){
