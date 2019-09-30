@@ -395,54 +395,59 @@
 		</div>
 
 		<div class="pop pop_options clearfix" data-type="text">
-			<label class="col select_area">
+			<label class="col select_area" data-group="text,list,table,codeblock">
 				<select class="select select_font_size">
 					<option value="none">Default</option>
 				</select>
 			</label>
-			<label class="col select_area">
+			<label class="col select_area" data-group="text,list,table">
 				<select class="select select_color">
-					<option value="none">#555555-Black</option>
+					<option value="none">Color(Black - #555)</option>
 				</select>
 			</label>
-			<label class="col select_area">
+			<label class="col select_area" data-group="text,list,table">
+				<select class="select select_bg">
+					<option value="none">BG(Black - #555)</option>
+				</select>
+			</label>
+			<label class="col select_area" data-group="text,list,table">
 				<select class="select select_font_align">
 					<option value="none">Align</option>
 				</select>
 			</label>
-			<button class="col btn_bold blind">
+			<button class="col btn_bold blind" data-group="text,list,table">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_bold" href="#icon_bold" />
 				</svg>
 				굵게
 			</button>
-			<button class="col btn_italic blind">
+			<button class="col btn_italic blind" data-group="text,list,table">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_italic" href="#icon_italic" />
 				</svg>
 				기울게
 			</button>
-			<button class="col btn_underline blind">
+			<button class="col btn_underline blind" data-group="text,list,table">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_underline" href="#icon_underline" />
 				</svg>
 				밑줄
 			</button>
-			<button class="col btn_strike blind">
+			<button class="col btn_strike blind" data-group="text,list,table">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_strike" href="#icon_strike" />
 				</svg>
 				취소선
 			</button>
-			<button class="col btn_pop" data-target=".pop_text_link"><u>Link</u></button>
-			<button class="col btn_workblock blind">
+			<button class="col btn_pop" data-target=".pop_text_link" data-group="text,list,table"><u>Link</u></button>
+			<button class="col btn_workblock blind" data-group="text,list,table">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
 				</svg>
 				단어블럭
 			</button>
 		
-			<button class="col btn_del_content blind" data-target=".pop_content_list">
+			<button class="col btn_del_content blind" data-group="all">
 				<svg viewbox="0 0 50 50" class="icon">
 					<use class="path" xlink:href="#icon_delete" href="#icon_delete">
 				</svg>

@@ -105,7 +105,7 @@ class dragonEditor{
 
 							if($area !== false){
 								$list.classList.add('act');
-								let listHeight = $list.clientHeight;
+								let listHeight = $list.getBoundingClientRect().height;
 
 								if(y > $this.windowHeight - listHeight){
 									$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ ($this.windowHeight - listHeight - 40) + 'px)';
@@ -402,9 +402,6 @@ class dragonEditor{
 		window.addEventListener('resize', function(){
 			$this.windowWidth = window.innerWidth;
 			$this.windowHeight = window.innerHeight;
-
-			$this.contentDelBtn.removeAttribute('style');
-
 			return;
 		});
 	}
@@ -540,8 +537,10 @@ class dragonEditor{
 
 	openOptionPop(offset, type){
 		let top = offset.top + offset.height + 10;
+		let $child = this.popOptions.children;
+		let typeReg = new RegExp(type, 'i');
 
-		console.log(type);
+		console.log($child,type);
 
 		this.popOptions.classList.add('act');
 		this.popOptions.style.cssText = 'transform:translate(-50%, '+ top +'px)';
