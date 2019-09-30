@@ -31,7 +31,8 @@
 .content_area .item_list{padding-left:20px}
 .content_area ul.item_list,
 .content_area ul.item_list li{list-style:disc}
-.content_area ol[type='i'].item_list{padding-left:40px}
+.content_area ol[type='i'].item_list,
+.content_area ol[type='I'].item_list{padding-left:40px}
 .content_area .item_quote{text-align:center}
 .content_area .item_quote .text{font-size:18px}
 .content_area .item_quote .text::before{content:open-quote}
