@@ -294,7 +294,8 @@
 .pop_options{top:0;left:50%;background:#fff;border-radius:5px;box-shadow:0 0 5px rgba(0,0,0,0.25)}
 .pop_options .icon{height:20px;vertical-align:middle}
 .pop_options .icon .path{fill:#555}
-.pop_options .col{display:block;float:left;height:30px;padding:0 8px;border-right:1px solid #ccc;line-height:30px}
+.pop_options .col{display:none;float:left;height:30px;padding:0 8px;border-right:1px solid #ccc;line-height:30px}
+.pop_options .col.act{display:block}
 .pop_options .select_area{position:relative;padding:0}
 .pop_options .select_area::before{display:block;content:'';position:absolute;top:50%;right:6px;width:4px;height:4px;margin-top:-4px;border:1px solid transparent;border-bottom-color:#555;border-right-color:#555;transform:rotate(45deg)}
 .pop_options .select{height:30px;padding:0 20px 0 10px;background:transparent;border:0;line-height:30px;-moz-appearance:none;-webkit-appearance:none}
