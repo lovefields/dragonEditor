@@ -537,10 +537,26 @@ class dragonEditor{
 
 	openOptionPop(offset, type){
 		let top = offset.top + offset.height + 10;
-		let $child = this.popOptions.children;
+		let $child = this.popOptions.querySelectorAll('.col');
 		let typeReg = new RegExp(type, 'i');
 
-		console.log($child,type);
+		if($child !== null){
+			$child.forEach(function($col){
+				let type = $col.dataset['group'];
+
+				switch(true){
+					case type === 'all' :
+						$col.classList.add('act');
+					break;
+					case typeReg.test(type) === true :
+						$col.classList.add('act');
+					break;
+					case typeReg.test(type) === false :
+						$col.classList.remove('act');
+					break;
+				}
+			})
+		}
 
 		this.popOptions.classList.add('act');
 		this.popOptions.style.cssText = 'transform:translate(-50%, '+ top +'px)';
