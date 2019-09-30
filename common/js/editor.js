@@ -119,6 +119,13 @@ class dragonEditor{
 			}
 		});
 
+		// resize
+		window.addEventListener('resize', function(){
+			$this.windowWidth = window.innerWidth;
+			$this.windowHeight = window.innerHeight;
+			return;
+		});
+
 		$this.contentArea.addEventListener('mouseup', function(e){
 			if(e.button === 0){
 				let $target = $this.getLastSetOrFocus(e.target);
@@ -153,6 +160,12 @@ class dragonEditor{
 				if($target !== false){
 					let offset = $target.getBoundingClientRect();
 					let type = $target.dataset['type'];
+					let children = $this.getElList($this.contentAreaName + ' > *');
+
+					children.forEach(function($child){
+						$child.classList.remove('lastset');
+					});
+					$target.classList.add('lastset');
 					$this.openOptionPop(offset, type);
 				}
 			}
@@ -384,26 +397,37 @@ class dragonEditor{
 				}
 			});
 		}else{
-			console.warn('We need link check btn from ' + $this.popLinkName);
+			console.warn('We need link check button from ' + $this.popLinkName);
 		}
 
+		// delete content
+		$this.contentDelBtn.addEventListener('click', function(){
+			let $target = $this.contentArea.querySelector('.lastset');
 
+			if($target !== null){
+				$target.remove();
+				$this.popOptions.classList.remove('act');
+				let count = $this.contentArea.childElementCount;
 
-
-
-
-
-
-
-
-
-
-
-		window.addEventListener('resize', function(){
-			$this.windowWidth = window.innerWidth;
-			$this.windowHeight = window.innerHeight;
-			return;
+				if(count === 1){
+					$this.addTextBlock($this.contentArea, '', 'beforeend');
+				}
+			}else{
+				alert('선택된 요소가 없습니다.\n 다시 선택해보세요.');
+			}
 		});
+
+
+
+
+
+
+
+
+
+
+
+
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
@@ -460,10 +484,10 @@ class dragonEditor{
 		this.lodingArea.classList.remove('act');
 	}
 
-	addTextBlock($target, content = ''){
+	addTextBlock($target, content = '', position = 'afterend'){
 		let html = this.HTMLTextBlock.replace('[content]', content);
 
-		$target.insertAdjacentHTML('afterend', html);
+		$target.insertAdjacentHTML(position, html);
 		$target.nextElementSibling.focus();
 	}
 
@@ -536,7 +560,7 @@ class dragonEditor{
 	}
 
 	openOptionPop(offset, type){
-		let top = offset.top + offset.height + 10;
+		let top = offset.top + offset.height + 5;
 		let $child = this.popOptions.querySelectorAll('.col');
 		let typeReg = new RegExp(type, 'i');
 
