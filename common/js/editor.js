@@ -135,20 +135,23 @@ class dragonEditor{
 					let type = $target.dataset['type'];
 					let children = $this.getElList($this.contentAreaName + ' > *');
 
-					children.forEach(function($child){
-						$child.classList.remove('lastset');
-					});
-					$target.classList.add('lastset');
+					$this.setLastElement($target, children);
 					$this.openOptionPop(offset, type);
+
+					// 버튼 일경우 추가 동작
 
 					if($this.windowWidth < $this.changePint){
 						// lastset 된 엘리먼트와 옵션창이 모바일 화면에 들어오도록 스크롤 조절.
 					}
+
+
+					// 드레그 이벤트 언바인딩
 				}
 			}
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
+			// 드레그 이벤트 바인딩
 			console.log('down');
 			console.log(e.target);
 		});
@@ -162,28 +165,11 @@ class dragonEditor{
 					let type = $target.dataset['type'];
 					let children = $this.getElList($this.contentAreaName + ' > *');
 
-					children.forEach(function($child){
-						$child.classList.remove('lastset');
-					});
-					$target.classList.add('lastset');
+					$this.setLastElement($target, children);
 					$this.openOptionPop(offset, type);
 				}
 			}
 		});
-
-		// mobile scroll event
-		//if($this.windowWidth < $this.changePint){
-		//	window.addEventListener('scroll', function(){
-		//		let $target = $this.getLastSetOrFocus($this.contentArea);
-//
-		//		if($target !== false){
-		//			let offset = $target.getBoundingClientRect();
-		//			let type = $target.dataset['type'];
-		//			$this.openOptionPop(offset, type);
-		//		}
-		//	});
-		//}
-	
 
 		$this.editorSection.addEventListener('mouseleave', function(e){
 			if($this.windowWidth > $this.changePint){
@@ -557,6 +543,13 @@ class dragonEditor{
 		}
 		let $el = $item === false ? $btn : $item;
 		return $el;
+	}
+
+	setLastElement($target, children){
+		children.forEach(function($child){
+			$child.classList.remove('lastset');
+		});
+		$target.classList.add('lastset');
 	}
 
 	openOptionPop(offset, type){
