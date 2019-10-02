@@ -151,7 +151,7 @@ class dragonEditor{
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
-			// 드레그 이벤트 바인딩
+			// 드레그 이벤트 바인딩 및 2초뒤 실행
 			console.log('down');
 			console.log(e.target);
 		});
