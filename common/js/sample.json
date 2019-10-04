@@ -1,171 +1,140 @@
 {
-    "dragonEditor": {
-        "status": "editor||viewer",
-        "lang": "ko||en||jp",
-        "registerDate": "2019.10.09 00:00",
-        "editDate": "2019.12.09 23:59"
-    },
-    "objects": {
-        "0": {
-            "id": 0,
-            "type": "title",
-            "dataType": "text",
-            "class": ["title"],
-            "content": "Title content"
-        },
-        "1": {
-            "id": 1,
-            "type": "text",
-            "dataType": "text",
-            "textOptions": {
-                "fontSize": 16,
-                "color": "#555",
-                "bgColor": "#fff",
-                "fontAlign": "center",
-                "bold": false,
-                "italic": false,
-                "underline": false,
-                "calcelLine": false,
-                "wordBlock": false
-            },
-            "class": ["item"],
-            "content": "text content"
-        },
-        "2": {
-            "id": 2,
-            "type": "img",
-            "dataType": "image",
-            "class": ["image"],
-            "src": "#",
-            "alt": "my image"
-        },
-        "3": {
-            "id": 3,
-            "type": "video",
-            "dataType": "video",
-            "class": ["video"],
-            "url": "#"
-        },
-        "4": {
-            "id": 4,
-            "type": "code",
-            "dataType": "codepen",
-            "class": ["codepen"],
-            "url": "#"
-        },
-        "5": {
-            "id": 5,
-            "type": "list-bullet",
-            "dataType": "list",
-            "order": false,
-            "textOptions": {
-                "fontSize": 16,
-                "color": "#555",
-                "bgColor": "#fff",
-                "fontAlign": "center",
-                "listType": "upper-alpha",
-                "bold": false,
-                "italic": false,
-                "underline": false,
-                "calcelLine": false,
-                "wordBlock": false
-            },
-            "class": [
-                "item",
-                "item_list"
-            ],
-            "listNum": 3,
-            "listCon": [
-                "con1",
-                "con2",
-                "con3"
-            ]
-        },
-        "6": {
-            "id": 6,
-            "type": "list-number",
-            "dataType": "list",
-            "order": true,
-            "textOptions": {
-                "fontSize": 16,
-                "color": "#555",
-                "bgColor": "#fff",
-                "fontAlign": "center",
-                "listType": "upper-alpha",
-                "bold": false,
-                "italic": false,
-                "underline": false,
-                "calcelLine": false,
-                "wordBlock": false
-            },
-            "class": [
-                "item",
-                "item_list"
-            ],
-            "listNum": 4,
-            "listCon": [
-                "con1",
-                "con2",
-                "con3",
-                "con4"
-            ]
-        },
-        "7": {
-            "id": 7,
-            "type": "quote",
-            "dataType": "quote",
-            "class": [
-                "item",
-                "item_quote"
-            ],
-            "content": {
-                "class": "text",
-                "text": "quote content"
-            },
-            "author": {
-                "class": "author",
-                "text": "author name"
-            }
-        },
-        "8": {
-            "id": 8,
-            "type": "table",
-            "dataType": "table",
-            "textOptions": {
-                "fontSize": 16,
-                "color": "#555",
-                "bgColor": "#fff",
-                "fontAlign": "center",
-                "bold": false,
-                "italic": false,
-                "underline": false,
-                "calcelLine": false,
-                "wordBlock": false
-            },
-            "class": ["item", "item_table_area"],
-            "table": {
-                "colNum": 3,
-                "rowNum": 2,
-                "colSpan": [{
-                    "position": [1,1],
-                    "spanNum": 2
-                }],
-                "rowSpan": [{
-                    "position": [1,2],
-                    "spanNum": 2
-                }],
-                "content": [
-                    "con1-1",
-                    "con1-3",
-                    "con2-1",
-                    "con2-3"
-                ]
-            }
-        },
-        "9": {
-            "id": 9,
-            "type": "code",
-            "content": "text"
-        }
-    }
+	"ko" : [
+		{
+			"type" : "title",
+			"dataType" : null,
+			"isItem" : false,
+			"class" : ["title"],
+			"textContent" : ""
+		},
+		{
+			"type" : "text",
+			"dataType" : "text",
+			"isItem" : true,
+			"class" : ["item"],
+			"textContent" : ""
+		},
+		{
+			"type" : "image",
+			"dataType" : "img",
+			"isItem" : true,
+			"class" : ["item", "item_image"],
+			"hasWebp" : false,
+			"size" : 600,
+			"alt" : "",
+			"src" : "https://dico.me/img/upload/2019/20190822170137_004",
+			"defaultFormat" : "jpg"
+		},
+		{
+			"type" : "btn",
+			"dataType" : "btn",
+			"dataValue" : "image",
+			"icon" : {
+				"type" : "svg",
+				"viewBox" : "0 0 50 50",
+				"class" : ["icon"],
+				"url" : "#icon_image"
+			},
+			"textContent" : "Add on image"
+		},
+		{
+			"type" : "video",
+			"dataType" : "youtube",
+			"format" : "iframe",
+			"hasWebm" : false,
+			"src" : "https://www.youtube.com/embed/HRMpdT09WY0",
+			"options" : ["allow=\"accelerometer; encrypted-media; gyroscope; picture-in-picture\"","allowfullscreen"],
+			"class" : ["item", "item_video"]
+		},
+		{
+			"type" : "codepen",
+			"dataType" : "codepen",
+			"src" : "https://codepen.io/lovefield/embed/PzLgav?height=673&theme-id=11417&default-tab=result",
+			"height" : 673,
+			"title" : "loli",
+			"options" : ["allowfullscreen"]
+		},
+		{
+			"type" : "list",
+			"dataType" : "list",
+			"tag" : "ul",
+			"listType" : null,
+			"class" : ["item", "item_list"],
+			"child" : [
+				{
+					"class" : [],
+					"textContent" : "1"
+				}
+			]
+		},
+		{
+			"type" : "quote",
+			"dataType" : "quote",
+			"class" : ["item", "item_quote"],
+			"text" : "",
+			"author" : ""
+		},
+		{
+			"type" : "table",
+			"dataType" : "table",
+			"caption" : "",
+			"colgroup" : ["size_100", "size_100", "size_100", "size_100"],
+			"child" : [[
+				{
+					"tag" : "th",
+					"class" : [],
+					"textContent" : ""
+				},
+				{
+					"tag" : "th",
+					"class" : [],
+					"textContent" : ""
+				},
+				{
+					"tag" : "th",
+					"class" : [],
+					"textContent" : ""
+				},
+				{
+					"tag" : "th",
+					"class" : [],
+					"textContent" : ""
+				}
+			], [
+				{
+					"tag" : "td",
+					"class" : [],
+					"textContent" : ""
+				},
+				{
+					"tag" : "td",
+					"class" : [],
+					"textContent" : ""
+				},
+				{
+					"tag" : "td",
+					"class" : [],
+					"textContent" : ""
+				},
+				{
+					"tag" : "td",
+					"class" : [],
+					"textContent" : ""
+				}
+			]]
+		},
+		{
+			"type" : "codeblock",
+			"dataType" : "codeblock",
+			"theme" : "default",
+			"language" : "text",
+			"class" : ["item", "item_codeblock"],
+			"code" : {
+				"class" : [],
+				"textContent" : ""
+			}
+		}
+	],
+	"en" : null,
+	"ja" : null
 }

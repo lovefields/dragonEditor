@@ -42,7 +42,7 @@ class dragonEditor{
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true" data-type="text">[content]</p>';
-		$this.HTMLBtn = '<button class="btn" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</button>';
+		$this.HTMLBtn = '<div class="btn" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
 		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
 		$this.HTMLList = '<[tag] [type] class="item item_list" data-type="list">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
@@ -52,6 +52,11 @@ class dragonEditor{
 		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
 
 		$this.linkBoxData = {};
+		$this.contentData = {
+			'ko' : {},
+			'en' : {},
+			'ja' : {}
+		};
 	}
 
 	bindingEvent(){
@@ -119,6 +124,13 @@ class dragonEditor{
 			}
 		});
 
+		window.addEventListener('scroll', function(e){
+			if($this.windowWidth > $this.changePint){
+				document.activeElement.blur();
+				$this.popOptions.classList.remove('act');
+			}
+		});
+
 		// resize
 		window.addEventListener('resize', function(){
 			$this.windowWidth = window.innerWidth;
@@ -133,18 +145,26 @@ class dragonEditor{
 				if($target !== false){
 					let offset = $target.getBoundingClientRect();
 					let type = $target.dataset['type'];
-					let children = $this.getElList($this.contentAreaName + ' > *');
+					let $children = $this.getElList($this.contentAreaName + ' > *');
+					let isBtn = $target.classList.contains('btn');
 
-					$this.setLastElement($target, children);
-					$this.openOptionPop(offset, type);
+					if(isBtn === true){
+						if(typeof $target.dataset['value'] !== 'undefined'){
+							let value = $target.dataset['value'];
+							if(value === 'image'){
+								$this.fileInput.setAttribute('accept', 'image/*');
+								$this.fileInput.click();
+							}
+						}
+					}else{
+						$this.setLastElement($target, $children);
+						$this.openOptionPop(offset, type);
+						// 텍스트를 드레그 했을경우 동작 분기
 
-					// 버튼 일경우 추가 동작
-
-					if($this.windowWidth < $this.changePint){
-						// lastset 된 엘리먼트와 옵션창이 모바일 화면에 들어오도록 스크롤 조절.
+						if($this.windowWidth < $this.changePint){
+							// lastset 된 엘리먼트와 옵션창이 모바일 화면에 들어오도록 스크롤 조절.
+						}
 					}
-
-
 					// 드레그 이벤트 언바인딩
 				}
 			}
@@ -553,7 +573,7 @@ class dragonEditor{
 	}
 
 	openOptionPop(offset, type){
-		let top = offset.top + offset.height + 5;
+		let y = offset.top + offset.height + 5;
 		let $child = this.popOptions.querySelectorAll('.col');
 		let typeReg = new RegExp(type, 'i');
 
@@ -576,6 +596,7 @@ class dragonEditor{
 		}
 
 		this.popOptions.classList.add('act');
-		this.popOptions.style.cssText = 'transform:translate(-50%, '+ top +'px)';
+		let x =  (this.windowWidth - this.popOptions.getBoundingClientRect().width) / 2;
+		this.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
 	}
 }
