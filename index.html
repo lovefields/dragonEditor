@@ -279,21 +279,31 @@
 				<h1 class="title" contentEditable="true"></h1>
 				<p class="item" contenteditable="true" data-type="text">가나다라 마바사 나는 디자인을 하는데 내가 디자인을 하는것인가 나는 무엇을 하고 있는걸까, 매우 매우 힘이 든다 디자인 잘하고싶다 일하기 싫다 매우.</p>
 				<p class="item" contenteditable="true" data-type="text"></p>
-				<button class="btn" data-type="btn" data-value="image">
+				<picture class="item item_image" data-type="img">
+					<source srcset="./common/img/img_cover.webp" type="image/webp">
+					<img src="./common/img/img_cover.png" width="200" alt="dico" class="img">
+				</picture>
+				<div class="btn" data-type="btn" data-value="image">
 					<svg viewbox="0 0 50 50" class="icon">
 						<use class="path" xlink:href="#icon_image" href="#icon_image" />
 					</svg>Add on image
-				</button>
-				<button class="btn" data-type="btn" data-value="youtube">
+				</div>
+				<div class="item item_video" data-type="youtube">
+					<iframe src="https://www.youtube.com/embed/HRMpdT09WY0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="video"></iframe>
+				</div>
+				<div class="btn" data-type="youtube">
 					<svg viewbox="0 0 50 50" class="icon">
 						<use class="path" xlink:href="#icon_youtube" href="#icon_youtube" />
 					</svg>Add Youtube
-				</button>
-				<button class="btn" data-type="btn" data-value="codepen">
+				</div>
+				<div class="item item_codepen" data-type="codepen">
+					<iframe height="673" title="loli" src="https://codepen.io/lovefield/embed/PzLgav?height=673&theme-id=11417&default-tab=result" allowfullscreen class="iframe"></iframe>
+				</div>
+				<div class="btn" data-type="codepen">
 					<svg viewbox="0 0 50 50" class="icon">
 						<use class="path" xlink:href="#icon_codepen" href="#icon_codepen" />
 					</svg>Add Codepen
-				</button>
+				</div>
 				<ul class="item item_list" data-type="list">
 					<li contenteditable="true">1</li>
 				</ul>
@@ -313,15 +323,13 @@
 							<col class="size_100">
 							<col class="size_100">
 						</colgroup>
-						<thead>
+						<tbody>
 							<tr>
 								<th contenteditable="true"></th>
 								<th contenteditable="true"></th>
 								<th contenteditable="true"></th>
 								<th contenteditable="true"></th>
 							</tr>
-						</thead>
-						<tbody>
 							<tr>
 								<td contenteditable="true"></td>
 								<td contenteditable="true"></td>
@@ -368,7 +376,7 @@
 					<p class="name">카테고리</p>
 					<div class="item_area">
 						<select>
-							<options>Select category</options>
+							<option>Select category</option>
 						</select>
 					</div>
 				</div>
@@ -394,20 +402,15 @@
 			</form>
 		</div>
 
-		<div class="pop pop_options clearfix" data-type="text">
+		<div class="pop pop_options" data-type="text">
 			<label class="col select_area" data-group="text,list,table,codeblock">
 				<select class="select select_font_size">
-					<option value="none">Default</option>
+					<option value="none">Size(Default)</option>
 				</select>
 			</label>
-			<label class="col select_area" data-group="text,list,table">
+			<label class="col select_area" data-group="text,list,table,word">
 				<select class="select select_color">
 					<option value="none">Color(Black - #555)</option>
-				</select>
-			</label>
-			<label class="col select_area" data-group="text,list,table">
-				<select class="select select_bg">
-					<option value="none">BG(Black - #555)</option>
 				</select>
 			</label>
 			<label class="col select_area" data-group="text,list,table">
@@ -428,32 +431,40 @@
 					<option value="a">Lower-alpha (a)</option>
 				</select>
 			</label>
-			<button class="col btn_bold blind" data-group="text,list,table">
+			<label class="col options_size" data-group="img">
+				<span class="text">Width : </span>
+				<input type="number" max="800" class="value">
+			</label>
+			<label class="col options_url" data-group="youtube,codepen">
+				<span class="text">URL : </span>
+				<input type="text" class="value">
+			</label>
+			<button class="col btn_url_change" data-group="youtube,codepen">Change</button>
+			<button class="col btn_bold blind" data-group="text,list,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_bold" href="#icon_bold" />
 				</svg>
 				굵게
 			</button>
-			<button class="col btn_italic blind" data-group="text,list,table">
+			<button class="col btn_italic blind" data-group="text,list,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_italic" href="#icon_italic" />
 				</svg>
 				기울게
 			</button>
-			<button class="col btn_underline blind" data-group="text,list,table">
+			<button class="col btn_underline blind" data-group="text,list,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_underline" href="#icon_underline" />
 				</svg>
 				밑줄
 			</button>
-			<button class="col btn_strike blind" data-group="text,list,table">
+			<button class="col btn_strike blind" data-group="text,list,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_strike" href="#icon_strike" />
 				</svg>
 				취소선
 			</button>
-			<!-- <button class="col btn_pop" data-target=".pop_text_link" data-group="text,list,table"><u>Link</u></button> -->
-			<button class="col btn_workblock blind" data-group="text,list,table">
+			<button class="col btn_workblock blind" data-group="text,list,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
 				</svg>
@@ -462,7 +473,7 @@
 		
 			<button class="col btn_del_content blind" data-group="all">
 				<svg viewbox="0 0 50 50" class="icon">
-					<use class="path" xlink:href="#icon_delete" href="#icon_delete">
+					<use class="path" xlink:href="#icon_delete" href="#icon_delete" />
 				</svg>
 				컨텐츠 삭제
 			</button>
@@ -576,12 +587,12 @@
 	<div class="media_list">
 		<button class="btn_add_media">
 			<img src="https://dico.me/img/upload/2019/20190822170137_004.jpg" alt="" class="img">
-			<p class="name">name</p>
+			<span class="name">name</span>
 		</button>
 
 		<button class="btn_add_media">
 			<img src="https://dico.me/img/upload/2019/20190722112336_000.jpg" alt="" class="img">
-			<p class="name">name</p>
+			<span class="name">name</span>
 		</button>
 
 		<button class="btn_add_media"></button>
