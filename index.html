@@ -431,15 +431,65 @@
 					<option value="a">Lower-alpha (a)</option>
 				</select>
 			</label>
+			<label class="col select_area" data-group="td,th">
+				<select class="select select_coll">
+					<option value="size_100">100px</option>
+					<option value="size_150">150px</option>
+					<option value="size_200">200px</option>
+					<option value="size_250">250px</option>
+					<option value="size_300">300px</option>
+					<option value="size_350">350px</option>
+					<option value="size_400">400px</option>
+					<option value="size_450">450px</option>
+					<option value="size_500">500px</option>
+					<option value="size_550">550px</option>
+					<option value="size_600">600px</option>
+					<option value="size_650">650px</option>
+					<option value="size_700">700px</option>
+					<option value="size_750">750px</option>
+					<option value="size_800">800px</option>
+				</select>
+			</label>
+			<label class="col select_area" data-group="codeblock">
+				<select class="select select_theme">
+					<option value="default">Default theme</option>
+					<option value="vs2015">VS2015 theme</option>
+					<option value="androidstudio">Androidstudio theme</option>
+					<option value="monokai">Monokai theme</option>
+				</select>
+			</label>
+			<label class="col select_area" data-group="codeblock">
+				<select class="select select_language">
+					<option value="text">Text</option>
+					<option value="css">css</option>
+					<option value="html">html</option>
+					<option value="xml">xml</option>
+					<option value="json">json</option>
+					<option value="java">java</option>
+					<option value="javascript">javascript</option>
+					<option value="markdown">markdown</option>
+					<option value="objective-c">objective-c</option>
+					<option value="php">php</option>
+					<option value="python">python</option>
+					<option value="sql">sql</option>
+					<option value="shell">Shell Session</option>
+					<option value="kotlin">kotlin</option>
+					<option value="swift">swift</option>
+				</select>
+			</label>
+			<button class="col btn_change_th" data-group="td,th">th</button>
+			<button class="col btn_change_td" data-group="td,th">td</button>
 			<label class="col options_size" data-group="img">
 				<span class="text">Width : </span>
 				<input type="number" max="800" class="value">
 			</label>
-			<label class="col options_url" data-group="youtube,codepen">
+			<label class="col options_url" data-group="youtube,codepen,word">
 				<span class="text">URL : </span>
 				<input type="text" class="value">
 			</label>
 			<button class="col btn_url_change" data-group="youtube,codepen">Change</button>
+			<button class="col btn_url_link" data-group="word">Link</button>
+			<button class="col btn_url_unlink" data-group="word">Unlink</button>
 			<button class="col btn_bold blind" data-group="text,list,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_bold" href="#icon_bold" />
