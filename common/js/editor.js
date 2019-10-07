@@ -9,6 +9,11 @@ class dragonEditor{
 	setting(wrap, options){
 		let $this = this;
 
+		$this.selection = window.getSelection();
+		$this.startTextCursor = 0;
+		$this.endTextCursor = 0;
+		$this.activeElement;
+		$this.focusNode;
 		$this.windowWidth = window.innerWidth;
 		$this.windowHeight = window.innerHeight;
 		$this.changePint = typeof options.changePint !== 'string' ? 1120 : options.changePint;
@@ -40,6 +45,10 @@ class dragonEditor{
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
 		$this.popCloseBtns = $this.checkOptionElement(options.popCloseBtns, '.btn_pop_close', 'multi');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
+		$this.urlInput = $this.checkOptionElement(options.urlInput, '.options_url .value');
+		$this.addLinkBtn = $this.checkOptionElement(options.addLinkBtn, '.btn_url_link');
+		$this.unlinkBtn = $this.checkOptionElement(options.unlinkBtn, '.btn_url_unlink');
+		$this.addChangeUrlBtn = $this.checkOptionElement();
 
 		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
@@ -50,6 +59,8 @@ class dragonEditor{
 		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
 		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
+
+		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -141,7 +152,10 @@ class dragonEditor{
 		$this.contentArea.addEventListener('mouseup', function(e){
 			if(e.button === 0){
 				let $target = $this.getLastSetOrFocus(e.target);
+				let base = $this.selection.baseOffset;
+				let extent = $this.selection.extentOffset;
 
+				$this.activeElement = '';
 				if($target !== false){
 					let offset = $target.getBoundingClientRect();
 					let type = $target.dataset['type'];
@@ -157,20 +171,43 @@ class dragonEditor{
 							}
 						}
 					}else{
+						// 텍스트를 드레그 했을경우 동작 분기
+						if(base !== extent){
+							$this.focusNode = $this.selection.focusNode;
+							$this.startTextCursor = base;
+							$this.endTextCursor = extent;
+							type = 'word';
+						}else{
+							if(e.target.constructor.name === 'HTMLTableCellElement'){
+								type = 'td,th';
+							}
+						}
+
+						$this.activeElement = document.activeElement;
 						$this.setLastElement($target, $children);
 						$this.openOptionPop(offset, type);
-						// 텍스트를 드레그 했을경우 동작 분기
+						
 
 						if($this.windowWidth < $this.changePint){
 							// lastset 된 엘리먼트와 옵션창이 모바일 화면에 들어오도록 스크롤 조절.
 						}
 					}
-					// 드레그 이벤트 언바인딩
 				}
+
+				// 드레그 이벤트 언바인딩
 			}
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
+			// 단어 선택 초기화
+			if ($this.selection.empty){
+				$this.selection.empty();
+			}else if($this.selection.removeAllRanges){
+				$this.selection.removeAllRanges();
+			}
+			$this.startTextCursor = 0;
+			$this.endTextCursor = 0;
+
 			// 드레그 이벤트 바인딩 및 2초뒤 실행
 			console.log('down');
 			console.log(e.target);
@@ -179,11 +216,24 @@ class dragonEditor{
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
 				let $target = $this.getLastSetOrFocus(e.target);
+				let base = $this.selection.baseOffset;
+				let extent = $this.selection.extentOffset;
 
 				if($target !== false){
+					let $activeEl = document.activeElement;
 					let offset = $target.getBoundingClientRect();
 					let type = $target.dataset['type'];
 					let children = $this.getElList($this.contentAreaName + ' > *');
+
+					if(base !== extent){
+						$this.startTextCursor = base;
+						$this.endTextCursor = extent;
+						type = 'word';
+					}else{
+						if($activeEl.constructor.name === 'HTMLTableCellElement'){
+							type = 'td,th';
+						}
+					}
 
 					$this.setLastElement($target, children);
 					$this.openOptionPop(offset, type);
@@ -329,9 +379,8 @@ class dragonEditor{
 				let $viewEl = $this.getEl($this.popLinkName + ' .view');
 				let $submitBtn = $this.getEl($this.popLinkName + ' .btn_submit');
 				let url = $this.getEl($this.popLinkName + ' .url').value;
-				let urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 
-				if(urlReg.test(url)){
+				if($this.urlReg.test(url) === true){
 					json.url = url;
 					fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
 					.then(response => {
@@ -423,6 +472,17 @@ class dragonEditor{
 			}
 		});
 
+		// 텍스트 링크 추가
+		$this.addLinkBtn.addEventListener('click', function(){
+			let url = $this.urlInput.value;
+
+			if($this.urlReg.test(url) === true){
+				$this.wrapElement('link', url);
+			}else{
+				alert('URL을 정확히 입력하세요.\nhttp 혹은 https 부터 입력하셔야 합니다.');
+			}
+		});
+
 
 
 
@@ -479,6 +539,29 @@ class dragonEditor{
 				return $el;
 			}else{
 				return this.findParent($el.parentElement, name);
+			}
+		}else{
+			return false;
+		}
+	}
+
+	findContenteditable(node){
+		let constructorName = node.constructor.name;
+		let target;
+
+		if(constructorName !== 'HTMLBodyElement'){
+			if(constructorName !== 'Text'){
+				target = node;
+			}else{
+				target = node.parentElement;
+			}
+
+			let hasAttr = target.getAttribute('contenteditable');
+
+			if(hasAttr === 'true'){
+				return target;
+			}else{
+				return this.findContenteditable(target);
 			}
 		}else{
 			return false;
@@ -598,5 +681,29 @@ class dragonEditor{
 		this.popOptions.classList.add('act');
 		let x =  (this.windowWidth - this.popOptions.getBoundingClientRect().width) / 2;
 		this.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
+	}
+
+	wrapElement(type, url = null){
+		let node = this.focusNode;
+		let $el = this.findContenteditable(this.focusNode);
+		$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
+		let child = $el.childNodes;
+		let count = child.length;
+		let number,firstCursor,endCursor;
+
+		// 노드 순서 구하기
+		for(let i = 0;i <= count;i += 1){
+			if(child[i].constructor.name === 'Text'){
+				if(node.textContent === child[i].textContent){
+					number = i;
+					break;
+				}
+			}
+		}
+
+		console.log(number);
+		console.log(this.startTextCursor);
+		console.log(this.endTextCursor);
+		console.log($el);
 	}
 }
