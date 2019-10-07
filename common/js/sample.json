@@ -133,6 +133,16 @@
 				"class" : [],
 				"textContent" : ""
 			}
+		},
+		{
+			"type" : "linkblock",
+			"dataType" : "link_box",
+			"url" : "https://dico.me",
+			"imgSrc" : "https://dico.me/img/dico.png",
+			"title" : "Docker Dockerfile 생성부터 Container 실행까지 - Dico",
+			"description" : "Docker dockerfile build and run",
+			"domain" : "dico.me",
+			"class" : ["item", "link_box"]
 		}
 	],
 	"en" : null,

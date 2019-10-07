@@ -33,6 +33,7 @@
 .content_area ul.item_list li{list-style:disc}
 .content_area ol[type='i'].item_list,
 .content_area ol[type='I'].item_list{padding-left:40px}
+.content_area a{cursor:text}
 .content_area .item_quote{text-align:center}
 .content_area .item_quote .text{font-size:18px}
 .content_area .item_quote .text::before{content:open-quote}
@@ -246,7 +247,7 @@
 .options_area .raidobox{margin:10px 10px 0 0}
 .options_area .btn_submit{display:block;width:120px;height:50px;margin:20px auto 0;background:#38b7ea;color:#fff;border:0;border-radius:5px;font-size:18px}
 
-.content_area .link_box{padding:0}
+.content_area .link_box{padding:0;cursor:pointer}
 .link_box{display:block;width:300px;margin:0 auto 5px;background:#fff;color:#555;border:1px solid #999;border-radius:5px}
 .link_box .img_area{position:relative;width:100%;height:150px;border-radius:5px 5px 0 0;overflow:hidden}
 .link_box .img_area .img{position:absolute;top:0;left:50%;width:auto;height:100%;transform:translateX(-50%)}
@@ -304,13 +305,14 @@
 .pop_options .col{display:none;height:30px;padding:0 8px;border-right:1px solid #ccc;line-height:30px;vertical-align:middle}
 .pop_options .col:last-child{border-right:0}
 .pop_options .col.act{display:inline-block}
-.pop_options .select_area{position:relative;padding:0 15px 0 0}
+.pop_options .select_area{position:relative;padding:0}
 .pop_options .select_area::before{display:block;content:'';position:absolute;top:50%;right:6px;width:4px;height:4px;margin-top:-4px;border:1px solid transparent;border-bottom-color:#555;border-right-color:#555;transform:rotate(45deg)}
-.pop_options .select{height:30px;padding:0 20px 0 10px;background:transparent;border:0;font-size:12px;line-height:30px;-moz-appearance:none;-webkit-appearance:none}
-.pop_options .options_size{font-size:12px}
+.pop_options .select{height:30px;padding:0 15px 0 10px;background:transparent;border:0;font-size:12px;line-height:30px;-moz-appearance:none;-webkit-appearance:none}
+.pop_options .options_size,
+.pop_options .options_url{font-size:12px}
 .pop_options .options_size .value{margin-top:-2px;vertical-align:middle}
-.pop_options .btn_change_th.act,
-.pop_options .btn_change_td.act{background:#f1f1f1}
+.pop_options .btn_change_th.same,
+.pop_options .btn_change_td.same{background:#f1f1f1}
 
 .pop_media{display:block;top:0;left:0;bottom:0;width:300px;padding-bottom:100px;background:#fff;border-right:1px solid #999;overflow-y:scroll;transform:translateX(-301px)}
 .pop_media.act{transform:translateX(0)}
