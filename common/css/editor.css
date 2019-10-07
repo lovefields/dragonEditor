@@ -309,6 +309,8 @@
 .pop_options .select{height:30px;padding:0 20px 0 10px;background:transparent;border:0;font-size:12px;line-height:30px;-moz-appearance:none;-webkit-appearance:none}
 .pop_options .options_size{font-size:12px}
 .pop_options .options_size .value{margin-top:-2px;vertical-align:middle}
+.pop_options .btn_change_th.act,
+.pop_options .btn_change_td.act{background:#f1f1f1}
 
 .pop_media{display:block;top:0;left:0;bottom:0;width:300px;padding-bottom:100px;background:#fff;border-right:1px solid #999;overflow-y:scroll;transform:translateX(-301px)}
 .pop_media.act{transform:translateX(0)}
