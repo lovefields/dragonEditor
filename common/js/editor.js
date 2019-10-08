@@ -151,49 +151,7 @@ class dragonEditor{
 
 		$this.contentArea.addEventListener('mouseup', function(e){
 			if(e.button === 0){
-				let $target = $this.getLastSetOrFocus(e.target);
-				let base = $this.selection.baseOffset;
-				let extent = $this.selection.extentOffset;
-
-				$this.activeElement = '';
-				if($target !== false){
-					let offset = $target.getBoundingClientRect();
-					let type = $target.dataset['type'];
-					let $children = $this.getElList($this.contentAreaName + ' > *');
-					let isBtn = $target.classList.contains('btn');
-
-					if(isBtn === true){
-						if(typeof $target.dataset['value'] !== 'undefined'){
-							let value = $target.dataset['value'];
-							if(value === 'image'){
-								$this.fileInput.setAttribute('accept', 'image/*');
-								$this.fileInput.click();
-							}
-						}
-					}else{
-						// 텍스트를 드레그 했을경우 동작 분기
-						if(base !== extent){
-							$this.focusNode = $this.selection.focusNode;
-							$this.startTextCursor = base;
-							$this.endTextCursor = extent;
-							type = 'word';
-						}else{
-							if(e.target.constructor.name === 'HTMLTableCellElement'){
-								type = 'td,th';
-							}
-						}
-
-						$this.activeElement = document.activeElement;
-						$this.setLastElement($target, $children);
-						$this.openOptionPop(offset, type);
-						
-
-						if($this.windowWidth < $this.changePint){
-							// lastset 된 엘리먼트와 옵션창이 모바일 화면에 들어오도록 스크롤 조절.
-						}
-					}
-				}
-
+				$this.contentCheckByMouse(e.target, 'mouseup');
 				// 드레그 이벤트 언바인딩
 			}
 		});
@@ -215,29 +173,7 @@ class dragonEditor{
 
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
-				let $target = $this.getLastSetOrFocus(e.target);
-				let base = $this.selection.baseOffset;
-				let extent = $this.selection.extentOffset;
-
-				if($target !== false){
-					let $activeEl = document.activeElement;
-					let offset = $target.getBoundingClientRect();
-					let type = $target.dataset['type'];
-					let children = $this.getElList($this.contentAreaName + ' > *');
-
-					if(base !== extent){
-						$this.startTextCursor = base;
-						$this.endTextCursor = extent;
-						type = 'word';
-					}else{
-						if($activeEl.constructor.name === 'HTMLTableCellElement'){
-							type = 'td,th';
-						}
-					}
-
-					$this.setLastElement($target, children);
-					$this.openOptionPop(offset, type);
-				}
+				$this.contentCheckByMouse(e.target, 'mouseover');
 			}
 		});
 
@@ -681,6 +617,61 @@ class dragonEditor{
 		this.popOptions.classList.add('act');
 		let x =  (this.windowWidth - this.popOptions.getBoundingClientRect().width) / 2;
 		this.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
+	}
+
+	contentCheckByMouse(target, eventType){
+		this.activeElement = '';
+		let $target = this.getLastSetOrFocus(target);
+		let base = this.selection.baseOffset;
+		let extent = this.selection.extentOffset;
+
+		if($target !== false){
+			let offset = $target.getBoundingClientRect();
+			let type = $target.dataset['type'];
+			let $children = this.getElList(this.contentAreaName + ' > *');
+			let isBtn = $target.classList.contains('btn');
+
+			if(eventType === 'mouseup'){
+				if(isBtn === true){
+					if(typeof $target.dataset['value'] !== 'undefined'){
+						let value = $target.dataset['value'];
+						if(value === 'image'){
+							this.fileInput.setAttribute('accept', 'image/*');
+							this.fileInput.click();
+						}
+					}
+				}else{
+					// 텍스트를 드레그 했을경우 동작 분기
+					if(base !== extent){
+						this.focusNode = this.selection.focusNode;
+						this.startTextCursor = base;
+						this.endTextCursor = extent;
+						type = 'word';
+					}else{
+						if(target.constructor.name === 'HTMLTableCellElement'){
+							type = 'td,th';
+						}
+					}
+	
+					this.activeElement = document.activeElement;
+					if(this.windowWidth < this.changePint){
+						// lastset 된 엘리먼트와 옵션창이 모바일 화면에 들어오도록 스크롤 조절.
+					}
+				}
+			}else if(eventType === 'mouseover'){
+				if(base !== extent){
+					this.startTextCursor = base;
+					this.endTextCursor = extent;
+					type = 'word';
+				}else{
+					if(target.constructor.name === 'HTMLTableCellElement'){
+						type = 'td,th';
+					}
+				}
+			}
+			this.setLastElement($target, $children);
+			this.openOptionPop(offset, type);
+		}
 	}
 
 	wrapElement(type, url = null){
