@@ -49,7 +49,8 @@ class dragonEditor{
 		$this.urlInput = $this.checkOptionElement(options.urlInput, '.options_url .value');
 		$this.addLinkBtn = $this.checkOptionElement(options.addLinkBtn, '.btn_url_link');
 		$this.unlinkBtn = $this.checkOptionElement(options.unlinkBtn, '.btn_url_unlink');
-		$this.addChangeUrlBtn = $this.checkOptionElement();
+		//$this.addChangeUrlBtn = $this.checkOptionElement();
+		$this.sizeInput = $this.checkOptionElement(options.sizeInput, '.options_size .value');
 
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
@@ -62,6 +63,7 @@ class dragonEditor{
 		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box lastset" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
+		$this.numberReg = new RegExp('[0-9]', 'g');
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -420,6 +422,26 @@ class dragonEditor{
 				$this.wrapElement('link', url);
 			}else{
 				alert('URL을 정확히 입력하세요.\nhttp 혹은 https 부터 입력하셔야 합니다.');
+			}
+		});
+
+		// image size
+		$this.sizeInput.addEventListener('keyup', function(e){
+			if($this.numberReg.test(e.key)){
+				let value = this.value;
+				let $el = $this.getEl('.lastset .img');
+				
+				if($el !== false){
+					if(value < 801){
+						$el.setAttribute('width', value);
+					}else{
+						alert('800px이상은 키울 수 없습니다.');
+					}
+				}else{
+					alert('이미지가 선택되어있지 않습니다.');
+				}
+			}else if(e.key !== 'Backspace'){
+				e.preventDefault();
 			}
 		});
 
