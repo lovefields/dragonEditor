@@ -27,6 +27,7 @@ class dragonEditor{
 		$this.contentAreaName = typeof options.contentArea !== 'string' ? '.content_area' : options.contentArea;
 		$this.popOptionsName = typeof options.popOptions !== 'string' ? '.pop_options' : options.popOptions;
 		$this.popLinkName = typeof options.popLink !== 'string' ? '.pop_link_box' : options.popLink;
+		$this.contentAddListName = typeof options.contentAddList !== 'string' ? '.pop_content_list' : ptions.contentAddList;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -50,15 +51,15 @@ class dragonEditor{
 		$this.unlinkBtn = $this.checkOptionElement(options.unlinkBtn, '.btn_url_unlink');
 		$this.addChangeUrlBtn = $this.checkOptionElement();
 
-		$this.HTMLTextBlock = '<p class="item item_text" contenteditable="true" data-type="text">[content]</p>';
-		$this.HTMLBtn = '<div class="btn" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
-		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
-		$this.HTMLList = '<[tag] [type] class="item item_list" data-type="list">[child]</[tag]>';
+		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
+		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
+		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker lastset" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
+		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="list">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
-		$this.HTMLQuote = '<blockquote class="item item_quote" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
-		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
-		$this.HTMLCodeBlock = '<pre class="item item_codeblock" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
-		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
+		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
+		$this.HTMLTable = '<div class="item item_table_area lastset" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
+		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
+		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box lastset" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 
@@ -73,6 +74,31 @@ class dragonEditor{
 	bindingEvent(){
 		let $this = this;
 
+		// resize
+		document.addEventListener('DOMContentLoaded', function(){
+			if($this.windowWidth > $this.changePint){
+				$this.contentAddList.classList.add('act');
+			}else if($this.windowWidth < $this.changePint){
+				$this.contentAddList.classList.remove('act');
+			}
+		});
+
+		let resizeFn;
+		window.addEventListener('resize', function(){
+			clearTimeout(resizeFn);
+			resizeFn = setTimeout(() => {
+				$this.windowWidth = window.innerWidth;
+				$this.windowHeight = window.innerHeight;
+
+				if($this.windowWidth > $this.changePint){
+					$this.contentAddList.classList.add('act');
+				}else if($this.windowWidth < $this.changePint){
+					$this.contentAddList.classList.remove('act');
+				}
+				return;
+			}, 250);
+		});
+
 		// right click block and content menu open
 		document.addEventListener('contextmenu', function(e){
 			e.preventDefault();
@@ -81,56 +107,34 @@ class dragonEditor{
 		document.addEventListener('mouseup', function(e){
 			if(typeof e === 'object'){
 				let target = e.target;
-				switch(e.button){
-					case 0 : 
-						let $pop = $this.findParent(target, 'pop');
-						let $btnPop = $this.findParent(target, 'btn_pop');
-						let $popEl = $this.getElList('.pop');
+				if(e.button === 0){
+					let $pop = $this.findParent(target, 'pop');
+					let $btnPop = $this.findParent(target, 'btn_pop');
+					let $popEl = $this.getElList('.pop');
 
-						$popEl.forEach(function(item){
-							if($btnPop === false){
-								if(!item.classList.contains($this.popOptionsName.substr(1))){
-									item.classList.remove('act');
-								}
-							}else{
-								let name = $btnPop.dataset['target'];
-
-								if(item !== $this.getEl(name)){
-									item.classList.remove('act');
-								}
+					$popEl.forEach(function(item){
+						if($btnPop === false){
+							if(!item.classList.contains($this.popOptionsName.substr(1)) && !item.classList.contains($this.contentAddListName.substr(1))){
+								item.classList.remove('act');
 							}
-						});
+						}else{
+							let name = $btnPop.dataset['target'];
 
-						$this.popBtns.forEach(function(btn){
-							if($btnPop !== btn){
-								btn.classList.remove('act');
-							}
-						});
-
-						if($pop !== false){
-							$pop.classList.add('act');
-						}
-					break;
-
-					case 2 : 
-						if($this.windowWidth > $this.changePint){
-							let $area = $this.findParent(target, 'content_area');
-							let x = e.clientX;
-							let y = e.clientY;
-							let $list = $this.getEl('.pop_content_list');
-
-							if($area !== false){
-								$list.classList.add('act');
-								let listHeight = $list.getBoundingClientRect().height;
-
-								if(y > $this.windowHeight - listHeight){
-									$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ ($this.windowHeight - listHeight - 40) + 'px)';
-								}else{
-									$list.style.cssText = 'top:0;left:0;transform:translate('+ x +'px, '+ y +'px)';
-								}
+							if(item !== $this.getEl(name) && !item.classList.contains($this.contentAddListName.substr(1))){
+								item.classList.remove('act');
 							}
 						}
-					break;
+					});
+
+					$this.popBtns.forEach(function(btn){
+						if($btnPop !== btn){
+							btn.classList.remove('act');
+						}
+					});
+
+					if($pop !== false){
+						$pop.classList.add('act');
+					}
 				}
 			}
 		});
@@ -140,13 +144,6 @@ class dragonEditor{
 				document.activeElement.blur();
 				$this.popOptions.classList.remove('act');
 			}
-		});
-
-		// resize
-		window.addEventListener('resize', function(){
-			$this.windowWidth = window.innerWidth;
-			$this.windowHeight = window.innerHeight;
-			return;
 		});
 
 		$this.contentArea.addEventListener('mouseup', function(e){
@@ -179,6 +176,12 @@ class dragonEditor{
 
 		$this.editorSection.addEventListener('mouseleave', function(e){
 			if($this.windowWidth > $this.changePint){
+				let $activeEl = document.activeElement;
+				let $lastset = $this.getEl('.lastset');
+
+				if($lastset !== false && $activeEl.constructor.name === 'HTMLBodyElement'){
+					$lastset.classList.remove('lastset');
+				}
 				$this.popOptions.classList.remove('act');
 			}
 		});
@@ -197,7 +200,6 @@ class dragonEditor{
 				let $lastEl = $this.contentArea.querySelector('.lastset');
 				let $target = $lastEl === null ? $this.contentArea.children[childCount - 1] : $lastEl
 
-				$this.contentAddList.classList.remove('act');
 				switch(type){
 					case 'text':
 						$this.addTextBlock($target);
@@ -240,6 +242,8 @@ class dragonEditor{
 						$this.popLink.querySelector('.btn_submit').setAttribute('disabled', 'true');
 					break;
 				}
+
+				$target.classList.remove('lastset');
 			});
 		});
 
@@ -631,8 +635,8 @@ class dragonEditor{
 			let $children = this.getElList(this.contentAreaName + ' > *');
 			let isBtn = $target.classList.contains('btn');
 
-			if(eventType === 'mouseup'){
-				if(isBtn === true){
+			switch(true){
+				case isBtn === true && eventType === 'mouseup' : 
 					if(typeof $target.dataset['value'] !== 'undefined'){
 						let value = $target.dataset['value'];
 						if(value === 'image'){
@@ -640,34 +644,13 @@ class dragonEditor{
 							this.fileInput.click();
 						}
 					}
-				}else{
-					// 텍스트를 드레그 했을경우 동작 분기
-					if(base !== extent){
-						this.focusNode = this.selection.focusNode;
-						this.startTextCursor = base;
-						this.endTextCursor = extent;
-						type = 'word';
-					}else{
-						if(target.constructor.name === 'HTMLTableCellElement'){
-							type = 'td,th';
-						}
-					}
-	
-					this.activeElement = document.activeElement;
-					if(this.windowWidth < this.changePint){
-						// lastset 된 엘리먼트와 옵션창이 모바일 화면에 들어오도록 스크롤 조절.
-					}
-				}
-			}else if(eventType === 'mouseover'){
-				if(base !== extent){
+				break;
+				case base !== extent :
+					this.focusNode = this.selection.focusNode;
 					this.startTextCursor = base;
 					this.endTextCursor = extent;
 					type = 'word';
-				}else{
-					if(target.constructor.name === 'HTMLTableCellElement'){
-						type = 'td,th';
-					}
-				}
+				break;
 			}
 			this.setLastElement($target, $children);
 			this.openOptionPop(offset, type);
