@@ -340,7 +340,7 @@
 					</table>
 				</div>
 				<pre class="item item_codeblock" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>
-				<a href="https://dico.me" target="_blank" class="item link_box" data-type="link_box">
+				<a href="https://dico.me" target="_blank" class="item link_box clearfix" data-type="link_box">
 					<div class="img_area">
 						<img src="https://dico.me/img/dico.png" alt="미리보기 이미지" class="img">
 					</div>
@@ -416,11 +416,26 @@
 			<label class="col select_area" data-group="text,list,table,codeblock">
 				<select class="select select_font_size">
 					<option value="none">Size(Default)</option>
+					<option value="size_h1">h1(2x)</option>
+					<option value="size_h2">h2(1.5x)</option>
+					<option value="size_h3">h3(1.33x)</option>
+					<option value="size_h4">h4(1.17x)</option>
+					<option value="size_h5">h5(0.83x)</option>
+					<option value="size_h6">h6(0.67x)</option>
 				</select>
 			</label>
 			<label class="col select_area" data-group="text,list,table,word">
 				<select class="select select_color">
-					<option value="none">Color(Black - #555)</option>
+					<option value="none">Color(Default)</option>
+					<option value="color_crimson">Crimson(#dc143c)</option>
+					<option value="color_blue">Blue(#0000ff)</option>
+					<option value="color_grey">Grey(#808080)</option>
+					<option value="color_orange">Orange(#ffa500)</option>
+					<option value="color_hotpink">Hotpink(#ff69b4)</option>
+					<option value="color_green">Green(#008000)</option>
+					<option value="color_chocolate">Chocolate(#d2691e)</option>
+					<option value="color_brown">Brown(#a52a2a)</option>
+					<option value="color_white">White(#fff)</option>
 				</select>
 			</label>
 			<label class="col select_area" data-group="text,list,table">
@@ -442,7 +457,7 @@
 				</select>
 			</label>
 			<label class="col select_area" data-group="table">
-				<select class="select select_coll">
+				<select class="select select_col">
 					<option value="size_100">100px</option>
 					<option value="size_150">150px</option>
 					<option value="size_200">200px</option>
@@ -524,7 +539,7 @@
 				</svg>
 				취소선
 			</button>
-			<button class="col btn_workblock blind" data-group="text,list,table,word">
+			<button class="col btn_wordblock blind" data-group="text,list,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
 				</svg>
@@ -720,6 +735,7 @@
 <form action="#" enctype="multipart/form-data" method="post" class="file_uploader">
 	<input type="file" class="file_check">
 </form>
+<script src="./common/js/highlight.pack.js"></script>
 <script src="./common/js/editor.js"></script>
 <script>
 	const editor = new dragonEditor(null, {
