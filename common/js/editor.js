@@ -17,6 +17,7 @@ class dragonEditor{
 		$this.windowWidth = window.innerWidth;
 		$this.windowHeight = window.innerHeight;
 		$this.changePint = typeof options.changePint !== 'string' ? 1120 : options.changePint;
+		$this.maxImageWidth = typeof options.maxImageWidth !== 'string' ? 800 : options.maxImageWidth;
 
 		$this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
 		$this.imageIconId = typeof options.imageIconId !== 'string' ? '#icon_image' : options.imageIconId;
@@ -27,7 +28,7 @@ class dragonEditor{
 		$this.contentAreaName = typeof options.contentArea !== 'string' ? '.content_area' : options.contentArea;
 		$this.popOptionsName = typeof options.popOptions !== 'string' ? '.pop_options' : options.popOptions;
 		$this.popLinkName = typeof options.popLink !== 'string' ? '.pop_link_box' : options.popLink;
-		$this.contentAddListName = typeof options.contentAddList !== 'string' ? '.pop_content_list' : ptions.contentAddList;
+		$this.contentAddListName = typeof options.contentAddList !== 'string' ? '.pop_content_list' : options.contentAddList;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -64,6 +65,12 @@ class dragonEditor{
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 		$this.numberReg = new RegExp('[0-9]', 'g');
+
+		$this.messageNotSelecImage = typeof options.messageNotSelecImage !== 'string' ? `You didn't select image` : options.messageNotSelecImage;
+		$this.messageWrongURL = typeof options.messageWrongURL !== 'string' ? `Please enter a valid URL.\nYou must enter http or https first.` : options.messageWrongURL;
+		$this.messageNotSelect = typeof options.messageNotSelect !== 'string' ? `No element selected Please try again.` : options.messageNotSelect;
+		$this.messageNoData = typeof options.messageNoData !== 'string' ? `Could not get data` : options.messageNoData;
+		$this.messageExceedSize = typeof options.messageExceedSize !== 'string' ? `Can't exceed [size]px` : options.messageExceedSize;
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -386,11 +393,11 @@ class dragonEditor{
 							$this.addLinkBox($viewEl, json, 'afterbegin');
 						}else{
 							$submitBtn.setAttribute('disabled', 'true');
-							$viewEl.innerHTML = '데이터를 가져올 수 없습니다.';
+							$viewEl.innerHTML = $this.messageNoData;
 						}
 					});
 				}else{
-					alert('URL을 정확히 입력하세요.\nhttp 혹은 https 부터 입력하셔야 합니다.');
+					alert($this.messageWrongURL);
 				}
 			});
 		}else{
@@ -410,7 +417,7 @@ class dragonEditor{
 					$this.addTextBlock($this.contentArea, '', 'beforeend');
 				}
 			}else{
-				alert('선택된 요소가 없습니다.\n 다시 선택해보세요.');
+				alert($this.messageNotSelect);
 			}
 		});
 
@@ -421,28 +428,37 @@ class dragonEditor{
 			if($this.urlReg.test(url) === true){
 				$this.wrapElement('link', url);
 			}else{
-				alert('URL을 정확히 입력하세요.\nhttp 혹은 https 부터 입력하셔야 합니다.');
+				alert($this.messageWrongURL);
 			}
 		});
 
 		// image size
+		let imageSizeFn;
 		$this.sizeInput.addEventListener('keyup', function(e){
-			if($this.numberReg.test(e.key)){
-				let value = this.value;
-				let $el = $this.getEl('.lastset .img');
-				
-				if($el !== false){
-					if(value < 801){
-						$el.setAttribute('width', value);
+			clearTimeout(imageSizeFn);
+			imageSizeFn = setTimeout(() => {
+				if($this.numberReg.test(e.key) || e.key === 'Backspace'){
+					let value = this.value;
+					let $el = $this.getEl('.lastset .img');
+					let massage = $this.messageExceedSize.replace('[size]', $this.maxImageWidth);
+					
+					if($el !== false){
+						if(value <= $this.maxImageWidth){
+							$el.setAttribute('width', value);
+						}else{
+							alert(massage);
+							this.value = $this.maxImageWidth;
+							$el.setAttribute('width', $this.maxImageWidth);
+						}
+						let offset = $this.getEl('.lastset').getBoundingClientRect();
+						$this.openOptionPop(offset, 'img');
 					}else{
-						alert('800px이상은 키울 수 없습니다.');
+						alert($this.messageNotSelecImage);
 					}
-				}else{
-					alert('이미지가 선택되어있지 않습니다.');
+				}else if(e.key !== 'Backspace'){
+					e.preventDefault();
 				}
-			}else if(e.key !== 'Backspace'){
-				e.preventDefault();
-			}
+			}, 250);
 		});
 
 
