@@ -10,7 +10,7 @@
 .editor_section .slider_wrap > *{float:left;width:calc(50% - 10px)}
 .editor_section .slider_wrap > *:first-child{margin-right:20px}
 .editor_section[data-status='editor'] .slider_wrap{transform:translateX(0)}
-.editor_section[data-status='options'] .slider_wrap{max-height:800px;transform:translateX(calc(-50% - 10px))}
+.editor_section[data-status='options'] .slider_wrap{max-height:810px;transform:translateX(calc(-50% - 10px));overflow:hidden}
 .editor_section[data-status='options'] ~ .btn_bottom:not(.btn_change_area),
 .editor_section[data-status='options'] ~ .btn_content_list{display:none}
 
@@ -256,7 +256,9 @@
 .link_box .link_description{padding:5px 0;color:#888;font-size:12px;text-align:left}
 .link_box .link_domain{color:#ccc;font-size:12px;text-align:right}
 
-
+.mobile .link_box{width:100%}
+.mobile .link_box .img_area{float:left;width:100px;height:80px;;border-radius:5px 0 0 5px}
+.mobile .link_box .text_area{float:right;width:calc(100% - 101px);padding:5px;border-top:0;border-left:1px solid #999;box-sizing:border-box}
 
 .btn_bottom{position:fixed;bottom:20px;width:50px;height:50px;background:#fff;border:1px solid #999;border-radius:50%;text-align:center;line-height:48px;z-index:110}
 .btn_bottom .icon{width:30px;margin-top:-2px;vertical-align:middle}

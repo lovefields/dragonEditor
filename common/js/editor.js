@@ -41,17 +41,31 @@ class dragonEditor{
 		$this.lodingArea = $this.checkOptionElement(options.lodingArea, '.pop_loding');
 		$this.fileInput = $this.checkOptionElement(options.fileInput, '.file_check');
 		$this.uploadForm = $this.checkOptionElement(options.uploadForm, '.file_uploader');
-		$this.contentDelBtn = $this.checkOptionElement(options.contentDelBtn, '.btn_del_content');
 		$this.contentAddBtn = $this.checkOptionElement(options.contentAddBtn, '.btn_add_content', 'multi');
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
 		$this.popCloseBtns = $this.checkOptionElement(options.popCloseBtns, '.btn_pop_close', 'multi');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
+		$this.fontSizeSelect = $this.checkOptionElement(options.fontSizeSelect, '.select_font_size');
+		$this.colorSelect = $this.checkOptionElement(options.colorSelect, '.select_color');
+		$this.alignSelect = $this.checkOptionElement(options.alignSelect, '.select_font_align');
+		$this.listTypeSelect = $this.checkOptionElement(options.listTypeSelect, '.select_list_type');
+		$this.colSizeSelect = $this.checkOptionElement(options.colSizeSelect, '.select_col');
+		$this.themeSelect = $this.checkOptionElement(options.themeSelect, '.select_theme');
+		$this.languageSelect = $this.checkOptionElement(options.languageSelect, '.select_language');
+		$this.changeThBtn = $this.checkOptionElement(options.changeThBtn, '.btn_change_th');
+		$this.changeTdBtn = $this.checkOptionElement(options.changeTdBtn, '.btn_change_td');
+		$this.sizeInput = $this.checkOptionElement(options.sizeInput, '.options_size .value');
 		$this.urlInput = $this.checkOptionElement(options.urlInput, '.options_url .value');
+		$this.changeUrlBtn = $this.checkOptionElement(options.changeUrlBtn, '.btn_url_change');
 		$this.addLinkBtn = $this.checkOptionElement(options.addLinkBtn, '.btn_url_link');
 		$this.unlinkBtn = $this.checkOptionElement(options.unlinkBtn, '.btn_url_unlink');
-		//$this.addChangeUrlBtn = $this.checkOptionElement();
-		$this.sizeInput = $this.checkOptionElement(options.sizeInput, '.options_size .value');
+		$this.boldBtn = $this.checkOptionElement(options.boldBtn, '.btn_bold');
+		$this.italicBtn = $this.checkOptionElement(options.italicBtn, '.btn_italic');
+		$this.underlineBtn = $this.checkOptionElement(options.underlineBtn, '.btn_underline');
+		$this.strikeBtn = $this.checkOptionElement(options.strikeBtn, '.btn_strike');
+		$this.wordblockBtn = $this.checkOptionElement(options.wordblockBtn, '.btn_wordblock');
+		$this.contentDelBtn = $this.checkOptionElement(options.contentDelBtn, '.btn_del_content');
 
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
@@ -62,6 +76,7 @@ class dragonEditor{
 		$this.HTMLTable = '<div class="item item_table_area lastset" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
 		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box lastset" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
+		$this.HTMLOption = '<option value="[value]">[text]</option>';
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 		$this.numberReg = new RegExp('[0-9]', 'g');
@@ -78,19 +93,18 @@ class dragonEditor{
 			'en' : {},
 			'ja' : {}
 		};
+		$this.logData = [];
 	}
 
 	bindingEvent(){
 		let $this = this;
 
 		// resize
-		document.addEventListener('DOMContentLoaded', function(){
-			if($this.windowWidth > $this.changePint){
-				$this.contentAddList.classList.add('act');
-			}else if($this.windowWidth < $this.changePint){
-				$this.contentAddList.classList.remove('act');
-			}
-		});
+		if($this.windowWidth > $this.changePint){
+			$this.contentAddList.classList.add('act');
+		}else if($this.windowWidth < $this.changePint){
+			$this.contentAddList.classList.remove('act');
+		}
 
 		let resizeFn;
 		window.addEventListener('resize', function(){
@@ -148,16 +162,21 @@ class dragonEditor{
 			}
 		});
 
+		document.addEventListener('keydown', function(e){
+			
+		});
+
 		window.addEventListener('scroll', function(e){
-			if($this.windowWidth > $this.changePint){
-				document.activeElement.blur();
-				$this.popOptions.classList.remove('act');
-			}
+			//if($this.windowWidth > $this.changePint){
+			//	document.activeElement.blur();
+			//	$this.popOptions.classList.remove('act');
+			//}
 		});
 
 		$this.contentArea.addEventListener('mouseup', function(e){
 			if(e.button === 0){
 				$this.contentCheckByMouse(e.target, 'mouseup');
+				$this.checkOptionsValue(e.target);
 				// 드레그 이벤트 언바인딩
 			}
 		});
@@ -180,6 +199,7 @@ class dragonEditor{
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
 				$this.contentCheckByMouse(e.target, 'mouseover');
+				$this.checkOptionsValue(e.target);
 			}
 		});
 
@@ -197,8 +217,7 @@ class dragonEditor{
 
 		// key event control
 		$this.contentArea.addEventListener('keydown', function(e){
-			console.log('keydown');
-			console.log(e.target);
+			$this.keybroadControl(e);
 		});
 
 		// content add event
@@ -209,6 +228,7 @@ class dragonEditor{
 				let $lastEl = $this.contentArea.querySelector('.lastset');
 				let $target = $lastEl === null ? $this.contentArea.children[childCount - 1] : $lastEl
 
+				$target.classList.remove('lastset');
 				switch(type){
 					case 'text':
 						$this.addTextBlock($target);
@@ -251,8 +271,6 @@ class dragonEditor{
 						$this.popLink.querySelector('.btn_submit').setAttribute('disabled', 'true');
 					break;
 				}
-
-				$target.classList.remove('lastset');
 			});
 		});
 
@@ -695,6 +713,10 @@ class dragonEditor{
 		}
 	}
 
+	checkOptionsValue(target){
+		console.log(target);
+	}
+
 	wrapElement(type, url = null){
 		let node = this.focusNode;
 		let $el = this.findContenteditable(this.focusNode);
@@ -717,5 +739,9 @@ class dragonEditor{
 		console.log(this.startTextCursor);
 		console.log(this.endTextCursor);
 		console.log($el);
+	}
+
+	keybroadControl(event){
+		console.log(event);
 	}
 }
