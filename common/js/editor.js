@@ -163,7 +163,25 @@ class dragonEditor{
 		});
 
 		document.addEventListener('keydown', function(e){
-			
+			let activeElName = document.activeElement.constructor.name;
+
+			if(activeElName === 'HTMLBodyElement'){
+				let ctrl;
+
+				if(e.ctrlKey === true || e.metaKey === true){
+					ctrl = true;
+				}
+
+				if(e.key === 'z'){
+					if(ctrl === true){
+						e.preventDefault();
+						actionPrev();
+					}else if(ctrl === true && e.shiftKey === true){
+						e.preventDefault();
+						actionNext();
+					}
+				}
+			}
 		});
 
 		window.addEventListener('scroll', function(e){
@@ -743,5 +761,17 @@ class dragonEditor{
 
 	keybroadControl(event){
 		console.log(event);
+	}
+
+	saveAction(){
+
+	}
+
+	actionPrev(){
+
+	}
+
+	actionNext(){
+
 	}
 }
