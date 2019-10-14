@@ -210,9 +210,9 @@ class dragonEditor{
 				$this.clickCehck = false;
 				$childs.forEach(function($child){
 					$child.removeAttribute('draggable');
-					$child.removeEventListener('dragstart', $this.dragStartEvent, false);
-					$child.removeEventListener('dragover', $this.dragOverEvent, false);
-					$child.removeEventListener('dragend', $this.dragEndEvent, false);
+					$child.removeEventListener('dragstart', $this.dragStartEvent, true);
+					$child.removeEventListener('dragover', $this.dragOverEvent, true);
+					$child.removeEventListener('dragend', $this.dragEndEvent, true);
 				});
 			}
 		});
@@ -221,8 +221,8 @@ class dragonEditor{
 			let $target = $this.findParent(e.target, 'item');
 			$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
 			let event = document.createEvent('HTMLEvents');
-			event.initEvent('dragstart', true, true);
-			event.eventName = 'dragstart';
+			event.initEvent('dragover', true, true);
+			event.eventName = 'dragover';
 
 			// 단어 선택 초기화
 			if ($this.selection.empty){
@@ -233,18 +233,18 @@ class dragonEditor{
 			$this.startTextCursor = 0;
 			$this.endTextCursor = 0;
 
-			// 드레그 이벤트 바인딩 및 1초뒤 실행
+			// 드레그 이벤트 바인딩 및 0.8초뒤 실행
 			$this.clickCehck = true;
 			if($target !== false){
 				setTimeout(function(){
 					if($this.clickCehck === true){
 						$target.setAttribute('draggable', true);
-						$target.addEventListener('dragstart', $this.dragStartEvent, false);
-						$target.addEventListener('dragover', $this.dragOverEvent, false);
-						$target.addEventListener('dragend', $this.dragEndEvent, false);
+						$target.addEventListener('dragstart', $this.dragStartEvent, true);
+						$target.addEventListener('dragover', $this.dragOverEvent, true);
+						$target.addEventListener('dragend', $this.dragEndEvent, true);
 						$target.dispatchEvent(event);
 					}
-				}, 1000);
+				}, 800);
 			}
 		});
 
@@ -806,22 +806,22 @@ class dragonEditor{
 	}
 
 	dragStartEvent(e){ // event function
-		if(e.isTrusted === false){
-			//this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
-			console.log('start',e , this);
-		}
+		console.log('start',e , this);
+		this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
 	}
 
 	dragOverEvent(e){ // event function
+		console.log(e.target);
+		//this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
 		console.log(e);
 	}
 
 	dragEndEvent(e){ // event function
-		//let $bar = document.querySelector('.position_bar');
+		let $bar = document.querySelector('.position_bar');
 
 
 		this.removeAttribute('draggable');
-		//$bar.remove();
+		$bar.remove();
 		console.log('end');
 	}
 
