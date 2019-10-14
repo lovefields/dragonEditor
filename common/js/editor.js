@@ -14,20 +14,24 @@ class dragonEditor{
 		$this.endTextCursor = 0;
 		$this.activeElement;
 		$this.focusNode;
+		$this.langStatus = 'ko';
 		$this.windowWidth = window.innerWidth;
 		$this.windowHeight = window.innerHeight;
-		$this.changePint = typeof options.changePint !== 'string' ? 1120 : options.changePint;
-		$this.maxImageWidth = typeof options.maxImageWidth !== 'string' ? 800 : options.maxImageWidth;
+		$this.changePint = typeof options.changePint !== 'number' ? 1120 : options.changePint;
+		$this.maxImageWidth = typeof options.maxImageWidth !== 'number' ? 800 : options.maxImageWidth;
+		$this.clickCehck = false;
 
-		$this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
+		$this.mackLinkBoxType = typeof options.mackLinkBoxType !== 'self' ? 'self' : 'api';
+		$this.stickerType = options.stickerType === 'image' ? 'image' : 'svg';
+		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
 		$this.imageIconId = typeof options.imageIconId !== 'string' ? '#icon_image' : options.imageIconId;
 		$this.youtubeIconId = typeof options.youtubeIconId !== 'string' ? '#icon_youtube' : options.youtubeIconId;
 		$this.codepenIconId = typeof options.codepenIconId !== 'string' ? '#icon_codepen' : options.codepenIconId;
-		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
-		$this.stickerType = options.stickerType === 'image' ? 'image' : 'svg';
+
 		$this.contentAreaName = typeof options.contentArea !== 'string' ? '.content_area' : options.contentArea;
 		$this.popOptionsName = typeof options.popOptions !== 'string' ? '.pop_options' : options.popOptions;
 		$this.popLinkName = typeof options.popLink !== 'string' ? '.pop_link_box' : options.popLink;
+		$this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
 		$this.contentAddListName = typeof options.contentAddList !== 'string' ? '.pop_content_list' : options.contentAddList;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
@@ -137,15 +141,19 @@ class dragonEditor{
 
 					$popEl.forEach(function(item){
 						if($btnPop === false){
-							if(!item.classList.contains($this.popOptionsName.substr(1)) && !item.classList.contains($this.contentAddListName.substr(1))){
+							if(!item.classList.contains($this.popOptionsName.substr(1))){
 								item.classList.remove('act');
 							}
 						}else{
 							let name = $btnPop.dataset['target'];
 
-							if(item !== $this.getEl(name) && !item.classList.contains($this.contentAddListName.substr(1))){
+							if(item !== $this.getEl(name)){
 								item.classList.remove('act');
 							}
+						}
+
+						if($this.windowWidth > $this.changePint){
+							$this.contentAddList.classList.add('act');
 						}
 					});
 
@@ -193,13 +201,29 @@ class dragonEditor{
 
 		$this.contentArea.addEventListener('mouseup', function(e){
 			if(e.button === 0){
+				let $childs = $this.getElList($this.contentAreaName + ' > *');
+
 				$this.contentCheckByMouse(e.target, 'mouseup');
 				$this.checkOptionsValue(e.target);
+				
 				// 드레그 이벤트 언바인딩
+				$this.clickCehck = false;
+				$childs.forEach(function($child){
+					$child.removeAttribute('draggable');
+					$child.removeEventListener('dragstart', $this.dragStartEvent, false);
+					$child.removeEventListener('dragover', $this.dragOverEvent, false);
+					$child.removeEventListener('dragend', $this.dragEndEvent, false);
+				});
 			}
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
+			let $target = $this.findParent(e.target, 'item');
+			$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
+			let event = document.createEvent('HTMLEvents');
+			event.initEvent('dragstart', true, true);
+			event.eventName = 'dragstart';
+
 			// 단어 선택 초기화
 			if ($this.selection.empty){
 				$this.selection.empty();
@@ -209,9 +233,19 @@ class dragonEditor{
 			$this.startTextCursor = 0;
 			$this.endTextCursor = 0;
 
-			// 드레그 이벤트 바인딩 및 2초뒤 실행
-			console.log('down');
-			console.log(e.target);
+			// 드레그 이벤트 바인딩 및 1초뒤 실행
+			$this.clickCehck = true;
+			if($target !== false){
+				setTimeout(function(){
+					if($this.clickCehck === true){
+						$target.setAttribute('draggable', true);
+						$target.addEventListener('dragstart', $this.dragStartEvent, false);
+						$target.addEventListener('dragover', $this.dragOverEvent, false);
+						$target.addEventListener('dragend', $this.dragEndEvent, false);
+						$target.dispatchEvent(event);
+					}
+				}, 1000);
+			}
 		});
 
 		$this.contentArea.addEventListener('mouseover', function(e){
@@ -332,10 +366,6 @@ class dragonEditor{
 					this.classList.toggle('act');
 					$el.removeAttribute('style');
 					$el.classList.toggle('act');
-
-					if(target === $this.stickerListName || target === $this.popLinkName){
-						$this.contentAddList.classList.remove('act');
-					}
 				}else{
 					return false;
 				}
@@ -774,4 +804,25 @@ class dragonEditor{
 	actionNext(){
 
 	}
+
+	dragStartEvent(e){ // event function
+		if(e.isTrusted === false){
+			//this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
+			console.log('start',e , this);
+		}
+	}
+
+	dragOverEvent(e){ // event function
+		console.log(e);
+	}
+
+	dragEndEvent(e){ // event function
+		//let $bar = document.querySelector('.position_bar');
+
+
+		this.removeAttribute('draggable');
+		//$bar.remove();
+		console.log('end');
+	}
+
 }
