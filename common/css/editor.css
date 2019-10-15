@@ -4,7 +4,7 @@
 .raidobox input:checked + .box{border-color:#38b7ea}
 .raidobox input:checked + .box::before{display:block;content:'';position:absolute;top:2px;left:2px;width:4px;height:4px;background:#38b7ea;border-radius:50%}
 
-.editor_section{position:relative;width:810px;padding:80px 20px;margin:0 auto;overflow-x:hidden}
+.editor_section{position:relative;width:810px;padding:80px 20px 200px;margin:0 auto;overflow-x:hidden}
 .editor_section.mobile{width:320px}
 .editor_section .slider_wrap{width:calc(200% + 20px)}
 .editor_section .slider_wrap > *{float:left;width:calc(50% - 10px)}
@@ -19,7 +19,7 @@
 .content_area *[contentEditable]{outline:0}
 .content_area *[contentEditable]:empty::after{display:inline;content:'Add text';color:#999;cursor:text}
 .content_area *[contentEditable]:focus::after{content:''}
-.content_area *[draggable],
+.content_area *[draggable="true"],
 .content_area .btn[draggable]{cursor:move}
 .content_area > *{margin-bottom:5px}
 .content_area .position_bar{height:3px;background:#999;border-radius:3px}
@@ -361,7 +361,7 @@
 }
 
 @media all and (max-width:70em){
-.editor_section{width:100%;padding:40px 20px;box-sizing:border-box}
+.editor_section{width:100%;padding:40px 20px 80px;box-sizing:border-box}
 .editor_section.mobile{width:100%}
 .editor_section .slider_wrap{width:calc(200% + 40px)}
 .editor_section .slider_wrap > *{float:left;width:calc(50% - 20px)}
@@ -372,6 +372,10 @@
 .options_area .cover_ima_area{display:block;width:200px;height:100px}
 .options_area .btn_remove_cover{display:block;margin-left:0;margin-top:10px}
 .options_area .textarea{min-height:80px}
+
+.link_box{width:100%}
+.link_box .img_area{float:left;width:100px;height:80px;;border-radius:5px 0 0 5px}
+.link_box .text_area{float:right;width:calc(100% - 101px);padding:5px;border-top:0;border-left:1px solid #999;box-sizing:border-box}
 
 .btn_bottom{bottom:10px;width:40px;height:40px;line-height:38px}
 .btn_bottom .icon{width:26px}
