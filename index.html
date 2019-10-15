@@ -304,10 +304,10 @@
 						<use class="path" xlink:href="#icon_codepen" href="#icon_codepen" />
 					</svg>Add Codepen
 				</div>
-				<ul class="item item_list" data-type="list">
+				<ul class="item item_list" data-type="list_u">
 					<li contenteditable="true">1</li>
 				</ul>
-				<ol type="i" class="item item_list" data-type="list">
+				<ol type="i" class="item item_list" data-type="list_o">
 					<li contenteditable="true"></li>
 				</ol>
 				<blockquote class="item item_quote" data-type="quote">
@@ -340,16 +340,18 @@
 					</table>
 				</div>
 				<pre class="item item_codeblock" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>
-				<a href="https://dico.me" target="_blank" class="item link_box clearfix" data-type="link_box">
-					<div class="img_area">
-						<img src="https://dico.me/img/dico.png" alt="미리보기 이미지" class="img">
-					</div>
-					<div class="text_area">
-						<p class="link_title ellipsis">Docker Dockerfile 생성부터 Container 실행까지 - Dico</p>
-						<p class="link_description ellipsis">Docker dockerfile build and run</p>
-						<p class="link_domain">dico.me</p>
-					</div>
-				</a>
+				<div class="item" data-type="link_box">
+					<a href="https://dico.me" target="_blank" class="link_box clearfix" draggable="false">
+						<div class="img_area">
+							<img src="https://dico.me/img/dico.png" alt="미리보기 이미지" class="img" draggable="false">
+						</div>
+						<div class="text_area">
+							<p class="link_title ellipsis">Docker Dockerfile 생성부터 Container 실행까지 - Dico</p>
+							<p class="link_description ellipsis">Docker dockerfile build and run</p>
+							<p class="link_domain">dico.me</p>
+						</div>
+					</a>
+				</div>
 			</div>
 
 			<form action="#" enctype="multipart/form-data" method="post" class="options_area">
@@ -413,7 +415,7 @@
 		</div>
 
 		<div class="pop pop_options" data-type="text">
-			<label class="col select_area" data-group="text,list,table,codeblock">
+			<label class="col select_area" data-group="text,list_u,list_o,table,codeblock">
 				<select class="select select_font_size">
 					<option value="none">Size(Default)</option>
 					<option value="size_h1">h1(2x)</option>
@@ -424,7 +426,7 @@
 					<option value="size_h6">h6(0.67x)</option>
 				</select>
 			</label>
-			<label class="col select_area" data-group="text,list,table,word">
+			<label class="col select_area" data-group="text,list_u,list_o,table,word">
 				<select class="select select_color">
 					<option value="none">Color(Default)</option>
 					<option value="color_crimson">Crimson(#dc143c)</option>
@@ -438,7 +440,7 @@
 					<option value="color_white">White(#fff)</option>
 				</select>
 			</label>
-			<label class="col select_area" data-group="text,list,table">
+			<label class="col select_area" data-group="text,list_u,list_o,table">
 				<select class="select select_font_align">
 					<option value="none">Align</option>
 					<option value="align_left">left</option>
@@ -446,7 +448,7 @@
 					<option value="align_right">right</option>
 				</select>
 			</label>
-			<label class="col select_area" data-group="list">
+			<label class="col select_area" data-group="list_o">
 				<select class="select select_list_type">
 					<option value="none">List Type</option>
 					<option value="1">Numbered (1)</option>
@@ -515,31 +517,31 @@
 			<button class="col btn_url_change" data-group="youtube,codepen">Change</button>
 			<button class="col btn_url_link" data-group="word">Link</button>
 			<button class="col btn_url_unlink" data-group="word,unlink">Unlink</button>
-			<button class="col btn_bold blind" data-group="text,list,table,word">
+			<button class="col btn_bold blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_bold" href="#icon_bold" />
 				</svg>
 				굵게
 			</button>
-			<button class="col btn_italic blind" data-group="text,list,table,word">
+			<button class="col btn_italic blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_italic" href="#icon_italic" />
 				</svg>
 				기울게
 			</button>
-			<button class="col btn_underline blind" data-group="text,list,table,word">
+			<button class="col btn_underline blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_underline" href="#icon_underline" />
 				</svg>
 				밑줄
 			</button>
-			<button class="col btn_strike blind" data-group="text,list,table,word">
+			<button class="col btn_strike blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_strike" href="#icon_strike" />
 				</svg>
 				취소선
 			</button>
-			<button class="col btn_wordblock blind" data-group="text,list,table,word">
+			<button class="col btn_wordblock blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
 				</svg>

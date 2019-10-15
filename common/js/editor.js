@@ -74,12 +74,12 @@ class dragonEditor{
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
 		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker lastset" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
-		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="list">[child]</[tag]>';
+		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 		$this.HTMLTable = '<div class="item item_table_area lastset" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
-		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box lastset" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
+		$this.HTMLLinkBox = '<div class="item" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
 		$this.HTMLPositionBar = '<div class="position_bar"></div>';
 
@@ -103,6 +103,11 @@ class dragonEditor{
 
 	bindingEvent(){
 		let $this = this;
+		if($this.windowWidth > $this.changePint){
+			$this.contentAddList.classList.add('act');
+		}else if($this.windowWidth < $this.changePint){
+			$this.contentAddList.classList.remove('act');
+		}
 
 		let resizeFn;
 		window.addEventListener('resize', function(){
@@ -186,6 +191,10 @@ class dragonEditor{
 			}
 		});
 
+		document.addEventListener('paste', function(e){
+			console.log('copy', e);
+		});
+
 		window.addEventListener('scroll', function(e){
 			//if($this.windowWidth > $this.changePint){
 			//	document.activeElement.blur();
@@ -211,7 +220,7 @@ class dragonEditor{
 		};
 		$this.contentArea.addEventListener('mouseup', function(e){
 			if(e.button === 0 || e.isTrusted === false){
-				let $childs = $this.getElList($this.contentAreaName + ' > *');
+				let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
 
 				$this.contentCheckByMouse(e.target, 'mouseup');
 				$this.checkOptionsValue(e.target);
@@ -228,7 +237,7 @@ class dragonEditor{
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
-			let $childs = $this.getElList($this.contentAreaName + ' > *');
+			let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
 			let $target = $this.findParent(e.target, 'item');
 				$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
 			let event = document.createEvent('HTMLEvents');
@@ -260,6 +269,52 @@ class dragonEditor{
 				}, 800);
 			}
 		});
+
+		// $this.contentArea.addEventListener('touchstart', function(e){
+		// 	let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
+		// 	let $target = $this.findParent(e.target, 'item');
+		// 		$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
+		// 	let event = document.createEvent('HTMLEvents');
+		// 		event.initEvent('touchmove', true, true);
+		// 		event.eventName = 'touchmove';
+
+		// 	// 단어 선택 초기화
+		// 	if ($this.selection.empty){
+		// 		$this.selection.empty();
+		// 	}else if($this.selection.removeAllRanges){
+		// 		$this.selection.removeAllRanges();
+		// 	}
+		// 	$this.startTextCursor = 0;
+		// 	$this.endTextCursor = 0;
+
+		// 	// 드레그 이벤트 바인딩 및 0.8초뒤 실행
+		// 	$this.clickCehck = true;
+		// 	if($target !== false){
+		// 		setTimeout(function(){
+		// 			if($this.clickCehck === true){
+		// 				$childs.forEach(function($child){
+		// 					$child.addEventListener('touchmove', dragOverFn);
+		// 				});
+		// 				$target.dispatchEvent(event);
+		// 			}
+		// 		}, 800);
+		// 	}
+		// });
+
+		// $this.contentArea.addEventListener('toucend', function(e){
+		// 	if(e.button === 0 || e.isTrusted === false){
+		// 		let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
+
+		// 		$this.contentCheckByMouse(e.target, 'mouseup');
+		// 		$this.checkOptionsValue(e.target);
+				
+		// 		// 드레그 이벤트 언바인딩
+		// 		$this.clickCehck = false;
+		// 		$childs.forEach(function($child){
+		// 			$child.removeEventListener('touchmove', dragOverFn);
+		// 		});
+		// 	}
+		// });
 
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
@@ -672,9 +727,16 @@ class dragonEditor{
 	}
 
 	addList($target, tag, type = null, content = ''){
+		let dataType;
+		if(tag === 'ol'){
+			dataType = 'list_o';
+		}else{
+			dataType = 'list_u';
+		}
 		let attribute = type === null ? '' : 'type="'+ type +'"';
 		let child = this.HTMLChildList.replace(/\[content\]/g, content);
 		let html = this.HTMLList.replace(/\[tag\]/g, tag)
+					.replace('[dataType]', dataType)
 					.replace('[type]', attribute)
 					.replace('[child]', child);
 
@@ -977,8 +1039,38 @@ class dragonEditor{
 		}
 	}
 
-	checkOptionsValue(target){
-		console.log(target);
+	checkOptionsValue($el){
+		let $target = this.findParent($el, 'item');
+			$target = $target === false ? this.findParent($el, 'btn') : $target;
+
+		if($target !== false){
+			let type = $target.dataset['type'];
+			switch(type){
+				case 'text' :
+				break;
+				case 'img' :
+				break;
+				case 'youtube' :
+				break;
+				case 'codepen' :
+				break;
+				case 'list_u' :
+				break;
+				case 'list_o' :
+				break;
+				case 'quote' :
+				break;
+				case 'table' :
+				break;
+				case 'codeblock' :
+				break;
+				case 'link_box' :
+				break;
+				case 'btn' :
+				break;
+			}
+			console.log($el, $target);
+		}
 	}
 
 	wrapElement(type, url = null){
@@ -1038,6 +1130,7 @@ class dragonEditor{
 		if($target !== false){
 			$target.insertAdjacentHTML('afterend', this.HTMLPositionBar);
 		}
+		console.log('move');
 	}
 
 	dragEndEvent(e, el){ // event function
@@ -1055,7 +1148,5 @@ class dragonEditor{
 		}
 		el.removeAttribute('draggable');
 		this.contentArea.dispatchEvent(event);
-		console.log('end', el);
 	}
-
 }
