@@ -81,6 +81,7 @@ class dragonEditor{
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
 		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box lastset" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
+		$this.HTMLPositionBar = '<div class="position_bar"></div>';
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 		$this.numberReg = new RegExp('[0-9]', 'g');
@@ -102,13 +103,6 @@ class dragonEditor{
 
 	bindingEvent(){
 		let $this = this;
-
-		// resize
-		if($this.windowWidth > $this.changePint){
-			$this.contentAddList.classList.add('act');
-		}else if($this.windowWidth < $this.changePint){
-			$this.contentAddList.classList.remove('act');
-		}
 
 		let resizeFn;
 		window.addEventListener('resize', function(){
@@ -183,10 +177,10 @@ class dragonEditor{
 				if(e.key === 'z'){
 					if(ctrl === true){
 						e.preventDefault();
-						actionPrev();
+						$this.actionPrev();
 					}else if(ctrl === true && e.shiftKey === true){
 						e.preventDefault();
-						actionNext();
+						$this.actionNext();
 					}
 				}
 			}
@@ -199,8 +193,24 @@ class dragonEditor{
 			//}
 		});
 
+		let setDrag;
+		const dragStartFn = function(e){
+			let el = this;
+			$this.dragStartEvent(e, el);
+		};
+		const dragOverFn = function(e){
+			clearTimeout(setDrag);
+			let el = this;
+			setDrag = setTimeout(() => {
+				$this.dragOverEvent(e, el);
+			}, 10);
+		};
+		const dragEndFn = function(e){
+			let el = this;
+			$this.dragEndEvent(e, el);
+		};
 		$this.contentArea.addEventListener('mouseup', function(e){
-			if(e.button === 0){
+			if(e.button === 0 || e.isTrusted === false){
 				let $childs = $this.getElList($this.contentAreaName + ' > *');
 
 				$this.contentCheckByMouse(e.target, 'mouseup');
@@ -210,19 +220,20 @@ class dragonEditor{
 				$this.clickCehck = false;
 				$childs.forEach(function($child){
 					$child.removeAttribute('draggable');
-					$child.removeEventListener('dragstart', $this.dragStartEvent, true);
-					$child.removeEventListener('dragover', $this.dragOverEvent, true);
-					$child.removeEventListener('dragend', $this.dragEndEvent, true);
+					$child.removeEventListener('dragstart', dragStartFn);
+					$child.removeEventListener('dragover', dragOverFn);
+					$child.removeEventListener('dragend', dragEndFn);
 				});
 			}
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
+			let $childs = $this.getElList($this.contentAreaName + ' > *');
 			let $target = $this.findParent(e.target, 'item');
-			$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
+				$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
 			let event = document.createEvent('HTMLEvents');
-			event.initEvent('dragover', true, true);
-			event.eventName = 'dragover';
+				event.initEvent('dragstart', true, true);
+				event.eventName = 'dragstart';
 
 			// 단어 선택 초기화
 			if ($this.selection.empty){
@@ -238,10 +249,12 @@ class dragonEditor{
 			if($target !== false){
 				setTimeout(function(){
 					if($this.clickCehck === true){
-						$target.setAttribute('draggable', true);
-						$target.addEventListener('dragstart', $this.dragStartEvent, true);
-						$target.addEventListener('dragover', $this.dragOverEvent, true);
-						$target.addEventListener('dragend', $this.dragEndEvent, true);
+						$childs.forEach(function($child){
+							$child.setAttribute('draggable', true);
+							$child.addEventListener('dragstart', dragStartFn);
+							$child.addEventListener('dragover', dragOverFn);
+							$child.addEventListener('dragend', dragEndFn);
+						});
 						$target.dispatchEvent(event);
 					}
 				}, 800);
@@ -250,6 +263,12 @@ class dragonEditor{
 
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
+				let $junk = $this.getElList('.position_bar');
+				if($junk !== false){
+					$junk.forEach(function($bar){
+						$bar.remove();
+					});
+				}
 				$this.contentCheckByMouse(e.target, 'mouseover');
 				$this.checkOptionsValue(e.target);
 			}
@@ -805,24 +824,41 @@ class dragonEditor{
 
 	}
 
-	dragStartEvent(e){ // event function
-		console.log('start',e , this);
-		this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
+	dragStartEvent(e, el){ // event function
+		el.insertAdjacentHTML('afterend', this.HTMLPositionBar);
 	}
 
-	dragOverEvent(e){ // event function
-		console.log(e.target);
-		//this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
-		console.log(e);
+	dragOverEvent(e, el){ // event function
+		let $bar = this.getElList('.position_bar');
+		let $target = this.findParent(e.target, 'item');
+			$target = $target === false ? this.findParent(e.target, 'btn') : $target;
+
+		if($bar !== false){
+			$bar.forEach(function($item){
+				$item.remove();
+			});
+		}
+		if($target !== false){
+			$target.insertAdjacentHTML('afterend', this.HTMLPositionBar);
+		}
 	}
 
-	dragEndEvent(e){ // event function
-		let $bar = document.querySelector('.position_bar');
+	dragEndEvent(e, el){ // event function
+		let event = document.createEvent('HTMLEvents');
+			event.initEvent('mouseup', true, true);
+			event.eventName = 'mouseup';
+		let $bar = this.getEl('.position_bar');
+		let HTML = el.outerHTML;
 
 
-		this.removeAttribute('draggable');
-		$bar.remove();
-		console.log('end');
+		if($bar !== false){
+			$bar.insertAdjacentHTML('afterend', HTML);
+			$bar.remove();
+			el.remove();
+		}
+		el.removeAttribute('draggable');
+		this.contentArea.dispatchEvent(event);
+		console.log('end', el);
 	}
 
 }
