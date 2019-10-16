@@ -77,7 +77,7 @@ class dragonEditor{
 		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
-		$this.HTMLTable = '<div class="item item_table_area lastset" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
+		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
 		$this.HTMLLinkBox = '<div class="item" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
@@ -837,6 +837,9 @@ class dragonEditor{
 					type = 'word';
 				break;
 			}
+			if(eventType === 'mouseup'){
+				this.activeElement = target;
+			}
 			this.setLastElement($target, $children);
 			this.openOptionPop(offset, type);
 		}
@@ -845,34 +848,35 @@ class dragonEditor{
 	checkOptionsValue($el){
 		let $target = this.findParent($el, 'item');
 			$target = $target === false ? this.findParent($el, 'btn') : $target;
+		let $activeEl = typeof this.activeElement === 'string' ? document.activeElement : this.activeElement;
 
 		if($target !== false){
 			let type = $target.dataset['type'];
-			switch(type){
-				case 'text' :
-				break;
-				case 'img' :
-				break;
-				case 'youtube' :
-				break;
-				case 'codepen' :
-				break;
-				case 'list_u' :
-				break;
-				case 'list_o' :
-				break;
-				case 'quote' :
-				break;
-				case 'table' :
-				break;
-				case 'codeblock' :
-				break;
-				case 'link_box' :
-				break;
-				case 'btn' :
-				break;
+
+			this.urlInput.value == '';
+			//size_100
+			switch(true){
+				case $activeEl.constructor.name === 'HTMLAnchorElement' :
+					let url = $activeEl.getAttribute('href');
+					this.urlInput.value = url;
+				case $activeEl.constructor.name === 'HTMLTableCellElement' :
+					let colNumber = parseInt($activeEl.dataset['x']) + 1;
+					let size = $target.querySelector('col:nth-child('+ colNumber +')').classList.value;
+					this.colSizeSelect.value = size;
+				case $activeEl.constructor.name === 'HTMLSpanElement' :
+				case type === 'text' :
+				case type === 'img' :
+				case type === 'youtube' :
+				case type === 'codepen' :
+				case type === 'list_u' :
+				case type === 'list_o' :
+				case type === 'quote' :
+				case type === 'table' :
+				case type === 'codeblock' :
+				case type === 'link_box' :
+				case type === 'btn' :
 			}
-			console.log($el, $target);
+			console.log($target, $activeEl);
 		}
 	}
 
