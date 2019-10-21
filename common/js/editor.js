@@ -436,6 +436,12 @@ class dragonEditor{
 				$target.classList.remove('mobile');
 				$this.viewBtn.classList.remove('act');
 			}
+
+			if(status === 'editor'){
+				// add json
+			}else{
+				$this.contentAddList.classList.add('act');
+			}
 		});
 
 		// send editor data
