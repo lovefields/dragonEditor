@@ -343,6 +343,15 @@ class dragonEditor{
 			$this.popLang.classList.toggle('hidden');
 			this.classList.toggle('act');
 
+			// go to send area
+			if(value === 'options'){
+				let nodesArr = $this.dataToArray();
+				$this.jsonForm(nodesArr);
+			// go to contents area
+			}else{
+
+			}
+
 			if($pop !== false){
 				$pop.forEach(function(item){
 					item.classList.remove('act');
@@ -354,6 +363,10 @@ class dragonEditor{
 				$this.viewBtn.classList.remove('act');
 			}
 		});
+
+		// send editor data
+		
+		// $this.getElList
 
 		// pop btns work
 		$this.popBtns.forEach(function($btn){
@@ -676,6 +689,190 @@ class dragonEditor{
 					.replace('[domain]', data.domain);
 
 		$target.insertAdjacentHTML(position, html);
+	}
+
+	dataToArray(){
+		let $contentsBox = document.querySelectorAll('.content_area'),
+			contentsItems = $contentsBox[0].childNodes,
+			contentsArr = [],
+			forIndex = 0;
+
+		contentsItems.forEach(function(item){
+			if(forIndex !== 0){
+				if(forIndex < contentsItems.length - 1){
+					if(forIndex % 2 === 1) {
+						contentsArr.push(item);
+					}
+				}
+			}
+
+			forIndex += 1;
+		});
+
+		return contentsArr;
+	}
+
+	// save json data
+	jsonForm(list){
+		let resultArr = [];
+
+		for(let i = 0; i < list.length; i++){
+			let $self = list[i],
+				obj = {};
+
+			// button
+			if($self.classList.contains('btn')){
+				obj.type = 'btn';
+				
+				switch($self.dataset.type){
+					case 'btn':
+						obj.dataType = 'btn';
+						obj.dataValue = 'image';
+						obj.textContent = 'Add on image';
+						break;
+					case 'youtube':
+						obj.dataType = 'youtube';
+						obj.dataValue = 'youtube';
+						obj.textContent = 'Add Youtube';
+						break;
+					case 'codepen':
+						obj.dataType = 'codepen';
+						obj.dataValue = 'codepen';
+						obj.textContent = 'Add Codepen';
+						break;
+					default:
+						obj.dataType = 'btn';
+						obj.dataValue = 'image';
+						obj.textContent = 'Add on image';
+						break;
+				}
+
+				obj.icon = {
+					"type" : "svg",
+					"viewBox" : "0 0 50 50",
+					"class" : ["icon"],
+					"url" : "#icon_image"
+				};
+
+			}else if($self.classList.contains('item')){
+				if($self.classList.length === 1){
+					obj = {
+						"type" : "text",
+						"dataType" : "text",
+						"isItem" : true,
+						"class" : ["item"],
+						"textContent" : $self.textContent
+					};
+				}else if($self.classList.contains('item_image')){
+					obj = {
+						"type" : "image",
+						"dataType" : "img",
+						"isItem" : true,
+						"class" : ["item", "item_image"],
+						"hasWebp" : false,
+						"size" : 600,
+						"alt" : "",
+						"src" : $self.querySelector('img').getAttribute('src'),
+						"defaultFormat" : "jpg"
+					};
+				}else if($self.classList.contains('item_video')){
+					obj = {
+						"type" : "video",
+						"dataType" : "youtube",
+						"format" : "iframe",
+						"hasWebm" : false,
+						"src" : $self.querySelector('iframe').getAttribute('src'),
+						"options" : ["allow=\"accelerometer; encrypted-media; gyroscope; picture-in-picture\"","allowfullscreen"],
+						"class" : ["item", "item_video"]
+					};
+				}else if($self.classList.contains('item_codepen')){
+					obj = {
+						"type" : "codepen",
+						"dataType" : "codepen",
+						"src" : $self.querySelector('iframe').getAttribute('src'),
+						"height" : 673,
+						"title" : "loli",
+						"options" : ["allowfullscreen"]
+					};
+				}else if($self.classList.contains('item_list')){
+					if($self.type === 'i'){
+						obj = {
+							"type" : "list",
+							"dataType" : "list",
+							"tag" : "ul",
+							"listType" : null,
+							"class" : ["item", "item_list"],
+							"child" : [
+								{
+									"class" : [],
+									"textContent" : "1"
+								}
+							]
+						};
+					}else{
+						obj = {
+							"type" : "list",
+							"dataType" : "list",
+							"tag" : "ul",
+							"listType" : null,
+							"class" : ["item", "item_list"],
+							"child" : [
+								{
+									"class" : [],
+									"textContent" : "1"
+								}
+							]
+						};
+					}
+				}else if($self.classList.contains('item_quote')){
+					obj = {
+						"type" : "quote",
+						"dataType" : "quote",
+						"class" : ["item", "item_quote"],
+						"text" : $self.querySelector('.text').textcontent,
+						"author" : $self.querySelector('.author').textcontent
+					};
+				}else if($self.classList.contains('item_table_area')){
+
+				}else if($self.classList.contains('item_codeblock')){
+					obj = {
+						"type" : "codeblock",
+						"dataType" : "codeblock",
+						"theme" : "default",
+						"language" : "text",
+						"class" : ["item", "item_codeblock"],
+						"code" : {
+							"class" : [],
+							"textContent" : $self.querySelector('code').textContent
+						}
+					};
+				}else if($self.classList.contains('link_box')){
+					obj = {
+						"type" : "linkblock",
+						"dataType" : "link_box",
+						"url" : $self.getAttribute('href'),
+						"imgSrc" : "https://dico.me/img/dico.png",
+						"title" : $self.querySelector('.text_area .link_title').textContent,
+						"description" : $self.querySelector('.text_area .link_description').textContent,
+						"domain" : $self.querySelector('.link_domain').textContent,
+						"class" : ["item", "link_box"]
+					}
+				}
+
+			}else if($self.classList.contains('title')){
+				obj = {
+					"type" : "title",
+					"dataType" : null,
+					"isItem" : false,
+					"class" : ["title"],
+					"textContent" : $self.textContent
+				};
+			}
+
+			resultArr.push(obj);
+		}
+
+		console.log(resultArr);
 	}
 
 	getLastSetOrFocus($target){
