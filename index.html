@@ -135,6 +135,24 @@
 			<path d="M26.1,22.3c-0.4,0.4-0.4,1.1,0,1.6c1.8,1.8,1.8,4.8,0,6.6L16.6,40c-1.8,1.8-4.8,1.8-6.6,0l-1.4-1.4c-1.8-1.8-1.8-4.8,0-6.6l9.5-9.5c0.4-0.4,0.4-1.1,0-1.6c-0.4-0.4-1.1-0.4-1.6,0L7,30.4c-1.3,1.3-2,3-2,4.9c0,1.8,0.7,3.6,2,4.9l1.4,1.4c1.3,1.3,3.1,2,4.9,2s3.5-0.7,4.9-2l9.5-9.5c2.7-2.7,2.7-7.1,0-9.7C27.3,21.9,26.6,21.9,26.1,22.3z"/>
 			<path d="M43,9.8l-1.4-1.4c-2.7-2.7-7.1-2.7-9.7,0l-9.5,9.5c-2.7,2.7-2.7,7.1,0,9.7c0.4,0.4,1.1,0.4,1.6,0s0.4-1.1,0-1.6c-1.8-1.8-1.8-4.8,0-6.6l9.5-9.5c1.8-1.8,4.8-1.8,6.6,0l1.4,1.4c1.8,1.8,1.8,4.8,0,6.6l-9.5,9.5c-0.4,0.4-0.4,1.1,0,1.6c0.2,0.2,0.5,0.3,0.8,0.3c0.3,0,0.6-0.1,0.8-0.3l9.5-9.5c1.3-1.3,2-3,2-4.9S44.3,11.1,43,9.8z"/>
 		</g>
+		<g id="icon_align_left">
+			<rect x="2" y="2" width="10" height="6"></rect>
+			<rect x="2" y="12" width="21" height="6"></rect>
+			<rect x="2" y="22" width="14" height="6"></rect>
+			<rect x="2" y="32" width="36" height="6"></rect>
+		</g>
+		<g id="icon_align_center">
+			<rect x="15" y="2" width="10" height="6"></rect>
+			<rect x="10" y="12" width="20" height="6"></rect>
+			<rect x="13" y="22" width="14" height="6"></rect>
+			<rect x="2" y="32" width="36" height="6"></rect>
+		</g>
+		<g id="icon_align_right">
+			<rect x="28" y="2" width="10" height="6"></rect>
+			<rect x="17" y="12" width="21" height="6"></rect>
+			<rect x="24" y="22" width="14" height="6"></rect>
+			<rect x="2" y="32" width="36" height="6"></rect>
+		</g>
 	</defs>
 </svg>
 <svg viewBox="0 0 58 90" class="hidden">
@@ -304,10 +322,10 @@
 						<use class="path" xlink:href="#icon_codepen" href="#icon_codepen" />
 					</svg>Add Codepen
 				</div>
-				<ul class="item item_list" data-type="list">
+				<ul class="item item_list" data-type="list_u">
 					<li contenteditable="true">1</li>
 				</ul>
-				<ol type="i" class="item item_list" data-type="list">
+				<ol type="i" class="item item_list" data-type="list_o">
 					<li contenteditable="true"></li>
 				</ol>
 				<blockquote class="item item_quote" data-type="quote">
@@ -338,18 +356,24 @@
 							</tr>
 						</tbody>
 					</table>
+					<button class="btn btn_col_add">Add col</button>
+					<button class="btn btn_col_del">Remove col</button>
+					<button class="btn btn_row_add">Add row</button>
+					<button class="btn btn_row_del">Remove row</button>
 				</div>
 				<pre class="item item_codeblock" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>
-				<a href="https://dico.me" target="_blank" class="item link_box clearfix" data-type="link_box">
-					<div class="img_area">
-						<img src="https://dico.me/img/dico.png" alt="미리보기 이미지" class="img">
-					</div>
-					<div class="text_area">
-						<p class="link_title ellipsis">Docker Dockerfile 생성부터 Container 실행까지 - Dico</p>
-						<p class="link_description ellipsis">Docker dockerfile build and run</p>
-						<p class="link_domain">dico.me</p>
-					</div>
-				</a>
+				<div class="item" data-type="link_box">
+					<a href="https://dico.me" target="_blank" class="link_box clearfix" draggable="false">
+						<div class="img_area">
+							<img src="https://dico.me/img/dico.png" alt="미리보기 이미지" class="img" draggable="false">
+						</div>
+						<div class="text_area">
+							<p class="link_title ellipsis">Docker Dockerfile 생성부터 Container 실행까지 - Dico</p>
+							<p class="link_description ellipsis">Docker dockerfile build and run</p>
+							<p class="link_domain">dico.me</p>
+						</div>
+					</a>
+				</div>
 			</div>
 
 			<form action="#" enctype="multipart/form-data" method="post" class="options_area">
@@ -413,18 +437,18 @@
 		</div>
 
 		<div class="pop pop_options" data-type="text">
-			<label class="col select_area" data-group="text,list,table,codeblock">
+			<label class="col select_area" data-group="text,list_u,list_o,table,codeblock">
 				<select class="select select_font_size">
-					<option value="none">Size(Default)</option>
-					<option value="size_h1">h1(2x)</option>
-					<option value="size_h2">h2(1.5x)</option>
-					<option value="size_h3">h3(1.33x)</option>
-					<option value="size_h4">h4(1.17x)</option>
-					<option value="size_h5">h5(0.83x)</option>
+					<option value="none">16px</option>
 					<option value="size_h6">h6(0.67x)</option>
+					<option value="size_h5">h5(0.83x)</option>
+					<option value="size_h4">h4(1.17x)</option>
+					<option value="size_h3">h3(1.33x)</option>
+					<option value="size_h2">h2(1.5x)</option>
+					<option value="size_h1">h1(2x)</option>
 				</select>
 			</label>
-			<label class="col select_area" data-group="text,list,table,word">
+			<label class="col select_area" data-group="text,list_u,list_o,table,word">
 				<select class="select select_color">
 					<option value="none">Color(Default)</option>
 					<option value="color_crimson">Crimson(#dc143c)</option>
@@ -438,15 +462,25 @@
 					<option value="color_white">White(#fff)</option>
 				</select>
 			</label>
-			<label class="col select_area" data-group="text,list,table">
-				<select class="select select_font_align">
-					<option value="none">Align</option>
-					<option value="align_left">left</option>
-					<option value="align_center">center</option>
-					<option value="align_right">right</option>
-				</select>
-			</label>
-			<label class="col select_area" data-group="list">
+			<button class="col btn_text_algin blind" data-group="text,list_u,list_o,table" data-value="align_left">
+				<svg class="icon" viewbox="0 0 50 50">
+					<use class="path" xlink:href="#icon_align_left" href="#icon_align_left" />
+				</svg>
+				Align left
+			</button>
+			<button class="col btn_text_algin blind" data-group="text,list_u,list_o,table" data-value="align_center">
+				<svg class="icon" viewbox="0 0 50 50">
+					<use class="path" xlink:href="#icon_align_center" href="#icon_align_center" />
+				</svg>
+				Align center
+			</button>
+			<button class="col btn_text_algin blind" data-group="text,list_u,list_o,table" data-value="align_right">
+				<svg class="icon" viewbox="0 0 50 50">
+					<use class="path" xlink:href="#icon_align_right" href="#icon_align_right" />
+				</svg>
+				Align right
+			</button>
+			<label class="col select_area" data-group="list_o">
 				<select class="select select_list_type">
 					<option value="none">List Type</option>
 					<option value="1">Numbered (1)</option>
@@ -515,31 +549,31 @@
 			<button class="col btn_url_change" data-group="youtube,codepen">Change</button>
 			<button class="col btn_url_link" data-group="word">Link</button>
 			<button class="col btn_url_unlink" data-group="word,unlink">Unlink</button>
-			<button class="col btn_bold blind" data-group="text,list,table,word">
+			<button class="col btn_bold blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_bold" href="#icon_bold" />
 				</svg>
 				굵게
 			</button>
-			<button class="col btn_italic blind" data-group="text,list,table,word">
+			<button class="col btn_italic blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_italic" href="#icon_italic" />
 				</svg>
 				기울게
 			</button>
-			<button class="col btn_underline blind" data-group="text,list,table,word">
+			<button class="col btn_underline blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_underline" href="#icon_underline" />
 				</svg>
 				밑줄
 			</button>
-			<button class="col btn_strike blind" data-group="text,list,table,word">
+			<button class="col btn_strike blind" data-group="text,list_u,list_o,table,word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_strike" href="#icon_strike" />
 				</svg>
 				취소선
 			</button>
-			<button class="col btn_wordblock blind" data-group="text,list,table,word">
+			<button class="col btn_wordblock blind" data-group="word">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
 				</svg>

@@ -74,13 +74,14 @@ class dragonEditor{
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
 		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker lastset" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
-		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="list">[child]</[tag]>';
+		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
-		$this.HTMLTable = '<div class="item item_table_area lastset" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><thead><tr><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th><th contenteditable="true"></th></tr></thead><tbody><tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr></tbody></table></div></div>';
+		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
-		$this.HTMLLinkBox = '<a href="[url]" target="_blank" class="item link_box lastset" data-type="link_box"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a>';
+		$this.HTMLLinkBox = '<div class="item" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
+		$this.HTMLPositionBar = '<div class="position_bar"></div>';
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 		$this.numberReg = new RegExp('[0-9]', 'g');
@@ -102,8 +103,6 @@ class dragonEditor{
 
 	bindingEvent(){
 		let $this = this;
-
-		// resize
 		if($this.windowWidth > $this.changePint){
 			$this.contentAddList.classList.add('act');
 		}else if($this.windowWidth < $this.changePint){
@@ -183,13 +182,17 @@ class dragonEditor{
 				if(e.key === 'z'){
 					if(ctrl === true){
 						e.preventDefault();
-						actionPrev();
+						$this.actionPrev();
 					}else if(ctrl === true && e.shiftKey === true){
 						e.preventDefault();
-						actionNext();
+						$this.actionNext();
 					}
 				}
 			}
+		});
+
+		document.addEventListener('paste', function(e){
+			console.log('copy', e);
 		});
 
 		window.addEventListener('scroll', function(e){
@@ -199,9 +202,25 @@ class dragonEditor{
 			//}
 		});
 
+		let setDrag;
+		const dragStartFn = function(e){
+			let el = this;
+			$this.dragStartEvent(e, el);
+		};
+		const dragOverFn = function(e){
+			clearTimeout(setDrag);
+			let el = this;
+			setDrag = setTimeout(() => {
+				$this.dragOverEvent(e, el);
+			}, 10);
+		};
+		const dragEndFn = function(e){
+			let el = this;
+			$this.dragEndEvent(e, el);
+		};
 		$this.contentArea.addEventListener('mouseup', function(e){
-			if(e.button === 0){
-				let $childs = $this.getElList($this.contentAreaName + ' > *');
+			if(e.button === 0 || e.isTrusted === false){
+				let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
 
 				$this.contentCheckByMouse(e.target, 'mouseup');
 				$this.checkOptionsValue(e.target);
@@ -210,19 +229,20 @@ class dragonEditor{
 				$this.clickCehck = false;
 				$childs.forEach(function($child){
 					$child.removeAttribute('draggable');
-					$child.removeEventListener('dragstart', $this.dragStartEvent, true);
-					$child.removeEventListener('dragover', $this.dragOverEvent, true);
-					$child.removeEventListener('dragend', $this.dragEndEvent, true);
+					$child.removeEventListener('dragstart', dragStartFn);
+					$child.removeEventListener('dragover', dragOverFn);
+					$child.removeEventListener('dragend', dragEndFn);
 				});
 			}
 		});
 
 		$this.contentArea.addEventListener('mousedown', function(e){
+			let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
 			let $target = $this.findParent(e.target, 'item');
-			$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
+				$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
 			let event = document.createEvent('HTMLEvents');
-			event.initEvent('dragover', true, true);
-			event.eventName = 'dragover';
+				event.initEvent('dragstart', true, true);
+				event.eventName = 'dragstart';
 
 			// 단어 선택 초기화
 			if ($this.selection.empty){
@@ -238,18 +258,72 @@ class dragonEditor{
 			if($target !== false){
 				setTimeout(function(){
 					if($this.clickCehck === true){
-						$target.setAttribute('draggable', true);
-						$target.addEventListener('dragstart', $this.dragStartEvent, true);
-						$target.addEventListener('dragover', $this.dragOverEvent, true);
-						$target.addEventListener('dragend', $this.dragEndEvent, true);
+						$childs.forEach(function($child){
+							$child.setAttribute('draggable', true);
+							$child.addEventListener('dragstart', dragStartFn);
+							$child.addEventListener('dragover', dragOverFn);
+							$child.addEventListener('dragend', dragEndFn);
+						});
 						$target.dispatchEvent(event);
 					}
 				}, 800);
 			}
 		});
 
+		// $this.contentArea.addEventListener('touchstart', function(e){
+		// 	let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
+		// 	let $target = $this.findParent(e.target, 'item');
+		// 		$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
+		// 	let event = document.createEvent('HTMLEvents');
+		// 		event.initEvent('touchmove', true, true);
+		// 		event.eventName = 'touchmove';
+
+		// 	// 단어 선택 초기화
+		// 	if ($this.selection.empty){
+		// 		$this.selection.empty();
+		// 	}else if($this.selection.removeAllRanges){
+		// 		$this.selection.removeAllRanges();
+		// 	}
+		// 	$this.startTextCursor = 0;
+		// 	$this.endTextCursor = 0;
+
+		// 	// 드레그 이벤트 바인딩 및 0.8초뒤 실행
+		// 	$this.clickCehck = true;
+		// 	if($target !== false){
+		// 		setTimeout(function(){
+		// 			if($this.clickCehck === true){
+		// 				$childs.forEach(function($child){
+		// 					$child.addEventListener('touchmove', dragOverFn);
+		// 				});
+		// 				$target.dispatchEvent(event);
+		// 			}
+		// 		}, 800);
+		// 	}
+		// });
+
+		// $this.contentArea.addEventListener('toucend', function(e){
+		// 	if(e.button === 0 || e.isTrusted === false){
+		// 		let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
+
+		// 		$this.contentCheckByMouse(e.target, 'mouseup');
+		// 		$this.checkOptionsValue(e.target);
+				
+		// 		// 드레그 이벤트 언바인딩
+		// 		$this.clickCehck = false;
+		// 		$childs.forEach(function($child){
+		// 			$child.removeEventListener('touchmove', dragOverFn);
+		// 		});
+		// 	}
+		// });
+
 		$this.contentArea.addEventListener('mouseover', function(e){
 			if($this.windowWidth > $this.changePint){
+				let $junk = $this.getElList('.position_bar');
+				if($junk !== false){
+					$junk.forEach(function($bar){
+						$bar.remove();
+					});
+				}
 				$this.contentCheckByMouse(e.target, 'mouseover');
 				$this.checkOptionsValue(e.target);
 			}
@@ -361,6 +435,12 @@ class dragonEditor{
 			if($target.classList.contains('mobile') === true){
 				$target.classList.remove('mobile');
 				$this.viewBtn.classList.remove('act');
+			}
+
+			if(status === 'editor'){
+				// add json
+			}else{
+				$this.contentAddList.classList.add('act');
 			}
 		});
 
@@ -653,9 +733,16 @@ class dragonEditor{
 	}
 
 	addList($target, tag, type = null, content = ''){
+		let dataType;
+		if(tag === 'ol'){
+			dataType = 'list_o';
+		}else{
+			dataType = 'list_u';
+		}
 		let attribute = type === null ? '' : 'type="'+ type +'"';
 		let child = this.HTMLChildList.replace(/\[content\]/g, content);
 		let html = this.HTMLList.replace(/\[tag\]/g, tag)
+					.replace('[dataType]', dataType)
 					.replace('[type]', attribute)
 					.replace('[child]', child);
 
@@ -953,13 +1040,47 @@ class dragonEditor{
 					type = 'word';
 				break;
 			}
+			if(eventType === 'mouseup'){
+				this.activeElement = target;
+			}
 			this.setLastElement($target, $children);
 			this.openOptionPop(offset, type);
 		}
 	}
 
-	checkOptionsValue(target){
-		console.log(target);
+	checkOptionsValue($el){
+		let $target = this.findParent($el, 'item');
+			$target = $target === false ? this.findParent($el, 'btn') : $target;
+		let $activeEl = typeof this.activeElement === 'string' ? document.activeElement : this.activeElement;
+
+		if($target !== false){
+			let type = $target.dataset['type'];
+
+			this.urlInput.value == '';
+			//size_100
+			switch(true){
+				case $activeEl.constructor.name === 'HTMLAnchorElement' :
+					let url = $activeEl.getAttribute('href');
+					this.urlInput.value = url;
+				case $activeEl.constructor.name === 'HTMLTableCellElement' :
+					let colNumber = parseInt($activeEl.dataset['x']) + 1;
+					let size = $target.querySelector('col:nth-child('+ colNumber +')').classList.value;
+					this.colSizeSelect.value = size;
+				case $activeEl.constructor.name === 'HTMLSpanElement' :
+				case type === 'text' :
+				case type === 'img' :
+				case type === 'youtube' :
+				case type === 'codepen' :
+				case type === 'list_u' :
+				case type === 'list_o' :
+				case type === 'quote' :
+				case type === 'table' :
+				case type === 'codeblock' :
+				case type === 'link_box' :
+				case type === 'btn' :
+			}
+			console.log($target, $activeEl);
+		}
 	}
 
 	wrapElement(type, url = null){
@@ -1002,24 +1123,40 @@ class dragonEditor{
 
 	}
 
-	dragStartEvent(e){ // event function
-		console.log('start',e , this);
-		this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
+	dragStartEvent(e, el){ // event function
+		el.insertAdjacentHTML('afterend', this.HTMLPositionBar);
 	}
 
-	dragOverEvent(e){ // event function
-		console.log(e.target);
-		//this.insertAdjacentHTML('afterend', '<div class="position_bar"></div>');
-		console.log(e);
+	dragOverEvent(e, el){ // event function
+		let $bar = this.getElList('.position_bar');
+		let $target = this.findParent(e.target, 'item');
+			$target = $target === false ? this.findParent(e.target, 'btn') : $target;
+
+		if($bar !== false){
+			$bar.forEach(function($item){
+				$item.remove();
+			});
+		}
+		if($target !== false){
+			$target.insertAdjacentHTML('afterend', this.HTMLPositionBar);
+		}
+		console.log('move');
 	}
 
-	dragEndEvent(e){ // event function
-		let $bar = document.querySelector('.position_bar');
+	dragEndEvent(e, el){ // event function
+		let event = document.createEvent('HTMLEvents');
+			event.initEvent('mouseup', true, true);
+			event.eventName = 'mouseup';
+		let $bar = this.getEl('.position_bar');
+		let HTML = el.outerHTML;
 
 
-		this.removeAttribute('draggable');
-		$bar.remove();
-		console.log('end');
+		if($bar !== false){
+			$bar.insertAdjacentHTML('afterend', HTML);
+			$bar.remove();
+			el.remove();
+		}
+		el.removeAttribute('draggable');
+		this.contentArea.dispatchEvent(event);
 	}
-
 }
