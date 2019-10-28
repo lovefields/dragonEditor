@@ -85,6 +85,9 @@ class dragonEditor{
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 		$this.numberReg = new RegExp('[0-9]', 'g');
+		$this.colorClassReg = new RegExp('color_.*', 'g');
+		$this.sizeClassReg = new RegExp('size_.*', 'g');
+		$this.alignClassReg = new RegExp('align_.*', 'g');
 
 		$this.messageNotSelecImage = typeof options.messageNotSelecImage !== 'string' ? `You didn't select image` : options.messageNotSelecImage;
 		$this.messageWrongURL = typeof options.messageWrongURL !== 'string' ? `Please enter a valid URL.\nYou must enter http or https first.` : options.messageWrongURL;
@@ -103,6 +106,8 @@ class dragonEditor{
 
 	bindingEvent(){
 		let $this = this;
+		$this.activeElement = $this.wrap;
+
 		if($this.windowWidth > $this.changePint){
 			$this.contentAddList.classList.add('act');
 		}else if($this.windowWidth < $this.changePint){
@@ -316,17 +321,21 @@ class dragonEditor{
 		// 	}
 		// });
 
+		let overFn;
 		$this.contentArea.addEventListener('mouseover', function(e){
-			if($this.windowWidth > $this.changePint){
-				let $junk = $this.getElList('.position_bar');
-				if($junk !== false){
-					$junk.forEach(function($bar){
-						$bar.remove();
-					});
+			clearTimeout(overFn);
+			overFn = setTimeout(() => {
+				if($this.windowWidth > $this.changePint){
+					let $junk = $this.getElList('.position_bar');
+					if($junk !== false){
+						$junk.forEach(function($bar){
+							$bar.remove();
+						});
+					}
+					$this.contentCheckByMouse(e.target, 'mouseover');
+					$this.checkOptionsValue(e.target);
 				}
-				$this.contentCheckByMouse(e.target, 'mouseover');
-				$this.checkOptionsValue(e.target);
-			}
+			}, 250);
 		});
 
 		$this.editorSection.addEventListener('mouseleave', function(e){
@@ -1012,7 +1021,6 @@ class dragonEditor{
 	}
 
 	contentCheckByMouse(target, eventType){
-		this.activeElement = '';
 		let $target = this.getLastSetOrFocus(target);
 		let base = this.selection.baseOffset;
 		let extent = this.selection.extentOffset;
@@ -1051,22 +1059,26 @@ class dragonEditor{
 	checkOptionsValue($el){
 		let $target = this.findParent($el, 'item');
 			$target = $target === false ? this.findParent($el, 'btn') : $target;
-		let $activeEl = typeof this.activeElement === 'string' ? document.activeElement : this.activeElement;
+		let $activeEl = this.activeElement;
 
 		if($target !== false){
 			let type = $target.dataset['type'];
+			let activeElName = $activeEl.constructor.name;
 
 			this.urlInput.value == '';
 			//size_100
 			switch(true){
-				case $activeEl.constructor.name === 'HTMLAnchorElement' :
+				case activeElName === 'HTMLAnchorElement' :
 					let url = $activeEl.getAttribute('href');
 					this.urlInput.value = url;
-				case $activeEl.constructor.name === 'HTMLTableCellElement' :
+				case activeElName === 'HTMLTableCellElement' && $target.constructor.name === 'HTMLTableCellElement':
 					let colNumber = parseInt($activeEl.dataset['x']) + 1;
 					let size = $target.querySelector('col:nth-child('+ colNumber +')').classList.value;
 					this.colSizeSelect.value = size;
-				case $activeEl.constructor.name === 'HTMLSpanElement' :
+				case activeElName === 'HTMLSpanElement' || activeElName === 'HTMLElement':
+					let classList = [...$activeEl.classList];
+					console.log(classList, $activeEl);
+					let className = this.getClassName(classList, 'color');
 				case type === 'text' :
 				case type === 'img' :
 				case type === 'youtube' :
@@ -1080,6 +1092,39 @@ class dragonEditor{
 				case type === 'btn' :
 			}
 			console.log($target, $activeEl);
+		}
+	}
+
+	getClassName(list, type){
+		let count = list.length;
+		let number = -1;
+
+		console.log(count );
+		if(count > 0){
+			for(let i = 0;i <= count;i += 1){
+				let check;
+
+				switch(type){
+					case 'color' : 
+						check = this.colorClassReg.test(list[i]);
+					break;
+					case 'size' : 
+						check = this.sizeClassReg.test(list[i]);
+					break;
+					case 'align' : 
+						check = this.alignClassReg.test(list[i]);
+					break;
+				}
+
+				if(check === true){
+					number = parseInt(i);
+					break;
+				}
+			}
+
+			console.log(number);
+		}else{
+			return false;
 		}
 	}
 
@@ -1159,4 +1204,29 @@ class dragonEditor{
 		el.removeAttribute('draggable');
 		this.contentArea.dispatchEvent(event);
 	}
+}
+
+function ajax(method,url,data,type,fn){
+	let formData = new FormData();
+	let xmlhttp = new XMLHttpRequest();
+
+	if(type === 'json'){
+		for(let key in data){
+			formData.append(key, data[key]);
+		}
+
+		data = formData;
+	}
+
+	xmlhttp.open(method, url);
+
+	xmlhttp.onreadystatechange = function(){
+		if(xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status === 200){
+			httpData = xmlhttp.responseText;
+			let item = JSON.parse(httpData);
+			fn(item);
+		}
+	}
+
+	xmlhttp.send(data);
 }
