@@ -85,9 +85,9 @@ class dragonEditor{
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 		$this.numberReg = new RegExp('[0-9]', 'g');
-		$this.colorClassReg = new RegExp('color_.*', 'g');
-		$this.sizeClassReg = new RegExp('size_.*', 'g');
-		$this.alignClassReg = new RegExp('align_.*', 'g');
+		$this.colorClassReg = new RegExp('color_.*', 'i');
+		$this.sizeClassReg = new RegExp('size_.*', 'i');
+		$this.alignClassReg = new RegExp('align_.*', 'i');
 
 		$this.messageNotSelecImage = typeof options.messageNotSelecImage !== 'string' ? `You didn't select image` : options.messageNotSelecImage;
 		$this.messageWrongURL = typeof options.messageWrongURL !== 'string' ? `Please enter a valid URL.\nYou must enter http or https first.` : options.messageWrongURL;
@@ -223,6 +223,7 @@ class dragonEditor{
 			let el = this;
 			$this.dragEndEvent(e, el);
 		};
+		/*
 		$this.contentArea.addEventListener('mouseup', function(e){
 			if(e.button === 0 || e.isTrusted === false){
 				let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
@@ -272,6 +273,16 @@ class dragonEditor{
 						$target.dispatchEvent(event);
 					}
 				}, 800);
+			}
+		});
+		*/
+
+		$this.contentArea.addEventListener('click', function(e){
+			if(e.button === 0 || e.isTrusted === false){
+				let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
+
+				$this.contentCheckByMouse(e.target, 'click');
+				$this.checkOptionsValue(e.target);
 			}
 		});
 
@@ -1032,7 +1043,7 @@ class dragonEditor{
 			let isBtn = $target.classList.contains('btn');
 
 			switch(true){
-				case isBtn === true && eventType === 'mouseup' : 
+				case isBtn === true && eventType === 'click' : 
 					if(typeof $target.dataset['value'] !== 'undefined'){
 						let value = $target.dataset['value'];
 						if(value === 'image'){
@@ -1048,7 +1059,7 @@ class dragonEditor{
 					type = 'word';
 				break;
 			}
-			if(eventType === 'mouseup'){
+			if(eventType === 'click'){
 				this.activeElement = target;
 			}
 			this.setLastElement($target, $children);
@@ -1098,23 +1109,23 @@ class dragonEditor{
 	getClassName(list, type){
 		let count = list.length;
 		let number = -1;
+		let regFn = {
+			'color' : (i) => {
+				return this.colorClassReg.test(list[i]);
+			},
+			'size' : (i) => {
+				return this.colorClassReg.test(list[i]);
+			},
+			'align' : (i) => {
+				return this.colorClassReg.test(list[i]);
+			}
+		};
 
 		console.log(count );
 		if(count > 0){
-			for(let i = 0;i <= count;i += 1){
-				let check;
-
-				switch(type){
-					case 'color' : 
-						check = this.colorClassReg.test(list[i]);
-					break;
-					case 'size' : 
-						check = this.sizeClassReg.test(list[i]);
-					break;
-					case 'align' : 
-						check = this.alignClassReg.test(list[i]);
-					break;
-				}
+			for(let i = 0;i < count;i += 1){
+				let check = regFn[type](i);
+				console.log(type, check);
 
 				if(check === true){
 					number = parseInt(i);

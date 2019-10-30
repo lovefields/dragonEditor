@@ -364,7 +364,7 @@
 .pop_media .btn_add_media:empty{height:0}
 .pop_media .btn_add_media_list{margin:50px auto 0}
 
-.pop_sticker{display:block;top:0;right:0;bottom:0;width:300px;background:#fff;border-left:1px solid #999;overflow-y:scroll;transform:translateX(301px)}
+.pop_sticker{display:block;top:0;right:0;bottom:0;width:300px;background:#fff;border-left:1px solid #999;overflow-y:scroll;transform:translateX(302px)}
 .pop_sticker.act{transform:translateX(0)}
 .pop_sticker .media_list{display:flex;flex-wrap:wrap}
 .pop_sticker .btn{flex:1 0 70px;margin:10px}
