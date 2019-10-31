@@ -19,6 +19,7 @@ class dragonEditor{
 		$this.windowHeight = window.innerHeight;
 		$this.changePint = typeof options.changePint !== 'number' ? 1120 : options.changePint;
 		$this.maxImageWidth = typeof options.maxImageWidth !== 'number' ? 800 : options.maxImageWidth;
+		$this.maxCodepenHeight = typeof options.maxCodepenHeight !== 'number' ? 1000 : options.maxCodepenHeight;
 		$this.clickCehck = false;
 
 		$this.mackLinkBoxType = typeof options.mackLinkBoxType !== 'self' ? 'self' : 'api';
@@ -51,15 +52,16 @@ class dragonEditor{
 		$this.popCloseBtns = $this.checkOptionElement(options.popCloseBtns, '.btn_pop_close', 'multi');
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.fontSizeSelect = $this.checkOptionElement(options.fontSizeSelect, '.select_font_size');
-		$this.colorSelect = $this.checkOptionElement(options.colorSelect, '.select_color');
-		$this.alignSelect = $this.checkOptionElement(options.alignSelect, '.select_font_align');
+		$this.btnColorSelect = $this.checkOptionElement(options.colorSelect, '.select_color');
+		//$this.alignSelect = $this.checkOptionElement(options.alignSelect, '.select_font_align');
 		$this.listTypeSelect = $this.checkOptionElement(options.listTypeSelect, '.select_list_type');
 		$this.colSizeSelect = $this.checkOptionElement(options.colSizeSelect, '.select_col');
 		$this.themeSelect = $this.checkOptionElement(options.themeSelect, '.select_theme');
 		$this.languageSelect = $this.checkOptionElement(options.languageSelect, '.select_language');
 		$this.changeThBtn = $this.checkOptionElement(options.changeThBtn, '.btn_change_th');
 		$this.changeTdBtn = $this.checkOptionElement(options.changeTdBtn, '.btn_change_td');
-		$this.sizeInput = $this.checkOptionElement(options.sizeInput, '.options_size .value');
+		$this.widthInput = $this.checkOptionElement(options.widthInput, '.options_width .value');
+		$this.heightInput = $this.checkOptionElement(options.heightInput, '.options_height .value');
 		$this.urlInput = $this.checkOptionElement(options.urlInput, '.options_url .value');
 		$this.changeUrlBtn = $this.checkOptionElement(options.changeUrlBtn, '.btn_url_change');
 		$this.addLinkBtn = $this.checkOptionElement(options.addLinkBtn, '.btn_url_link');
@@ -85,10 +87,14 @@ class dragonEditor{
 
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
 		$this.numberReg = new RegExp('[0-9]', 'g');
-		$this.colorClassReg = new RegExp('color_.*', 'i');
-		$this.sizeClassReg = new RegExp('size_.*', 'i');
-		$this.alignClassReg = new RegExp('align_.*', 'i');
+		$this.classReg = {
+			'color' : new RegExp('color_\\w*', 'i'),
+			'size' : new RegExp('size_[0-9]*', 'i'),
+			'align' : new RegExp('align_(left|center|right)*', 'i')
+		};
+		$this.classList = ['color', 'size', 'align'];
 
+		$this.messageNotSelecCodepen = typeof options.messageNotSelecCodepen !== 'string' ? `You didn't select Codepen` : options.messageNotSelecCodepen;
 		$this.messageNotSelecImage = typeof options.messageNotSelecImage !== 'string' ? `You didn't select image` : options.messageNotSelecImage;
 		$this.messageWrongURL = typeof options.messageWrongURL !== 'string' ? `Please enter a valid URL.\nYou must enter http or https first.` : options.messageWrongURL;
 		$this.messageNotSelect = typeof options.messageNotSelect !== 'string' ? `No element selected Please try again.` : options.messageNotSelect;
@@ -162,7 +168,7 @@ class dragonEditor{
 					});
 
 					$this.popBtns.forEach(function(btn){
-						if($btnPop !== btn){
+						if($btnPop !== btn && !btn.classList.contains('select_color')){
 							btn.classList.remove('act');
 						}
 					});
@@ -473,14 +479,19 @@ class dragonEditor{
 			$btn.addEventListener('click', function(){
 				let status = $this.editorSection.dataset['status'];
 				let target = this.dataset['target'];
+				let type = this.dataset['type'];
 				let $el = $this.getEl(target);
+				let btnOffset = this.getBoundingClientRect();
+				let optionsOffset = $this.popOptions.getBoundingClientRect();
 
 				if(status !== 'options'){
-					this.classList.toggle('act');
 					$el.removeAttribute('style');
 					$el.classList.toggle('act');
-				}else{
-					return false;
+					if(type === 'position' && $this.windowWidth > $this.changePint){
+						$el.style.cssText = `transform:translate(${btnOffset.left - optionsOffset.left}px, 30px)`;
+					}else{
+						this.classList.toggle('act');
+					}
 				}
 			});
 		});
@@ -494,8 +505,6 @@ class dragonEditor{
 				if(status !== 'options'){
 					$el.removeAttribute('style');
 					$el.classList.toggle('act');
-				}else{
-					return false;
 				}
 			});
 		});
@@ -611,9 +620,9 @@ class dragonEditor{
 			}
 		});
 
-		// image size
+		// image width
 		let imageSizeFn;
-		$this.sizeInput.addEventListener('keyup', function(e){
+		$this.widthInput.addEventListener('keyup', function(e){
 			clearTimeout(imageSizeFn);
 			imageSizeFn = setTimeout(() => {
 				if($this.numberReg.test(e.key) || e.key === 'Backspace'){
@@ -639,6 +648,87 @@ class dragonEditor{
 				}
 			}, 250);
 		});
+
+		// codepen height
+		let codepenSizeFn;
+		$this.heightInput.addEventListener('keyup', function(e){
+			clearTimeout(codepenSizeFn);
+			codepenSizeFn = setTimeout(() => {
+				if($this.numberReg.test(e.key) || e.key === 'Backspace'){
+					let value = this.value;
+					let $el = $this.getEl('.lastset .iframe');
+					let massage = $this.messageExceedSize.replace('[size]', $this.maxCodepenHeight);
+					
+					if($el !== false){
+						if(value <= $this.maxCodepenHeight){
+							$el.setAttribute('height', value);
+						}else{
+							alert(massage);
+							this.value = $this.maxCodepenHeight;
+							$el.setAttribute('height', $this.maxCodepenHeight);
+						}
+						let offset = $this.getEl('.lastset').getBoundingClientRect();
+						$this.openOptionPop(offset, 'codepen');
+					}else{
+						alert($this.messageNotSelecCodepen);
+					}
+				}else if(e.key !== 'Backspace'){
+					e.preventDefault();
+				}
+			}, 250);
+		});
+
+		// list type
+		$this.listTypeSelect.addEventListener('change', function(){
+			let value = this.value;
+			let $el = $this.getEl('.lastset');
+
+			if($el !== false){
+				$el.setAttribute('type', value);
+			}
+		});
+
+		// col size
+		$this.colSizeSelect.addEventListener('change', function(){
+			let value = this.value;
+			let elName = $this.activeElement.constructor.name
+			let $el = $this.getEl('.lastset');
+
+			if((elName === 'HTMLTableCellElement' || elName === 'HTMLTableCaptionElement') && $el !== false){
+				let x = parseInt($this.activeElement.dataset['x']) +1
+				let col = $el.querySelector(`col:nth-child(${x})`);
+				let className = $this.getClassName(col.classList.value, 'size');
+
+				col.classList.remove(className);
+				col.classList.add(value);
+			}
+		});
+
+		// codeblock theme
+		$this.themeSelect.addEventListener('change', function(){
+			let value = this.value;
+			let $el = $this.getEl('.lastset');
+
+			if($el !== false){
+				$el.dataset['theme'] = value;
+			}
+		});
+
+		// codeblock language
+		$this.languageSelect.addEventListener('change', function(){
+			let value = this.value;
+			let $el = $this.getEl('.lastset');
+
+			if($el !== false){
+				let code = $el.childNodes[0];
+
+				$el.dataset['lang'] = value;
+				code.classList.value = '';
+				code.classList.add(value);
+				hljs.highlightBlock(code);
+			}
+		});
+
 
 
 
@@ -1027,6 +1117,7 @@ class dragonEditor{
 		}
 
 		this.popOptions.classList.add('act');
+		this.popOptions.querySelector('.pop').classList.remove('act');
 		let x =  (this.windowWidth - this.popOptions.getBoundingClientRect().width) / 2;
 		this.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
 	}
@@ -1075,67 +1166,140 @@ class dragonEditor{
 		if($target !== false){
 			let type = $target.dataset['type'];
 			let activeElName = $activeEl.constructor.name;
+			let targetClassList = $target.classList.value;
+			let activeClassList = $activeEl.classList.value;
 
 			this.urlInput.value == '';
 			//size_100
+			switch(type){
+				case 'text' :
+					let colorClass = this.getClassName(targetClassList, 'color');
+					let sizeClass = this.getClassName(targetClassList, 'size');
+
+					if(colorClass !== ''){
+						this.btnColorSelect.dataset['class'] = colorClass;
+					}else{
+						this.btnColorSelect.dataset['class'] = 'default';
+					}
+
+					if(sizeClass !== ''){
+						this.fontSizeSelect.value = sizeClass;
+					}else{
+						this.fontSizeSelect.value = 'default';
+					}
+				break;
+				case 'img' :
+					let size = $target.querySelector('.img').getAttribute('width');
+					this.widthInput.value = size;
+				break;
+				case 'youtube' :
+					if($target.classList.contains('btn') === false){
+						let src = $target.querySelector('.video').getAttribute('src');
+						this.urlInput.value = src;
+					}else{
+						this.urlInput.value = '';
+					}
+				break;
+				case 'codepen' :
+					if($target.classList.contains('btn') === false){
+						let $el = $target.querySelector('.iframe');
+						let src = $el.getAttribute('src');
+						let height = $el.getAttribute('height');
+						this.urlInput.value = src;
+						this.heightInput.value = height;
+					}else{
+						this.urlInput.value = '';
+						this.heightInput.value = '';
+					}
+				break;
+				case 'list_o' :
+					let listType = $target.getAttribute('type');
+					this.listTypeSelect.value = listType;
+				break;
+				case 'codeblock' :
+					let theme = $target.dataset['theme'];
+					let lang = $target.dataset['lang'];
+					let codeSizeClass = this.getClassName(targetClassList, 'size');
+
+					if(codeSizeClass !== ''){
+						this.fontSizeSelect.value = codeSizeClass;
+					}else{
+						this.fontSizeSelect.value = 'default';
+					}
+
+					this.themeSelect.value = theme;
+					this.languageSelect.value = lang;
+				break;
+			}
+
 			switch(true){
 				case activeElName === 'HTMLAnchorElement' :
 					let url = $activeEl.getAttribute('href');
 					this.urlInput.value = url;
-				case activeElName === 'HTMLTableCellElement' && $target.constructor.name === 'HTMLTableCellElement':
-					let colNumber = parseInt($activeEl.dataset['x']) + 1;
-					let size = $target.querySelector('col:nth-child('+ colNumber +')').classList.value;
-					this.colSizeSelect.value = size;
+				break;
+				case (activeElName === 'HTMLTableCellElement' || activeElName === 'HTMLTableCaptionElement') && $target.dataset['type'] === 'table':
+					if(activeElName === 'HTMLTableCellElement'){
+						let colNumber = parseInt($activeEl.dataset['x']) + 1;
+						let tableClass = $target.querySelector('col:nth-child('+ colNumber +')').classList.value;
+						this.colSizeSelect.value = this.getClassName(tableClass, 'size');
+					}
+
+					let cellColor = this.getClassName(activeClassList, 'color');
+					let cellFront = this.getClassName(activeClassList, 'size');
+
+					if(cellColor !== ''){
+						this.btnColorSelect.dataset['class'] = cellColor;
+					}else{
+						this.btnColorSelect.dataset['class'] = 'default';
+					}
+
+					if(cellFront !== ''){
+						this.fontSizeSelect.value = cellFront;
+					}else{
+						this.fontSizeSelect.value = 'default';
+					}
+				break;
 				case activeElName === 'HTMLSpanElement' || activeElName === 'HTMLElement':
-					let classList = [...$activeEl.classList];
-					console.log(classList, $activeEl);
-					let className = this.getClassName(classList, 'color');
-				case type === 'text' :
-				case type === 'img' :
-				case type === 'youtube' :
-				case type === 'codepen' :
-				case type === 'list_u' :
-				case type === 'list_o' :
-				case type === 'quote' :
-				case type === 'table' :
-				case type === 'codeblock' :
-				case type === 'link_box' :
-				case type === 'btn' :
+					let className = this.getClassName(activeClassList, 'color');
+
+					if(className !== ''){
+						this.btnColorSelect.dataset['class'] = className;
+					}else{
+						this.btnColorSelect.dataset['class'] = 'default';
+					}
+				break;
+				case activeElName === 'HTMLLIElement' :
+					let colorClass = this.getClassName(activeClassList, 'color');
+					let sizeClass = this.getClassName(activeClassList, 'size');
+
+					if(colorClass !== ''){
+						this.btnColorSelect.dataset['class'] = colorClass;
+					}else{
+						this.btnColorSelect.dataset['class'] = 'default';
+					}
+
+					if(sizeClass !== ''){
+						this.fontSizeSelect.value = sizeClass;
+					}else{
+						this.fontSizeSelect.value = 'default';
+					}
+				break;
 			}
 			console.log($target, $activeEl);
 		}
 	}
 
-	getClassName(list, type){
-		let count = list.length;
-		let number = -1;
-		let regFn = {
-			'color' : (i) => {
-				return this.colorClassReg.test(list[i]);
-			},
-			'size' : (i) => {
-				return this.colorClassReg.test(list[i]);
-			},
-			'align' : (i) => {
-				return this.colorClassReg.test(list[i]);
+	getClassName(text, type){
+		if(this.classList.indexOf(type) >= 0){
+			let value = text.match(this.classReg[type]);
+
+			if(text !== '' && value !== null){
+				return value[0];
+			}else{
+				return '';
 			}
-		};
-
-		console.log(count );
-		if(count > 0){
-			for(let i = 0;i < count;i += 1){
-				let check = regFn[type](i);
-				console.log(type, check);
-
-				if(check === true){
-					number = parseInt(i);
-					break;
-				}
-			}
-
-			console.log(number);
 		}else{
-			return false;
+			console.warn(`You send wrong type name : [${type}]`);
 		}
 	}
 

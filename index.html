@@ -439,29 +439,31 @@
 		<div class="pop pop_options" data-type="text">
 			<label class="col select_area" data-group="text,list_u,list_o,table,codeblock">
 				<select class="select select_font_size">
-					<option value="none">16px</option>
-					<option value="size_h6">h6(0.67x)</option>
-					<option value="size_h5">h5(0.83x)</option>
-					<option value="size_h4">h4(1.17x)</option>
-					<option value="size_h3">h3(1.33x)</option>
-					<option value="size_h2">h2(1.5x)</option>
-					<option value="size_h1">h1(2x)</option>
+					<option value="size_12">12px</option>
+					<option value="size_14">14px</option>
+					<option value="default">16px</option>
+					<option value="size_18">18px</option>
+					<option value="size_20">20px</option>
+					<option value="size_24">24px</option>
+					<option value="size_28">28px</option>
+					<option value="size_30">30px</option>
+					<option value="size_34">34px</option>
+					<option value="size_38">38px</option>
 				</select>
 			</label>
-			<label class="col select_area" data-group="text,list_u,list_o,table,word">
-				<select class="select select_color">
-					<option value="none">Color(Default)</option>
-					<option value="color_crimson">Crimson(#dc143c)</option>
-					<option value="color_blue">Blue(#0000ff)</option>
-					<option value="color_grey">Grey(#808080)</option>
-					<option value="color_orange">Orange(#ffa500)</option>
-					<option value="color_hotpink">Hotpink(#ff69b4)</option>
-					<option value="color_green">Green(#008000)</option>
-					<option value="color_chocolate">Chocolate(#d2691e)</option>
-					<option value="color_brown">Brown(#a52a2a)</option>
-					<option value="color_white">White(#fff)</option>
-				</select>
-			</label>
+			<button class="col select_color btn_pop" data-target=".pop_color" data-type="position" data-class="default" data-group="text,list_u,list_o,table,word"></button>
+			<div class="pop pop_color clearfix">
+				<button class="btn btn_set_color" data-class="default" title="#555"></button>
+				<button class="btn btn_set_color" data-class="color_crimson" title="#dc143c"></button>
+				<button class="btn btn_set_color" data-class="color_blue" title="#0000ff"></button>
+				<button class="btn btn_set_color" data-class="color_grey" title="#808080"></button>
+				<button class="btn btn_set_color" data-class="color_orange" title="#ffa500"></button>
+				<button class="btn btn_set_color" data-class="color_hotpink" title="#ff69b4"></button>
+				<button class="btn btn_set_color" data-class="color_green" title="#008000"></button>
+				<button class="btn btn_set_color" data-class="color_chocolate" title="#d2691e"></button>
+				<button class="btn btn_set_color" data-class="color_brown" title="#a52a2a"></button>
+				<button class="btn btn_set_color" data-class="color_white" title="#fff"></button>
+			</div>
 			<button class="col btn_text_algin blind" data-group="text,list_u,list_o,table" data-value="align_left">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_align_left" href="#icon_align_left" />
@@ -482,12 +484,11 @@
 			</button>
 			<label class="col select_area" data-group="list_o">
 				<select class="select select_list_type">
-					<option value="none">List Type</option>
-					<option value="1">Numbered (1)</option>
-					<option value="I">Upper-roman (I)</option>
-					<option value="i">Lower-roman (i)</option>
-					<option value="A">Upper-alpha (A)</option>
-					<option value="a">Lower-alpha (a)</option>
+					<option value="1">1 - Numbered</option>
+					<option value="I">I - Upper-roman</option>
+					<option value="i">i - Lower-roman</option>
+					<option value="A">A - Upper-alpha</option>
+					<option value="a">a - Lower-alpha</option>
 				</select>
 			</label>
 			<label class="col select_area" data-group="table">
@@ -538,9 +539,13 @@
 			</label>
 			<button class="col btn_change_th" data-group="table">th</button>
 			<button class="col btn_change_td" data-group="table">td</button>
-			<label class="col options_size" data-group="img">
+			<label class="col options_width" data-group="img">
 				<span class="text">Width : </span>
 				<input type="text" maxlength="3" class="value">
+			</label>
+			<label class="col options_height" data-group="codepen">
+				<span class="text">Height : </span>
+				<input type="text" maxlength="4" class="value">
 			</label>
 			<label class="col options_url" data-group="youtube,codepen,word">
 				<span class="text">URL : </span>
