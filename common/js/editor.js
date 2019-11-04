@@ -1169,8 +1169,7 @@ class dragonEditor{
 			let targetClassList = $target.classList.value;
 			let activeClassList = $activeEl.classList.value;
 
-			this.urlInput.value == '';
-			//size_100
+			this.urlInput.value = '';
 			switch(type){
 				case 'text' :
 					let colorClass = this.getClassName(targetClassList, 'color');
@@ -1321,7 +1320,7 @@ class dragonEditor{
 			}
 		}
 
-		console.log(number);
+		console.log(number, node);
 		console.log(this.startTextCursor);
 		console.log(this.endTextCursor);
 		console.log($el);
