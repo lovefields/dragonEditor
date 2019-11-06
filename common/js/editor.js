@@ -1320,6 +1320,23 @@ class dragonEditor{
 			}
 		}
 
+		switch(type){
+			case 'link' :
+			break;
+			case 'bold' :
+			break;
+			case 'italic' :
+			break;
+			case 'underline' :
+			break;
+			case 'strike' :
+			break;
+			case 'wordblock' :
+			break;
+		}
+
+		
+
 		console.log(number, node);
 		console.log(this.startTextCursor);
 		console.log(this.endTextCursor);
