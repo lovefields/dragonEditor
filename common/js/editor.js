@@ -613,7 +613,9 @@ class dragonEditor{
 		$this.addLinkBtn.addEventListener('click', function(){
 			let url = $this.urlInput.value;
 
+			console.log($this.startTextCursor, $this.endTextCursor);
 			if($this.urlReg.test(url) === true){
+				let sameNode = $this.checkSameNode();
 				$this.wrapElement('link', url);
 			}else{
 				alert($this.messageWrongURL);
@@ -1303,25 +1305,31 @@ class dragonEditor{
 	}
 
 	wrapElement(type, url = null){
-		let node = this.focusNode;
+		let text = this.focusNode.textContent;
 		let $el = this.findContenteditable(this.focusNode);
 		$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
 		let child = $el.childNodes;
 		let count = child.length;
 		let number,firstCursor,endCursor;
+		let code;
 
 		// 노드 순서 구하기
 		for(let i = 0;i <= count;i += 1){
 			if(child[i].constructor.name === 'Text'){
-				if(node.textContent === child[i].textContent){
+				if(text === child[i].textContent){
 					number = i;
 					break;
 				}
 			}
 		}
 
+		if(this.startTextCursor > this.endTextCursor){
+
+		}
+
 		switch(type){
 			case 'link' :
+				code = `${text.substring(0, firstCursor - 1)}<a href="${url}">${text.substring(firstCursor, endCursor)}</a>${text.substring(endCursor + 1)}`;
 			break;
 			case 'bold' :
 			break;
@@ -1336,10 +1344,8 @@ class dragonEditor{
 		}
 
 		
-
-		console.log(number, node);
-		console.log(this.startTextCursor);
-		console.log(this.endTextCursor);
+		console.log(code);
+		console.log(number, firstCursor, endCursor);
 		console.log($el);
 	}
 
