@@ -14,6 +14,7 @@ class dragonEditor{
 		$this.endTextCursor = 0;
 		$this.activeElement;
 		$this.focusNode;
+		$this.baseNode;
 		$this.langStatus = 'ko';
 		$this.windowWidth = window.innerWidth;
 		$this.windowHeight = window.innerHeight;
@@ -85,7 +86,7 @@ class dragonEditor{
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
 		$this.HTMLPositionBar = '<div class="position_bar"></div>';
 
-		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'gi');
+		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
 		$this.numberReg = new RegExp('[0-9]', 'g');
 		$this.classReg = {
 			'color' : new RegExp('color_\\w*', 'i'),
@@ -100,6 +101,7 @@ class dragonEditor{
 		$this.messageNotSelect = typeof options.messageNotSelect !== 'string' ? `No element selected Please try again.` : options.messageNotSelect;
 		$this.messageNoData = typeof options.messageNoData !== 'string' ? `Could not get data` : options.messageNoData;
 		$this.messageExceedSize = typeof options.messageExceedSize !== 'string' ? `Can't exceed [size]px` : options.messageExceedSize;
+		$this.messageWrongNode = typeof options.messageWrongNode !== 'string' ? 'Wrong cursor pointer' : options.messageWrongNode
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -613,10 +615,14 @@ class dragonEditor{
 		$this.addLinkBtn.addEventListener('click', function(){
 			let url = $this.urlInput.value;
 
-			console.log($this.startTextCursor, $this.endTextCursor);
 			if($this.urlReg.test(url) === true){
-				let sameNode = $this.checkSameNode();
-				$this.wrapElement('link', url);
+				let isSameNode = $this.checkSameNode();
+
+				if(isSameNode === true){
+					$this.wrapElement('link', url);
+				}else{
+					alert($this.messageWrongNode);
+				}
 			}else{
 				alert($this.messageWrongURL);
 			}
@@ -1136,6 +1142,9 @@ class dragonEditor{
 			let isBtn = $target.classList.contains('btn');
 
 			switch(true){
+				case target.constructor.name === 'HTMLAnchorElement' :
+					type = 'link';
+				break;
 				case isBtn === true && eventType === 'click' : 
 					if(typeof $target.dataset['value'] !== 'undefined'){
 						let value = $target.dataset['value'];
@@ -1147,6 +1156,7 @@ class dragonEditor{
 				break;
 				case base !== extent :
 					this.focusNode = this.selection.focusNode;
+					this.baseNode = this.selection.baseNode;
 					this.startTextCursor = base;
 					this.endTextCursor = extent;
 					type = 'word';
@@ -1304,17 +1314,24 @@ class dragonEditor{
 		}
 	}
 
+	checkSameNode(){
+		if(this.focusNode === this.baseNode){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	wrapElement(type, url = null){
 		let text = this.focusNode.textContent;
 		let $el = this.findContenteditable(this.focusNode);
 		$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
 		let child = $el.childNodes;
 		let count = child.length;
-		let number,firstCursor,endCursor;
-		let code;
+		let number,firstCursor,endCursor,code;
 
 		// 노드 순서 구하기
-		for(let i = 0;i <= count;i += 1){
+		for(let i = 0;i < count;i += 1){
 			if(child[i].constructor.name === 'Text'){
 				if(text === child[i].textContent){
 					number = i;
@@ -1324,7 +1341,11 @@ class dragonEditor{
 		}
 
 		if(this.startTextCursor > this.endTextCursor){
-
+			firstCursor = this.endTextCursor;
+			endCursor = this.startTextCursor;
+		}else{
+			firstCursor = this.startTextCursor;
+			endCursor = this.endTextCursor;
 		}
 
 		switch(type){
@@ -1343,10 +1364,17 @@ class dragonEditor{
 			break;
 		}
 
-		
-		console.log(code);
-		console.log(number, firstCursor, endCursor);
-		console.log($el);
+		for(let j = 0;j < count;j += 1){
+			if(j !== number){
+				if(child[j].constructor.name === 'Text'){
+					code += child[j].textContent;
+				}else{
+					code += child[j].outerHTML;
+				}
+			}
+		}
+
+		$el.innerHTML = code;
 	}
 
 	keybroadControl(event){
