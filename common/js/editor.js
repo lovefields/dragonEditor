@@ -54,7 +54,6 @@ class dragonEditor{
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.fontSizeSelect = $this.checkOptionElement(options.fontSizeSelect, '.select_font_size');
 		$this.btnColorSelect = $this.checkOptionElement(options.colorSelect, '.select_color');
-		//$this.alignSelect = $this.checkOptionElement(options.alignSelect, '.select_font_align');
 		$this.listTypeSelect = $this.checkOptionElement(options.listTypeSelect, '.select_list_type');
 		$this.colSizeSelect = $this.checkOptionElement(options.colSizeSelect, '.select_col');
 		$this.themeSelect = $this.checkOptionElement(options.themeSelect, '.select_theme');
@@ -98,10 +97,11 @@ class dragonEditor{
 		$this.messageNotSelecCodepen = typeof options.messageNotSelecCodepen !== 'string' ? `You didn't select Codepen` : options.messageNotSelecCodepen;
 		$this.messageNotSelecImage = typeof options.messageNotSelecImage !== 'string' ? `You didn't select image` : options.messageNotSelecImage;
 		$this.messageWrongURL = typeof options.messageWrongURL !== 'string' ? `Please enter a valid URL.\nYou must enter http or https first.` : options.messageWrongURL;
-		$this.messageNotSelect = typeof options.messageNotSelect !== 'string' ? `No element selected Please try again.` : options.messageNotSelect;
+		$this.messageNotSelect = typeof options.messageNotSelect !== 'string' ? `No item selected Please try again.` : options.messageNotSelect;
 		$this.messageNoData = typeof options.messageNoData !== 'string' ? `Could not get data` : options.messageNoData;
 		$this.messageExceedSize = typeof options.messageExceedSize !== 'string' ? `Can't exceed [size]px` : options.messageExceedSize;
 		$this.messageWrongNode = typeof options.messageWrongNode !== 'string' ? 'Wrong cursor pointer' : options.messageWrongNode
+		$this.messageNotAnchorTag = typeof options.messageNotAnchorTag !== 'string' ? 'Active item is not link' : options.messageNotAnchorTag
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -628,6 +628,39 @@ class dragonEditor{
 			}
 		});
 
+		$this.unlinkBtn.addEventListener('click', function(){
+			let $target = $this.activeElement;
+			if($target.constructor.name === 'HTMLAnchorElement'){
+				let text = $target.textContent;
+
+				$target.insertAdjacentText('afterend', text);
+				$target.remove();
+			}else{
+				alrt($this.messageNotAnchorTag);
+			}
+		});
+
+		$this.boldBtn.addEventListener('click', function(){
+
+		});
+
+		$this.italicBtn.addEventListener('click', function(){
+
+		});
+
+		$this.underlineBtn.addEventListener('click', function(){
+
+		});
+
+		$this.strikeBtn.addEventListener('click', function(){
+
+		});
+
+		$this.wordblockBtn.addEventListener('click', function(){
+
+		});
+
+
 		// image width
 		let imageSizeFn;
 		$this.widthInput.addEventListener('keyup', function(e){
@@ -1081,15 +1114,31 @@ class dragonEditor{
 	}
 
 	getLastSetOrFocus($target){
-		let $activeEl = document.activeElement;
+		let $focusNode = this.activeElement;
 		let $item, $btn = false;
 
-		if($activeEl.constructor.name !== 'HTMLBodyElement'){
-			$item = this.findParent($activeEl, 'item');
+		if($focusNode.constructor.name !== 'HTMLBodyElement'){
+			switch($focusNode.constructor.name){
+				case 'HTMLSpanElement' :
+					$item = $focusNode;
+				break;
+				case 'HTMLElement' :
+					$item = $focusNode;
+				break;
+				case 'HTMLAnchorElement' :
+					$item = $focusNode;
+				break;
+				case 'Text' :
+					$item = this.findParent($focusNode.parentElement, 'item');
+				break;
+				default :
+					$item = this.findParent($focusNode, 'item');
+			}
 		}else{
 			$item = this.findParent($target, 'item');
 			$btn = $item === false ? this.findParent($target, 'btn') : $item;
 		}
+		console.log($item);
 		let $el = $item === false ? $btn : $item;
 		return $el;
 	}
@@ -1131,6 +1180,9 @@ class dragonEditor{
 	}
 
 	contentCheckByMouse(target, eventType){
+		if(eventType === 'click'){
+			this.activeElement = target;
+		}
 		let $target = this.getLastSetOrFocus(target);
 		let base = this.selection.baseOffset;
 		let extent = this.selection.extentOffset;
@@ -1141,8 +1193,12 @@ class dragonEditor{
 			let $children = this.getElList(this.contentAreaName + ' > *');
 			let isBtn = $target.classList.contains('btn');
 
+			console.log($target);
 			switch(true){
-				case target.constructor.name === 'HTMLAnchorElement' :
+				case $target.constructor.name === 'HTMLElement' && $target.classList.contains('wordblock') :
+					type = 'wordblock';
+				break;
+				case $target.constructor.name === 'HTMLAnchorElement' :
 					type = 'link';
 				break;
 				case isBtn === true && eventType === 'click' : 
@@ -1161,9 +1217,8 @@ class dragonEditor{
 					this.endTextCursor = extent;
 					type = 'word';
 				break;
-			}
-			if(eventType === 'click'){
-				this.activeElement = target;
+				default : 
+					type = 'text';
 			}
 			this.setLastElement($target, $children);
 			this.openOptionPop(offset, type);
@@ -1296,7 +1351,7 @@ class dragonEditor{
 					}
 				break;
 			}
-			console.log($target, $activeEl);
+			//console.log($target, $activeEl);
 		}
 	}
 
