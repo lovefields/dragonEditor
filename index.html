@@ -295,7 +295,7 @@
 		<div class="slider_wrap ts clearfix">
 			<div class="content_area" data-lang="ko">
 				<h1 class="title" contentEditable="true"></h1>
-				<p class="item" contenteditable="true" data-type="text">가나다라 마바사 나는 디자인을 하는데 내가 디자인을 <b class="color_blue">하는것인가 나는 무엇을 하고 있는</b>걸까, 매우 매우 힘이 든다 디자인 잘하고싶다 일하기 싫다 매우.</p>
+				<p class="item" contenteditable="true" data-type="text">가나다라 <a href="https://dico.me">마바사 나는 디</a>자인을 하는데 내가 디자인을 <b class="color_blue">하는것인가 나는 무엇을 하고 있는</b>걸까, 매우 매우 힘<code class="wordblock">이 든다 디자인 잘하고</code>싶다 일하기 싫다 매우.</p>
 				<p class="item" contenteditable="true" data-type="text"></p>
 				<picture class="item item_image" data-type="img">
 					<source srcset="./common/img/img_cover.webp" type="image/webp">
@@ -451,18 +451,85 @@
 					<option value="size_38">38px</option>
 				</select>
 			</label>
-			<button class="col select_color btn_pop" data-target=".pop_color" data-type="position" data-class="default" data-group="text,list_u,list_o,table,word"></button>
+			<button class="col select_color btn_pop" data-target=".pop_color" data-type="position" data-class="default" data-group="text,list_u,list_o,table,word,link"></button>
 			<div class="pop pop_color clearfix">
-				<button class="btn btn_set_color" data-class="default" title="#555"></button>
-				<button class="btn btn_set_color" data-class="color_crimson" title="#dc143c"></button>
-				<button class="btn btn_set_color" data-class="color_blue" title="#0000ff"></button>
-				<button class="btn btn_set_color" data-class="color_grey" title="#808080"></button>
-				<button class="btn btn_set_color" data-class="color_orange" title="#ffa500"></button>
-				<button class="btn btn_set_color" data-class="color_hotpink" title="#ff69b4"></button>
-				<button class="btn btn_set_color" data-class="color_green" title="#008000"></button>
-				<button class="btn btn_set_color" data-class="color_chocolate" title="#d2691e"></button>
-				<button class="btn btn_set_color" data-class="color_brown" title="#a52a2a"></button>
-				<button class="btn btn_set_color" data-class="color_white" title="#fff"></button>
+				<button class="btn btn_set_color" data-class="color_white" title="흰색"></button>
+				<button class="btn btn_set_color" data-class="color_light_gray" title=""></button>
+				<button class="btn btn_set_color" data-class="color_gray" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_gray_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_gray_2" title=""></button>
+				<button class="btn btn_set_color" data-class="default" title=""></button>
+				<button class="btn btn_set_color" data-class="color_black" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_red_berry_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_red_berry_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_red_berry_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_red_berry" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_red_berry_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_red_berry_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_red_berry_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_red_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_red_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_red_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_red" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_red_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_red_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_red_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_orange_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_orange_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_orange_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_orange" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_orange_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_orange_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_orange_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_yellow_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_yellow_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_yellow_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_yellow" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_yellow_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_yellow_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_yellow_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_green_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_green_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_green_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_green" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_green_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_green_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_green_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_cyan_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_cyan_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_cyan_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_cyan" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_cyan_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_cyan_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_cyan_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_cornflower_blue_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_cornflower_blue_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_cornflower_blue_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_cornflower_blue" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_cornflower_blue_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_cornflower_blue_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_cornflower_blue_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_blue_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_blue_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_blue_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_blue" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_blue_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_blue_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_blue_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_purple_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_purple_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_purple_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_purple" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_purple_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_purple_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_purple_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_magenta_3" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_magenta_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_light_magenta_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_magenta" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_magenta_1" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_magenta_2" title=""></button>
+				<button class="btn btn_set_color" data-class="color_dark_magenta_3" title=""></button>
 			</div>
 			<button class="col btn_text_algin blind" data-group="text,list_u,list_o,table" data-value="align_left">
 				<svg class="icon" viewbox="0 0 50 50">
@@ -554,31 +621,31 @@
 			<button class="col btn_url_change" data-group="youtube,codepen">Change</button>
 			<button class="col btn_url_link" data-group="word,link">Link</button>
 			<button class="col btn_url_unlink" data-group="word,link">Unlink</button>
-			<button class="col btn_bold blind" data-group="text,list_u,list_o,table,word">
+			<button class="col btn_bold blind" data-group="text,list_u,list_o,table,word,link">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_bold" href="#icon_bold" />
 				</svg>
 				굵게
 			</button>
-			<button class="col btn_italic blind" data-group="text,list_u,list_o,table,word">
+			<button class="col btn_italic blind" data-group="text,list_u,list_o,table,word,link">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_italic" href="#icon_italic" />
 				</svg>
 				기울게
 			</button>
-			<button class="col btn_underline blind" data-group="text,list_u,list_o,table,word">
+			<button class="col btn_underline blind" data-group="text,list_u,list_o,table,word,link">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_underline" href="#icon_underline" />
 				</svg>
 				밑줄
 			</button>
-			<button class="col btn_strike blind" data-group="text,list_u,list_o,table,word">
+			<button class="col btn_strike blind" data-group="text,list_u,list_o,table,word,link">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_strike" href="#icon_strike" />
 				</svg>
 				취소선
 			</button>
-			<button class="col btn_wordblock blind" data-group="word">
+			<button class="col btn_wordblock blind" data-group="word,wordblock">
 				<svg class="icon" viewbox="0 0 50 50">
 					<use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
 				</svg>
