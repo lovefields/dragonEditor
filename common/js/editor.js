@@ -1151,7 +1151,7 @@ class dragonEditor{
 	}
 
 	openOptionPop(offset, type){
-		let y = offset.top + offset.height + 5;
+		let y = Math.floor(offset.top + offset.height + 5);
 		let $child = this.popOptions.querySelectorAll('.col');
 		let typeReg = new RegExp(type, 'i');
 
@@ -1175,7 +1175,7 @@ class dragonEditor{
 
 		this.popOptions.classList.add('act');
 		this.popOptions.querySelector('.pop').classList.remove('act');
-		let x =  (this.windowWidth - this.popOptions.getBoundingClientRect().width) / 2;
+		let x =  Math.floor((this.windowWidth - this.popOptions.getBoundingClientRect().width) / 2);
 		this.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
 	}
 
