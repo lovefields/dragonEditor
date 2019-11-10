@@ -1114,31 +1114,31 @@ class dragonEditor{
 	}
 
 	getLastSetOrFocus($target){
-		let $focusNode = this.activeElement;
+		let $activeEl = document.activeElement;
 		let $item, $btn = false;
 
-		if($focusNode.constructor.name !== 'HTMLBodyElement'){
-			switch($focusNode.constructor.name){
+		if($activeEl.constructor.name !== 'HTMLBodyElement'){
+			switch(this.activeElement.constructor.name){
 				case 'HTMLSpanElement' :
-					$item = $focusNode;
+					$item = this.activeElement;
 				break;
 				case 'HTMLElement' :
-					$item = $focusNode;
+					$item = this.activeElement;
 				break;
 				case 'HTMLAnchorElement' :
-					$item = $focusNode;
+					$item = this.activeElement;
 				break;
 				case 'Text' :
-					$item = this.findParent($focusNode.parentElement, 'item');
+					$item = this.findParent(this.activeElement.parentElement, 'item');
 				break;
 				default :
-					$item = this.findParent($focusNode, 'item');
+					$item = this.findParent(this.activeElement, 'item');
 			}
 		}else{
 			$item = this.findParent($target, 'item');
 			$btn = $item === false ? this.findParent($target, 'btn') : $item;
+			console.log($item, $btn);
 		}
-		console.log($item);
 		let $el = $item === false ? $btn : $item;
 		return $el;
 	}
@@ -1186,7 +1186,8 @@ class dragonEditor{
 		let $target = this.getLastSetOrFocus(target);
 		let base = this.selection.baseOffset;
 		let extent = this.selection.extentOffset;
-
+		console.log(target, $target);
+		
 		if($target !== false){
 			let offset = $target.getBoundingClientRect();
 			let type = $target.dataset['type'];
