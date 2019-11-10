@@ -490,7 +490,8 @@ class dragonEditor{
 					$el.removeAttribute('style');
 					$el.classList.toggle('act');
 					if(type === 'position' && $this.windowWidth > $this.changePint){
-						$el.style.cssText = `transform:translate(${btnOffset.left - optionsOffset.left}px, 30px)`;
+						let x = Math.floor(btnOffset.left - optionsOffset.left);
+						$el.style.cssText = `transform:translate(${x}px, 30px)`;
 					}else{
 						this.classList.toggle('act');
 					}
@@ -1218,8 +1219,11 @@ class dragonEditor{
 					this.endTextCursor = extent;
 					type = 'word';
 				break;
-				default : 
+				case type === undefined :
 					type = 'text';
+				break;
+				default : 
+					type = type;
 			}
 			this.setLastElement($target, $children);
 			this.openOptionPop(offset, type);
