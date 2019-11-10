@@ -108,7 +108,7 @@
 .content_area .italic{font-style:italic}
 .content_area .underline{text-decoration:underline}
 .content_area .strike{text-decoration:line-through}
-.content_area code.wordblock{display:inline-block;padding:0 3px;background:#cdcdcd;border-radius:5px}
+.content_area code.wordblock{display:inline-block;padding:0 3px;background:#cdcdcd;border-radius:5px;font:normal 16px/1.2 'Open Sans','Noto Sans',sans-serif}
 .content_area .size_12{font-size:12px}
 .content_area .size_14{font-size:14px}
 .content_area .size_18{font-size:18px}
@@ -440,7 +440,7 @@
 .pop_options .select_color[data-class='color_dark_magenta_2']::before{background-color:rgb(116, 27, 71)}
 .pop_options .select_color[data-class='color_dark_magenta_3']::before{background-color:rgb(76, 17, 48)}
 
-.pop_color{top:5px;left:0;max-width:155px;padding:10px 0 0 10px;background:#fff;border:1px solid #ccc;border-radius:5px;border-width:1px 0 0 1px;box-shadow:3px 3px 0 rgba(0,0,0,0.25)}
+.pop_color{top:0;left:0;max-width:155px;padding:10px 0 0 10px;background:#fff;border:1px solid #ccc;border-radius:5px;border-width:1px 0 0 1px;box-shadow:3px 3px 0 rgba(0,0,0,0.25)}
 .pop_color .btn{float:left;padding:0 10px 10px 0}
 .pop_color .btn::after{display:block;content:'';width:12px;height:12px;box-sizing:border-box}
 .pop_color .btn[data-class='default']::after{background-color:#555}
