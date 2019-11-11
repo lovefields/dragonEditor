@@ -629,6 +629,7 @@ class dragonEditor{
 			}
 		});
 
+		// remove link
 		$this.unlinkBtn.addEventListener('click', function(){
 			let $target = $this.activeElement;
 			if($target.constructor.name === 'HTMLAnchorElement'){
@@ -641,24 +642,41 @@ class dragonEditor{
 			}
 		});
 
+		// bold
 		$this.boldBtn.addEventListener('click', function(){
-
+			$this.makeTextDecoration('b', 'B', 'bold');
 		});
 
 		$this.italicBtn.addEventListener('click', function(){
-
+			$this.makeTextDecoration('i', 'I', 'italic');
 		});
 
 		$this.underlineBtn.addEventListener('click', function(){
-
+			$this.makeTextDecoration('u', 'U', 'underline');
 		});
 
 		$this.strikeBtn.addEventListener('click', function(){
-
+			$this.makeTextDecoration('s', 'S', 'strike');
 		});
 
 		$this.wordblockBtn.addEventListener('click', function(){
+			if($this.selection.focusNode === $this.selection.baseNode){
+				let $target = $this.activeElement;
+				let elName = $target.tagName;
+				let $el = $this.findContenteditable($target);
+				let text = $target.textContent;
 
+				if(elName === 'CODE'){
+					$target.insertAdjacentText('afterend', text);
+					$target.remove();
+					$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
+					$this.activeElement = $this.wrap;
+				}else{
+					$this.wrapElement('wordblock');
+				}
+			}else{
+				alert($this.messageWrongNode);
+			}
 		});
 
 
@@ -839,18 +857,17 @@ class dragonEditor{
 		let target;
 
 		if(constructorName !== 'HTMLBodyElement'){
-			if(constructorName !== 'Text'){
-				target = node;
-			}else{
+			if(constructorName === 'Text'){
 				target = node.parentElement;
+			}else{
+				target = node;
 			}
 
 			let hasAttr = target.getAttribute('contenteditable');
-
 			if(hasAttr === 'true'){
 				return target;
 			}else{
-				return this.findContenteditable(target);
+				return this.findContenteditable(target.parentElement);
 			}
 		}else{
 			return false;
@@ -1145,10 +1162,11 @@ class dragonEditor{
 	}
 
 	setLastElement($target, children){
+		let $item = this.findParent($target, 'item');
 		children.forEach(function($child){
 			$child.classList.remove('lastset');
 		});
-		$target.classList.add('lastset');
+		$item.classList.add('lastset');
 	}
 
 	openOptionPop(offset, type){
@@ -1211,6 +1229,9 @@ class dragonEditor{
 							this.fileInput.click();
 						}
 					}
+				break;
+				case this.selection.focusNode !== this.selection.baseNode :
+					type = 'text';
 				break;
 				case base !== extent :
 					this.focusNode = this.selection.focusNode;
@@ -1388,7 +1409,8 @@ class dragonEditor{
 		$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
 		let child = $el.childNodes;
 		let count = child.length;
-		let number,firstCursor,endCursor,code;
+		let number, firstCursor, endCursor, code;
+		let html = '';
 
 		// 노드 순서 구하기
 		for(let i = 0;i < count;i += 1){
@@ -1410,31 +1432,94 @@ class dragonEditor{
 
 		switch(type){
 			case 'link' :
-				code = `${text.substring(0, firstCursor - 1)}<a href="${url}">${text.substring(firstCursor, endCursor)}</a>${text.substring(endCursor + 1)}`;
+				code = `${text.substring(0, firstCursor)}<a href="${url}">${text.substring(firstCursor, endCursor)}</a>${text.substring(endCursor)}`;
 			break;
 			case 'bold' :
+				code = `${text.substring(0, firstCursor)}<b>${text.substring(firstCursor, endCursor)}</b>${text.substring(endCursor)}`;
 			break;
 			case 'italic' :
+				code = `${text.substring(0, firstCursor)}<i>${text.substring(firstCursor, endCursor)}</i>${text.substring(endCursor)}`;
 			break;
 			case 'underline' :
+				code = `${text.substring(0, firstCursor)}<u>${text.substring(firstCursor, endCursor)}</u>${text.substring(endCursor)}`;
 			break;
 			case 'strike' :
+				code = `${text.substring(0, firstCursor)}<s>${text.substring(firstCursor, endCursor)}</s>${text.substring(endCursor)}`;
 			break;
 			case 'wordblock' :
+				code = `${text.substring(0, firstCursor)}<code class="wordblock">${text.substring(firstCursor, endCursor)}</code>${text.substring(endCursor)}`;
 			break;
 		}
 
 		for(let j = 0;j < count;j += 1){
 			if(j !== number){
 				if(child[j].constructor.name === 'Text'){
-					code += child[j].textContent;
+					html += child[j].textContent;
 				}else{
-					code += child[j].outerHTML;
+					html += child[j].outerHTML;
 				}
+			}else{
+				html += code;
 			}
 		}
 
-		$el.innerHTML = code;
+		$el.innerHTML = html;
+	}
+
+	makeTextDecoration(tag, tagName, className){
+		if(this.selection.focusNode === this.selection.baseNode){
+			let $target = this.activeElement;
+			let elName = $target.constructor.name;
+			let $el = this.findContenteditable($target);
+			console.log($el);
+
+			if(elName === 'HTMLAnchorElement' || elName === 'HTMLSpanElement' || elName === 'HTMLElement'){
+				let classList = $target.classList;
+				let count = classList.length;
+				let text = $target.textContent;
+
+				if($target.tagName === tagName){
+					if(count > 0){
+						$target.insertAdjacentHTML('afterend', `<span class="${classList.value}">${text}</span>`);
+						this.activeElement = $target.nextElementSibling;
+						$target.remove();
+					}else{
+						$target.insertAdjacentText('afterend', text);
+						$target.remove();
+						$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
+						this.activeElement = this.wrap;
+					}
+				}else if($target.tagName === 'SPAN'){
+					if(count > 0){
+						$target.insertAdjacentHTML('afterend', `<${tag} class="${classList.value}">${text}</${tag}>`);
+						this.activeElement = $target.nextElementSibling;
+						$target.remove();
+					}else{
+						$target.insertAdjacentHTML('afterend', `<${tag}>${text}</${tag}>`);
+						this.activeElement = $target.nextElementSibling;
+						$target.remove();
+					}
+				}else{
+					if($target.classList.contains(className) === true){
+						$target.classList.remove(className);
+					}else{
+						$target.classList.add(className);
+					}
+				}
+			}else{
+				if(this.startTextCursor !== this.endTextCursor){
+					this.wrapElement(className);
+				}else{
+					if($target.classList.contains(className) === true){
+						$target.classList.remove(className);
+					}else{
+						$target.classList.add(className);
+					}
+				}
+			}
+		}else{
+			alert(this.messageWrongNode);
+		}
 	}
 
 	keybroadControl(event){
