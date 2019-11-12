@@ -1227,14 +1227,13 @@ class dragonEditor{
 		}else{
 			$item = this.findParent($target, 'item');
 			$btn = $item === false ? this.findParent($target, 'btn') : $item;
-			console.log($item, $btn);
 		}
 		let $el = $item === false ? $btn : $item;
 		return $el;
 	}
 
 	setLastElement($target, children){
-		let $item = this.findParent($target, 'item');
+		let $item = this.findParent($target, 'item') === false ? this.findParent($target, 'btn') : this.findParent($target, 'item');
 		children.forEach(function($child){
 			$child.classList.remove('lastset');
 		});
@@ -1242,7 +1241,7 @@ class dragonEditor{
 	}
 
 	openOptionPop(offset, type){
-		let y = Math.floor(offset.top + offset.height + 5);
+		let y = Math.floor(offset.top + offset.height);
 		let $child = this.popOptions.querySelectorAll('.col');
 		let typeReg = new RegExp(type, 'i');
 
@@ -1277,16 +1276,17 @@ class dragonEditor{
 		let $target = this.getLastSetOrFocus(target);
 		let base = this.selection.baseOffset;
 		let extent = this.selection.extentOffset;
-		console.log(target, $target);
-		
+
 		if($target !== false){
 			let offset = $target.getBoundingClientRect();
 			let type = $target.dataset['type'];
 			let $children = this.getElList(this.contentAreaName + ' > *');
 			let isBtn = $target.classList.contains('btn');
 
-			console.log($target);
 			switch(true){
+				case $target.tagName === 'CODE' :
+					type = 'codeblock';
+				break;
 				case $target.constructor.name === 'HTMLElement' && $target.classList.contains('wordblock') :
 					type = 'wordblock';
 				break;
