@@ -108,7 +108,7 @@
 .content_area .italic{font-style:italic}
 .content_area .underline{text-decoration:underline}
 .content_area .strike{text-decoration:line-through}
-.content_area code.wordblock{display:inline-block;padding:0 3px;background:#cdcdcd;border-radius:5px;font:normal 16px/1.2 'Open Sans','Noto Sans',sans-serif}
+.content_area code.wordblock{display:inline-block;padding:0 3px;background:#cdcdcd;border-radius:5px;font:normal inherit/1.2 'Open Sans','Noto Sans',sans-serif}
 .content_area .size_12{font-size:12px}
 .content_area .size_14{font-size:14px}
 .content_area .size_18{font-size:18px}
@@ -118,15 +118,82 @@
 .content_area .size_30{font-size:30px}
 .content_area .size_34{font-size:34px}
 .content_area .size_38{font-size:38px}
-.content_area .color_crimson{color:#dc143c}
-.content_area .color_blue{color:#0000ff}
-.content_area .color_grey{color:#808080}
-.content_area .color_orange{color:#ffa500}
-.content_area .color_hotpink{color:#ff69b4}
-.content_area .color_green{color:#008000}
-.content_area .color_chocolate{color:#d2691e}
-.content_area .color_brown{color:#a52a2a}
-.content_area .color_white{color:#fff}
+.content_area .color_black{color:rgb(0, 0, 0)}
+.content_area .color_dark_gray_1{color:rgb(153, 153, 153)}
+.content_area .color_dark_gray_2{color:rgb(102, 102, 102)}
+.content_area .color_gray{color:rgb(204, 204, 204)}
+.content_area .color_light_gray{color:rgb(239, 239, 239)}
+.content_area .color_white{color:rgb(255, 255, 255)}
+.content_area .color_light_red_berry_1{color:rgb(204, 65, 37)}
+.content_area .color_light_red_berry_2{color:rgb(221, 126, 107)}
+.content_area .color_light_red_berry_3{color:rgb(230, 184, 175)}
+.content_area .color_red_berry{color:rgb(152, 0, 0)}
+.content_area .color_dark_red_berry_1{color:rgb(166, 28, 0)}
+.content_area .color_dark_red_berry_2{color:rgb(133, 32, 12)}
+.content_area .color_dark_red_berry_3{color:rgb(91, 15, 0)}
+.content_area .color_light_red_1{color:rgb(224, 102, 102)}
+.content_area .color_light_red_3{color:rgb(244, 204, 204)}
+.content_area .color_light_red_2{color:rgb(234, 153, 153)}
+.content_area .color_red{color:rgb(255, 0, 0)}
+.content_area .color_dark_red_1{color:rgb(204, 0, 0)}
+.content_area .color_dark_red_2{color:rgb(153, 0, 0)}
+.content_area .color_dark_red_3{color:rgb(102, 0, 0)}
+.content_area .color_light_orange_1{color:rgb(246, 178, 107)}
+.content_area .color_light_orange_2{color:rgb(249, 203, 156)}
+.content_area .color_light_orange_3{color:rgb(252, 229, 205)}
+.content_area .color_orange{color:rgb(255, 153, 0)}
+.content_area .color_dark_orange_1{color:rgb(230, 145, 56)}
+.content_area .color_dark_orange_2{color:rgb(180, 95, 6)}
+.content_area .color_dark_orange_3{color:rgb(120, 63, 4)}
+.content_area .color_light_yellow_1{color:rgb(255, 217, 102)}
+.content_area .color_light_yellow_2{color:rgb(255, 229, 153)}
+.content_area .color_light_yellow_3{color:rgb(255, 242, 204)}
+.content_area .color_yellow{color:rgb(255, 255, 0)}
+.content_area .color_dark_yellow_1{color:rgb(241, 194, 50)}
+.content_area .color_dark_yellow_2{color:rgb(191, 144, 0)}
+.content_area .color_dark_yellow_3{color:rgb(127, 96, 0)}
+.content_area .color_light_green_1{color:rgb(147, 196, 125)}
+.content_area .color_light_green_2{color:rgb(182, 215, 168)}
+.content_area .color_light_green_3{color:rgb(217, 234, 211)}
+.content_area .color_green{color:rgb(0, 255, 0)}
+.content_area .color_dark_green_1{color:rgb(106, 168, 79)}
+.content_area .color_dark_green_2{color:rgb(56, 118, 29)}
+.content_area .color_dark_green_3{color:rgb(39, 78, 19)}
+.content_area .color_light_cyan_1{color:rgb(118, 165, 175)}
+.content_area .color_light_cyan_2{color:rgb(162, 196, 201)}
+.content_area .color_light_cyan_3{color:rgb(208, 224, 227)}
+.content_area .color_cyan{color:rgb(0, 255, 255)}
+.content_area .color_dark_cyan_1{color:rgb(69, 129, 142)}
+.content_area .color_dark_cyan_2{color:rgb(19, 79, 92)}
+.content_area .color_dark_cyan_3{color:rgb(12, 52, 61)}
+.content_area .color_light_cornflower_blue_1{color:rgb(109, 158, 235)}
+.content_area .color_light_cornflower_blue_3{color:rgb(201, 218, 248)}
+.content_area .color_light_cornflower_blue_2{color:rgb(164, 194, 244)}
+.content_area .color_cornflower_blue{color:rgb(74, 134, 232)}
+.content_area .color_dark_cornflower_blue_1{color:rgb(60, 120, 216)}
+.content_area .color_dark_cornflower_blue_2{color:rgb(17, 85, 204)}
+.content_area .color_dark_cornflower_blue_3{color:rgb(28, 69, 135)}
+.content_area .color_light_blue_1{color:rgb(111, 168, 220)}
+.content_area .color_light_blue_2{color:rgb(159, 197, 232)}
+.content_area .color_light_blue_3{color:rgb(207, 226, 243)}
+.content_area .color_blue{color:rgb(0, 0, 255)}
+.content_area .color_dark_blue_1{color:rgb(61, 133, 198)}
+.content_area .color_dark_blue_2{color:rgb(11, 83, 148)}
+.content_area .color_dark_blue_3{color:rgb(7, 55, 99)}
+.content_area .color_light_purple_1{color:rgb(142, 124, 195)}
+.content_area .color_light_purple_2{color:rgb(180, 167, 214)}
+.content_area .color_light_purple_3{color:rgb(217, 210, 233)}
+.content_area .color_purple{color:rgb(153, 0, 255)}
+.content_area .color_dark_purple_1{color:rgb(103, 78, 167)}
+.content_area .color_dark_purple_2{color:rgb(53, 28, 117)}
+.content_area .color_dark_purple_3{color:rgb(32, 18, 77)}
+.content_area .color_light_magenta_1{color:rgb(194, 123, 160)}
+.content_area .color_light_magenta_2{color:rgb(213, 166, 189)}
+.content_area .color_light_magenta_3{color:rgb(234, 209, 220)}
+.content_area .color_magenta{color:rgb(255, 0, 255)}
+.content_area .color_dark_magenta_1{color:rgb(166, 77, 121)}
+.content_area .color_dark_magenta_2{color:rgb(116, 27, 71)}
+.content_area .color_dark_magenta_3{color:rgb(76, 17, 48)}
 .content_area .align_left{text-align:left}
 .content_area .align_center{text-align:center}
 .content_area .align_right{text-align:right}
