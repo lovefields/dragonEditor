@@ -54,6 +54,7 @@ class dragonEditor{
 		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.fontSizeSelect = $this.checkOptionElement(options.fontSizeSelect, '.select_font_size');
 		$this.btnColorSelect = $this.checkOptionElement(options.colorSelect, '.select_color');
+		$this.btnColor = $this.checkOptionElement(options.colorSelect, '.btn_set_color', 'multi');
 		$this.listTypeSelect = $this.checkOptionElement(options.listTypeSelect, '.select_list_type');
 		$this.colSizeSelect = $this.checkOptionElement(options.colSizeSelect, '.select_col');
 		$this.themeSelect = $this.checkOptionElement(options.themeSelect, '.select_theme');
@@ -88,7 +89,7 @@ class dragonEditor{
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
 		$this.numberReg = new RegExp('[0-9]', 'g');
 		$this.classReg = {
-			'color' : new RegExp('color_\\w*', 'i'),
+			'color' : new RegExp('color_[a-z0-9_]*', 'i'),
 			'size' : new RegExp('size_[0-9]*', 'i'),
 			'align' : new RegExp('align_(left|center|right)*', 'i')
 		};
@@ -612,6 +613,75 @@ class dragonEditor{
 			}
 		});
 
+		// font size
+		$this.fontSizeSelect.addEventListener('change', function(){
+			let value = this.value;
+			let $target = $this.activeElement;
+			let $el = $this.findContenteditable($target);
+			let className = $this.getClassName($el.classList.value, 'size');
+
+			if(value === 'default'){
+				if(className !== ''){
+					$el.classList.remove(className);
+				}
+			}else{
+				if(className !== ''){
+					$el.classList.remove(className);
+				}
+				$el.classList.add(value);
+			}
+		});
+
+		// color
+		$this.btnColor.forEach(function($btn){
+			$btn.addEventListener('click', function(){
+				let value = this.dataset['class'];
+				let list = ['I', 'B', 'S', 'U', 'A', 'SPAN'];
+				let $activeEl = $this.activeElement;
+				let tagName = $activeEl.tagName;
+				let $target = $this.findContenteditable($activeEl);
+
+				if($this.selection.focusNode === $this.selection.baseNode){
+					if(list.indexOf(tagName) > 0){
+						let className = $this.getClassName($activeEl.classList.value, 'color');
+
+						if(className !== ''){
+							$activeEl.classList.remove(className);
+						}
+						if(value !== 'default'){
+							$activeEl.classList.add(value);
+						}else{
+							if(tagName === 'SPAN'){
+								let text = $activeEl.textContent;
+
+								$activeEl.insertAdjacentText('afterend', text);
+								$activeEl.remove();
+								$target.innerHTML = $target.innerHTML;
+								$this.activeElement = $this.wrap;
+							}
+						}
+						$this.btnColorSelect.dataset['class'] = value;
+					}else{
+						let className = $this.getClassName($target.classList.value, 'color');
+
+						if($this.startTextCursor === $this.endTextCursor){
+							if(className !== ''){
+								$target.classList.remove(className);
+							}
+							if(value !== 'default'){
+								$target.classList.add(value);
+							}
+							$this.btnColorSelect.dataset['class'] = value;
+						}else{
+							$this.wrapElement('color', null, value);
+						}
+					}
+				}else{
+					alert($this.messageWrongNode);
+				}
+			});
+		});
+
 		// 텍스트 링크 추가
 		$this.addLinkBtn.addEventListener('click', function(){
 			let url = $this.urlInput.value;
@@ -632,11 +702,13 @@ class dragonEditor{
 		// remove link
 		$this.unlinkBtn.addEventListener('click', function(){
 			let $target = $this.activeElement;
+			let $el = $this.findContenteditable($target);
 			if($target.constructor.name === 'HTMLAnchorElement'){
 				let text = $target.textContent;
 
 				$target.insertAdjacentText('afterend', text);
 				$target.remove();
+				$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
 			}else{
 				alrt($this.messageNotAnchorTag);
 			}
@@ -1403,7 +1475,7 @@ class dragonEditor{
 		}
 	}
 
-	wrapElement(type, url = null){
+	wrapElement(type, url = null, className = null){
 		let text = this.focusNode.textContent;
 		let $el = this.findContenteditable(this.focusNode);
 		$el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
@@ -1448,6 +1520,9 @@ class dragonEditor{
 			break;
 			case 'wordblock' :
 				code = `${text.substring(0, firstCursor)}<code class="wordblock">${text.substring(firstCursor, endCursor)}</code>${text.substring(endCursor)}`;
+			break;
+			case 'color' :
+				code = `${text.substring(0, firstCursor)}<span class="${className}">${text.substring(firstCursor, endCursor)}</span>${text.substring(endCursor)}`;
 			break;
 		}
 
