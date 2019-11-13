@@ -288,8 +288,6 @@ class dragonEditor{
 
 		$this.contentArea.addEventListener('click', function(e){
 			if(e.button === 0 || e.isTrusted === false){
-				let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
-
 				$this.contentCheckByMouse(e.target, 'click');
 				$this.checkOptionsValue(e.target);
 			}
@@ -935,6 +933,7 @@ class dragonEditor{
 				target = node;
 			}
 
+			console.log(node, target);
 			let hasAttr = target.getAttribute('contenteditable');
 			if(hasAttr === 'true'){
 				return target;
@@ -1272,6 +1271,7 @@ class dragonEditor{
 	contentCheckByMouse(target, eventType){
 		if(eventType === 'click'){
 			this.activeElement = target;
+			this.selection = window.getSelection();
 		}
 		let $target = this.getLastSetOrFocus(target);
 		let base = this.selection.baseOffset;
@@ -1542,11 +1542,11 @@ class dragonEditor{
 	}
 
 	makeTextDecoration(tag, tagName, className){
-		if(this.selection.focusNode === this.selection.baseNode){
+		if(this.focusNode === this.baseNode){
 			let $target = this.activeElement;
 			let elName = $target.constructor.name;
 			let $el = this.findContenteditable($target);
-			console.log($el);
+			console.log($el, $target);
 
 			if(elName === 'HTMLAnchorElement' || elName === 'HTMLSpanElement' || elName === 'HTMLElement'){
 				let classList = $target.classList;
@@ -1582,7 +1582,7 @@ class dragonEditor{
 					}
 				}
 			}else{
-				if(this.startTextCursor !== this.endTextCursor){
+				if(window.getSelection().focusOffset !== window.getSelection().baseOffset){
 					this.wrapElement(className);
 				}else{
 					if($target.classList.contains(className) === true){
