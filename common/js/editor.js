@@ -9,7 +9,6 @@ class dragonEditor{
 	setting(wrap, options){
 		let $this = this;
 
-		$this.selection = window.getSelection();
 		$this.startTextCursor = 0;
 		$this.endTextCursor = 0;
 		$this.activeElement;
@@ -290,6 +289,7 @@ class dragonEditor{
 			if(e.button === 0 || e.isTrusted === false){
 				$this.contentCheckByMouse(e.target, 'click');
 				$this.checkOptionsValue(e.target);
+				$this.tableConstrol(e.target);
 			}
 		});
 
@@ -362,7 +362,7 @@ class dragonEditor{
 				let $lastset = $this.getEl('.lastset');
 
 				if($lastset !== false && $activeEl.constructor.name === 'HTMLBodyElement'){
-					$lastset.classList.remove('lastset');
+					//$lastset.classList.remove('lastset');
 				}
 				$this.popOptions.classList.remove('act');
 			}
@@ -639,7 +639,7 @@ class dragonEditor{
 				let tagName = $activeEl.tagName;
 				let $target = $this.findContenteditable($activeEl);
 
-				if($this.selection.focusNode === $this.selection.baseNode){
+				if(window.getSelection().focusNode === window.getSelection().baseNode){
 					if(list.indexOf(tagName) > 0){
 						let className = $this.getClassName($activeEl.classList.value, 'color');
 
@@ -730,7 +730,7 @@ class dragonEditor{
 		});
 
 		$this.wordblockBtn.addEventListener('click', function(){
-			if($this.selection.focusNode === $this.selection.baseNode){
+			if(window.getSelection().focusNode === window.getSelection().baseNode){
 				let $target = $this.activeElement;
 				let elName = $target.tagName;
 				let $el = $this.findContenteditable($target);
@@ -1271,11 +1271,10 @@ class dragonEditor{
 	contentCheckByMouse(target, eventType){
 		if(eventType === 'click'){
 			this.activeElement = target;
-			this.selection = window.getSelection();
 		}
 		let $target = this.getLastSetOrFocus(target);
-		let base = this.selection.baseOffset;
-		let extent = this.selection.extentOffset;
+		let base = window.getSelection().baseOffset;
+		let extent = window.getSelection().extentOffset;
 
 		if($target !== false){
 			let offset = $target.getBoundingClientRect();
@@ -1284,7 +1283,7 @@ class dragonEditor{
 			let isBtn = $target.classList.contains('btn');
 
 			switch(true){
-				case $target.tagName === 'CODE' :
+				case $target.tagName === 'CODE' && $target.parentElement.tagName === 'PRE' :
 					type = 'codeblock';
 				break;
 				case $target.constructor.name === 'HTMLElement' && $target.classList.contains('wordblock') :
@@ -1302,12 +1301,12 @@ class dragonEditor{
 						}
 					}
 				break;
-				case this.selection.focusNode !== this.selection.baseNode :
+				case window.getSelection().focusNode !== window.getSelection().baseNode :
 					type = 'text';
 				break;
 				case base !== extent :
-					this.focusNode = this.selection.focusNode;
-					this.baseNode = this.selection.baseNode;
+					this.focusNode = window.getSelection().focusNode;
+					this.baseNode = window.getSelection().baseNode;
 					this.startTextCursor = base;
 					this.endTextCursor = extent;
 					type = 'word';
@@ -1318,7 +1317,11 @@ class dragonEditor{
 				default : 
 					type = type;
 			}
-			this.setLastElement($target, $children);
+			if(eventType === 'click'){
+				this.setLastElement($target, $children);
+			}else if((isBtn === false && eventType !== 'click') && (type === 'youtube' || type === 'codepen')){
+				this.setLastElement($target, $children);
+			}
 			this.openOptionPop(offset, type);
 		}
 	}
@@ -1594,6 +1597,45 @@ class dragonEditor{
 			}
 		}else{
 			alert(this.messageWrongNode);
+		}
+	}
+
+	tableConstrol($target){
+		let name = $target.constructor.name;
+		let classList = $target.classList;
+
+		if(name === 'HTMLButtonElement'){
+			let table = document.querySelector('.lastset .item_table');
+			let colgroup = table.querySelector('colgroup');
+			let colCount = table.querySelectorAll('col').length;
+			let row = table.querySelectorAll('tr');
+
+			switch(true){
+				case classList.contains('btn_col_add') :
+					row.forEach(function(item){
+						let y = item.querySelector('*:nth-child(1)').dataset['y'];
+
+						item.insertAdjacentHTML('beforeend', `<td contenteditable="true" data-x="${colCount + 1}" data-y="${y}"></td>`);
+					});
+					colgroup.insertAdjacentHTML('beforeend', '<col class="size_100">');
+				break;
+				case classList.contains('btn_col_del') :
+					if(colCount > 1){
+						let lastCol = colgroup.querySelector('*:last-child');
+
+						row.forEach(function(item){
+							let lastChild = item.querySelector('*:last-child');
+
+							lastChild.remove();
+						});
+						lastCol.remove();
+					}
+				break;
+				case classList.contains('btn_row_add') :
+				break;
+				case classList.contains('btn_row_del') :
+				break;
+			}
 		}
 	}
 
