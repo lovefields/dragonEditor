@@ -79,7 +79,7 @@ class dragonEditor{
 		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
-		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
+		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><div class="scroll"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
 		$this.HTMLLinkBox = '<div class="item" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
@@ -285,12 +285,16 @@ class dragonEditor{
 		});
 		*/
 
+		let clickFn;
 		$this.contentArea.addEventListener('click', function(e){
-			if(e.button === 0 || e.isTrusted === false){
-				$this.contentCheckByMouse(e.target, 'click');
-				$this.checkOptionsValue(e.target);
-				$this.tableConstrol(e.target);
-			}
+			clearTimeout(clickFn);
+			clickFn = setTimeout(() => {
+				if(e.button === 0 || e.isTrusted === false){
+					$this.contentCheckByMouse(e.target, 'click');
+					$this.checkOptionsValue(e.target);
+					$this.tableConstrol(e.target);
+				}
+			}, 150);
 		});
 
 		// $this.contentArea.addEventListener('touchstart', function(e){
@@ -1609,13 +1613,14 @@ class dragonEditor{
 			let colgroup = table.querySelector('colgroup');
 			let colCount = table.querySelectorAll('col').length;
 			let row = table.querySelectorAll('tr');
+			let tbody = table.querySelector('tbody');
 
 			switch(true){
 				case classList.contains('btn_col_add') :
 					row.forEach(function(item){
 						let y = item.querySelector('*:nth-child(1)').dataset['y'];
 
-						item.insertAdjacentHTML('beforeend', `<td contenteditable="true" data-x="${colCount + 1}" data-y="${y}"></td>`);
+						item.insertAdjacentHTML('beforeend', `<td contenteditable="true" data-x="${colCount}" data-y="${y}"></td>`);
 					});
 					colgroup.insertAdjacentHTML('beforeend', '<col class="size_100">');
 				break;
@@ -1632,14 +1637,40 @@ class dragonEditor{
 					}
 				break;
 				case classList.contains('btn_row_add') :
+					let html = '<tr>';
+
+					for(let i = 0;i < colCount;i += 1){
+						html += `<td contenteditable="true" data-x="${i}" data-y="${row.length}"></td>`;
+					}
+					html += '</tr>';
+
+					tbody.insertAdjacentHTML('beforeend', html);
 				break;
 				case classList.contains('btn_row_del') :
+					if(row.length > 1){
+						tbody.querySelector('tr:last-child').remove();
+					}
 				break;
 			}
 		}
 	}
 
 	keybroadControl(event){
+		let key = event.key;
+		let shift = event.shiftKey;
+		let control = event.ctrlKey;
+		let command = event.metaKey;
+		let alt = event.altKey;
+
+		switch(true){
+			case key === 'Enter' :
+				if(shift === true){
+
+				}else{
+
+				}
+			break;
+		}
 		console.log(event);
 	}
 

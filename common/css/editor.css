@@ -52,7 +52,8 @@
 .content_area .item_quote .author:empty::after{content:'Author'}
 .content_area .item_quote .author:focus::before{content:'- '}
 .content_area .item_quote .author:focus::after{content:' -'}
-.content_area .item_table_area{position:relative;overflow-y:auto}
+.content_area .item_table_area{position:relative}
+.content_area .item_table_area .scroll{overflow-y:auto}
 .content_area .item_table_area .btn{display:none;position:absolute;width:20px;height:20px;padding:0;background:#dedede;color:transparent;border-radius:50%;font-size:0}
 .content_area .item_table_area:hover .btn{display:block}
 .content_area .item_table_area .btn::before,
