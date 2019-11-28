@@ -54,6 +54,7 @@ class dragonEditor{
 		$this.fontSizeSelect = $this.checkOptionElement(options.fontSizeSelect, '.select_font_size');
 		$this.btnColorSelect = $this.checkOptionElement(options.colorSelect, '.select_color');
 		$this.btnColor = $this.checkOptionElement(options.colorSelect, '.btn_set_color', 'multi');
+		$this.textAlgin = $this.checkOptionElement(options.textAlgin, '.btn_text_algin', 'multi');
 		$this.listTypeSelect = $this.checkOptionElement(options.listTypeSelect, '.select_list_type');
 		$this.colSizeSelect = $this.checkOptionElement(options.colSizeSelect, '.select_col');
 		$this.themeSelect = $this.checkOptionElement(options.themeSelect, '.select_theme');
@@ -876,6 +877,20 @@ class dragonEditor{
 			$this.changeCell('td');
 		});
 
+		// text align
+		$this.textAlgin.forEach(function(item){
+			item.addEventListener('click', function(){
+				let type = this.dataset['value'];
+				let $target = $this.findContenteditable($this.activeElement);
+				let className = $this.getClassName($target.classList.value, 'align');
+
+				if(className !== ''){
+					$target.classList.remove(className);
+				}
+				$target.classList.add(type);
+			});
+		});
+
 
 
 
@@ -965,7 +980,6 @@ class dragonEditor{
 				target = node;
 			}
 
-			console.log(node, target);
 			let hasAttr = target.getAttribute('contenteditable');
 			if(hasAttr === 'true'){
 				return target;
