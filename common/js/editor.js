@@ -867,6 +867,14 @@ class dragonEditor{
 			}
 		});
 
+		// ctable td / th change
+		$this.changeThBtn.addEventListener('click', function(){
+			$this.changeCell('th');
+		});
+
+		$this.changeTdBtn.addEventListener('click', function(){
+			$this.changeCell('td');
+		});
 
 
 
@@ -879,6 +887,22 @@ class dragonEditor{
 
 
 
+
+	}
+
+	changeCell(changeTagName){
+		let $target = this.activeElement;
+		let tagName = $target.tagName;
+
+		if(tagName !== changeTagName.toUpperCase()){
+			let x = $target.dataset['x'];
+			let y = $target.dataset['y'];
+
+			$target.insertAdjacentHTML('afterend', `<${changeTagName} contenteditable="true" data-x="${x}" data-y="${y}"></${changeTagName}>`);
+			this.activeElement = $target.nextElementSibling;
+			$target.nextElementSibling.focus();
+			$target.remove();
+		}
 	}
 
 	checkOptionElement(name, defaultName, type = 'single'){
@@ -1662,10 +1686,12 @@ class dragonEditor{
 	keybroadControl(event){
 		let key = event.key;
 		let shift = event.shiftKey;
-		let control = event.ctrlKey;
-		let command = event.metaKey;
 		let $activeEl = document.activeElement.constructor.name === 'HTMLBodyElement' ? false : document.activeElement;
 		let $item = this.findParent($activeEl, 'item');
+
+		if($activeEl !== false){
+			$this.activeElement = document.activeElement;
+		}
 
 		switch(true){
 			case key === 'Enter' && $activeEl !== false :
