@@ -455,8 +455,11 @@ class dragonEditor{
 
 			// go to send area
 			if(value === 'options'){
-				let nodesArr = $this.dataToArray();
-				$this.jsonForm(nodesArr);
+				let childNodes = $this.getElList(`${$this.contentAreaName} > *`);
+				let data = $this.convertJson(childNodes);
+				//console.log(childNodes);
+				//let nodesArr = $this.dataToArray();
+				//$this.jsonForm(nodesArr);
 			// go to contents area
 			}else{
 
@@ -476,7 +479,7 @@ class dragonEditor{
 			if(status === 'editor'){
 				// add json
 			}else{
-				$this.contentAddList.classList.add('act');
+				//$this.contentAddList.classList.add('act');
 			}
 		});
 
@@ -1064,6 +1067,191 @@ class dragonEditor{
 		$target.insertAdjacentHTML(position, html);
 	}
 
+	convertJson(nodeList){
+		let arr = [];
+
+		nodeList.forEach(function(item){
+			let type = item.dataset['type'];
+
+			switch(true){
+				case type === 'title' :
+					arr.push({
+						'type' : 'title',
+						'class' : [...item.classList],
+						'textContent' : item.textContent
+					});
+				break;
+				case type === 'text' :
+					arr.push({
+						'type' : 'text',
+						'class' : [...item.classList],
+						'textContent' : item.textContent
+					});
+				break;
+				case type === 'image' :
+					let hasWebp = item.tagName === 'PICTURE' ? true : false;
+					let img = item.querySelector('.img');
+					let link = img.getAttribute('src');
+					let srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
+
+					arr.push({
+						'type' : 'image',
+						'class' : [...item.classList],
+						'hasWebp' : hasWebp,
+						'size' : img.getAttribute('width'),
+						'alt' : img.getAttribute('alt'),
+						'src' : link.replace(srcReg, '$1'),
+						'defaultFormat' : link.replace(srcReg, '$2')
+					});
+				break;
+				case type === 'youtube' :
+					let video = item.querySelector('.video');
+
+					arr.push({
+						'type' : 'youtube',
+						'class' : [...item.classList],
+						'src' : video.getAttribute('src'),
+						'allow' : video.getAttribute('allow')
+					});
+				break;
+				case type === 'codepen' :
+					let iframe = item.querySelector('.iframe');
+
+					arr.push({
+						'type' : 'codepen',
+						'class' : [...item.classList],
+						'src' : iframe.getAttribute('src'),
+						'height' : iframe.getAttribute('height'),
+						'title' : iframe.getAttribute('title')
+					});
+				break;
+				case type === 'list_u' || type ===  'list_o' :
+					let childEl = item.querySelectorAll('li');
+					let child = [];
+
+					childEl.forEach(function(el){
+						child.push({
+							'class' : [...el.classList],
+							'textContent' : el.textContent
+						});
+					});
+
+					arr.push({
+						'type' : 'list',
+						'class' : [...item.classList],
+						'tag' : item.tagName.toLowerCase(),
+						'listType' : item.getAttribute('type'),
+						'child' : child
+					});
+				break;
+				case type === 'quote' :
+					let text = item.querySelector('.text').textContent;
+					let author = item.querySelector('.author').textContent;
+
+					arr.push({
+						'type' : 'quote',
+						'class' : [...item.classList],
+						'text' : text,
+						'author' : author
+					});
+				break;
+				case type === 'table' :
+					let colgroup = [];
+					let tbody = [];
+					let caption = item.querySelector('caption').textContent;
+					let colList = item.querySelectorAll('col');
+					let trList = item.querySelectorAll('tr');
+
+					colList.forEach(function(col){
+						colgroup.push(col.classList.value);
+					});
+
+					trList.forEach(function(tr){
+						let cellList = [];
+						let count = tr.childElementCount;
+						let children = tr.children;
+
+						for(let i = 0;i < count;i += 1){
+							cellList.push({
+								'tag' : children[i].tagName.toLowerCase(),
+								'class' : [...children[i].classList],
+								'textContent' : children[i].textContent
+							});
+						}
+
+						tbody.push(cellList);
+					});
+
+					arr.push({
+						'type' : 'table',
+						'class' : [...item.classList],
+						'caption' : caption,
+						'colgroup' : colgroup,
+						'child' : tbody
+					});
+				break;
+				case type === 'codeblock' :
+					let theme = item.dataset['theme'];
+					let lang = item.dataset['lang'];
+					let code = item.querySelector('code');
+
+					arr.push({
+						'type' : 'codeblock',
+						'class' : [...item.classList],
+						'theme' : theme,
+						'lang' : lang,
+						'code' : {
+							'class' : [...code.classList],
+							'innerHTML' : code.innerHTML
+						}
+					});
+				break;
+				case type === 'link_box' :
+					let url = item.querySelector('.link_box').getAttribute('href');
+					let imgSrc = item.querySelector('.img').getAttribute('src');
+					let title = item.querySelector('.link_title').textContent;
+					let description = item.querySelector('.link_description').textContent;
+					let domain = item.querySelector('.link_domain').textContent;
+
+					arr.push({
+						'type' : 'link_box',
+						'class' : [...item.classList],
+						'url' : url,
+						'imgSrc' : imgSrc,
+						"title" : title,
+						"description" : description,
+						"domain" : domain,
+					});
+				break;
+				case type === 'btn' :
+					let icon = item.querySelector('.icon');
+					let iconTagName = icon.tagName.toLowerCase();
+					let iconUrl;
+
+					if(iconTagName === 'svg'){
+						iconUrl = icon.querySelector('use').getAttribute('href');
+					}else{
+						iconUrl = icon.getAttribute('src');
+					}
+
+					arr.push({
+						'type' : 'btn',
+						'value' : item.dataset['value'],
+						'textContent' : item.textContent,
+						'icon' : {
+							"type" : iconTagName,
+							"viewBox" : icon.getAttribute('viewBox'),
+							"class" : [...icon.classList],
+							"url" : iconUrl
+						}
+					});
+				break;
+			}
+		});
+
+		console.log(arr);
+	}
+/*
 	dataToArray(){
 		let $contentsBox = document.querySelectorAll('.content_area'),
 			contentsItems = $contentsBox[0].childNodes,
@@ -1247,7 +1435,7 @@ class dragonEditor{
 
 		console.log(resultArr);
 	}
-
+*/
 	getLastSetOrFocus($target){
 		let $activeEl = document.activeElement;
 		let $item, $btn = false;
@@ -1704,7 +1892,7 @@ class dragonEditor{
 		let $item = this.findParent($activeEl, 'item');
 
 		if($activeEl !== false){
-			$this.activeElement = document.activeElement;
+			this.activeElement = document.activeElement;
 		}
 
 		switch(true){
