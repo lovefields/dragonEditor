@@ -397,6 +397,7 @@ class dragonEditor{
 					break;
 					case 'image':
 						$this.addBtn($target, $this.imageIconId, 'image', 'Add on image');
+						$this.fileInput.dataset['type'] = 'image';
 						$this.fileInput.setAttribute('accept', 'image/*');
 						$this.fileInput.click();
 					break;
@@ -892,6 +893,28 @@ class dragonEditor{
 				}
 				$target.classList.add(type);
 			});
+		});
+
+		// 파일 업로드
+		$this.fileInput.addEventListener('change', function(){
+			let file = this.files[0];
+			let form = new FormData();
+			let type = this.dataset['type'];
+			let html = '';
+
+			form.append('type', type);
+			form.append('file', file);
+
+
+			// ajax
+			let junk = {
+				'idx' : 5,
+				'src' : 'https://dico.me/img/upload/2019/20190722112336_000.jpg',
+				'alt' : '',
+				'width' : 750
+			};
+
+			console.log(file);
 		});
 
 
@@ -1530,6 +1553,7 @@ class dragonEditor{
 					if(typeof $target.dataset['value'] !== 'undefined'){
 						let value = $target.dataset['value'];
 						if(value === 'image'){
+							this.fileInput.dataset['type'] = 'image';
 							this.fileInput.setAttribute('accept', 'image/*');
 							this.fileInput.click();
 						}
