@@ -301,6 +301,9 @@
 					<source srcset="./common/img/img_cover.webp" type="image/webp">
 					<img src="./common/img/img_cover.png" width="200" alt="dico" class="img">
 				</picture>
+				<div class="item item_image" data-type="image">
+					<img src="./common/img/img_cover.png" width="200" alt="dico" class="img">
+				</div>
 				<div class="btn" data-type="btn" data-value="image">
 					<svg viewbox="0 0 50 50" class="icon">
 						<use class="path" xlink:href="#icon_image" href="#icon_image" />
@@ -608,7 +611,7 @@
 			</label>
 			<button class="col btn_change_th" data-group="table">th</button>
 			<button class="col btn_change_td" data-group="table">td</button>
-			<label class="col options_width" data-group="img">
+			<label class="col options_width" data-group="image">
 				<span class="text">Width : </span>
 				<input type="text" maxlength="3" class="value">
 			</label>
@@ -756,20 +759,23 @@
 	</button>
 </div>
 <div class="pop pop_media ts">
-	<div class="media_list">
-		<button class="btn_add_media">
-			<img src="https://dico.me/img/upload/2019/20190822170137_004.jpg" alt="" class="img">
-			<span class="name">name</span>
-		</button>
+	<ul class="media_list clearfix">
+		<li class="btn_add_media" dtat-idx="1">
+			<div class="img_area">
+				<img src="https://dico.me/img/upload/2019/20190822170137_004.jpg" alt="" class="img">
+			</div>
+			<p class="name">name</p>
+			<button class="btn_remove_media" data-idx="1">삭제</button>
+		</li>
 
-		<button class="btn_add_media">
-			<img src="https://dico.me/img/upload/2019/20190722112336_000.jpg" alt="" class="img">
-			<span class="name">name</span>
-		</button>
-
-		<button class="btn_add_media"></button>
-		<button class="btn_add_media"></button>
-	</div>
+		<li class="btn_add_media" dtat-idx="2">
+			<div class="img_area">
+				<img src="https://dico.me/img/upload/2019/20190722112336_000.jpg" alt="" class="img">
+			</div>
+			<p class="name">name</p>
+			<button class="btn_remove_media" data-idx="2">삭제</button>
+		</li>
+	</ul>
 	<button class="btn_add_media_list">미디어 추가</button>
 </div>
 <div class="pop pop_sticker ts">
