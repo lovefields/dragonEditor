@@ -110,6 +110,7 @@ class dragonEditor{
 		$this.messageExceedSize = typeof options.messageExceedSize !== 'string' ? `Can't exceed [size]px` : options.messageExceedSize;
 		$this.messageWrongNode = typeof options.messageWrongNode !== 'string' ? 'Wrong cursor pointer' : options.messageWrongNode
 		$this.messageNotAnchorTag = typeof options.messageNotAnchorTag !== 'string' ? 'Active item is not link' : options.messageNotAnchorTag
+		$this.messageWrongValue = typeof options.messageWrongValue !== 'string' ? 'Wrong value' : options.messageWrongValue
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -771,16 +772,14 @@ class dragonEditor{
 
 
 		// image width
-		let imageSizeFn;
 		$this.widthInput.addEventListener('keyup', function(e){
-			clearTimeout(imageSizeFn);
-			imageSizeFn = setTimeout(() => {
-				if($this.numberReg.test(e.key) || e.key === 'Backspace'){
-					let value = this.value;
-					let $el = $this.getEl('.lastset .img');
-					let massage = $this.messageExceedSize.replace('[size]', $this.maxImageWidth);
-					
-					if($el !== false){
+			if(e.key === 'Enter'){
+				let value = this.value;
+				let $el = $this.getEl('.lastset .img');
+				let massage = $this.messageExceedSize.replace('[size]', $this.maxImageWidth);
+
+				if($el !== false){
+					if($this.numberReg.test(value)){
 						if(value <= $this.maxImageWidth){
 							$el.setAttribute('width', value);
 						}else{
@@ -791,12 +790,12 @@ class dragonEditor{
 						let offset = $this.getEl('.lastset').getBoundingClientRect();
 						$this.openOptionPop(offset, 'img');
 					}else{
-						alert($this.messageNotSelecImage);
+						alert($this.messageWrongValue);
 					}
-				}else if(e.key !== 'Backspace'){
-					e.preventDefault();
+				}else{
+					alert($this.messageNotSelecImage);
 				}
-			}, 250);
+			}
 		});
 
 		// codepen height
@@ -1617,11 +1616,13 @@ class dragonEditor{
 					type = 'text';
 				break;
 				case base !== extent :
-					this.focusNode = window.getSelection().focusNode;
-					this.baseNode = window.getSelection().baseNode;
-					this.startTextCursor = base;
-					this.endTextCursor = extent;
-					type = 'word';
+					if($target.tagName !== 'BLOCKQUOTE'){
+						this.focusNode = window.getSelection().focusNode;
+						this.baseNode = window.getSelection().baseNode;
+						this.startTextCursor = base;
+						this.endTextCursor = extent;
+						type = 'word';
+					}
 				break;
 				case type === undefined :
 					type = 'text';
@@ -1975,24 +1976,28 @@ class dragonEditor{
 
 		switch(true){
 			case key === 'Enter' && $activeEl !== false :
+				let tagName = $activeEl.tagName;
+
 				if(shift !== true){
-					event.preventDefault();
-					this.addTextBlock($item);
-				}else if(shift !== true){
-					event.preventDefault();
+					if(tagName === 'LI'){
+						event.preventDefault();
 
-					let text = $activeEl.textContent;
+						let text = $activeEl.textContent;
 
-					if(text === ''){
-						let count = $item.querySelectorAll('li').length;
+						if(text === ''){
+							let count = $item.querySelectorAll('li').length;
 
-						this.addTextBlock($item);
-						if(count > 1){
-							$activeEl.remove();
+							this.addTextBlock($item);
+							if(count > 1){
+								$activeEl.remove();
+							}
+						}else{
+							$activeEl.insertAdjacentHTML('afterend', this.HTMLChildList.replace('[content]', ''));
+							$activeEl.nextElementSibling.focus();
 						}
 					}else{
-						$activeEl.insertAdjacentHTML('afterend', this.HTMLChildList.replace('[content]', ''));
-						$activeEl.nextElementSibling.focus();
+						event.preventDefault();
+						this.addTextBlock($item);
 					}
 				}
 			break;
