@@ -92,7 +92,11 @@ class dragonEditor{
 		$this.HTMLImageType01 = '<picture class="item item_image" data-type="image">[source]<img src="[src]" width="[width]" alt="[alt]" class="img"></picture>';
 		$this.HTMLImageSource = '<source srcset="[webp]" type="image/webp">';
 		$this.HTMLImageType02 = '<div class="item item_image" data-type="image"><img src="[src]" width="[width]" alt="[alt]" class="img"></div>';
+		$this.HTMLYoutube = '<div class="item item_video" data-type="youtube"><iframe src="[src]" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="video"></iframe></div>';
+		$this.HTMLCodepen = '<div class="item item_codepen" data-type="codepen"><iframe height="[height]" title="" src="[src]" allowfullscreen class="iframe"></iframe></div>';
 
+		$this.youtubeReg = new RegExp('www.youtube.com', 'g');
+		$this.codepenReg = new RegExp('codepen.io', 'g');
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
 		$this.numberReg = new RegExp('[0-9]', 'g');
 		$this.classReg = {
@@ -111,6 +115,7 @@ class dragonEditor{
 		$this.messageWrongNode = typeof options.messageWrongNode !== 'string' ? 'Wrong cursor pointer' : options.messageWrongNode
 		$this.messageNotAnchorTag = typeof options.messageNotAnchorTag !== 'string' ? 'Active item is not link' : options.messageNotAnchorTag
 		$this.messageWrongValue = typeof options.messageWrongValue !== 'string' ? 'Wrong value' : options.messageWrongValue
+		$this.messageWrongUrlType = typeof options.messageWrongUrlType !== 'string' ? 'Wrong URL type.' : options.messageWrongUrlType
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -799,16 +804,14 @@ class dragonEditor{
 		});
 
 		// codepen height
-		let codepenSizeFn;
 		$this.heightInput.addEventListener('keyup', function(e){
-			clearTimeout(codepenSizeFn);
-			codepenSizeFn = setTimeout(() => {
-				if($this.numberReg.test(e.key) || e.key === 'Backspace'){
-					let value = this.value;
-					let $el = $this.getEl('.lastset .iframe');
-					let massage = $this.messageExceedSize.replace('[size]', $this.maxCodepenHeight);
-					
-					if($el !== false){
+			if(e.key === 'Enter'){
+				let value = this.value;
+				let $el = $this.getEl('.lastset .iframe');
+				let massage = $this.messageExceedSize.replace('[size]', $this.maxCodepenHeight);
+				
+				if($el !== false){
+					if($this.numberReg.test(value)){
 						if(value <= $this.maxCodepenHeight){
 							$el.setAttribute('height', value);
 						}else{
@@ -819,12 +822,12 @@ class dragonEditor{
 						let offset = $this.getEl('.lastset').getBoundingClientRect();
 						$this.openOptionPop(offset, 'codepen');
 					}else{
-						alert($this.messageNotSelecCodepen);
+						alert($this.messageWrongValue);
 					}
-				}else if(e.key !== 'Backspace'){
-					e.preventDefault();
+				}else{
+					alert($this.messageNotSelecCodepen);
 				}
-			}, 250);
+			}
 		});
 
 		// list type
@@ -899,6 +902,51 @@ class dragonEditor{
 				}
 				$target.classList.add(type);
 			});
+		});
+
+		// url change
+		$this.changeUrlBtn.addEventListener('click', function(){
+			let url = $this.urlInput.value;
+			let $el = document.querySelector('.lastset');
+			let type = $el.dataset['type'];
+
+			switch(true){ // not default
+				case $this.urlReg.test(url) === false :
+					alert($this.messageWrongURL);
+				break;
+				case $el === undefined :
+					alert($this.messageNotSelect);
+				break;
+				case type === 'youtube' :
+					if($this.youtubeReg.test(url)){
+						let video = $el.querySelector('.video');
+						video.setAttribute('src', url);
+					}else{
+						alert($this.messageWrongUrlType);
+					}
+				break;
+				case type === 'codepen' :
+					if($this.codepenReg.test(url)){
+						let iframe = $el.querySelector('.iframe');
+						iframe.setAttribute('src', url);
+					}else{
+						alert($this.messageWrongUrlType);
+					}
+				break;
+				case type === 'btn' :
+					let btnValue = $el.dataset['value'];
+
+					if(btnValue === 'youtube'){
+						$this.addYoutube($el, url);
+						$el.remove();
+						$this.activeElement = $this.contentArea;
+					}else if(btnValue === 'codepen'){
+						$this.addCodepen($el, url);
+						$el.remove();
+						$this.activeElement = $this.contentArea;
+					}
+				break;
+			}
 		});
 
 		// 파일 업로드
@@ -1131,6 +1179,16 @@ class dragonEditor{
 				.replace('[width]', data.width);
 		}
 
+		$target.insertAdjacentHTML(position, html);
+	}
+
+	addYoutube($target, src, position = 'afterend'){
+		let html = this.HTMLYoutube.replace('[src]', src);
+		$target.insertAdjacentHTML(position, html);
+	}
+
+	addCodepen($target, src, position = 'afterend', height = 300){
+		let html = this.HTMLCodepen.replace('[src]', src).replace('[height]', height);
 		$target.insertAdjacentHTML(position, html);
 	}
 
@@ -1651,7 +1709,7 @@ class dragonEditor{
 			let activeClassList = $activeEl.classList.value;
 
 			this.urlInput.value = '';
-			switch(type){ // not defualt
+			switch(type){ // not default
 				case 'text' :
 					let colorClass = this.getClassName(targetClassList, 'color');
 					let sizeClass = this.getClassName(targetClassList, 'size');
