@@ -595,7 +595,7 @@
 .pop_media .btn_add_media{position:relative;float:left;width:50%;padding:5px;box-sizing:border-box}
 .pop_media .btn_add_media .img_area{position:relative;width:100%;height:80px;overflow:hidden}
 .pop_media .btn_add_media .img{position:absolute;top:50%;left:0;width:100%;transform:translateY(-50%)}
-.pop_media .btn_add_media .name{text-align:center}
+.pop_media .btn_add_media .name{padding:2px 0;text-align:center;outline:0}
 .pop_media .btn_add_media .btn_remove_media{position:absolute;top:5px;right:5px;width:18px;height:18px;background:#fff;color:transparent;border:1px solid #ccc;font-size:0}
 .pop_media .btn_add_media .btn_remove_media::before{display:block;content:'';position:absolute;top:7px;left:3px;width:10px;height:1px;background:#ccc;transform:rotate(45deg)}
 .pop_media .btn_add_media .btn_remove_media::after{display:block;content:'';position:absolute;top:7px;left:3px;width:10px;height:1px;background:#ccc;transform:rotate(-45deg)}

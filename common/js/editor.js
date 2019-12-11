@@ -88,7 +88,7 @@ class dragonEditor{
 		$this.HTMLLinkBox = '<div class="item" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
 		$this.HTMLPositionBar = '<div class="position_bar"></div>';
-		$this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" dtat-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
+		$this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" dtat-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
 		$this.HTMLImageType01 = '<picture class="item item_image" data-type="image">[source]<img src="[src]" width="[width]" alt="[alt]" class="img"></picture>';
 		$this.HTMLImageSource = '<source srcset="[webp]" type="image/webp">';
 		$this.HTMLImageType02 = '<div class="item item_image" data-type="image"><img src="[src]" width="[width]" alt="[alt]" class="img"></div>';
@@ -967,24 +967,45 @@ class dragonEditor{
 				'format' : 'jpg',
 				'alt' : '',
 				'width' : 750,
+				'height' : 1000,
 				'name' : 'name'
 			};
 			let html = $this.HTMLMediaRow.replace(/\[idx\]/g, junk['idx'])
 				.replace('[webp]', junk['webp'])
+				.replace('[height]', junk['height'])
 				.replace('[width]', junk['width'])
 				.replace('[src]', `${junk['src']}.${junk['format']}`) 
 				.replace('[alt]', junk['alt'])
 				.replace('[name]', junk['name']);
 
-
-			
-			console.log($this.activeElement);
 			$this.addImage($this.activeElement, junk);
 			$this.activeElement.remove();
 			$this.activeElement = $this.contentArea;
 			$this.mediaList.insertAdjacentHTML('beforeend', html);
 			$this.popMedia.classList.add('act');
-			console.log(file);
+		});
+
+		// add media
+		$this.popMedia.addEventListener('click', function(e){
+			let $target = e.target;
+			let row = $this.findParent($target, 'btn_add_media');
+			
+			switch($target.tagName){ // no default
+				case 'IMG' : 
+				break;
+				case 'P' : 
+				break;
+				case 'BUTTON' : 
+				break;
+			}
+		});
+
+		$this.popMedia.addEventListener('keydown', function(e){
+			if(e.key === 'Enter'){
+				e.preventDefault();
+				let row = $this.findParent(e.target, 'btn_add_media');
+				console.log(e.key, e.target);
+			}
 		});
 
 
@@ -1162,10 +1183,18 @@ class dragonEditor{
 
 	addImage($target, data, position = 'afterend'){
 		let html;
+		let width;
+
+		if(data.width > 500){
+			width = ((100 / data.width) * data.height) > 100 ? 350 : data.width;
+		}else{
+			width = data.width;
+		}
+
 		if(this.useWebp == true){
 			html = this.HTMLImageType01.replace('[src]', `${data.src}.${data.format}`)
 					.replace('[alt]', data.alt)
-					.replace('[width]', data.width);
+					.replace('[width]', width);
 
 			if(data.webp === true){
 				let source = this.HTMLImageSource.replace('[webp]', `${data.src}.webp`);
@@ -1176,7 +1205,7 @@ class dragonEditor{
 		}else{
 			html = this.HTMLImageType02.replace('[src]', `${data.src}.${data.format}`)
 				.replace('[alt]', data.alt)
-				.replace('[width]', data.width);
+				.replace('[width]', width);
 		}
 
 		$target.insertAdjacentHTML(position, html);
