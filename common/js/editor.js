@@ -85,16 +85,17 @@ class dragonEditor{
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><div class="scroll"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
-		$this.HTMLLinkBox = '<div class="item" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
+		$this.HTMLLinkBox = '<div class="item lastset" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
-		$this.HTMLPositionBar = '<div class="position_bar"></div>';
-		$this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" dtat-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
-		$this.HTMLImageType01 = '<picture class="item item_image" data-type="image">[source]<img src="[src]" width="[width]" alt="[alt]" class="img"></picture>';
+		//$this.HTMLPositionBar = '<div class="position_bar"></div>';
+		$this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" dtat-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
+		$this.HTMLImageType01 = '<picture class="item item_image lastset" data-type="image">[source]<img src="[src]" width="[width]" alt="[alt]" class="img"></picture>';
 		$this.HTMLImageSource = '<source srcset="[webp]" type="image/webp">';
-		$this.HTMLImageType02 = '<div class="item item_image" data-type="image"><img src="[src]" width="[width]" alt="[alt]" class="img"></div>';
-		$this.HTMLYoutube = '<div class="item item_video" data-type="youtube"><iframe src="[src]" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="video"></iframe></div>';
-		$this.HTMLCodepen = '<div class="item item_codepen" data-type="codepen"><iframe height="[height]" title="" src="[src]" allowfullscreen class="iframe"></iframe></div>';
+		$this.HTMLImageType02 = '<div class="item item_image lastset" data-type="image"><img src="[src]" width="[width]" alt="[alt]" class="img"></div>';
+		$this.HTMLYoutube = '<div class="item item_video lastset" data-type="youtube"><iframe src="[src]" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="video"></iframe></div>';
+		$this.HTMLCodepen = '<div class="item item_codepen lastset" data-type="codepen"><iframe height="[height]" title="" src="[src]" allowfullscreen class="iframe"></iframe></div>';
 
+		$this.srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
 		$this.youtubeReg = new RegExp('www.youtube.com', 'g');
 		$this.codepenReg = new RegExp('codepen.io', 'g');
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
@@ -400,10 +401,9 @@ class dragonEditor{
 			$btn.addEventListener('click', function(){
 				let type = this.dataset['value'];
 				let childCount = $this.contentArea.childElementCount;
-				let $lastEl = $this.contentArea.querySelector('.lastset');
-				let $target = $lastEl === null ? $this.contentArea.children[childCount - 1] : $lastEl
+				let $lastEl = $this.getEl('.lastset');
+				let $target = $lastEl === false ? $this.contentArea.children[childCount - 1] : $lastEl
 
-				$target.classList.remove('lastset');
 				switch(type){
 					case 'text':
 						$this.addTextBlock($target);
@@ -622,7 +622,7 @@ class dragonEditor{
 
 		// delete content
 		$this.contentDelBtn.addEventListener('click', function(){
-			let $target = $this.contentArea.querySelector('.lastset');
+			let $target = $this.getEl('.lastset');
 
 			if($target !== null){
 				$target.remove();
@@ -907,7 +907,7 @@ class dragonEditor{
 		// url change
 		$this.changeUrlBtn.addEventListener('click', function(){
 			let url = $this.urlInput.value;
-			let $el = document.querySelector('.lastset');
+			let $el = $this.getEl('.lastset');
 			let type = $el.dataset['type'];
 
 			switch(true){ // not default
@@ -965,10 +965,9 @@ class dragonEditor{
 				'src' : 'https://dico.me/img/upload/2019/20190722112336_000',
 				'webp' : false,
 				'format' : 'jpg',
-				'alt' : '',
+				'alt' : 'name',
 				'width' : 750,
-				'height' : 1000,
-				'name' : 'name'
+				'height' : 1000
 			};
 			let html = $this.HTMLMediaRow.replace(/\[idx\]/g, junk['idx'])
 				.replace('[webp]', junk['webp'])
@@ -976,7 +975,7 @@ class dragonEditor{
 				.replace('[width]', junk['width'])
 				.replace('[src]', `${junk['src']}.${junk['format']}`) 
 				.replace('[alt]', junk['alt'])
-				.replace('[name]', junk['name']);
+				.replace('[name]', junk['alt']);
 
 			$this.addImage($this.activeElement, junk);
 			$this.activeElement.remove();
@@ -989,14 +988,58 @@ class dragonEditor{
 		$this.popMedia.addEventListener('click', function(e){
 			let $target = e.target;
 			let row = $this.findParent($target, 'btn_add_media');
+			let $p = this.querySelector('*[contenteditable]');
+			let data;
 			
-			switch($target.tagName){ // no default
+			switch($target.tagName){
 				case 'IMG' : 
+					let src = $target.getAttribute('src');
+					let $el = $this.getEl('.lastset') === false ? $this.getEl(`${$this.contentAreaName} > *:nth-last-child(1)`) : $this.getEl('.lastset');
+
+					data = {
+						'width' : $target.getAttribute('width'),
+						'height' : $target.dataset['height'],
+						'webp' : row.dataset['webp'],
+						'alt' : row.querySelector('.name').textContent,
+						'src' : src.replace($this.srcReg, '$1'),
+						'format' : src.replace($this.srcReg, '$2')
+					}
+
+					$this.addImage($el, data);
 				break;
 				case 'P' : 
+					if($p !== null){
+						row = $this.findParent($p, 'btn_add_media');
+						$p.removeAttribute('contenteditable');
+						data = {
+							'idx' : row.dataset['idx'],
+							'textContent' : $p.textContent
+						};
+
+						//ajax
+					}
+
+					$target.setAttribute('contenteditable', true);
+					$target.focus();
 				break;
 				case 'BUTTON' : 
+					data = {
+						'idx' : row.dataset['idx']
+					};
+
+					//ajax
 				break;
+				default :
+					if($p !== null){
+						row = $this.findParent($p, 'btn_add_media');
+						$p.removeAttribute('contenteditable');
+						data = {
+							'idx' : row.dataset['idx'],
+							'textContent' : $p.textContent
+						};
+
+						//ajax
+					}
 			}
 		});
 
@@ -1005,6 +1048,7 @@ class dragonEditor{
 				e.preventDefault();
 				let row = $this.findParent(e.target, 'btn_add_media');
 				console.log(e.key, e.target);
+				e.target.removeAttribute('contenteditable');
 			}
 		});
 
@@ -1113,7 +1157,15 @@ class dragonEditor{
 		this.lodingArea.classList.remove('act');
 	}
 
+	removeLastsetClass($target){
+		if($target.classList.contains('lastset') === true){
+			$target.classList.remove('lastset');
+		}
+	}
+
 	addTextBlock($target, content = '', position = 'afterend'){
+		this.removeLastsetClass($target);
+
 		let html = this.HTMLTextBlock.replace('[content]', content);
 
 		$target.insertAdjacentHTML(position, html);
@@ -1121,6 +1173,7 @@ class dragonEditor{
 	}
 
 	addBtn($target, icon, type, text){
+		this.removeLastsetClass($target);
 		let html = this.HTMLBtn.replace(/\[icon_id\]/g, icon)
 					.replace(/\[type\]/g, type)
 					.replace(/\[text\]/g, text);
@@ -1129,6 +1182,7 @@ class dragonEditor{
 	}
 
 	addSticker($target, url, size, type){
+		this.removeLastsetClass($target);
 		let html = this.HTMLSvgSticker.replace(/\[url\]/g, url)
 					.replace(/\[size\]/g, size);
 
@@ -1136,6 +1190,7 @@ class dragonEditor{
 	}
 
 	addList($target, tag, type = null, content = ''){
+		this.removeLastsetClass($target);
 		let dataType;
 		if(tag === 'ol'){
 			dataType = 'list_o';
@@ -1154,21 +1209,25 @@ class dragonEditor{
 	}
 
 	addQuote($target){
+		this.removeLastsetClass($target);
 		$target.insertAdjacentHTML('afterend', this.HTMLQuote);
 		$target.nextElementSibling.children[0].focus();
 	}
 
 	addTable($target){
+		this.removeLastsetClass($target);
 		$target.insertAdjacentHTML('afterend', this.HTMLTable);
 		$target.nextElementSibling.querySelector('caption').focus();
 	}
 
 	addCodeBlock($target){
+		this.removeLastsetClass($target);
 		$target.insertAdjacentHTML('afterend', this.HTMLCodeBlock);
 		$target.nextElementSibling.children[0].focus();
 	}
 
 	addLinkBox($target, data, position = 'afterend'){
+		this.removeLastsetClass($target);
 		if(data.img === ''){
 			data.img = './common/img/img_cover.png';
 		}
@@ -1182,6 +1241,7 @@ class dragonEditor{
 	}
 
 	addImage($target, data, position = 'afterend'){
+		this.removeLastsetClass($target);
 		let html;
 		let width;
 
@@ -1212,11 +1272,13 @@ class dragonEditor{
 	}
 
 	addYoutube($target, src, position = 'afterend'){
+		this.removeLastsetClass($target);
 		let html = this.HTMLYoutube.replace('[src]', src);
 		$target.insertAdjacentHTML(position, html);
 	}
 
 	addCodepen($target, src, position = 'afterend', height = 300){
+		this.removeLastsetClass($target);
 		let html = this.HTMLCodepen.replace('[src]', src).replace('[height]', height);
 		$target.insertAdjacentHTML(position, html);
 	}
@@ -1246,7 +1308,6 @@ class dragonEditor{
 					let hasWebp = item.tagName === 'PICTURE' ? true : false;
 					let img = item.querySelector('.img');
 					let link = img.getAttribute('src');
-					let srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
 
 					arr.push({
 						'type' : 'image',
@@ -1254,8 +1315,8 @@ class dragonEditor{
 						'hasWebp' : hasWebp,
 						'size' : img.getAttribute('width'),
 						'alt' : img.getAttribute('alt'),
-						'src' : link.replace(srcReg, '$1'),
-						'defaultFormat' : link.replace(srcReg, '$2')
+						'src' : link.replace(this.srcReg, '$1'),
+						'defaultFormat' : link.replace(this.srcReg, '$2')
 					});
 				break;
 				case type === 'youtube' :
