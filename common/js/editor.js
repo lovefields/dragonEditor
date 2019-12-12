@@ -1,7 +1,6 @@
 class dragonEditor{
 	constructor(wrap = '.editor_area', options = {}){
 		this.setting(wrap, options);
-		console.log(this.wrap);
 		this.bindingEvent();
 		this.closeLoding();
 	}
@@ -22,6 +21,9 @@ class dragonEditor{
 		$this.maxCodepenHeight = typeof options.maxCodepenHeight !== 'number' ? 1000 : options.maxCodepenHeight;
 		$this.clickCehck = false;
 		$this.useWebp = true;
+		$this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
+		$this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
+		$this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
 
 		$this.mackLinkBoxType = typeof options.mackLinkBoxType !== 'self' ? 'self' : 'api';
 		$this.stickerType = options.stickerType === 'image' ? 'image' : 'svg';
@@ -113,10 +115,11 @@ class dragonEditor{
 		$this.messageNotSelect = typeof options.messageNotSelect !== 'string' ? `No item selected Please try again.` : options.messageNotSelect;
 		$this.messageNoData = typeof options.messageNoData !== 'string' ? `Could not get data` : options.messageNoData;
 		$this.messageExceedSize = typeof options.messageExceedSize !== 'string' ? `Can't exceed [size]px` : options.messageExceedSize;
-		$this.messageWrongNode = typeof options.messageWrongNode !== 'string' ? 'Wrong cursor pointer' : options.messageWrongNode
-		$this.messageNotAnchorTag = typeof options.messageNotAnchorTag !== 'string' ? 'Active item is not link' : options.messageNotAnchorTag
-		$this.messageWrongValue = typeof options.messageWrongValue !== 'string' ? 'Wrong value' : options.messageWrongValue
-		$this.messageWrongUrlType = typeof options.messageWrongUrlType !== 'string' ? 'Wrong URL type.' : options.messageWrongUrlType
+		$this.messageWrongNode = typeof options.messageWrongNode !== 'string' ? 'Wrong cursor pointer' : options.messageWrongNode;
+		$this.messageNotAnchorTag = typeof options.messageNotAnchorTag !== 'string' ? 'Active item is not link' : options.messageNotAnchorTag;
+		$this.messageWrongValue = typeof options.messageWrongValue !== 'string' ? 'Wrong value' : options.messageWrongValue;
+		$this.messageWrongUrlType = typeof options.messageWrongUrlType !== 'string' ? 'Wrong URL type.' : options.messageWrongUrlType;
+		$this.messageNotSetAjax = 'Didn\'t setting Ajax url.';
 
 		$this.linkBoxData = {};
 		$this.contentData = {
@@ -129,6 +132,10 @@ class dragonEditor{
 
 	bindingEvent(){
 		let $this = this;
+		if($this.mediaUploadURL === '' || $this.mediaUpdateURL === '' || $this.mediaDelURL === ''){
+			console.warn($this.messageNotSetAjax);
+			return;
+		}
 		$this.activeElement = $this.wrap;
 
 		if($this.windowWidth > $this.changePint){
@@ -165,6 +172,7 @@ class dragonEditor{
 					let $pop = $this.findParent(target, 'pop');
 					let $btnPop = $this.findParent(target, 'btn_pop');
 					let $popEl = $this.getElList('.pop');
+					let status = $this.editorSection.dataset['status'];
 
 					$popEl.forEach(function(item){
 						if($btnPop === false){
@@ -179,7 +187,7 @@ class dragonEditor{
 							}
 						}
 
-						if($this.windowWidth > $this.changePint){
+						if(status === 'editor'){
 							$this.contentAddList.classList.add('act');
 						}
 					});
@@ -474,9 +482,10 @@ class dragonEditor{
 				//console.log(childNodes);
 				//let nodesArr = $this.dataToArray();
 				//$this.jsonForm(nodesArr);
-			// go to contents area
-			}else{
 
+				$this.contentAddList.classList.remove('act');
+			}else{// go to contents area
+				$this.contentAddList.classList.add('act');
 			}
 
 			if($pop !== false){
@@ -488,12 +497,6 @@ class dragonEditor{
 			if($target.classList.contains('mobile') === true){
 				$target.classList.remove('mobile');
 				$this.viewBtn.classList.remove('act');
-			}
-
-			if(status === 'editor'){
-				// add json
-			}else{
-				//$this.contentAddList.classList.add('act');
 			}
 		});
 
@@ -1286,7 +1289,7 @@ class dragonEditor{
 	convertJson(nodeList){
 		let arr = [];
 
-		nodeList.forEach(function(item){
+		nodeList.forEach((item) => {
 			let type = item.dataset['type'];
 
 			switch(true){
@@ -2212,29 +2215,29 @@ class dragonEditor{
 		el.removeAttribute('draggable');
 		this.contentArea.dispatchEvent(event);
 	}
-}
 
-function ajax(method,url,data,type,fn){
-	let formData = new FormData();
-	let xmlhttp = new XMLHttpRequest();
-
-	if(type === 'json'){
-		for(let key in data){
-			formData.append(key, data[key]);
+	ajax(method,url,data,type,fn){
+		let formData = new FormData();
+		let xmlhttp = new XMLHttpRequest();
+	
+		if(type === 'json'){
+			for(let key in data){
+				formData.append(key, data[key]);
+			}
+	
+			data = formData;
 		}
-
-		data = formData;
-	}
-
-	xmlhttp.open(method, url);
-
-	xmlhttp.onreadystatechange = function(){
-		if(xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status === 200){
-			httpData = xmlhttp.responseText;
-			let item = JSON.parse(httpData);
-			fn(item);
+	
+		xmlhttp.open(method, url);
+	
+		xmlhttp.onreadystatechange = function(){
+			if(xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status === 200){
+				httpData = xmlhttp.responseText;
+				let item = JSON.parse(httpData);
+				fn(item);
+			}
 		}
+	
+		xmlhttp.send(data);
 	}
-
-	xmlhttp.send(data);
 }

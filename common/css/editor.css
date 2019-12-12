@@ -1,10 +1,11 @@
+.hidden{display:none}
 .raidobox{display:inline-block}
 .raidobox input{display:none}
 .raidobox .box{display:inline-block;position:relative;width:10px;height:10px;margin-top:-2px;border:1px solid #999;border-radius:50%;box-sizing:border-box;vertical-align:middle}
 .raidobox input:checked + .box{border-color:#38b7ea}
 .raidobox input:checked + .box::before{display:block;content:'';position:absolute;top:2px;left:2px;width:4px;height:4px;background:#38b7ea;border-radius:50%}
 
-.editor_section{position:relative;width:810px;padding:80px 20px 200px;margin:0 auto;overflow-x:hidden}
+.editor_section{position:relative;width:810px;padding:20px;margin:60px auto 180px;background:#fff;overflow-x:hidden}
 .editor_section.mobile{width:320px}
 .editor_section .slider_wrap{width:calc(200% + 20px)}
 .editor_section .slider_wrap > *{float:left;width:calc(50% - 10px)}
