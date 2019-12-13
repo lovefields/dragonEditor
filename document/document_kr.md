@@ -13,9 +13,9 @@ const editor = new dragonEditor(wrap, {
 - `null`을 넣을 경우 기본값으로 작동합니다.
 
 #### 필수 옵션
-- [mediaUploadURL](###mediaUploadURL)
-- [mediaUpdateURL](###mediaUpdateURL)
-- [mediaDelURL](###mediaDelURL)
+- [mediaUploadURL](#mediaUploadURL)
+- [mediaUpdateURL](#mediaUpdateURL)
+- [mediaDelURL](#mediaDelURL)
 
 ## Options
 
@@ -24,7 +24,7 @@ const editor = new dragonEditor(wrap, {
 - 기본값 : 1120
 - 
 
-### mediaUploadURL
+### #mediaUploadURL
 
 
 
