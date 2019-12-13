@@ -22,5 +22,4 @@ const editor = new dragonEditor(wrap, {
 #### `wrap`
 CSS Selector.<br>
 default : `.editor_area`
-
-## Options
+If you didn't using this value add `null`.
