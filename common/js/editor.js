@@ -187,8 +187,10 @@ class dragonEditor{
 							}
 						}
 
-						if(status === 'editor'){
-							$this.contentAddList.classList.add('act');
+						if($this.windowWidth > $this.changePint){
+							if(status === 'editor'){
+								$this.contentAddList.classList.add('act');
+							}
 						}
 					});
 
@@ -961,30 +963,35 @@ class dragonEditor{
 			form.append('type', type);
 			form.append('file', file);
 
-
 			// ajax
-			let junk = {
-				'idx' : 5,
-				'src' : 'https://dico.me/img/upload/2019/20190722112336_000',
-				'webp' : false,
-				'format' : 'jpg',
-				'alt' : 'name',
-				'width' : 750,
-				'height' : 1000
-			};
-			let html = $this.HTMLMediaRow.replace(/\[idx\]/g, junk['idx'])
-				.replace('[webp]', junk['webp'])
-				.replace('[height]', junk['height'])
-				.replace('[width]', junk['width'])
-				.replace('[src]', `${junk['src']}.${junk['format']}`) 
-				.replace('[alt]', junk['alt'])
-				.replace('[name]', junk['alt']);
+			$this.ajax('post', $this.mediaUpdateURL, form, 'form', function(result){
+				let $el = $this.getEl('.lastset') === false ? $this.getEl(`${$this.contentAreaName} > *:nth-last-child(1)`) : $this.getEl('.lastset');
+				console.log(result);
 
-			$this.addImage($this.activeElement, junk);
-			$this.activeElement.remove();
-			$this.activeElement = $this.contentArea;
-			$this.mediaList.insertAdjacentHTML('beforeend', html);
-			$this.popMedia.classList.add('act');
+				let junk = {
+					'idx' : 5,
+					'src' : 'https://dico.me/img/upload/2019/20190722112336_000',
+					'webp' : false,
+					'format' : 'jpg',
+					'alt' : 'name',
+					'width' : 750,
+					'height' : 1000
+				};
+				let html = $this.HTMLMediaRow.replace(/\[idx\]/g, junk['idx'])
+					.replace('[webp]', junk['webp'])
+					.replace('[height]', junk['height'])
+					.replace('[width]', junk['width'])
+					.replace('[src]', `${junk['src']}.${junk['format']}`) 
+					.replace('[alt]', junk['alt'])
+					.replace('[name]', junk['alt']);
+	
+				$this.addImage($el, junk);
+				if($el.classList.contains('btn')){
+					$el.remove();
+				}
+				$this.mediaList.insertAdjacentHTML('beforeend', html);
+				$this.popMedia.classList.add('act');
+			});
 		});
 
 		// add media
