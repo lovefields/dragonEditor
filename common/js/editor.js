@@ -373,22 +373,16 @@ class dragonEditor{
 		// 	}
 		// });
 
-		//let overFn;
-		//$this.contentArea.addEventListener('mouseover', function(e){
-		//	clearTimeout(overFn);
-		//	overFn = setTimeout(() => {
-		//		if($this.windowWidth > $this.changePint){
-		//			let $junk = $this.getElList('.position_bar');
-		//			if($junk !== false){
-		//				$junk.forEach(function($bar){
-		//					$bar.remove();
-		//				});
-		//			}
-		//			$this.contentCheckByMouse(e.target, 'mouseover');
-		//			$this.checkOptionsValue(e.target);
-		//		}
-		//	}, 250);
-		//});
+		let overFn;
+		$this.contentArea.addEventListener('mouseover', function(e){
+			clearTimeout(overFn);
+			overFn = setTimeout(() => {
+				if($this.windowWidth > $this.changePint){
+					$this.contentCheckByMouse(e.target, 'mouseover');
+					$this.checkOptionsValue(e.target);
+				}
+			}, 250);
+		});
 
 		//$this.editorSection.addEventListener('mouseleave', function(e){
 		//	if($this.windowWidth > $this.changePint){
@@ -1752,7 +1746,7 @@ class dragonEditor{
 				case $target.constructor.name === 'HTMLAnchorElement' :
 					type = 'link';
 				break;
-				case isBtn === true && eventType === 'click' : 
+				case isBtn === true && eventType === 'click' :
 					if(typeof $target.dataset['value'] !== 'undefined'){
 						let value = $target.dataset['value'];
 						if(value === 'image'){
@@ -1764,13 +1758,13 @@ class dragonEditor{
 						}
 					}
 				break;
-				case isBtn === true && eventType === 'mouseover':
-					let value = $target.dataset['value'];
-
-					if(value !== 'image'){
-						type = value;
-					}
-				break;
+				//case isBtn === true && eventType === 'mouseover':
+				//	let value = $target.dataset['value'];
+//
+				//	if(value !== 'image'){
+				//		type = value;
+				//	}
+				//break;
 				case window.getSelection().focusNode !== window.getSelection().baseNode :
 					type = 'text';
 				break;
@@ -1791,10 +1785,11 @@ class dragonEditor{
 			}
 			if(eventType === 'click'){
 				this.setLastElement($target, $children);
-			}else if(eventType === 'mouseover' && (type === 'btn' || type === 'youtube' || type === 'codepen')){
+				this.openOptionPop(offset, type);
+			}else if(eventType === 'mouseover' && (type === 'youtube' || type === 'codepen')){
 				this.setLastElement($target, $children);
+				this.openOptionPop(offset, type);
 			}
-			this.openOptionPop(offset, type);
 		}
 	}
 

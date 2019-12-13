@@ -22,7 +22,7 @@ const editor = new dragonEditor(wrap, {
 ### changePint
 - 값 : Number
 - 기본값 : 1120
-- 
+- 모바일과 데스크탑을 구분하는 기준점 입니다. 값보다 작을경우를 모바일, 값보다 큰경우를 데스크탑으로 인식합니다.
 
 ### mediaUploadURL
 
