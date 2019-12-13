@@ -31,7 +31,7 @@
 .content_area .item:not(.item_codeblock):hover{background:#f4f4f4}
 .content_area .title{height:50px;padding:0 10px;margin-bottom:50px;border-bottom:1px solid #e5e5e5;font-size:24px;font-weight:bold;line-height:50px}
 .content_area .title:empty::after{display:inline;content:'Title';color:#999}
-.content_area .item_sticker{display:block;max-width:100px;margin:0 auto}
+.content_area .item_sticker svg{max-width:100px}
 .content_area .item_list{padding-left:20px}
 .content_area ul.item_list,
 .content_area ul.item_list li{list-style:disc}
