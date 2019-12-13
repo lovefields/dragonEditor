@@ -24,7 +24,7 @@ const editor = new dragonEditor(wrap, {
 - 기본값 : 1120
 - 
 
-### #mediaUploadURL
+### mediaUploadURL
 
 
 
