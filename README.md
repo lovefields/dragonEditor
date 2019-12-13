@@ -19,7 +19,7 @@ const editor = new dragonEditor(wrap, {
    'options' : 'value'
 });
 ```
-#### `wrap`
-CSS Selector.<br>
-default : `.editor_area`
-If you didn't using this value add `null`.
+
+## Document
+- [Korean](https://github.com/lovefields/dragonEditor/blob/master/document/document_kr.md)
+- [English](https://github.com/lovefields/dragonEditor/blob/master/document/document_en.md)

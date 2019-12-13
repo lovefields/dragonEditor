@@ -82,7 +82,7 @@ class dragonEditor{
 
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
-		$this.HTMLSvgSticker = '<svg viewbox="[size]" class="item item_sticker lastset" data-type="sticker"><use class="path" xlink:href="[url]" href="[url]" /></svg>';
+		$this.HTMLSvgSticker = '<div class="item item_sticker lastset" data-type="sticker"><svg viewbox="[size]"><use class="path" xlink:href="[url]" href="[url]" /></svg></div>';
 		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
@@ -900,7 +900,7 @@ class dragonEditor{
 		$this.textAlgin.forEach(function(item){
 			item.addEventListener('click', function(){
 				let type = this.dataset['value'];
-				let $target = $this.findContenteditable($this.activeElement);
+				let $target = $this.findContenteditable($this.activeElement) === false ? $this.findParent($this.activeElement, 'item') : $this.findContenteditable($this.activeElement);
 				let className = $this.getClassName($target.classList.value, 'align');
 
 				if(className !== ''){
