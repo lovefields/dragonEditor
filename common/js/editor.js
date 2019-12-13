@@ -21,6 +21,7 @@ class dragonEditor{
 		$this.maxCodepenHeight = typeof options.maxCodepenHeight !== 'number' ? 1000 : options.maxCodepenHeight;
 		$this.clickCehck = false;
 		$this.useWebp = true;
+		$this.multiUpload = false;
 		$this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
 		$this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
 		$this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
@@ -87,7 +88,7 @@ class dragonEditor{
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><div class="scroll"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
-		$this.HTMLLinkBox = '<div class="item lastset" data-type="link_box"><a href="[url]" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
+		$this.HTMLLinkBox = '<div class="item lastset" data-type="link_box"><a href="[url]" target="_blank" rel="nofollow" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
 		//$this.HTMLPositionBar = '<div class="position_bar"></div>';
 		$this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" dtat-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
@@ -125,7 +126,7 @@ class dragonEditor{
 		$this.contentData = {
 			'ko' : {},
 			'en' : {},
-			'ja' : {}
+			'es' : {}
 		};
 		$this.logData = [];
 	}
@@ -176,9 +177,9 @@ class dragonEditor{
 
 					$popEl.forEach(function(item){
 						if($btnPop === false){
-							if(!item.classList.contains($this.popOptionsName.substr(1))){
-								item.classList.remove('act');
-							}
+							item.classList.remove('act');
+							//if(!item.classList.contains($this.popOptionsName.substr(1))){
+							//}
 						}else{
 							let name = $btnPop.dataset['target'];
 
@@ -372,34 +373,34 @@ class dragonEditor{
 		// 	}
 		// });
 
-		let overFn;
-		$this.contentArea.addEventListener('mouseover', function(e){
-			clearTimeout(overFn);
-			overFn = setTimeout(() => {
-				if($this.windowWidth > $this.changePint){
-					let $junk = $this.getElList('.position_bar');
-					if($junk !== false){
-						$junk.forEach(function($bar){
-							$bar.remove();
-						});
-					}
-					$this.contentCheckByMouse(e.target, 'mouseover');
-					$this.checkOptionsValue(e.target);
-				}
-			}, 250);
-		});
+		//let overFn;
+		//$this.contentArea.addEventListener('mouseover', function(e){
+		//	clearTimeout(overFn);
+		//	overFn = setTimeout(() => {
+		//		if($this.windowWidth > $this.changePint){
+		//			let $junk = $this.getElList('.position_bar');
+		//			if($junk !== false){
+		//				$junk.forEach(function($bar){
+		//					$bar.remove();
+		//				});
+		//			}
+		//			$this.contentCheckByMouse(e.target, 'mouseover');
+		//			$this.checkOptionsValue(e.target);
+		//		}
+		//	}, 250);
+		//});
 
-		$this.editorSection.addEventListener('mouseleave', function(e){
-			if($this.windowWidth > $this.changePint){
-				let $activeEl = document.activeElement;
-				let $lastset = $this.getEl('.lastset');
-
-				if($lastset !== false && $activeEl.constructor.name === 'HTMLBodyElement'){
-					//$lastset.classList.remove('lastset');
-				}
-				$this.popOptions.classList.remove('act');
-			}
-		});
+		//$this.editorSection.addEventListener('mouseleave', function(e){
+		//	if($this.windowWidth > $this.changePint){
+		//		let $activeEl = document.activeElement;
+		//		let $lastset = $this.getEl('.lastset');
+//
+		//		if($lastset !== false && $activeEl.constructor.name === 'HTMLBodyElement'){
+		//			//$lastset.classList.remove('lastset');
+		//		}
+		//		$this.popOptions.classList.remove('act');
+		//	}
+		//});
 
 		// key event control
 		$this.contentArea.addEventListener('keydown', function(e){
@@ -1978,7 +1979,7 @@ class dragonEditor{
 
 		switch(type){
 			case 'link' :
-				code = `${text.substring(0, firstCursor)}<a href="${url}">${text.substring(firstCursor, endCursor)}</a>${text.substring(endCursor)}`;
+				code = `${text.substring(0, firstCursor)}<a href="${url}" rel="nofollow">${text.substring(firstCursor, endCursor)}</a>${text.substring(endCursor)}`;
 			break;
 			case 'bold' :
 				code = `${text.substring(0, firstCursor)}<b>${text.substring(firstCursor, endCursor)}</b>${text.substring(endCursor)}`;
