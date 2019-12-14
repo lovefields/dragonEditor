@@ -44,7 +44,8 @@ const editor = new dragonEditor(wrap, {
 기본값 : false<br>
 미디어 업로드시 다중 업로드 지원에 대한 유무입니다.
 
-### mediaUploadURL *
+### mediaUploadURL
+- 필수값
 값 : String::URL<br>
 기본값 : 없음<br>
 미디어 업로드를 위한 URL 값입니다, 설정하지 않을경우 에디터가 동작하지 않습니다.<br>
@@ -59,9 +60,21 @@ const editor = new dragonEditor(wrap, {
    "width" : "Number",
    "height" : "Number"
 }
+
+// ex
+{
+   "idx" : 1,
+   "src" : "/img/logo",
+   "webp" : false,
+   "format" : "png",
+   "alt" : "Logo",
+   "width" : 300,
+   "height" : 300
+}
 ```
 
-### mediaUpdateURL *
+### mediaUpdateURL
+- 필수값
 값 : String::URL<br>
 기본값 : 없음<br>
 미디어 업데이트를 위한 URL 값입니다, 설정하지 않을경우 에디터가 동작하지 않습니다.<br>
@@ -76,19 +89,56 @@ const editor = new dragonEditor(wrap, {
    "width" : "Number",
    "height" : "Number"
 }
+
+
+// ex
+{
+   "idx" : 1,
+   "src" : "/img/logo",
+   "webp" : false,
+   "format" : "png",
+   "alt" : "Logo",
+   "width" : 300,
+   "height" : 300
+}
 ```
 
-### mediaDelURL *
+### mediaDelURL
+- 필수값
 값 : String::URL<br>
 기본값 : 없음<br>
 미디어 삭제를 위한 URL 값입니다, 설정하지 않을경우 에디터가 동작하지 않습니다.<br>
 `DELETE`메서드를 사용해 `URL + image_idx` 값을 전송합니다.
 
 ### makeLinkBoxType
-값 : Boolean::[self|api]<br>
+값 : Boolean :: [ self | api ]<br>
 기본값 : api<br>
 링크박스를 구성하는 방식을 정합니다.<br>
-self일 경우 `makeLinkBoxURL`값이 필수입니다.
+`self`일 경우 `makeLinkBoxURL`값이 필수입니다.
+
+### makeLinkBoxURL
+- `makeLinkBoxType`의 값이 `self` 일경우 필수 값 입니다.
+값 : String::URL<br>
+기본값 : 없음<br>
+```json
+{
+   "description" : "String",
+   "domain" : "String",
+   "img" : "String",
+   "title" : "String",
+   "url" : "String"
+}
+
+// ex
+{
+   "description" : "docker-compose nginx, php",
+   "domain" : "dico.me",
+   "img" : "https://dico.me/img/dico.png",
+   "title" : "Docker Compose로 Nginx, PHP 구성하기 - Dico",
+   "url" : "https://dico.me"
+}
+```
+
 
 
 
