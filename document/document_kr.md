@@ -51,13 +51,13 @@ const editor = new dragonEditor(wrap, {
 서버에서 다음과 같은 포멧을 반환 해야 합니다.
 ```json
 {
-   'idx' : Number,
-   'src' : String,
-   'webp' : Boolean,
-   'format' : String,
-   'alt' : 'String,
-   'width' : Number,
-   'height' : Number
+   "idx" : Number,
+   "src" : String,
+   "webp" : Boolean,
+   "format" : String,
+   "alt" : String,
+   "width" : Number,
+   "height" : Number
 }
 ```
 
@@ -68,13 +68,13 @@ const editor = new dragonEditor(wrap, {
 서버에 다음과 같은 포멧을 전송합니다.
 ```json
 {
-   'idx' : Number,
-   'src' : String,
-   'webp' : Boolean,
-   'format' : String,
-   'alt' : 'String,
-   'width' : Number,
-   'height' : Number
+   "idx" : Number,
+   "src" : String,
+   "webp" : Boolean,
+   "format" : String,
+   "alt" : String,
+   "width" : Number,
+   "height" : Number
 }
 ```
 
