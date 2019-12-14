@@ -607,6 +607,7 @@ class dragonEditor{
 
 							$this.linkBoxData = json;
 							$submitBtn.removeAttribute('disabled');
+							console.log(json);
 							$this.addLinkBox($viewEl, json, 'afterbegin');
 						}else{
 							$submitBtn.setAttribute('disabled', 'true');
