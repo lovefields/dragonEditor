@@ -25,8 +25,9 @@ class dragonEditor{
 		$this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
 		$this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
 		$this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
-
-		$this.mackLinkBoxType = typeof options.mackLinkBoxType !== 'self' ? 'self' : 'api';
+		
+		$this.makeLinkBoxType = typeof options.makeLinkBoxType !== 'self' ? 'self' : 'api';
+		$this.makeLinkBoxURL = typeof options.makeLinkBoxURL !== 'string' ? '' : options.makeLinkBoxURL;
 		$this.stickerType = options.stickerType === 'image' ? 'image' : 'svg';
 		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
 		$this.imageIconId = typeof options.imageIconId !== 'string' ? '#icon_image' : options.imageIconId;
