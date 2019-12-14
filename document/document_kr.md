@@ -118,8 +118,10 @@ const editor = new dragonEditor(wrap, {
 
 ### makeLinkBoxURL
 - `makeLinkBoxType`의 값이 `self` 일경우 필수 값 입니다.
+
 값 : String::URL<br>
 기본값 : 없음<br>
+서버에서 다음과 같은 포멧을 반환 해야 합니다.
 ```json
 {
    "description" : "String",

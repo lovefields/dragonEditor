@@ -28,8 +28,6 @@ class dragonEditor{
 		
 		$this.makeLinkBoxType = typeof options.makeLinkBoxType !== 'self' ? 'self' : 'api';
 		$this.makeLinkBoxURL = typeof options.makeLinkBoxURL !== 'string' ? '' : options.makeLinkBoxURL;
-		$this.stickerType = options.stickerType === 'image' ? 'image' : 'svg';
-		$this.stickerSize = typeof options.stickerSize !== 'string' ? '0 0 100 100' : options.stickerSize;
 		$this.imageIconId = typeof options.imageIconId !== 'string' ? '#icon_image' : options.imageIconId;
 		$this.youtubeIconId = typeof options.youtubeIconId !== 'string' ? '#icon_youtube' : options.youtubeIconId;
 		$this.codepenIconId = typeof options.codepenIconId !== 'string' ? '#icon_codepen' : options.codepenIconId;
@@ -57,7 +55,6 @@ class dragonEditor{
 		$this.viewBtn = $this.checkOptionElement(options.viewBtn, '.btn_mod');
 		$this.popBtns = $this.checkOptionElement(options.popBtn, '.btn_pop', 'multi');
 		$this.popCloseBtns = $this.checkOptionElement(options.popCloseBtns, '.btn_pop_close', 'multi');
-		$this.changeAreaBtn = $this.checkOptionElement(options.changeAreaBtn, '.btn_change_area');
 		$this.fontSizeSelect = $this.checkOptionElement(options.fontSizeSelect, '.select_font_size');
 		$this.btnColorSelect = $this.checkOptionElement(options.colorSelect, '.select_color');
 		$this.btnColor = $this.checkOptionElement(options.colorSelect, '.btn_set_color', 'multi');
@@ -83,9 +80,9 @@ class dragonEditor{
 
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
-		$this.HTMLSvgSticker = '<div class="item item_sticker lastset" data-type="sticker"><svg viewbox="[size]"><use class="path" xlink:href="[url]" href="[url]" /></svg></div>';
 		$this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
 		$this.HTMLChildList = '<li contenteditable="true">[content]</li>';
+		$this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
 		$this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
 		$this.HTMLTable = '<div class="item item_table_area" data-type="table"><div class="scroll"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
 		$this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
@@ -421,8 +418,7 @@ class dragonEditor{
 						$this.fileInput.click();
 					break;
 					case 'sticker':
-						let url = this.dataset['url'];
-						$this.addSticker($target, url, $this.stickerSize, $this.stickerType);
+						$this.addSticker($target, this);
 					break;
 					case 'youtube':
 						$this.addBtn($target, $this.youtubeIconId, 'youtube', 'Add Youtube');
@@ -463,40 +459,40 @@ class dragonEditor{
 		});
 
 		// switch editor section
-		$this.changeAreaBtn.addEventListener('click', function(){
-			let $target = $this.editorSection;
-			let status = $target.dataset['status'];
-			let value = status === 'editor' ? 'options' : 'editor';
-			let $pop = $this.getElList('.pop.act');
-
-			$this.editorSection.dataset['status'] = value;
-			$this.popLang.classList.toggle('hidden');
-			this.classList.toggle('act');
-
-			// go to send area
-			if(value === 'options'){
-				let childNodes = $this.getElList(`${$this.contentAreaName} > *`);
-				let data = $this.convertJson(childNodes);
-				//console.log(childNodes);
-				//let nodesArr = $this.dataToArray();
-				//$this.jsonForm(nodesArr);
-
-				$this.contentAddList.classList.remove('act');
-			}else{// go to contents area
-				$this.contentAddList.classList.add('act');
-			}
-
-			if($pop !== false){
-				$pop.forEach(function(item){
-					item.classList.remove('act');
-				});
-			}
-
-			if($target.classList.contains('mobile') === true){
-				$target.classList.remove('mobile');
-				$this.viewBtn.classList.remove('act');
-			}
-		});
+		//$this.changeAreaBtn.addEventListener('click', function(){
+		//	let $target = $this.editorSection;
+		//	let status = $target.dataset['status'];
+		//	let value = status === 'editor' ? 'options' : 'editor';
+		//	let $pop = $this.getElList('.pop.act');
+//
+		//	$this.editorSection.dataset['status'] = value;
+		//	$this.popLang.classList.toggle('hidden');
+		//	this.classList.toggle('act');
+//
+		//	// go to send area
+		//	if(value === 'options'){
+		//		let childNodes = $this.getElList(`${$this.contentAreaName} > *`);
+		//		let data = $this.convertJson(childNodes);
+		//		//console.log(childNodes);
+		//		//let nodesArr = $this.dataToArray();
+		//		//$this.jsonForm(nodesArr);
+//
+		//		$this.contentAddList.classList.remove('act');
+		//	}else{// go to contents area
+		//		$this.contentAddList.classList.add('act');
+		//	}
+//
+		//	if($pop !== false){
+		//		$pop.forEach(function(item){
+		//			item.classList.remove('act');
+		//		});
+		//	}
+//
+		//	if($target.classList.contains('mobile') === true){
+		//		$target.classList.remove('mobile');
+		//		$this.viewBtn.classList.remove('act');
+		//	}
+		//});
 
 		// send editor data
 		
@@ -607,7 +603,6 @@ class dragonEditor{
 
 							$this.linkBoxData = json;
 							$submitBtn.removeAttribute('disabled');
-							console.log(json);
 							$this.addLinkBox($viewEl, json, 'afterbegin');
 						}else{
 							$submitBtn.setAttribute('disabled', 'true');
@@ -1188,11 +1183,9 @@ class dragonEditor{
 		$target.insertAdjacentHTML('afterend', html);
 	}
 
-	addSticker($target, url, size, type){
+	addSticker($target, sticker){
 		this.removeLastsetClass($target);
-		let html = this.HTMLSvgSticker.replace(/\[url\]/g, url)
-					.replace(/\[size\]/g, size);
-
+		let html = this.HTMLsticker.replace('[el]', sticker.innerHTML);
 		$target.insertAdjacentHTML('afterend', html);
 	}
 
@@ -1288,190 +1281,6 @@ class dragonEditor{
 		this.removeLastsetClass($target);
 		let html = this.HTMLCodepen.replace('[src]', src).replace('[height]', height);
 		$target.insertAdjacentHTML(position, html);
-	}
-
-	convertJson(nodeList){
-		let arr = [];
-
-		nodeList.forEach((item) => {
-			let type = item.dataset['type'];
-
-			switch(true){
-				case type === 'title' :
-					arr.push({
-						'type' : 'title',
-						'class' : [...item.classList],
-						'textContent' : item.textContent
-					});
-				break;
-				case type === 'text' :
-					arr.push({
-						'type' : 'text',
-						'class' : [...item.classList],
-						'textContent' : item.textContent
-					});
-				break;
-				case type === 'image' :
-					let hasWebp = item.tagName === 'PICTURE' ? true : false;
-					let img = item.querySelector('.img');
-					let link = img.getAttribute('src');
-
-					arr.push({
-						'type' : 'image',
-						'class' : [...item.classList],
-						'hasWebp' : hasWebp,
-						'size' : img.getAttribute('width'),
-						'alt' : img.getAttribute('alt'),
-						'src' : link.replace(this.srcReg, '$1'),
-						'defaultFormat' : link.replace(this.srcReg, '$2')
-					});
-				break;
-				case type === 'youtube' :
-					let video = item.querySelector('.video');
-
-					arr.push({
-						'type' : 'youtube',
-						'class' : [...item.classList],
-						'src' : video.getAttribute('src'),
-						'allow' : video.getAttribute('allow')
-					});
-				break;
-				case type === 'codepen' :
-					let iframe = item.querySelector('.iframe');
-
-					arr.push({
-						'type' : 'codepen',
-						'class' : [...item.classList],
-						'src' : iframe.getAttribute('src'),
-						'height' : iframe.getAttribute('height'),
-						'title' : iframe.getAttribute('title')
-					});
-				break;
-				case type === 'list_u' || type ===  'list_o' :
-					let childEl = item.querySelectorAll('li');
-					let child = [];
-
-					childEl.forEach(function(el){
-						child.push({
-							'class' : [...el.classList],
-							'textContent' : el.textContent
-						});
-					});
-
-					arr.push({
-						'type' : 'list',
-						'class' : [...item.classList],
-						'tag' : item.tagName.toLowerCase(),
-						'listType' : item.getAttribute('type'),
-						'child' : child
-					});
-				break;
-				case type === 'quote' :
-					let text = item.querySelector('.text').textContent;
-					let author = item.querySelector('.author').textContent;
-
-					arr.push({
-						'type' : 'quote',
-						'class' : [...item.classList],
-						'text' : text,
-						'author' : author
-					});
-				break;
-				case type === 'table' :
-					let colgroup = [];
-					let tbody = [];
-					let caption = item.querySelector('caption').textContent;
-					let colList = item.querySelectorAll('col');
-					let trList = item.querySelectorAll('tr');
-
-					colList.forEach(function(col){
-						colgroup.push(col.classList.value);
-					});
-
-					trList.forEach(function(tr){
-						let cellList = [];
-						let count = tr.childElementCount;
-						let children = tr.children;
-
-						for(let i = 0;i < count;i += 1){
-							cellList.push({
-								'tag' : children[i].tagName.toLowerCase(),
-								'class' : [...children[i].classList],
-								'textContent' : children[i].textContent
-							});
-						}
-
-						tbody.push(cellList);
-					});
-
-					arr.push({
-						'type' : 'table',
-						'class' : [...item.classList],
-						'caption' : caption,
-						'colgroup' : colgroup,
-						'child' : tbody
-					});
-				break;
-				case type === 'codeblock' :
-					let theme = item.dataset['theme'];
-					let lang = item.dataset['lang'];
-					let code = item.querySelector('code');
-
-					arr.push({
-						'type' : 'codeblock',
-						'class' : [...item.classList],
-						'theme' : theme,
-						'lang' : lang,
-						'code' : {
-							'class' : [...code.classList],
-							'innerHTML' : code.innerHTML
-						}
-					});
-				break;
-				case type === 'link_box' :
-					let url = item.querySelector('.link_box').getAttribute('href');
-					let imgSrc = item.querySelector('.img').getAttribute('src');
-					let title = item.querySelector('.link_title').textContent;
-					let description = item.querySelector('.link_description').textContent;
-					let domain = item.querySelector('.link_domain').textContent;
-
-					arr.push({
-						'type' : 'link_box',
-						'class' : [...item.classList],
-						'url' : url,
-						'imgSrc' : imgSrc,
-						"title" : title,
-						"description" : description,
-						"domain" : domain,
-					});
-				break;
-				case type === 'btn' :
-					let icon = item.querySelector('.icon');
-					let iconTagName = icon.tagName.toLowerCase();
-					let iconUrl;
-
-					if(iconTagName === 'svg'){
-						iconUrl = icon.querySelector('use').getAttribute('href');
-					}else{
-						iconUrl = icon.getAttribute('src');
-					}
-
-					arr.push({
-						'type' : 'btn',
-						'value' : item.dataset['value'],
-						'textContent' : item.textContent,
-						'icon' : {
-							"type" : iconTagName,
-							"viewBox" : icon.getAttribute('viewBox'),
-							"class" : [...icon.classList],
-							"url" : iconUrl
-						}
-					});
-				break;
-			}
-		});
-
-		console.log(arr);
 	}
 /*
 	dataToArray(){
@@ -1760,13 +1569,6 @@ class dragonEditor{
 						}
 					}
 				break;
-				//case isBtn === true && eventType === 'mouseover':
-				//	let value = $target.dataset['value'];
-//
-				//	if(value !== 'image'){
-				//		type = value;
-				//	}
-				//break;
 				case window.getSelection().focusNode !== window.getSelection().baseNode :
 					type = 'text';
 				break;
@@ -1785,6 +1587,7 @@ class dragonEditor{
 				default : 
 					type = type;
 			}
+
 			if(eventType === 'click'){
 				this.setLastElement($target, $children);
 				this.openOptionPop(offset, type);
@@ -2244,5 +2047,190 @@ class dragonEditor{
 		}
 	
 		xmlhttp.send(data);
+	}
+
+	getJsonData(){
+		let childNodes = this.getElList(`${this.contentAreaName} > *`);
+		let arr = [];
+
+		childNodes.forEach((item) => {
+			let type = item.dataset['type'];
+
+			switch(true){
+				case type === 'title' :
+					arr.push({
+						'type' : 'title',
+						'class' : [...item.classList],
+						'textContent' : item.textContent
+					});
+				break;
+				case type === 'text' :
+					arr.push({
+						'type' : 'text',
+						'class' : [...item.classList],
+						'textContent' : item.textContent
+					});
+				break;
+				case type === 'image' :
+					let hasWebp = item.tagName === 'PICTURE' ? true : false;
+					let img = item.querySelector('.img');
+					let link = img.getAttribute('src');
+
+					arr.push({
+						'type' : 'image',
+						'class' : [...item.classList],
+						'hasWebp' : hasWebp,
+						'size' : img.getAttribute('width'),
+						'alt' : img.getAttribute('alt'),
+						'src' : link.replace(this.srcReg, '$1'),
+						'defaultFormat' : link.replace(this.srcReg, '$2')
+					});
+				break;
+				case type === 'youtube' :
+					let video = item.querySelector('.video');
+
+					arr.push({
+						'type' : 'youtube',
+						'class' : [...item.classList],
+						'src' : video.getAttribute('src'),
+						'allow' : video.getAttribute('allow')
+					});
+				break;
+				case type === 'codepen' :
+					let iframe = item.querySelector('.iframe');
+
+					arr.push({
+						'type' : 'codepen',
+						'class' : [...item.classList],
+						'src' : iframe.getAttribute('src'),
+						'height' : iframe.getAttribute('height'),
+						'title' : iframe.getAttribute('title')
+					});
+				break;
+				case type === 'list_u' || type ===  'list_o' :
+					let childEl = item.querySelectorAll('li');
+					let child = [];
+
+					childEl.forEach(function(el){
+						child.push({
+							'class' : [...el.classList],
+							'textContent' : el.textContent
+						});
+					});
+
+					arr.push({
+						'type' : 'list',
+						'class' : [...item.classList],
+						'tag' : item.tagName.toLowerCase(),
+						'listType' : item.getAttribute('type'),
+						'child' : child
+					});
+				break;
+				case type === 'quote' :
+					let text = item.querySelector('.text').textContent;
+					let author = item.querySelector('.author').textContent;
+
+					arr.push({
+						'type' : 'quote',
+						'class' : [...item.classList],
+						'text' : text,
+						'author' : author
+					});
+				break;
+				case type === 'table' :
+					let colgroup = [];
+					let tbody = [];
+					let caption = item.querySelector('caption').textContent;
+					let colList = item.querySelectorAll('col');
+					let trList = item.querySelectorAll('tr');
+
+					colList.forEach(function(col){
+						colgroup.push(col.classList.value);
+					});
+
+					trList.forEach(function(tr){
+						let cellList = [];
+						let count = tr.childElementCount;
+						let children = tr.children;
+
+						for(let i = 0;i < count;i += 1){
+							cellList.push({
+								'tag' : children[i].tagName.toLowerCase(),
+								'class' : [...children[i].classList],
+								'textContent' : children[i].textContent
+							});
+						}
+
+						tbody.push(cellList);
+					});
+
+					arr.push({
+						'type' : 'table',
+						'class' : [...item.classList],
+						'caption' : caption,
+						'colgroup' : colgroup,
+						'child' : tbody
+					});
+				break;
+				case type === 'codeblock' :
+					let theme = item.dataset['theme'];
+					let lang = item.dataset['lang'];
+					let code = item.querySelector('code');
+
+					arr.push({
+						'type' : 'codeblock',
+						'class' : [...item.classList],
+						'theme' : theme,
+						'lang' : lang,
+						'code' : {
+							'class' : [...code.classList],
+							'innerHTML' : code.innerHTML
+						}
+					});
+				break;
+				case type === 'link_box' :
+					let url = item.querySelector('.link_box').getAttribute('href');
+					let imgSrc = item.querySelector('.img').getAttribute('src');
+					let title = item.querySelector('.link_title').textContent;
+					let description = item.querySelector('.link_description').textContent;
+					let domain = item.querySelector('.link_domain').textContent;
+
+					arr.push({
+						'type' : 'link_box',
+						'class' : [...item.classList],
+						'url' : url,
+						'imgSrc' : imgSrc,
+						"title" : title,
+						"description" : description,
+						"domain" : domain,
+					});
+				break;
+				case type === 'btn' :
+					let icon = item.querySelector('.icon');
+					let iconTagName = icon.tagName.toLowerCase();
+					let iconUrl;
+
+					if(iconTagName === 'svg'){
+						iconUrl = icon.querySelector('use').getAttribute('href');
+					}else{
+						iconUrl = icon.getAttribute('src');
+					}
+
+					arr.push({
+						'type' : 'btn',
+						'value' : item.dataset['value'],
+						'textContent' : item.textContent,
+						'icon' : {
+							"type" : iconTagName,
+							"viewBox" : icon.getAttribute('viewBox'),
+							"class" : [...icon.classList],
+							"url" : iconUrl
+						}
+					});
+				break;
+			}
+		});
+
+		return arr;
 	}
 }
