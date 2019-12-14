@@ -1,4 +1,5 @@
 # Dragoneditor 문서
+- * : 필수값
 
 ## 사용법
 ```js
