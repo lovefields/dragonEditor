@@ -21,7 +21,8 @@ class dragonEditor{
 		$this.maxCodepenHeight = typeof options.maxCodepenHeight !== 'number' ? 1000 : options.maxCodepenHeight;
 		$this.clickCehck = false;
 		$this.useWebp = true;
-		$this.multiUpload = false;
+		$this.codepenTheme = typeof options.codepenTheme !== 'string' ? 'dark' : options.codepenTheme;
+		$this.multiUpload = typeof options.multiUpload !== 'boolean' ? false : options.multiUpload;
 		$this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
 		$this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
 		$this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
@@ -77,6 +78,7 @@ class dragonEditor{
 		$this.strikeBtn = $this.checkOptionElement(options.strikeBtn, '.btn_strike');
 		$this.wordblockBtn = $this.checkOptionElement(options.wordblockBtn, '.btn_wordblock');
 		$this.contentDelBtn = $this.checkOptionElement(options.contentDelBtn, '.btn_del_content');
+		$this.languageChangeBtn = $this.checkOptionElement(options.languageChangeBtn, '.btn_chang_lang', 'multi');
 
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
@@ -89,7 +91,7 @@ class dragonEditor{
 		$this.HTMLLinkBox = '<div class="item lastset" data-type="link_box"><a href="[url]" target="_blank" rel="nofollow" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 		$this.HTMLOption = '<option value="[value]">[text]</option>';
 		//$this.HTMLPositionBar = '<div class="position_bar"></div>';
-		$this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" dtat-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
+		$this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" data-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
 		$this.HTMLImageType01 = '<picture class="item item_image lastset" data-type="image">[source]<img src="[src]" width="[width]" alt="[alt]" class="img"></picture>';
 		$this.HTMLImageSource = '<source srcset="[webp]" type="image/webp">';
 		$this.HTMLImageType02 = '<div class="item item_image lastset" data-type="image"><img src="[src]" width="[width]" alt="[alt]" class="img"></div>';
@@ -98,7 +100,9 @@ class dragonEditor{
 
 		$this.srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
 		$this.youtubeReg = new RegExp('www.youtube.com', 'g');
+		$this.youtubeCodeReg = new RegExp('((https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)\\/(embed\\/|watch\\?v=)?)([^=\\/& :]*)(.*)', 'i');
 		$this.codepenReg = new RegExp('codepen.io', 'g');
+		$this.codepenCodeReg = new RegExp('(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)', 'i');
 		$this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
 		$this.numberReg = new RegExp('[0-9]', 'g');
 		$this.classReg = {
@@ -118,6 +122,8 @@ class dragonEditor{
 		$this.messageNotAnchorTag = typeof options.messageNotAnchorTag !== 'string' ? 'Active item is not link' : options.messageNotAnchorTag;
 		$this.messageWrongValue = typeof options.messageWrongValue !== 'string' ? 'Wrong value' : options.messageWrongValue;
 		$this.messageWrongUrlType = typeof options.messageWrongUrlType !== 'string' ? 'Wrong URL type.' : options.messageWrongUrlType;
+		$this.messageDelImage = typeof options.messageDelImage !== 'string' ? 'All images of the document you area creating will also disappear.\nAre you sure you want to delete it?' : options.messageDelImage;
+		$this.messageDuplicateContent = typeof options.messageDuplicateContent !== 'string' ? 'This language not have content.\nDo you want duplicate to content?' : options.messageDuplicateContent;
 		$this.messageNotSetAjax = 'Didn\'t setting Ajax url.';
 
 		$this.linkBoxData = {};
@@ -141,6 +147,10 @@ class dragonEditor{
 			$this.contentAddList.classList.add('act');
 		}else if($this.windowWidth < $this.changePint){
 			$this.contentAddList.classList.remove('act');
+		}
+
+		if($this.multiUpload === true){
+			$this.fileInput.setAttribute('multiple', true);
 		}
 
 		let resizeFn;
@@ -171,13 +181,10 @@ class dragonEditor{
 					let $pop = $this.findParent(target, 'pop');
 					let $btnPop = $this.findParent(target, 'btn_pop');
 					let $popEl = $this.getElList('.pop');
-					let status = $this.editorSection.dataset['status'];
 
 					$popEl.forEach(function(item){
 						if($btnPop === false){
 							item.classList.remove('act');
-							//if(!item.classList.contains($this.popOptionsName.substr(1))){
-							//}
 						}else{
 							let name = $btnPop.dataset['target'];
 
@@ -187,9 +194,7 @@ class dragonEditor{
 						}
 
 						if($this.windowWidth > $this.changePint){
-							if(status === 'editor'){
-								$this.contentAddList.classList.add('act');
-							}
+							$this.contentAddList.classList.add('act');
 						}
 					});
 
@@ -259,59 +264,6 @@ class dragonEditor{
 			let el = this;
 			$this.dragEndEvent(e, el);
 		};
-		/*
-		$this.contentArea.addEventListener('mouseup', function(e){
-			if(e.button === 0 || e.isTrusted === false){
-				let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
-
-				$this.contentCheckByMouse(e.target, 'mouseup');
-				$this.checkOptionsValue(e.target);
-				
-				// 드레그 이벤트 언바인딩
-				$this.clickCehck = false;
-				$childs.forEach(function($child){
-					$child.removeAttribute('draggable');
-					$child.removeEventListener('dragstart', dragStartFn);
-					$child.removeEventListener('dragover', dragOverFn);
-					$child.removeEventListener('dragend', dragEndFn);
-				});
-			}
-		});
-
-		$this.contentArea.addEventListener('mousedown', function(e){
-			let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
-			let $target = $this.findParent(e.target, 'item');
-				$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
-			let event = document.createEvent('HTMLEvents');
-				event.initEvent('dragstart', true, true);
-				event.eventName = 'dragstart';
-
-			// 단어 선택 초기화
-			if ($this.selection.empty){
-				$this.selection.empty();
-			}else if($this.selection.removeAllRanges){
-				$this.selection.removeAllRanges();
-			}
-			$this.startTextCursor = 0;
-			$this.endTextCursor = 0;
-
-			// 드레그 이벤트 바인딩 및 0.8초뒤 실행
-			$this.clickCehck = true;
-			if($target !== false){
-				setTimeout(function(){
-					if($this.clickCehck === true){
-						$childs.forEach(function($child){
-							$child.setAttribute('draggable', true);
-							$child.addEventListener('dragstart', dragStartFn);
-							$child.addEventListener('dragover', dragOverFn);
-							$child.addEventListener('dragend', dragEndFn);
-						});
-						$target.dispatchEvent(event);
-					}
-				}, 800);
-			}
-		});
-		*/
 
 		let clickFn;
 		$this.contentArea.addEventListener('click', function(e){
@@ -325,52 +277,6 @@ class dragonEditor{
 			}, 150);
 		});
 
-		// $this.contentArea.addEventListener('touchstart', function(e){
-		// 	let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
-		// 	let $target = $this.findParent(e.target, 'item');
-		// 		$target = $target === false ? $this.findParent(e.target, 'btn') : $target;
-		// 	let event = document.createEvent('HTMLEvents');
-		// 		event.initEvent('touchmove', true, true);
-		// 		event.eventName = 'touchmove';
-
-		// 	// 단어 선택 초기화
-		// 	if ($this.selection.empty){
-		// 		$this.selection.empty();
-		// 	}else if($this.selection.removeAllRanges){
-		// 		$this.selection.removeAllRanges();
-		// 	}
-		// 	$this.startTextCursor = 0;
-		// 	$this.endTextCursor = 0;
-
-		// 	// 드레그 이벤트 바인딩 및 0.8초뒤 실행
-		// 	$this.clickCehck = true;
-		// 	if($target !== false){
-		// 		setTimeout(function(){
-		// 			if($this.clickCehck === true){
-		// 				$childs.forEach(function($child){
-		// 					$child.addEventListener('touchmove', dragOverFn);
-		// 				});
-		// 				$target.dispatchEvent(event);
-		// 			}
-		// 		}, 800);
-		// 	}
-		// });
-
-		// $this.contentArea.addEventListener('toucend', function(e){
-		// 	if(e.button === 0 || e.isTrusted === false){
-		// 		let $childs = $this.getElList($this.contentAreaName + ' > *:not(:nth-child(1))');
-
-		// 		$this.contentCheckByMouse(e.target, 'mouseup');
-		// 		$this.checkOptionsValue(e.target);
-				
-		// 		// 드레그 이벤트 언바인딩
-		// 		$this.clickCehck = false;
-		// 		$childs.forEach(function($child){
-		// 			$child.removeEventListener('touchmove', dragOverFn);
-		// 		});
-		// 	}
-		// });
-
 		let overFn;
 		$this.contentArea.addEventListener('mouseover', function(e){
 			clearTimeout(overFn);
@@ -381,18 +287,6 @@ class dragonEditor{
 				}
 			}, 250);
 		});
-
-		//$this.editorSection.addEventListener('mouseleave', function(e){
-		//	if($this.windowWidth > $this.changePint){
-		//		let $activeEl = document.activeElement;
-		//		let $lastset = $this.getEl('.lastset');
-//
-		//		if($lastset !== false && $activeEl.constructor.name === 'HTMLBodyElement'){
-		//			//$lastset.classList.remove('lastset');
-		//		}
-		//		$this.popOptions.classList.remove('act');
-		//	}
-		//});
 
 		// key event control
 		$this.contentArea.addEventListener('keydown', function(e){
@@ -458,79 +352,33 @@ class dragonEditor{
 			this.classList.toggle('act');
 		});
 
-		// switch editor section
-		//$this.changeAreaBtn.addEventListener('click', function(){
-		//	let $target = $this.editorSection;
-		//	let status = $target.dataset['status'];
-		//	let value = status === 'editor' ? 'options' : 'editor';
-		//	let $pop = $this.getElList('.pop.act');
-//
-		//	$this.editorSection.dataset['status'] = value;
-		//	$this.popLang.classList.toggle('hidden');
-		//	this.classList.toggle('act');
-//
-		//	// go to send area
-		//	if(value === 'options'){
-		//		let childNodes = $this.getElList(`${$this.contentAreaName} > *`);
-		//		let data = $this.convertJson(childNodes);
-		//		//console.log(childNodes);
-		//		//let nodesArr = $this.dataToArray();
-		//		//$this.jsonForm(nodesArr);
-//
-		//		$this.contentAddList.classList.remove('act');
-		//	}else{// go to contents area
-		//		$this.contentAddList.classList.add('act');
-		//	}
-//
-		//	if($pop !== false){
-		//		$pop.forEach(function(item){
-		//			item.classList.remove('act');
-		//		});
-		//	}
-//
-		//	if($target.classList.contains('mobile') === true){
-		//		$target.classList.remove('mobile');
-		//		$this.viewBtn.classList.remove('act');
-		//	}
-		//});
-
-		// send editor data
-		
-		// $this.getElList
-
 		// pop btns work
 		$this.popBtns.forEach(function($btn){
 			$btn.addEventListener('click', function(){
-				let status = $this.editorSection.dataset['status'];
 				let target = this.dataset['target'];
 				let type = this.dataset['type'];
 				let $el = $this.getEl(target);
 				let btnOffset = this.getBoundingClientRect();
 				let optionsOffset = $this.popOptions.getBoundingClientRect();
 
-				if(status !== 'options'){
-					$el.removeAttribute('style');
-					$el.classList.toggle('act');
-					if(type === 'position' && $this.windowWidth > $this.changePint){
-						let x = Math.floor(btnOffset.left - optionsOffset.left);
-						$el.style.cssText = `transform:translate(${x}px, 30px)`;
-					}else{
-						this.classList.toggle('act');
-					}
+				$el.removeAttribute('style');
+				$el.classList.toggle('act');
+				if(type === 'position' && $this.windowWidth > $this.changePint){
+					let x = Math.floor(btnOffset.left - optionsOffset.left);
+					$el.style.cssText = `transform:translate(${x}px, 30px)`;
+				}else{
+					this.classList.toggle('act');
 				}
 			});
 		});
 
 		$this.popCloseBtns.forEach(function($btn){
 			$btn.addEventListener('click', function(){
-				let status = $this.editorSection.dataset['status'];
 				let target = this.dataset['target'];
 				let $el = $this.getEl(target);
 
-				if(status !== 'options'){
-					$el.removeAttribute('style');
-					$el.classList.toggle('act');
-				}
+				$el.removeAttribute('style');
+				$el.classList.toggle('act');
 			});
 		});
 
@@ -948,41 +796,58 @@ class dragonEditor{
 
 		// 파일 업로드
 		$this.fileInput.addEventListener('change', function(){
-			let file = this.files[0];
+			let contentArea = $this.contentArea;
+			let file = this.files;
 			let form = new FormData();
 			let type = this.dataset['type'];
+			let article_idx = contentArea.dataset['idx'];
+			let temp_idx = contentArea.dataset['tempIdx'];
 
-			form.append('type', type);
-			form.append('file', file);
+			form.append('request_ype', 'upload');
+			form.append('file_type', type);
+			for(let item of file){
+				form.append('file[]', item);
+			}
+			form.append('article_idx', article_idx);
+			form.append('temp_idx', temp_idx);
 
 			// ajax
-			$this.ajax('post', $this.mediaUpdateURL, form, 'form', function(result){
-				let $el = $this.getEl('.lastset') === false ? $this.getEl(`${$this.contentAreaName} > *:nth-last-child(1)`) : $this.getEl('.lastset');
-				console.log(result);
+			$this.ajax('post', $this.mediaUploadURL, form, 'form', (result) => {
+				if(result['result'] === true){
+					let $el = $this.getEl('.lastset') === false ? $this.getEl(`${$this.contentAreaName} > *:nth-last-child(1)`) : $this.getEl('.lastset');
+					let imgList = result['list'];
+					let html = '';
 
-				let junk = {
-					'idx' : 5,
-					'src' : 'https://dico.me/img/upload/2019/20190722112336_000',
-					'webp' : false,
-					'format' : 'jpg',
-					'alt' : 'name',
-					'width' : 750,
-					'height' : 1000
-				};
-				let html = $this.HTMLMediaRow.replace(/\[idx\]/g, junk['idx'])
-					.replace('[webp]', junk['webp'])
-					.replace('[height]', junk['height'])
-					.replace('[width]', junk['width'])
-					.replace('[src]', `${junk['src']}.${junk['format']}`) 
-					.replace('[alt]', junk['alt'])
-					.replace('[name]', junk['alt']);
-	
-				$this.addImage($el, junk);
-				if($el.classList.contains('btn')){
-					$el.remove();
+					for(let item of imgList){
+						let webp = item['webp'] === 'y' ? true : false;
+						html += $this.HTMLMediaRow.replace(/\[idx\]/g, item['idx'])
+							.replace('[webp]', webp)
+							.replace('[height]', item['height'])
+							.replace('[width]', item['width'])
+							.replace('[src]', `${item['src']}${item['name']}.${item['format']}`)
+							.replace('[alt]', item['alt'])
+							.replace('[name]', item['alt']);
+
+						$this.addImage($el, {
+							'idx' : item['idx'],
+							'src' : `${item['src']}${item['name']}`,
+							'webp' : webp,
+							'format' : item['format'],
+							'alt' : item['alt'],
+							'width' : item['width'],
+							'height' : item['height']
+						});
+					}
+
+					if($el.classList.contains('btn')){
+						$el.remove();
+					}
+					$this.mediaList.insertAdjacentHTML('beforeend', html);
+					$this.popMedia.classList.add('act');
+					this.value = '';
+				}else{
+					alert(result['message']);
 				}
-				$this.mediaList.insertAdjacentHTML('beforeend', html);
-				$this.popMedia.classList.add('act');
 			});
 		});
 
@@ -1019,28 +884,61 @@ class dragonEditor{
 						};
 
 						//ajax
+						$this.ajax('post', $this.mediaUpdateURL, data, 'json', function(result){
+							if(result['result'] === true){
+								let src = row.querySelector('.img').getAttribute('src');
+								$this.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+									item.setAttribute('alt', $p.textContent);
+								});
+							}else{
+								alert(result['message']);
+							}
+						});
 					}
 
 					$target.setAttribute('contenteditable', true);
 					$target.focus();
 				break;
 				case 'BUTTON' : 
-					data = {
-						'idx' : row.dataset['idx']
-					};
+					let idx = row.dataset['idx'];
+					let message = confirm($this.messageDelImage);
+					//'작성중인 내용 안의 이미지도 전부 삭제됩니다.\n정말로 삭제하시겠습니까?'
 
-					//ajax
+					if(message === true){
+						//ajax
+						$this.ajax('delete', `${$this.mediaDelURL}/${idx}`, [], 'form', function(result){
+							if(result['result'] === true){
+								let src = row.querySelector('.img').getAttribute('src');
+								$this.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+									item.remove();
+									row.remove();
+								});
+							}else{
+								alert(result['message']);
+							}
+						});
+					}
 				break;
 				default :
 					if($p !== null){
 						row = $this.findParent($p, 'btn_add_media');
-						$p.removeAttribute('contenteditable');
 						data = {
 							'idx' : row.dataset['idx'],
 							'textContent' : $p.textContent
 						};
+						$p.removeAttribute('contenteditable');
 
 						//ajax
+						$this.ajax('post', $this.mediaUpdateURL, data, 'json', function(result){
+							if(result['result'] === true){
+								let src = row.querySelector('.img').getAttribute('src');
+								$this.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+									item.setAttribute('alt', $p.textContent);
+								});
+							}else{
+								alert(result['message']);
+							}
+						});
 					}
 			}
 		});
@@ -1049,10 +947,68 @@ class dragonEditor{
 			if(e.key === 'Enter'){
 				e.preventDefault();
 				let row = $this.findParent(e.target, 'btn_add_media');
-				console.log(e.key, e.target);
+				let textContent = e.target.textContent;
+				let data = {
+					'idx' : row.dataset['idx'],
+					'textContent' : textContent
+				};
+
+				//ajax
+				$this.ajax('post', $this.mediaUpdateURL, data, 'json', function(result){
+					if(result['result'] === true){
+						let src = row.querySelector('.img').getAttribute('src');
+						$this.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+							item.setAttribute('alt', $p.textContent);
+						});
+					}else{
+						alert(result['message']);
+					}
+				});
 				e.target.removeAttribute('contenteditable');
 			}
 		});
+
+		$this.languageChangeBtn.forEach(function(btn){
+			btn.addEventListener('click', function(){
+				let prevLang = $this.langStatus;
+				let contentData = $this.getJsonData();
+				let lang = this.dataset['value'];
+				let jsonData = $this.contentData[lang];
+				$this.langStatus = lang;
+
+				$this.languageChangeBtn.forEach(function(btn){
+					btn.classList.remove('act');
+				});
+				this.classList.add('act');
+
+				if(jsonData.length > 0){
+					$this.setContent(jsonData);
+				}else{
+					let message = confirm($this.messageDuplicateContent);
+
+					if(message === true){
+						$this.setContent(contentData[prevLang]);
+					}else{
+						$this.setContent([
+							{
+								"type" : "title",
+								"class" : ["title"],
+								"textContent" : ""
+							},
+							{
+								"type" : "text",
+								"class" : ["item"],
+								"textContent" : ""
+							}
+						]);
+					}
+				}
+			});
+		});
+
+
+
+
 
 
 
@@ -1119,7 +1075,7 @@ class dragonEditor{
 	}
 
 	findParent($el, name){
-		if($el.constructor.name !== 'HTMLBodyElement'){
+		if($el.constructor.name !== 'HTMLBodyElement' && $el.constructor.name !== 'HTMLHtmlElement'){
 			let check = $el.classList.contains(name);
 
 			if(check === true){
@@ -1245,13 +1201,17 @@ class dragonEditor{
 		let html;
 		let width;
 
-		if(data.width > 500){
-			width = ((100 / data.width) * data.height) > 100 ? 350 : data.width;
+		if(((100 / data.width) * data.height) > 100){
+			width = 300;
 		}else{
 			width = data.width;
 		}
 
-		if(this.useWebp == true){
+		if(width > this.maxImageWidth){
+			width = this.maxImageWidth;
+		}
+
+		if(this.useWebp === true == true){
 			html = this.HTMLImageType01.replace('[src]', `${data.src}.${data.format}`)
 					.replace('[alt]', data.alt)
 					.replace('[width]', width);
@@ -1273,200 +1233,19 @@ class dragonEditor{
 
 	addYoutube($target, src, position = 'afterend'){
 		this.removeLastsetClass($target);
-		let html = this.HTMLYoutube.replace('[src]', src);
+		let code = src.replace(this.youtubeCodeReg, '$7');
+		let html = this.HTMLYoutube.replace('[src]', `https://www.youtube.com/embed/${code}`);
 		$target.insertAdjacentHTML(position, html);
 	}
 
 	addCodepen($target, src, position = 'afterend', height = 300){
 		this.removeLastsetClass($target);
-		let html = this.HTMLCodepen.replace('[src]', src).replace('[height]', height);
+		let nickname = src.replace(this.codepenCodeReg, '$2');
+		let code = src.replace(this.codepenCodeReg, '$4');
+		let html = this.HTMLCodepen.replace('[src]', `https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${this.codepenTheme}&default-tab=result`).replace('[height]', height);
 		$target.insertAdjacentHTML(position, html);
 	}
-/*
-	dataToArray(){
-		let $contentsBox = document.querySelectorAll('.content_area'),
-			contentsItems = $contentsBox[0].childNodes,
-			contentsArr = [],
-			forIndex = 0;
 
-		contentsItems.forEach(function(item){
-			if(forIndex !== 0){
-				if(forIndex < contentsItems.length - 1){
-					if(forIndex % 2 === 1) {
-						contentsArr.push(item);
-					}
-				}
-			}
-
-			forIndex += 1;
-		});
-
-		return contentsArr;
-	}
-
-	// save json data
-	jsonForm(list){
-		let resultArr = [];
-
-		for(let i = 0; i < list.length; i++){
-			let $self = list[i],
-				obj = {};
-
-			// button
-			if($self.classList.contains('btn')){
-				obj.type = 'btn';
-				
-				switch($self.dataset.type){
-					case 'btn':
-						obj.dataType = 'btn';
-						obj.dataValue = 'image';
-						obj.textContent = 'Add on image';
-						break;
-					case 'youtube':
-						obj.dataType = 'youtube';
-						obj.dataValue = 'youtube';
-						obj.textContent = 'Add Youtube';
-						break;
-					case 'codepen':
-						obj.dataType = 'codepen';
-						obj.dataValue = 'codepen';
-						obj.textContent = 'Add Codepen';
-						break;
-					default:
-						obj.dataType = 'btn';
-						obj.dataValue = 'image';
-						obj.textContent = 'Add on image';
-						break;
-				}
-
-				obj.icon = {
-					"type" : "svg",
-					"viewBox" : "0 0 50 50",
-					"class" : ["icon"],
-					"url" : "#icon_image"
-				};
-
-			}else if($self.classList.contains('item')){
-				if($self.classList.length === 1){
-					obj = {
-						"type" : "text",
-						"dataType" : "text",
-						"isItem" : true,
-						"class" : ["item"],
-						"textContent" : $self.textContent
-					};
-				}else if($self.classList.contains('item_image')){
-					obj = {
-						"type" : "image",
-						"dataType" : "img",
-						"isItem" : true,
-						"class" : ["item", "item_image"],
-						"hasWebp" : false,
-						"size" : 600,
-						"alt" : "",
-						"src" : $self.querySelector('img').getAttribute('src'),
-						"defaultFormat" : "jpg"
-					};
-				}else if($self.classList.contains('item_video')){
-					obj = {
-						"type" : "video",
-						"dataType" : "youtube",
-						"format" : "iframe",
-						"hasWebm" : false,
-						"src" : $self.querySelector('iframe').getAttribute('src'),
-						"options" : ["allow=\"accelerometer; encrypted-media; gyroscope; picture-in-picture\"","allowfullscreen"],
-						"class" : ["item", "item_video"]
-					};
-				}else if($self.classList.contains('item_codepen')){
-					obj = {
-						"type" : "codepen",
-						"dataType" : "codepen",
-						"src" : $self.querySelector('iframe').getAttribute('src'),
-						"height" : 673,
-						"title" : "loli",
-						"options" : ["allowfullscreen"]
-					};
-				}else if($self.classList.contains('item_list')){
-					if($self.type === 'i'){
-						obj = {
-							"type" : "list",
-							"dataType" : "list",
-							"tag" : "ul",
-							"listType" : null,
-							"class" : ["item", "item_list"],
-							"child" : [
-								{
-									"class" : [],
-									"textContent" : "1"
-								}
-							]
-						};
-					}else{
-						obj = {
-							"type" : "list",
-							"dataType" : "list",
-							"tag" : "ul",
-							"listType" : null,
-							"class" : ["item", "item_list"],
-							"child" : [
-								{
-									"class" : [],
-									"textContent" : "1"
-								}
-							]
-						};
-					}
-				}else if($self.classList.contains('item_quote')){
-					obj = {
-						"type" : "quote",
-						"dataType" : "quote",
-						"class" : ["item", "item_quote"],
-						"text" : $self.querySelector('.text').textcontent,
-						"author" : $self.querySelector('.author').textcontent
-					};
-				}else if($self.classList.contains('item_table_area')){
-
-				}else if($self.classList.contains('item_codeblock')){
-					obj = {
-						"type" : "codeblock",
-						"dataType" : "codeblock",
-						"theme" : "default",
-						"language" : "text",
-						"class" : ["item", "item_codeblock"],
-						"code" : {
-							"class" : [],
-							"textContent" : $self.querySelector('code').textContent
-						}
-					};
-				}else if($self.classList.contains('link_box')){
-					obj = {
-						"type" : "linkblock",
-						"dataType" : "link_box",
-						"url" : $self.getAttribute('href'),
-						"imgSrc" : "https://dico.me/img/dico.png",
-						"title" : $self.querySelector('.text_area .link_title').textContent,
-						"description" : $self.querySelector('.text_area .link_description').textContent,
-						"domain" : $self.querySelector('.link_domain').textContent,
-						"class" : ["item", "link_box"]
-					}
-				}
-
-			}else if($self.classList.contains('title')){
-				obj = {
-					"type" : "title",
-					"dataType" : null,
-					"isItem" : false,
-					"class" : ["title"],
-					"textContent" : $self.textContent
-				};
-			}
-
-			resultArr.push(obj);
-		}
-
-		console.log(resultArr);
-	}
-*/
 	getLastSetOrFocus($target){
 		let $activeEl = document.activeElement;
 		let $item, $btn = false;
@@ -1582,7 +1361,7 @@ class dragonEditor{
 					}
 				break;
 				case type === undefined :
-					type = 'text';
+					type = 'all';
 				break;
 				default : 
 					type = type;
@@ -2040,7 +1819,7 @@ class dragonEditor{
 	
 		xmlhttp.onreadystatechange = function(){
 			if(xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status === 200){
-				httpData = xmlhttp.responseText;
+				let httpData = xmlhttp.responseText;
 				let item = JSON.parse(httpData);
 				fn(item);
 			}
@@ -2068,7 +1847,7 @@ class dragonEditor{
 					arr.push({
 						'type' : 'text',
 						'class' : [...item.classList],
-						'textContent' : item.textContent
+						'textContent' : item.innerHTML
 					});
 				break;
 				case type === 'image' :
@@ -2228,9 +2007,124 @@ class dragonEditor{
 						}
 					});
 				break;
+				default : 
+					arr.push({
+						'other' : item.outerHTML
+					});
 			}
 		});
 
-		return arr;
+		this.contentData[this.langStatus] = arr;
+		return this.contentData;
+	}
+
+	setContent(jsonArr){
+		let html = '';
+
+		jsonArr.forEach(function(item){
+			switch(item.type){
+				case 'title' :
+					html += `<h1 class="${item.class.join(' ')}" contenteditable="true" data-type="${item.type}">${item.textContent}</h1>`;
+				break;
+				case 'text' :
+					html += `<p class="${item.class.join(' ')}" contenteditable="true" data-type="${item.type}">${item.textContent}</p>`;
+				break;
+				case 'image' :
+					if(item.useWebp === true){
+						html += `<picture class="${item.class.join(' ')}" data-type="${item.type}">`;
+						if(item.hasWebp === true){
+							html += `<source srcset="${item.src}.webp" type="image/webp">`;
+						}
+						html += `<img src="${item.src}.${item.defaultFormat}" width="${item.size}" alt="${item.alt}" class="img"></picture>`;
+					}else{
+						html += `<div class="${item.class.join(' ')}" data-type="image"><img src="${item.src}.${item.defaultFormat}" width="${item.size}" alt="${item.alt}" class="img"></div>`;
+					}
+				break;
+				case 'btn' :
+					if(item.value === 'image'){
+						html += `<div class="btn" data-type="${item.type}" data-value="${item.value}">`;
+						if(item.icon.type === 'svg'){
+							html += `<svg viewBox="${item.icon.viewBox}" class="${item.icon.class.join(' ')}"><use class="path" xlink:href="${item.icon.url}" href="${item.icon.url}"></use></svg>`;
+						}else{
+							html += `<img src="${item.icon.url}" alt="image icon" class="">`;
+						}
+						html += `${item.textContent.replace(/\n/i, '').replace(/^\s*/i, '').replace(/\s*$/i, '')}</div>`;
+					}else if(item.value === 'youtube'){
+						html += `<div class="btn" data-type="${item.type}" data-value="${item.value}">`;
+						if(item.icon.type === 'svg'){
+							html += `<svg viewBox="${item.icon.viewBox}" class="${item.icon.class.join(' ')}"><use class="path" xlink:href="${item.icon.url}" href="${item.icon.url}"></use></svg>`;
+						}else{
+							html += `<img src="${item.icon.url}" alt="youtube icon" class="">`;
+						}
+						html += `${item.textContent.replace(/\n/i, '').replace(/^\s*/i, '').replace(/\s*$/i, '')}</div>`;
+					}else if(item.value === 'codepen'){
+						html += `<div class="btn" data-type="${item.type}" data-value="${item.value}">`;
+						if(item.icon.type === 'svg'){
+							html += `<svg viewBox="${item.icon.viewBox}" class="${item.icon.class.join(' ')}"><use class="path" xlink:href="${item.icon.url}" href="${item.icon.url}"></use></svg>`;
+						}else{
+							html += `<img src="${item.icon.url}" alt="codepen icon" class="">`;
+						}
+						html += `${item.textContent.replace(/\n/i, '').replace(/^\s*/i, '').replace(/\s*$/i, '')}</div>`;
+					}
+				break;
+				case 'youtube' :
+					html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><iframe src="${item.src}" allow="${item.allow}" allowfullscreen="" class="video"></iframe></div>`;
+				break;
+				case 'codepen' :
+					html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><iframe height="${item.height}" title="" src="${item.src}" allowfullscreen="" class="iframe"></iframe></div>`;
+				break;
+				case 'list' :
+					html += `<${item.tag} class="${item.class.join(' ')}" data-type="${item.type}">`;
+					item.child.forEach(function(row){
+						if(row.class.length > 0){
+							html += `<li class="${row.class.join(' ')}" contenteditable="true">${row.textContent}</li>`;
+						}else{
+							html += `<li contenteditable="true">${row.textContent}</li>`;
+						}
+					});
+					html += `</${item.tag}>`;
+				break;
+				case 'quote' :
+					html += `<blockquote class="${item.class.join(' ')}" data-type="${item.type}"><p class="text" contenteditable="true">${item.text}</p><p class="author" contenteditable="true">${item.author}</p></blockquote>`;
+				break;
+				case 'table' :
+					let rowNum = 0;
+					html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><div class="scroll"><table class="item_table"><caption contenteditable="true">${item.caption}</caption><colgroup>`;
+					item.colgroup.forEach(function(col){
+						html += `<col class="${col}">`;
+					});
+					html += '</colgroup><tbody>';
+					item.child.forEach(function(tr){
+						let cellNum = 0;
+						html += '<tr>';
+						tr.forEach(function(cell){
+							if(cell.class.length > 0){
+								html += `<${cell.tag} class="${cell.class.join(' ')}" contenteditable="true" data-x="${cellNum}" data-y="${rowNum}"></${cell.tag}>`;
+							}else{
+								html += `<${cell.tag} contenteditable="true" data-x="${cellNum}" data-y="${rowNum}"></${cell.tag}>`;
+							}
+							cellNum += 1;
+						});
+						html += '</tr>';
+						rowNum += 1;
+					});
+					html += '</tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
+				break;
+				case 'codeblock' :
+					html += `<pre class="${item.class.join(' ')}" data-type="${item.type}" data-theme="${item.theme}" data-lang="${item.lang}"><code class="${item.code.class.join(' ')}" contenteditable="true">${item.code.innerHTML}</code></pre>`;
+				break;
+				case 'link_box' :
+					html += `<div class="${item.class.join( )}" data-type="${item.type}"><a href="${item.url}" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src=""${item.imgSrc} alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">${item.title}</p><p class="link_description ellipsis">${item.description}</p><p class="link_domain">${item.domain}</p></div></a></div>`;
+				break;
+				default :
+					html += item.other;
+			}
+		});
+
+		this.contentArea.innerHTML = html;
+	}
+
+	addkustomContent(html){
+		let $el = $this.getEl('.lastset') === false ? $this.getEl(`${$this.contentAreaName} > *:nth-last-child(1)`) : $this.getEl('.lastset');
 	}
 }

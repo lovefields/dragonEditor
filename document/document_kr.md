@@ -51,14 +51,19 @@ const editor = new dragonEditor(wrap, {
 미디어 업로드를 위한 URL 값입니다, 설정하지 않을경우 에디터가 동작하지 않습니다.<br>
 서버에서 다음과 같은 포멧을 반환 해야 합니다.
 ```json
+// 업로드 성공시
 {
-   "idx" : "Number",
-   "src" : "String",
-   "webp" : "Boolean",
-   "format" : "String",
-   "alt" : "String",
-   "width" : "Number",
-   "height" : "Number"
+   "result" : "Boolean",
+   "list" : [
+      {
+
+      }
+   ]
+}
+// 업로드 실패시
+{
+   "result" : "Boolean",
+   "message" : "String"
 }
 
 // ex

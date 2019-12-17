@@ -156,8 +156,8 @@
 	</defs>
 </svg>
 <div class="wrap editor_area">
-	<section class="editor_section ts" data-status="editor">
-		<div class="content_area" data-lang="ko">
+	<section class="editor_section ts">
+		<div class="content_area" data-lang="ko"  data-idx="0" data-temp-idx="0">
 			<h1 class="title" contentEditable="true" data-type="title"></h1>
 			<p class="item" contenteditable="true" data-type="text">가나다라 <a href="https://dico.me">마바사 나는 디</a>자인을 하는데 내가 디자인을 <b class="color_blue">하는것인가 나는 무엇을 하고 있는</b>걸까, 매우 매우 힘<code class="wordblock">이 든다 디자인 잘하고</code>싶다 일하기 싫다 매우.</p>
 			<p class="item" contenteditable="true" data-type="text"></p>
@@ -165,6 +165,7 @@
 				<source srcset="./common/img/img_cover.webp" type="image/webp">
 				<img src="./common/img/img_cover.png" width="200" alt="dico" class="img">
 			</picture>
+			<div class="item item_test">test</div>
 			<div class="item item_image" data-type="image">
 				<img src="./common/img/img_cover.png" width="200" alt="dico" class="img">
 			</div>
@@ -469,36 +470,35 @@
 			</button>
 		</div>
 	</section>
-
-	<button class="btn_bottom btn_pop btn_media blind" data-target=".pop_media">
-		<svg class="icon" viewbox="0 0 50 50">
-			<use class="path" xlink:href="#icon_folder" href="#icon_folder" />
-		</svg>
-		미디어 리스트 보기&#47;닫기
-	</button>
-
-	<button class="btn_bottom btn_pop btn_lang blind" data-target=".pop_lang">
-		<svg class="icon" viewbox="0 0 50 50">
-			<use class="path" xlink:href="#icon_language" href="#icon_language" />
-		</svg>
-		언어 변경
-	</button>
-
-	<button class="btn_bottom btn_mod blind">
-		<svg class="icon" viewbox="0 0 50 50">
-			<use class="path mod_pc" xlink:href="#icon_pc" href="#icon_pc" />
-			<use class="path mod_mobile" xlink:href="#icon_mobile" href="#icon_mobile" />
-		</svg>
-		뷰 변경
-	</button>
-
-	<button class="btn_bottom btn_pop btn_history blind" data-target=".pop_history">
-		<svg class="icon" viewbox="0 0 50 50">
-			<use class="path" xlink:href="#icon_history" href="#icon_history" />
-		</svg>
-		임시저장 리스트 보기&#47;닫기
-	</button>
 </div>
+<button class="btn_bottom btn_pop btn_media blind" data-target=".pop_media">
+	<svg class="icon" viewbox="0 0 50 50">
+		<use class="path" xlink:href="#icon_folder" href="#icon_folder" />
+	</svg>
+	미디어 리스트 보기&#47;닫기
+</button>
+
+<button class="btn_bottom btn_pop btn_lang blind" data-target=".pop_lang">
+	<svg class="icon" viewbox="0 0 50 50">
+		<use class="path" xlink:href="#icon_language" href="#icon_language" />
+	</svg>
+	언어 변경
+</button>
+
+<button class="btn_bottom btn_mod blind">
+	<svg class="icon" viewbox="0 0 50 50">
+		<use class="path mod_pc" xlink:href="#icon_pc" href="#icon_pc" />
+		<use class="path mod_mobile" xlink:href="#icon_mobile" href="#icon_mobile" />
+	</svg>
+	뷰 변경
+</button>
+
+<button class="btn_bottom btn_pop btn_history blind" data-target=".pop_history">
+	<svg class="icon" viewbox="0 0 50 50">
+		<use class="path" xlink:href="#icon_history" href="#icon_history" />
+	</svg>
+	임시저장 리스트 보기&#47;닫기
+</button>
 <div class="pop pop_bg act"></div>
 <div class="pop pop_loding act"></div>
 <div class="pop pop_content_list ts">
