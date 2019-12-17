@@ -2125,6 +2125,9 @@ class dragonEditor{
 	}
 
 	addkustomContent(html){
-		let $el = $this.getEl('.lastset') === false ? $this.getEl(`${$this.contentAreaName} > *:nth-last-child(1)`) : $this.getEl('.lastset');
+		let $el = this.getEl('.lastset') === false ? this.getEl(`${this.contentAreaName} > *:nth-last-child(1)`) : this.getEl('.lastset');
+		$el.insertAdjacentHTML('afterend', html);
+		$el.nextElementSibling.classList.add('lastset');
+		$el.classList.remove('lastset');
 	}
 }
