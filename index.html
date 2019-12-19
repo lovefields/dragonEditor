@@ -720,13 +720,16 @@
 	<input type="file" class="file_check">
 </form>
 <script src="./common/js/highlight.pack.js"></script>
-<script src="./common/js/oop.js"></script>
+<script src="./common/js/dragonEditor.js"></script>
 <script>
+console.log(dragonEditor);
+
 	const editor = new dragonEditor(null, {
 		'mediaUploadURL' : '/articles/image',
 		'mediaUpdateURL' : '/articles/image',
 		'mediaDelURL' : '/articles/image'
 	});
+	
 </script>
 </body>
 </html>
