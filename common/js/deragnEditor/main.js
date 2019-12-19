@@ -1,4 +1,6 @@
-class dragonEditor{
+import { setting } from './setting';
+
+export default class dragonEditor {
 	constructor(wrap = '.editor_area', options = {}){
 		this.setting(wrap, options);
 		this.bindingEvent();
