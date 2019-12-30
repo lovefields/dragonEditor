@@ -1,18 +1,17 @@
 const path = require('path');
-const glob = require('glob');
 const name = 'dragonEditor';
 
-let jsFile = glob.sync(path.resolve(__dirname, 'common/js/deragnEditor/*.js'));
-
 module.exports = {
-    mode : 'production',
+    mode : 'development', //production
     entry : {
-        'common' : './common/js/deragnEditor/main.js'
+        'common' : './common/js/deragnEditor/index.js'
     },
+    target : 'web',
     output : {
-        filename : `${name}.js`,
+        filename : `${name}.min.js`,
         path : path.resolve(__dirname, 'common/js'),
         library : name,
-        libraryTarget : 'umd'
+        libraryTarget : 'umd',
+        umdNamedDefine : true
     }
 }
