@@ -15,7 +15,7 @@
 
 ## Using
 ```js
-const editor = new dragonEditor(wrap, {
+const editor = dragonEditor.init(wrap, {
    'options' : 'value'
 });
 ```

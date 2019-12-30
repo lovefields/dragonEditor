@@ -87,7 +87,7 @@
 .content_area .item_table caption:focus::after{content:''}
 .content_area .item_table th{background:#f4f4f4}
 .content_area .item_table td{background:#fff}
-.content_area .item_codeblock{position:relative;margin:5px 0;padding:5px;border-radius:5px;font-size:16px;line-height:1.4}
+.content_area .item_codeblock{position:relative;margin:5px 0;padding:15px 5px 5px;border-radius:5px;font-size:16px;line-height:1.4}
 .content_area .item_codeblock::before{display:block;content:attr(data-lang);position:absolute;top:0;right:5px;color:#7b7b7b}
 .content_area .item_codeblock code{display:block;font-family:Inconsolata, sans-serif;word-wrap:break-word;word-break:keep-all;white-space:pre-wrap}
 .content_area .item_codeblock code:empty::after{content:'Write Code'}

@@ -10,7 +10,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="./common/css/base.css">
-	<link rel="stylesheet" href="./common/css/editor.css">
+	<link rel="stylesheet" href="./common/css/dragonEditor.css">
 	<title>Dragon Editor</title>
 </head>
 <body>
@@ -720,16 +720,24 @@
 	<input type="file" class="file_check">
 </form>
 <script src="./common/js/highlight.pack.js"></script>
-<script src="./common/js/dragonEditor.js"></script>
+<script src="./common/js/dragonEditor.min.js"></script>
 <script>
-console.log(dragonEditor);
+const editor = dragonEditor.init(null, {
+	'mediaUploadURL' : '/articles/image',
+	'mediaUpdateURL' : '/articles/image',
+	'mediaDelURL' : '/articles/image',
+	'codepenTheme' : 'test'
+});
 
-	const editor = new dragonEditor(null, {
-		'mediaUploadURL' : '/articles/image',
-		'mediaUpdateURL' : '/articles/image',
-		'mediaDelURL' : '/articles/image'
-	});
-	
+let storage = editor.getStorage();
+
+if(storage.windowWidth > storage.changePint){
+	storage.contentAddList.classList.add('act');
+}else if(storage.windowWidth < storage.changePint){
+	storage.contentAddList.classList.remove('act');
+}
+
+console.log(editor.getContentData());
 </script>
 </body>
 </html>

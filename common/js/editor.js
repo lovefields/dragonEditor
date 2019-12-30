@@ -38,6 +38,7 @@ class dragonEditor{
 		$this.popLinkName = typeof options.popLink !== 'string' ? '.pop_link_box' : options.popLink;
 		$this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
 		$this.contentAddListName = typeof options.contentAddList !== 'string' ? '.pop_content_list' : options.contentAddList;
+		$this.addMediaListBtnName = typeof options.addMediaListBtn !== 'string' ? '.btn_add_media_list' : options.addMediaListBtn;
 
 		$this.wrap = $this.checkOptionElement(wrap, '.editor_area');
 		$this.editorSection = $this.checkOptionElement(options.editorSection, '.editor_section');
@@ -79,6 +80,7 @@ class dragonEditor{
 		$this.wordblockBtn = $this.checkOptionElement(options.wordblockBtn, '.btn_wordblock');
 		$this.contentDelBtn = $this.checkOptionElement(options.contentDelBtn, '.btn_del_content');
 		$this.languageChangeBtn = $this.checkOptionElement(options.languageChangeBtn, '.btn_chang_lang', 'multi');
+		$this.addMediaListBtn = $this.checkOptionElement(options.addMediaListBtn, '.btn_add_media_list');
 
 		$this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
 		$this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
@@ -852,6 +854,13 @@ class dragonEditor{
 		});
 
 		// add media
+		$this.addMediaListBtn.addEventListener('click', function(){
+			$this.fileInput.dataset['type'] = 'image';
+			$this.fileInput.setAttribute('accept', 'image/*');
+			$this.fileInput.click();
+		});
+
+		// media content
 		$this.popMedia.addEventListener('click', function(e){
 			let $target = e.target;
 			let row = $this.findParent($target, 'btn_add_media');
@@ -900,23 +909,25 @@ class dragonEditor{
 					$target.focus();
 				break;
 				case 'BUTTON' : 
-					let idx = row.dataset['idx'];
-					let message = confirm($this.messageDelImage);
-					//'작성중인 내용 안의 이미지도 전부 삭제됩니다.\n정말로 삭제하시겠습니까?'
+					if($target.classList.contains($this.addMediaListBtnName.substring(1)) === false){
+						let idx = row.dataset['idx'];
+						let message = confirm($this.messageDelImage);
+						//'작성중인 내용 안의 이미지도 전부 삭제됩니다.\n정말로 삭제하시겠습니까?'
 
-					if(message === true){
-						//ajax
-						$this.ajax('delete', `${$this.mediaDelURL}/${idx}`, [], 'form', function(result){
-							if(result['result'] === true){
-								let src = row.querySelector('.img').getAttribute('src');
-								$this.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
-									item.remove();
-									row.remove();
-								});
-							}else{
-								alert(result['message']);
-							}
-						});
+						if(message === true){
+							//ajax
+							$this.ajax('delete', `${$this.mediaDelURL}/${idx}`, [], 'form', function(result){
+								if(result['result'] === true){
+									let src = row.querySelector('.img').getAttribute('src');
+									$this.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+										item.remove();
+										row.remove();
+									});
+								}else{
+									alert(result['message']);
+								}
+							});
+						}
 					}
 				break;
 				default :
@@ -2078,7 +2089,11 @@ class dragonEditor{
 					html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><iframe height="${item.height}" title="" src="${item.src}" allowfullscreen="" class="iframe"></iframe></div>`;
 				break;
 				case 'list' :
-					html += `<${item.tag} class="${item.class.join(' ')}" data-type="${item.type}">`;
+					if(item.listType === null){
+						html += `<${item.tag} class="${item.class.join(' ')}" data-type="${item.type}">`;
+					}else{
+						html += `<${item.tag} type="${item.listType}" class="${item.class.join(' ')}" data-type="${item.type}">`;
+					}
 					item.child.forEach(function(row){
 						if(row.class.length > 0){
 							html += `<li class="${row.class.join(' ')}" contenteditable="true">${row.textContent}</li>`;
@@ -2103,9 +2118,9 @@ class dragonEditor{
 						html += '<tr>';
 						tr.forEach(function(cell){
 							if(cell.class.length > 0){
-								html += `<${cell.tag} class="${cell.class.join(' ')}" contenteditable="true" data-x="${cellNum}" data-y="${rowNum}"></${cell.tag}>`;
+								html += `<${cell.tag} class="${cell.class.join(' ')}" contenteditable="true" data-x="${cellNum}" data-y="${rowNum}">${cell.textContent}</${cell.tag}>`;
 							}else{
-								html += `<${cell.tag} contenteditable="true" data-x="${cellNum}" data-y="${rowNum}"></${cell.tag}>`;
+								html += `<${cell.tag} contenteditable="true" data-x="${cellNum}" data-y="${rowNum}">${cell.textContent}</${cell.tag}>`;
 							}
 							cellNum += 1;
 						});
@@ -2118,7 +2133,7 @@ class dragonEditor{
 					html += `<pre class="${item.class.join(' ')}" data-type="${item.type}" data-theme="${item.theme}" data-lang="${item.lang}"><code class="${item.code.class.join(' ')}" contenteditable="true">${item.code.innerHTML}</code></pre>`;
 				break;
 				case 'link_box' :
-					html += `<div class="${item.class.join( )}" data-type="${item.type}"><a href="${item.url}" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src=""${item.imgSrc} alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">${item.title}</p><p class="link_description ellipsis">${item.description}</p><p class="link_domain">${item.domain}</p></div></a></div>`;
+					html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><a href="${item.url}" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="${item.imgSrc}" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">${item.title}</p><p class="link_description ellipsis">${item.description}</p><p class="link_domain">${item.domain}</p></div></a></div>`;
 				break;
 				default :
 					html += item.other;
