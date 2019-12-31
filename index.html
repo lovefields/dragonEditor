@@ -729,14 +729,6 @@ const editor = dragonEditor.init(null, {
 	'codepenTheme' : 'test'
 });
 
-let storage = editor.getStorage();
-
-if(storage.windowWidth > storage.changePint){
-	storage.contentAddList.classList.add('act');
-}else if(storage.windowWidth < storage.changePint){
-	storage.contentAddList.classList.remove('act');
-}
-
 console.log(editor.getContentData());
 </script>
 </body>

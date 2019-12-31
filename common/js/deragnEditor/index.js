@@ -1,6 +1,6 @@
 import setting from './setting';
-import { setStorage, getContentJSON } from './content';
-let storage;
+import { setStorage, getContentJSON, bindingEvent } from './content';
+//let storage;
 
 class index {
 	constructor(wrap = '.editor_area', options = {}){
@@ -2157,7 +2157,7 @@ class index {
 
 export function init(wrap, options = {}){
 	wrap = wrap === null ? '.editor_area' : wrap;
-	storage = new setting(wrap, options);
+	global.storage = new setting(wrap, options);
 
 	if(storage.mediaUploadURL === '' || storage.mediaUpdateURL === '' || storage.mediaDelURL === ''){
 		console.warn(storage.messageNotSetAjax);
@@ -2173,7 +2173,14 @@ export function init(wrap, options = {}){
 			storage.popBgArea.classList.remove('act');
 			storage.lodingArea.classList.remove('act');
 		}
-		setStorage(storage);
+
+		if(storage.windowWidth > storage.changePint){
+			storage.contentAddList.classList.add('act');
+		}else if(storage.windowWidth < storage.changePint){
+			storage.contentAddList.classList.remove('act');
+		}
+
+		bindingEvent();
 		return this;
 	}
 };
