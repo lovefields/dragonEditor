@@ -1,4 +1,4 @@
-export function jsonToHtml(json, useWebp){
+export function jsonToHtml(json){
     let html = '';
 
     json.forEach(function(item){
@@ -10,7 +10,7 @@ export function jsonToHtml(json, useWebp){
                 html += `<p class="${item.class.join(' ')}" contenteditable="true" data-type="${item.type}">${item.textContent}</p>`;
             break;
             case 'image' :
-                if(useWebp === true){
+                if(storage.useWebp === true){
                     html += `<picture class="${item.class.join(' ')}" data-type="${item.type}">`;
                     if(item.hasWebp === true){
                         html += `<source srcset="${item.src}.webp" type="image/webp">`;
@@ -108,7 +108,7 @@ export function jsonToHtml(json, useWebp){
     return html;
 };
 
-export function htmlToJson(nodeList, srcReg){
+export function htmlToJson(nodeList){
     let arr = [];
 
     nodeList.forEach((item) => {
@@ -140,8 +140,8 @@ export function htmlToJson(nodeList, srcReg){
                     'hasWebp' : hasWebp,
                     'size' : img.getAttribute('width'),
                     'alt' : img.getAttribute('alt'),
-                    'src' : link.replace(srcReg, '$1'),
-                    'defaultFormat' : link.replace(srcReg, '$2')
+                    'src' : link.replace(storage.srcReg, '$1'),
+                    'defaultFormat' : link.replace(storage.srcReg, '$2')
                 });
             break;
             case type === 'youtube' :
