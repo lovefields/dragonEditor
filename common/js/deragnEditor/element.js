@@ -51,6 +51,28 @@ export function getClassName(text, type){
     }
 }
 
+export function findContenteditable(node){
+    let constructorName = node.constructor.name;
+    let target;
+
+    if(constructorName !== 'HTMLBodyElement'){
+        if(constructorName === 'Text'){
+            target = node.parentElement;
+        }else{
+            target = node;
+        }
+
+        let hasAttr = target.getAttribute('contenteditable');
+        if(hasAttr === 'true'){
+            return target;
+        }else{
+            return findContenteditable(target.parentElement);
+        }
+    }else{
+        return null;
+    }
+}
+
 export function removeLastsetClass($target){
     if($target.classList.contains('lastset') === true){
         $target.classList.remove('lastset');

@@ -56,3 +56,19 @@ export function addTable($target){
     $target.insertAdjacentHTML('afterend', storage.HTMLTable);
     $target.nextElementSibling.querySelector('caption').focus();
 }
+
+export function changeCell(changeTagName){
+    let $target = storage.activeElement;
+    let tagName = $target.tagName;
+    let text = $target.innerHTML;
+
+    if(tagName !== changeTagName.toUpperCase()){
+        let x = $target.dataset['x'];
+        let y = $target.dataset['y'];
+
+        $target.insertAdjacentHTML('afterend', `<${changeTagName} contenteditable="true" data-x="${x}" data-y="${y}">${text}</${changeTagName}>`);
+        storage.activeElement = $target.nextElementSibling;
+        $target.nextElementSibling.focus();
+        $target.remove();
+    }
+}

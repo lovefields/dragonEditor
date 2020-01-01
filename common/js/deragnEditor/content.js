@@ -1,15 +1,21 @@
 import { getEl, getElList, findParent } from './selector';
 import { jsonToHtml, htmlToJson } from './convertor';
 import { actionPrev, actionNext } from './log';
-import { contentCheckByMouse } from './mouse';
-//import { keyboard } from './keyboard';
+import { contentCheckByMouse, mouseUpEvent } from './mouse';
+import { keybroadControl } from './keyboard';
 import { getLastSetOrFocus, setLastElement, getClassName } from './element';
 import { openOptionPop, checkOptionsValue } from './option';
-import { addTextBlock, addQuote } from './phrase';
+import { addTextBlock, addQuote, setTextAlgin } from './phrase';
 import { addBtn } from './button';
 import { addList } from './list';
-import { tableConstrol, addTable } from './table';
+import { tableConstrol, addTable, changeCell } from './table';
 import { addCodeBlock } from './codeBlock';
+import { addLinkBox } from './linkBox';
+import { addYoutube, addCodepen } from './embed';
+
+
+import { changeFontSize, changeColor, makeLink, unLink, makeTextDecoration, makeWordBlock } from './word';
+import { ajax, fetchURL } from './api';
 
 export function bindingEvent(){
     let resizeFn;
@@ -33,27 +39,7 @@ export function bindingEvent(){
     });
 
     document.addEventListener('mouseup', function(e){
-        if(typeof e === 'object'){
-            let target = e.target;
-            if(e.button === 0){
-                let $pop = findParent(target, 'pop');
-                let $btnPop = findParent(target, 'btn_pop');
-                let $popEl = getElList('.pop');
-
-                $popEl.forEach(function(item){
-                    if($btnPop === null){
-                        item.classList.remove('act');
-                    }
-                    if(storage.windowWidth > storage.changePint){
-                        storage.contentAddList.classList.add('act');
-                    }
-                });
-
-                if($pop !== null){
-                    $pop.classList.add('act');
-                }
-            }
-        }
+        mouseUpEvent(e);
     });
 
     // pop btns work
@@ -73,6 +59,16 @@ export function bindingEvent(){
             }else{
                 this.classList.toggle('act');
             }
+        });
+    });
+
+    storage.popCloseBtns.forEach(function($btn){
+        $btn.addEventListener('click', function(){
+            let target = this.dataset['target'];
+            let $el = getEl(target);
+
+            $el.removeAttribute('style');
+            $el.classList.toggle('act');
         });
     });
 
@@ -215,34 +211,21 @@ export function bindingEvent(){
         this.classList.toggle('act');
     });
 
-    storage.popCloseBtns.forEach(function($btn){
-        $btn.addEventListener('click', function(){
-            let target = this.dataset['target'];
-            let $el = getEl(target);
-
-            $el.removeAttribute('style');
-            $el.classList.toggle('act');
-        });
-    });
-
     let $linkCheckBtn = getEl(storage.popLinkName + ' .btn_check');
     if($linkCheckBtn !== null){
-        $linkCheckBtn.addEventListener('click', function(){
+        $linkCheckBtn.addEventListener('click', async function(){
             let json = {};
-            let $viewEl = $.getEl($.popLinkName + ' .view');
-            let $submitBtn = $.getEl($.popLinkName + ' .btn_submit');
-            let url = $.getEl($.popLinkName + ' .url').value;
+            let $viewEl = getEl(storage.popLinkName + ' .view');
+            let $submitBtn = getEl(storage.popLinkName + ' .btn_submit');
+            let url = getEl(storage.popLinkName + ' .url').value;
 
-            if($.urlReg.test(url) === true){
+            if(storage.urlReg.test(url) === true){
                 json.url = url;
-                fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`)
-                .then(response => {
-                    if (response.ok) return response.json();
-                    throw new Error('Network response was not ok.')
-                })
-                .then((data) => {
+
+                if(storage.linkBoxApi === ''){
+                    let data = await fetchURL(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
                     let contents = data.contents;
-                    
+
                     if(contents !== null){
                         let regTitleCheck = new RegExp('property=\\"og:title\\"', 'g');
                         let regTitle01 = new RegExp('([^])*\\<title>([^"]*)<\\/title>([^]*)', 'g');
@@ -252,7 +235,7 @@ export function bindingEvent(){
                         let regImg02 = new RegExp('([^])*\\<meta property=\\"og:image\\" content=\\"([^"]*)"\\>([^]*)', 'g');
                         let regDecripCheck = new RegExp('property=\\"og:description\\"', 'g');
                         let regDecrip01 = new RegExp('([^])*\\<meta name=\\"description\\" content=\\"([^"]*)"\\>([^]*)', 'g');
-                        let regDecrip02 = new RegExp('([^])*\\<meta property=\\"og:description\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+                        let regDecrip02 = new RegExp('([^])*\\<meta property=\\"og:description\\" content=\\"([^"]*)"\\>([^]*)', 'g')   //
 
                         if(regTitleCheck.test(contents)){
                             json.title = contents.replace(regTitle02, '$2');
@@ -263,8 +246,7 @@ export function bindingEvent(){
                         if(regImgCheck.test(contents)){
                             json.img = contents.replace(regImg02, '$2');
                         }else{
-                            let img = contents.replace(regImg01, '$2');
-
+                            let img = contents.replace(regImg01, '$2')
                             if(img.length > 500){
                                 json.img = '';
                             }else{
@@ -275,8 +257,7 @@ export function bindingEvent(){
                         if(regDecripCheck.test(contents)){
                             json.description = contents.replace(regDecrip02, '$2');
                         }else{
-                            let description = contents.replace(regDecrip01, '$2');
-
+                            let description = contents.replace(regDecrip01, '$2')
                             if(description.length > 500){
                                 json.description = '';
                             }else{
@@ -291,409 +272,314 @@ export function bindingEvent(){
                         }
                     
                         json.domain = json.domain.split(':')[0];
-
-                        $.linkBoxData = json;
+                        storage.linkBoxData = json;
                         $submitBtn.removeAttribute('disabled');
-                        $.addLinkBox($viewEl, json, 'afterbegin');
+                        addLinkBox($viewEl, json, 'afterbegin');
                     }else{
                         $submitBtn.setAttribute('disabled', 'true');
-                        $viewEl.innerHTML = $.messageNoData;
+                        $viewEl.innerHTML = storage.messageNoData;
                     }
-                });
+                }else{
+                    // self server ajax
+                }
             }else{
-                alert($.messageWrongURL);
+                alert(storage.messageWrongURL);
             }
         });
     }else{
-        console.warn('We need link check button from ' + $.popLinkName);
+        console.warn('We need link check button from ' + storage.popLinkName);
     }
 
-//    // delete content
-//    $.contentDelBtn.addEventListener('click', function(){
-//        let $target = $.getEl('.lastset');
-//
-//        if($target !== null){
-//            $target.remove();
-//            $.popOptions.classList.remove('act');
-//            let count = $.contentArea.childElementCount;
-//
-//            if(count === 1){
-//                $.addTextBlock($.contentArea, '', 'beforeend');
-//            }
-//        }else{
-//            alert($.messageNotSelect);
-//        }
-//    });
-//
-//    // font size
-//    $.fontSizeSelect.addEventListener('change', function(){
-//        let value = this.value;
-//        let $target = $.activeElement;
-//        let $el = $.findContenteditable($target);
-//        let className = $.getClassName($el.classList.value, 'size');
-//
-//        if(value === 'default'){
-//            if(className !== ''){
-//                $el.classList.remove(className);
-//            }
-//        }else{
-//            if(className !== ''){
-//                $el.classList.remove(className);
-//            }
-//            $el.classList.add(value);
-//        }
-//    });
-//
-//    // color
-//    $.btnColor.forEach(function($btn){
-//        $btn.addEventListener('click', function(){
-//            let value = this.dataset['class'];
-//            let list = ['I', 'B', 'S', 'U', 'A', 'SPAN'];
-//            let $activeEl = $.activeElement;
-//            let tagName = $activeEl.tagName;
-//            let $target = $.findContenteditable($activeEl);
-//
-//            if(window.getSelection().focusNode === window.getSelection().baseNode){
-//                if(list.indexOf(tagName) > 0){
-//                    let className = $.getClassName($activeEl.classList.value, 'color');
-//
-//                    if(className !== ''){
-//                        $activeEl.classList.remove(className);
-//                    }
-//                    if(value !== 'default'){
-//                        $activeEl.classList.add(value);
-//                    }else{
-//                        if(tagName === 'SPAN'){
-//                            let text = $activeEl.textContent;
-//
-//                            $activeEl.insertAdjacentText('afterend', text);
-//                            $activeEl.remove();
-//                            $target.innerHTML = $target.innerHTML;
-//                            $.activeElement = $.wrap;
-//                        }
-//                    }
-//                    $.btnColorSelect.dataset['class'] = value;
-//                }else{
-//                    let className = $.getClassName($target.classList.value, 'color');
-//
-//                    if($.startTextCursor === $.endTextCursor){
-//                        if(className !== ''){
-//                            $target.classList.remove(className);
-//                        }
-//                        if(value !== 'default'){
-//                            $target.classList.add(value);
-//                        }
-//                        $.btnColorSelect.dataset['class'] = value;
-//                    }else{
-//                        $.wrapElement('color', null, value);
-//                    }
-//                }
-//            }else{
-//                alert($.messageWrongNode);
-//            }
-//        });
-//    });
-//
-//    // 텍스트 링크 추가
-//    $.addLinkBtn.addEventListener('click', function(){
-//        let url = $.urlInput.value;
-//
-//        if($.urlReg.test(url) === true){
-//            let isSameNode = $.checkSameNode();
-//
-//            if(isSameNode === true){
-//                $.wrapElement('link', url);
-//            }else{
-//                alert($.messageWrongNode);
-//            }
-//        }else{
-//            alert($.messageWrongURL);
-//        }
-//    });
-//
-//    // remove link
-//    $.unlinkBtn.addEventListener('click', function(){
-//        let $target = $.activeElement;
-//        let $el = $.findContenteditable($target);
-//        if($target.constructor.name === 'HTMLAnchorElement'){
-//            let text = $target.textContent;
-//
-//            $target.insertAdjacentText('afterend', text);
-//            $target.remove();
-//            $el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
-//        }else{
-//            alrt($.messageNotAnchorTag);
-//        }
-//    });
-//
-//    // bold
-//    $.boldBtn.addEventListener('click', function(){
-//        $.makeTextDecoration('b', 'B', 'bold');
-//    });
-//
-//    $.italicBtn.addEventListener('click', function(){
-//        $.makeTextDecoration('i', 'I', 'italic');
-//    });
-//
-//    $.underlineBtn.addEventListener('click', function(){
-//        $.makeTextDecoration('u', 'U', 'underline');
-//    });
-//
-//    $.strikeBtn.addEventListener('click', function(){
-//        $.makeTextDecoration('s', 'S', 'strike');
-//    });
-//
-//    $.wordblockBtn.addEventListener('click', function(){
-//        if(window.getSelection().focusNode === window.getSelection().baseNode){
-//            let $target = $.activeElement;
-//            let elName = $target.tagName;
-//            let $el = $.findContenteditable($target);
-//            let text = $target.textContent;
-//
-//            if(elName === 'CODE'){
-//                $target.insertAdjacentText('afterend', text);
-//                $target.remove();
-//                $el.innerHTML = $el.innerHTML; // 내부 구조 초기화. (부셔진 node 단위 결합용)
-//                $.activeElement = $.wrap;
-//            }else{
-//                $.wrapElement('wordblock');
-//            }
-//        }else{
-//            alert($.messageWrongNode);
-//        }
-//    });
-//
-//
-//    // image width
-//    $.widthInput.addEventListener('keyup', function(e){
-//        if(e.key === 'Enter'){
-//            let value = this.value;
-//            let $el = $.getEl('.lastset .img');
-//            let massage = $.messageExceedSize.replace('[size]', $.maxImageWidth);
-//
-//            if($el !== false){
-//                if($.numberReg.test(value)){
-//                    if(value <= $.maxImageWidth){
-//                        $el.setAttribute('width', value);
-//                    }else{
-//                        alert(massage);
-//                        this.value = $.maxImageWidth;
-//                        $el.setAttribute('width', $.maxImageWidth);
-//                    }
-//                    let offset = $.getEl('.lastset').getBoundingClientRect();
-//                    $.openOptionPop(offset, 'img');
-//                }else{
-//                    alert($.messageWrongValue);
-//                }
-//            }else{
-//                alert($.messageNotSelecImage);
-//            }
-//        }
-//    });
-//
-//    // codepen height
-//    $.heightInput.addEventListener('keyup', function(e){
-//        if(e.key === 'Enter'){
-//            let value = this.value;
-//            let $el = $.getEl('.lastset .iframe');
-//            let massage = $.messageExceedSize.replace('[size]', $.maxCodepenHeight);
-//            
-//            if($el !== false){
-//                if($.numberReg.test(value)){
-//                    if(value <= $.maxCodepenHeight){
-//                        $el.setAttribute('height', value);
-//                    }else{
-//                        alert(massage);
-//                        this.value = $.maxCodepenHeight;
-//                        $el.setAttribute('height', $.maxCodepenHeight);
-//                    }
-//                    let offset = $.getEl('.lastset').getBoundingClientRect();
-//                    $.openOptionPop(offset, 'codepen');
-//                }else{
-//                    alert($.messageWrongValue);
-//                }
-//            }else{
-//                alert($.messageNotSelecCodepen);
-//            }
-//        }
-//    });
-//
-//    // list type
-//    $.listTypeSelect.addEventListener('change', function(){
-//        let value = this.value;
-//        let $el = $.getEl('.lastset');
-//
-//        if($el !== false){
-//            $el.setAttribute('type', value);
-//        }
-//    });
-//
-//    // col size
-//    $.colSizeSelect.addEventListener('change', function(){
-//        let value = this.value;
-//        let elName = $.activeElement.constructor.name
-//        let $el = $.getEl('.lastset');
-//
-//        if((elName === 'HTMLTableCellElement' || elName === 'HTMLTableCaptionElement') && $el !== false){
-//            let x = parseInt($.activeElement.dataset['x']) +1
-//            let col = $el.querySelector(`col:nth-child(${x})`);
-//            let className = $.getClassName(col.classList.value, 'size');
-//
-//            col.classList.remove(className);
-//            col.classList.add(value);
-//        }
-//    });
-//
-//    // codeblock theme
-//    $.themeSelect.addEventListener('change', function(){
-//        let value = this.value;
-//        let $el = $.getEl('.lastset');
-//
-//        if($el !== false){
-//            $el.dataset['theme'] = value;
-//        }
-//    });
-//
-//    // codeblock language
-//    $.languageSelect.addEventListener('change', function(){
-//        let value = this.value;
-//        let $el = $.getEl('.lastset');
-//
-//        if($el !== false){
-//            let code = $el.childNodes[0];
-//
-//            $el.dataset['lang'] = value;
-//            code.classList.value = '';
-//            code.classList.add(value);
-//            hljs.highlightBlock(code);
-//        }
-//    });
-//
-//    // ctable td / th change
-//    $.changeThBtn.addEventListener('click', function(){
-//        $.changeCell('th');
-//    });
-//
-//    $.changeTdBtn.addEventListener('click', function(){
-//        $.changeCell('td');
-//    });
-//
-//    // text align
-//    $.textAlgin.forEach(function(item){
-//        item.addEventListener('click', function(){
-//            let type = this.dataset['value'];
-//            let $target = $.findContenteditable($.activeElement) === false ? $.findParent($.activeElement, 'item') : $.findContenteditable($.activeElement);
-//            let className = $.getClassName($target.classList.value, 'align');
-//
-//            if(className !== ''){
-//                $target.classList.remove(className);
-//            }
-//            $target.classList.add(type);
-//        });
-//    });
-//
-//    // url change
-//    $.changeUrlBtn.addEventListener('click', function(){
-//        let url = $.urlInput.value;
-//        let $el = $.getEl('.lastset');
-//        let type = $el.dataset['type'];
-//
-//        switch(true){ // not default
-//            case $.urlReg.test(url) === false :
-//                alert($.messageWrongURL);
-//            break;
-//            case $el === undefined :
-//                alert($.messageNotSelect);
-//            break;
-//            case type === 'youtube' :
-//                if($.youtubeReg.test(url)){
-//                    let video = $el.querySelector('.video');
-//                    video.setAttribute('src', url);
-//                }else{
-//                    alert($.messageWrongUrlType);
-//                }
-//            break;
-//            case type === 'codepen' :
-//                if($.codepenReg.test(url)){
-//                    let iframe = $el.querySelector('.iframe');
-//                    iframe.setAttribute('src', url);
-//                }else{
-//                    alert($.messageWrongUrlType);
-//                }
-//            break;
-//            case type === 'btn' :
-//                let btnValue = $el.dataset['value'];
-//
-//                if(btnValue === 'youtube'){
-//                    $.addYoutube($el, url);
-//                    $el.remove();
-//                    $.activeElement = $.contentArea;
-//                }else if(btnValue === 'codepen'){
-//                    $.addCodepen($el, url);
-//                    $el.remove();
-//                    $.activeElement = $.contentArea;
-//                }
-//            break;
-//        }
-//    });
-//
-//    // 파일 업로드
-//    $.fileInput.addEventListener('change', function(){
-//        let contentArea = $.contentArea;
-//        let file = this.files;
-//        let form = new FormData();
-//        let type = this.dataset['type'];
-//        let article_idx = contentArea.dataset['idx'];
-//        let temp_idx = contentArea.dataset['tempIdx'];
-//
-//        form.append('request_ype', 'upload');
-//        form.append('file_type', type);
-//        for(let item of file){
-//            form.append('file[]', item);
-//        }
-//        form.append('article_idx', article_idx);
-//        form.append('temp_idx', temp_idx);
-//
-//        // ajax
-//        $.ajax('post', $.mediaUploadURL, form, 'form', (result) => {
-//            if(result['result'] === true){
-//                let $el = $.getEl('.lastset') === false ? $.getEl(`${$.contentAreaName} > *:nth-last-child(1)`) : $.getEl('.lastset');
-//                let imgList = result['list'];
-//                let html = '';
-//
-//                for(let item of imgList){
-//                    let webp = item['webp'] === 'y' ? true : false;
-//                    html += $.HTMLMediaRow.replace(/\[idx\]/g, item['idx'])
-//                        .replace('[webp]', webp)
-//                        .replace('[height]', item['height'])
-//                        .replace('[width]', item['width'])
-//                        .replace('[src]', `${item['src']}${item['name']}.${item['format']}`)
-//                        .replace('[alt]', item['alt'])
-//                        .replace('[name]', item['alt']);
-//
-//                    $.addImage($el, {
-//                        'idx' : item['idx'],
-//                        'src' : `${item['src']}${item['name']}`,
-//                        'webp' : webp,
-//                        'format' : item['format'],
-//                        'alt' : item['alt'],
-//                        'width' : item['width'],
-//                        'height' : item['height']
-//                    });
-//                }
-//
-//                if($el.classList.contains('btn')){
-//                    $el.remove();
-//                }
-//                $.mediaList.insertAdjacentHTML('beforeend', html);
-//                $.popMedia.classList.add('act');
-//                this.value = '';
-//            }else{
-//                alert(result['message']);
-//            }
-//        });
-//    });
-//
+    // delete content
+    storage.contentDelBtn.addEventListener('click', function(){
+        let $target = getEl('.lastset');
+
+        if($target !== null){
+            $target.remove();
+            storage.popOptions.classList.remove('act');
+            let count = storage.contentArea.childElementCount;
+
+            if(count === 1){
+                addTextBlock(storage.contentArea, '', 'beforeend');
+            }
+        }else{
+            alert($.messageNotSelect);
+        }
+    });
+
+    // font size
+    storage.fontSizeSelect.addEventListener('change', function(){
+        let value = this.value;
+        changeFontSize(value);
+    });
+
+    // color
+    storage.btnColor.forEach(function($btn){
+        $btn.addEventListener('click', function(){
+            let value = this.dataset['class'];
+            changeColor(value);
+        });
+    });
+
+    // 텍스트 링크 추가
+    storage.addLinkBtn.addEventListener('click', function(){
+        makeLink();
+    });
+
+    // remove link
+    storage.unlinkBtn.addEventListener('click', function(){
+        unLink();
+    });
+
+    // bold
+    storage.boldBtn.addEventListener('click', function(){
+        makeTextDecoration('b', 'B', 'bold');
+    });
+
+    storage.italicBtn.addEventListener('click', function(){
+        makeTextDecoration('i', 'I', 'italic');
+    });
+
+    storage.underlineBtn.addEventListener('click', function(){
+        makeTextDecoration('u', 'U', 'underline');
+    });
+
+    storage.strikeBtn.addEventListener('click', function(){
+        makeTextDecoration('s', 'S', 'strike');
+    });
+
+    storage.wordblockBtn.addEventListener('click', function(){
+        makeWordBlock();
+    });
+
+    // image width
+    storage.widthInput.addEventListener('keyup', function(e){
+        if(e.key === 'Enter'){
+            let value = this.value;
+            let $el = getEl('.lastset .img');
+            let massage = storage.messageExceedSize.replace('[size]', storage.maxImageWidth);
+
+            if($el !== null){
+                if(storage.numberReg.test(value)){
+                    if(value <= storage.maxImageWidth){
+                        $el.setAttribute('width', value);
+                    }else{
+                        alert(massage);
+                        this.value = storage.maxImageWidth;
+                        $el.setAttribute('width', storage.maxImageWidth);
+                    }
+                    let offset = getEl('.lastset').getBoundingClientRect();
+                    openOptionPop(offset, 'img');
+                }else{
+                    alert(storage.messageWrongValue);
+                }
+            }else{
+                alert(storage.messageNotSelecImage);
+            }
+        }
+    });
+
+    // codepen height
+    storage.heightInput.addEventListener('keyup', function(e){
+        if(e.key === 'Enter'){
+            let value = this.value;
+            let $el = getEl('.lastset .iframe');
+            let massage = storage.messageExceedSize.replace('[size]', storage.maxCodepenHeight);
+            
+            if($el !== null){
+                if($.numberReg.test(value)){
+                    if(value <= storage.maxCodepenHeight){
+                        $el.setAttribute('height', value);
+                    }else{
+                        alert(massage);
+                        this.value = storage.maxCodepenHeight;
+                        $el.setAttribute('height', storage.maxCodepenHeight);
+                    }
+                    let offset = getEl('.lastset').getBoundingClientRect();
+                    openOptionPop(offset, 'codepen');
+                }else{
+                    alert(storage.messageWrongValue);
+                }
+            }else{
+                alert(storage.messageNotSelecCodepen);
+            }
+        }
+    });
+
+    // list type
+    storage.listTypeSelect.addEventListener('change', function(){
+        let value = this.value;
+        let $el = getEl('.lastset');
+
+        if($el !== false){
+            $el.setAttribute('type', value);
+        }
+    });
+
+    // col size
+    storage.colSizeSelect.addEventListener('change', function(){
+        let value = this.value;
+        let elName = storage.activeElement.constructor.name
+        let $el = getEl('.lastset');
+
+        if((elName === 'HTMLTableCellElement' || elName === 'HTMLTableCaptionElement') && $el !== null){
+            let x = parseInt(storage.activeElement.dataset['x']) +1
+            let col = $el.querySelector(`col:nth-child(${x})`);
+            let className = getClassName(col.classList.value, 'size');
+
+            col.classList.remove(className);
+            col.classList.add(value);
+        }
+    });
+
+    // codeblock theme
+    storage.themeSelect.addEventListener('change', function(){
+        let value = this.value;
+        let $el = getEl('.lastset');
+
+        if($el !== null){
+            $el.dataset['theme'] = value;
+        }
+    });
+
+    // codeblock language
+    storage.languageSelect.addEventListener('change', function(){
+        let value = this.value;
+        let $el = getEl('.lastset');
+
+        if($el !== null){
+            let code = $el.childNodes[0];
+
+            $el.dataset['lang'] = value;
+            code.classList.value = '';
+            code.classList.add(value);
+            hljs.highlightBlock(code);
+        }
+    });
+
+    // ctable td / th change
+    storage.changeThBtn.addEventListener('click', function(){
+        changeCell('th');
+    });
+
+    storage.changeTdBtn.addEventListener('click', function(){
+        changeCell('td');
+    });
+
+    // text align
+    storage.textAlgin.forEach(function(item){
+        item.addEventListener('click', function(){
+            let type = this.dataset['value'];
+            setTextAlgin(type);
+        });
+    });
+
+    // url change
+    storage.changeUrlBtn.addEventListener('click', function(){
+        let url = storage.urlInput.value;
+        let $el = getEl('.lastset');
+        let type = $el.dataset['type'];
+
+        switch(true){ // not default
+            case storage.urlReg.test(url) === false :
+                alert(storage.messageWrongURL);
+            break;
+            case $el === undefined :
+                alert(storage.messageNotSelect);
+            break;
+            case type === 'youtube' :
+                if(storage.youtubeReg.test(url)){
+                    let code = url.replace(storage.youtubeCodeReg, '$7');
+                    let video = $el.querySelector('.video');
+                    video.setAttribute('src', `https://www.youtube.com/embed/${code}`);
+                }else{
+                    alert(storage.messageWrongUrlType);
+                }
+            break;
+            case type === 'codepen' :
+                if(storage.codepenReg.test(url)){
+                    let iframe = $el.querySelector('.iframe');
+                    let height = iframe.getAttribute('height');
+                    let nickname = url.replace(storage.codepenCodeReg, '$2');
+                    let code = url.replace(storage.codepenCodeReg, '$4');
+                    iframe.setAttribute('src', `https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${storage.codepenTheme}&default-tab=result`);
+                }else{
+                    alert(storage.messageWrongUrlType);
+                }
+            break;
+            case type === 'btn' :
+                let btnValue = $el.dataset['value'];
+
+                if(btnValue === 'youtube'){
+                    addYoutube($el, url);
+                    $el.remove();
+                    storage.activeElement = storage.contentArea;
+                }else if(btnValue === 'codepen'){
+                    addCodepen($el, url);
+                    $el.remove();
+                    storage.activeElement = storage.contentArea;
+                }
+            break;
+        }
+    });
+
+    // 파일 업로드
+    storage.fileInput.addEventListener('change',async function(){
+        let contentArea = storage.contentArea;
+        let file = this.files;
+        let form = new FormData();
+        let type = this.dataset['type'];
+        let article_idx = contentArea.dataset['idx'];
+        let temp_idx = contentArea.dataset['tempIdx'];
+
+        form.append('request_ype', 'upload');
+        form.append('file_type', type);
+        for(let item of file){
+            form.append('file[]', item);
+        }
+        form.append('article_idx', article_idx);
+        form.append('temp_idx', temp_idx);
+
+        // ajax
+        await ajax('post', storage.mediaUploadURL, form, 'form', (result) => {
+            if(result['result'] === true){
+                let $el = getEl('.lastset') === null ? getEl(`${storage.contentAreaName} > *:nth-last-child(1)`) : getEl('.lastset');
+                let imgList = result['list'];
+                let html = '';
+
+                for(let item of imgList){
+                    let webp = item['webp'] === 'y' ? true : false;
+                    html += storage.HTMLMediaRow.replace(/\[idx\]/g, item['idx'])
+                        .replace('[webp]', webp)
+                        .replace('[height]', item['height'])
+                        .replace('[width]', item['width'])
+                        .replace('[src]', `${item['src']}${item['name']}.${item['format']}`)
+                        .replace('[alt]', item['alt'])
+                        .replace('[name]', item['alt']);
+
+                    addImage($el, {
+                        'idx' : item['idx'],
+                        'src' : `${item['src']}${item['name']}`,
+                        'webp' : webp,
+                        'format' : item['format'],
+                        'alt' : item['alt'],
+                        'width' : item['width'],
+                        'height' : item['height']
+                    });
+                }
+
+                if($el.classList.contains('btn')){
+                    $el.remove();
+                }
+                $.mediaList.insertAdjacentHTML('beforeend', html);
+                $.popMedia.classList.add('act');
+                this.value = '';
+            }else{
+                alert(result['message']);
+            }
+        });
+    });
+
 //    // add media
 //    $.addMediaListBtn.addEventListener('click', function(){
 //        $.fileInput.dataset['type'] = 'image';

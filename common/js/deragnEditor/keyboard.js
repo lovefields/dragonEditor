@@ -1,11 +1,14 @@
+import { findParent } from './selector';
+import { addTextBlock } from './phrase';
+
 export function keybroadControl(event){
     let key = event.key;
     let shift = event.shiftKey;
     let $activeEl = document.activeElement.constructor.name === 'HTMLBodyElement' ? false : document.activeElement;
-    let $item = this.findParent($activeEl, 'item');
+    let $item = findParent($activeEl, 'item');
 
     if($activeEl !== false){
-        this.activeElement = document.activeElement;
+        storage.activeElement = document.activeElement;
     }
 
     switch(true){
@@ -21,17 +24,17 @@ export function keybroadControl(event){
                     if(text === ''){
                         let count = $item.querySelectorAll('li').length;
 
-                        this.addTextBlock($item);
+                        addTextBlock($item);
                         if(count > 1){
                             $activeEl.remove();
                         }
                     }else{
-                        $activeEl.insertAdjacentHTML('afterend', this.HTMLChildList.replace('[content]', ''));
+                        $activeEl.insertAdjacentHTML('afterend', storage.HTMLChildList.replace('[content]', ''));
                         $activeEl.nextElementSibling.focus();
                     }
                 }else{
                     event.preventDefault();
-                    this.addTextBlock($item);
+                    addTextBlock($item);
                 }
             }
         break;
@@ -41,7 +44,7 @@ export function keybroadControl(event){
                     event.preventDefault();
                 }
             }else{
-                let $lastItem = this.contentArea.querySelector('.item:nth-last-child(1)');
+                let $lastItem = storage.contentArea.querySelector('.item:nth-last-child(1)');
                 if($lastItem === $item){
                     event.preventDefault();
                 }

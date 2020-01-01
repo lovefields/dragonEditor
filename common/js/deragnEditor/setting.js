@@ -21,6 +21,8 @@ export default class setting {
 		this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
 		this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
 		this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
+		this.linkBoxApi = typeof options.linkBoxApi !== 'string' ? '' : options.linkBoxApi;
+		this.defaultLinkBoxImage = typeof options.defaultLinkBoxImage !== 'string' ? './common/img/img_cover.png' : options.defaultLinkBoxImage;
 		
 		this.makeLinkBoxType = typeof options.makeLinkBoxType !== 'self' ? 'self' : 'api';
 		this.makeLinkBoxURL = typeof options.makeLinkBoxURL !== 'string' ? '' : options.makeLinkBoxURL;
