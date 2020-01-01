@@ -388,9 +388,9 @@
 .btn_del_content svg.icon .path{fill:#f00}
 
 .file_uploader{display:none}
-.pop{display:none;position:fixed;z-index:100}
+.pop{display:none;position:fixed;z-index:1000}
 .pop.act{display:block}
-.pop_bg{top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5)}
+.pop_bg{top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:900}
 .pop_loding{top:50%;left:0;width:100%;height:30px;color:#fff;font-size:20px;font-weight:bold;text-align:center;line-height:30px;transform:translateY(-50%)}
 .pop_loding::after{display:block;content:'Loding';animation:loding 1s ease infinite}
 

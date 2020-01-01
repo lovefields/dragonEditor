@@ -66,3 +66,27 @@ export function contentCheckByMouse(target, eventType){
         }
     }
 }
+
+export function mouseUpEvent(e){
+    if(typeof e === 'object'){
+        let target = e.target;
+        if(e.button === 0){
+            let $pop = findParent(target, 'pop');
+            let $btnPop = findParent(target, 'btn_pop');
+            let $popEl = getElList('.pop');
+
+            $popEl.forEach(function(item){
+                if($btnPop === null){
+                    item.classList.remove('act');
+                }
+                if(storage.windowWidth > storage.changePint){
+                    storage.contentAddList.classList.add('act');
+                }
+            });
+
+            if($pop !== null){
+                $pop.classList.add('act');
+            }
+        }
+    }
+}
