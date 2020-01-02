@@ -541,208 +541,203 @@ export function bindingEvent(){
         form.append('temp_idx', temp_idx);
 
         // ajax
-        await ajax('post', storage.mediaUploadURL, form, 'form', (result) => {
+        let result = await ajax('post', storage.mediaUploadURL, form, 'form');
+        if(result['result'] === true){
+            let $el = getEl('.lastset') === null ? getEl(`${storage.contentAreaName} > *:nth-last-child(1)`) : getEl('.lastset');
+            let imgList = result['list'];
+            let html = '';
+
+            for(let item of imgList){
+                let webp = item['webp'] === 'y' ? true : false;
+                html += storage.HTMLMediaRow.replace(/\[idx\]/g, item['idx'])
+                    .replace('[webp]', webp)
+                    .replace('[height]', item['height'])
+                    .replace('[width]', item['width'])
+                    .replace('[src]', `${item['src']}${item['name']}.${item['format']}`)
+                    .replace('[alt]', item['alt'])
+                    .replace('[name]', item['alt']);
+
+                addImage($el, {
+                    'idx' : item['idx'],
+                    'src' : `${item['src']}${item['name']}`,
+                    'webp' : webp,
+                    'format' : item['format'],
+                    'alt' : item['alt'],
+                    'width' : item['width'],
+                    'height' : item['height']
+                });
+            }
+
+            if($el.classList.contains('btn')){
+                $el.remove();
+            }
+            storage.mediaList.insertAdjacentHTML('beforeend', html);
+            storage.popMedia.classList.add('act');
+            this.value = '';
+        }else{
+            alert(result['message']);
+        }
+    });
+
+    // add media
+    storage.addMediaListBtn.addEventListener('click', function(){
+        storage.fileInput.dataset['type'] = 'image';
+        storage.fileInput.setAttribute('accept', 'image/*');
+        storage.fileInput.click();
+    });
+
+    // media content
+    storage.popMedia.addEventListener('click',async function(e){
+        let $target = e.target;
+        let row = findParent($target, 'btn_add_media');
+        let $p = this.querySelector('*[contenteditable]');
+        let data;
+        
+        switch($target.tagName){
+            case 'IMG' : 
+                let src = $target.getAttribute('src');
+                let $el = getEl('.lastset') === null ? getEl(`${$.contentAreaName} > *:nth-last-child(1)`) : getEl('.lastset');
+
+                data = {
+                    'width' : $target.getAttribute('width'),
+                    'height' : $target.dataset['height'],
+                    'webp' : row.dataset['webp'],
+                    'alt' : row.querySelector('.name').textContent,
+                    'src' : src.replace(storage.srcReg, '$1'),
+                    'format' : src.replace(storage.srcReg, '$2')
+                }
+
+                addImage($el, data);
+            break;
+            case 'P' : 
+                if($p !== null){
+                    row = findParent($p, 'btn_add_media');
+                    $p.removeAttribute('contenteditable');
+                    data = {
+                        'idx' : row.dataset['idx'],
+                        'textContent' : $p.textContent
+                    };
+
+                    //ajax
+                    let updateResult = await ajax('post', storage.mediaUpdateURL, data, 'json');
+                    if(updateResult['result'] === true){
+                        let src = row.querySelector('.img').getAttribute('src');
+                        storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+                            item.setAttribute('alt', $p.textContent);
+                        });
+                    }else{
+                        alert(updateResult['message']);
+                    }
+                }
+
+                $target.setAttribute('contenteditable', true);
+                $target.focus();
+            break;
+            case 'BUTTON' : 
+                if($target.classList.contains($.addMediaListBtnName.substring(1)) === false){
+                    let idx = row.dataset['idx'];
+                    let message = confirm(storage.messageDelImage);
+                    //'작성중인 내용 안의 이미지도 전부 삭제됩니다.\n정말로 삭제하시겠습니까?'
+
+                    if(message === true){
+                        //ajax
+                        let delateResult = await ajax('delete', `${$.mediaDelURL}/${idx}`, [], 'form');
+                        if(delateResult['result'] === true){
+                            let src = row.querySelector('.img').getAttribute('src');
+                            storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+                                item.remove();
+                                row.remove();
+                            });
+                        }else{
+                            alert(delateResult['message']);
+                        }
+                    }
+                }
+            break;
+            default :
+                if($p !== null){
+                    row = findParent($p, 'btn_add_media');
+                    data = {
+                        'idx' : row.dataset['idx'],
+                        'textContent' : $p.textContent
+                    };
+                    $p.removeAttribute('contenteditable');
+
+                    //ajax
+                    let updateResult2 = await ajax('post', storage.mediaUpdateURL, data, 'json');
+                    if(updateResult2['result'] === true){
+                        let src = row.querySelector('.img').getAttribute('src');
+                        storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+                            item.setAttribute('alt', $p.textContent);
+                        });
+                    }else{
+                        alert(updateResult2['message']);
+                    }
+                }
+        }
+    });
+
+    storage.popMedia.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){
+            e.preventDefault();
+            let row = findParent(e.target, 'btn_add_media');
+            let textContent = e.target.textContent;
+            let data = {
+                'idx' : row.dataset['idx'],
+                'textContent' : textContent
+            };
+
+            //ajax
+            let result = await ajax('post', storage.mediaUpdateURL, data, 'json');
             if(result['result'] === true){
-                let $el = getEl('.lastset') === null ? getEl(`${storage.contentAreaName} > *:nth-last-child(1)`) : getEl('.lastset');
-                let imgList = result['list'];
-                let html = '';
-
-                for(let item of imgList){
-                    let webp = item['webp'] === 'y' ? true : false;
-                    html += storage.HTMLMediaRow.replace(/\[idx\]/g, item['idx'])
-                        .replace('[webp]', webp)
-                        .replace('[height]', item['height'])
-                        .replace('[width]', item['width'])
-                        .replace('[src]', `${item['src']}${item['name']}.${item['format']}`)
-                        .replace('[alt]', item['alt'])
-                        .replace('[name]', item['alt']);
-
-                    addImage($el, {
-                        'idx' : item['idx'],
-                        'src' : `${item['src']}${item['name']}`,
-                        'webp' : webp,
-                        'format' : item['format'],
-                        'alt' : item['alt'],
-                        'width' : item['width'],
-                        'height' : item['height']
-                    });
-                }
-
-                if($el.classList.contains('btn')){
-                    $el.remove();
-                }
-                $.mediaList.insertAdjacentHTML('beforeend', html);
-                $.popMedia.classList.add('act');
-                this.value = '';
+                let src = row.querySelector('.img').getAttribute('src');
+                storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
+                    item.setAttribute('alt', $p.textContent);
+                });
             }else{
                 alert(result['message']);
             }
-        });
+            e.target.removeAttribute('contenteditable');
+        }
     });
 
-//    // add media
-//    $.addMediaListBtn.addEventListener('click', function(){
-//        $.fileInput.dataset['type'] = 'image';
-//        $.fileInput.setAttribute('accept', 'image/*');
-//        $.fileInput.click();
-//    });
-//
-//    // media content
-//    $.popMedia.addEventListener('click', function(e){
-//        let $target = e.target;
-//        let row = $.findParent($target, 'btn_add_media');
-//        let $p = this.querySelector('*[contenteditable]');
-//        let data;
-//        
-//        switch($target.tagName){
-//            case 'IMG' : 
-//                let src = $target.getAttribute('src');
-//                let $el = $.getEl('.lastset') === false ? $.getEl(`${$.contentAreaName} > *:nth-last-child(1)`) : $.getEl('.lastset');
-//
-//                data = {
-//                    'width' : $target.getAttribute('width'),
-//                    'height' : $target.dataset['height'],
-//                    'webp' : row.dataset['webp'],
-//                    'alt' : row.querySelector('.name').textContent,
-//                    'src' : src.replace($.srcReg, '$1'),
-//                    'format' : src.replace($.srcReg, '$2')
-//                }
-//
-//                $.addImage($el, data);
-//            break;
-//            case 'P' : 
-//                if($p !== null){
-//                    row = $.findParent($p, 'btn_add_media');
-//                    $p.removeAttribute('contenteditable');
-//                    data = {
-//                        'idx' : row.dataset['idx'],
-//                        'textContent' : $p.textContent
-//                    };
-//
-//                    //ajax
-//                    $.ajax('post', $.mediaUpdateURL, data, 'json', function(result){
-//                        if(result['result'] === true){
-//                            let src = row.querySelector('.img').getAttribute('src');
-//                            $.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
-//                                item.setAttribute('alt', $p.textContent);
-//                            });
-//                        }else{
-//                            alert(result['message']);
-//                        }
-//                    });
-//                }
-//
-//                $target.setAttribute('contenteditable', true);
-//                $target.focus();
-//            break;
-//            case 'BUTTON' : 
-//                if($target.classList.contains($.addMediaListBtnName.substring(1)) === false){
-//                    let idx = row.dataset['idx'];
-//                    let message = confirm($.messageDelImage);
-//                    //'작성중인 내용 안의 이미지도 전부 삭제됩니다.\n정말로 삭제하시겠습니까?'
-//
-//                    if(message === true){
-//                        //ajax
-//                        $.ajax('delete', `${$.mediaDelURL}/${idx}`, [], 'form', function(result){
-//                            if(result['result'] === true){
-//                                let src = row.querySelector('.img').getAttribute('src');
-//                                $.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
-//                                    item.remove();
-//                                    row.remove();
-//                                });
-//                            }else{
-//                                alert(result['message']);
-//                            }
-//                        });
-//                    }
-//                }
-//            break;
-//            default :
-//                if($p !== null){
-//                    row = $.findParent($p, 'btn_add_media');
-//                    data = {
-//                        'idx' : row.dataset['idx'],
-//                        'textContent' : $p.textContent
-//                    };
-//                    $p.removeAttribute('contenteditable');
-//
-//                    //ajax
-//                    $.ajax('post', $.mediaUpdateURL, data, 'json', function(result){
-//                        if(result['result'] === true){
-//                            let src = row.querySelector('.img').getAttribute('src');
-//                            $.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
-//                                item.setAttribute('alt', $p.textContent);
-//                            });
-//                        }else{
-//                            alert(result['message']);
-//                        }
-//                    });
-//                }
-//        }
-//    });
-//
-//    $.popMedia.addEventListener('keydown', function(e){
-//        if(e.key === 'Enter'){
-//            e.preventDefault();
-//            let row = $.findParent(e.target, 'btn_add_media');
-//            let textContent = e.target.textContent;
-//            let data = {
-//                'idx' : row.dataset['idx'],
-//                'textContent' : textContent
-//            };
-//
-//            //ajax
-//            $.ajax('post', $.mediaUpdateURL, data, 'json', function(result){
-//                if(result['result'] === true){
-//                    let src = row.querySelector('.img').getAttribute('src');
-//                    $.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
-//                        item.setAttribute('alt', $p.textContent);
-//                    });
-//                }else{
-//                    alert(result['message']);
-//                }
-//            });
-//            e.target.removeAttribute('contenteditable');
-//        }
-//    });
-//
-//    $.languageChangeBtn.forEach(function(btn){
-//        btn.addEventListener('click', function(){
-//            let prevLang = $.langStatus;
-//            let contentData = $.getJsonData();
-//            let lang = this.dataset['value'];
-//            let jsonData = $.contentData[lang];
-//            $.langStatus = lang;
-//
-//            $.languageChangeBtn.forEach(function(btn){
-//                btn.classList.remove('act');
-//            });
-//            this.classList.add('act');
-//
-//            if(jsonData.length > 0){
-//                $.setContent(jsonData);
-//            }else{
-//                let message = confirm($.messageDuplicateContent);
-//
-//                if(message === true){
-//                    $.setContent(contentData[prevLang]);
-//                }else{
-//                    $.setContent([
-//                        {
-//                            "type" : "title",
-//                            "class" : ["title"],
-//                            "textContent" : ""
-//                        },
-//                        {
-//                            "type" : "text",
-//                            "class" : ["item"],
-//                            "textContent" : ""
-//                        }
-//                    ]);
-//                }
-//            }
-//        });
-//    });
+    storage.languageChangeBtn.forEach(function(btn){
+        btn.addEventListener('click', function(){
+            let prevLang = storage.langStatus;
+            let contentData = getJsonData();
+            let lang = this.dataset['value'];
+            let jsonData = storage.contentData[lang];
+            storage.langStatus = lang;
+
+            storage.languageChangeBtn.forEach(function(btn){
+                btn.classList.remove('act');
+            });
+            this.classList.add('act');
+
+            if(jsonData.length > 0){
+                setContent(jsonData);
+            }else{
+                let message = confirm(storage.messageDuplicateContent);
+
+                if(message === true){
+                    setContent(contentData[prevLang]);
+                }else{
+                    setContent([
+                        {
+                            "type" : "title",
+                            "class" : ["title"],
+                            "textContent" : ""
+                        },
+                        {
+                            "type" : "text",
+                            "class" : ["item"],
+                            "textContent" : ""
+                        }
+                    ]);
+                }
+            }
+        });
+    });
 }
 
 export function getContentJSON(){
