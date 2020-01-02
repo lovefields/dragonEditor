@@ -16,7 +16,7 @@ export function ajax(method,url,data,type,fn){
         if(xmlhttp.readyState == XMLHttpRequest.DONE && xmlhttp.status === 200){
             let httpData = xmlhttp.responseText;
             let item = JSON.parse(httpData);
-            fn(item);
+            return item;
         }
     }
 
