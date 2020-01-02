@@ -677,7 +677,7 @@ export function bindingEvent(){
         }
     });
 
-    storage.popMedia.addEventListener('keydown', function(e){
+    storage.popMedia.addEventListener('keydown',async function(e){
         if(e.key === 'Enter'){
             e.preventDefault();
             let row = findParent(e.target, 'btn_add_media');
