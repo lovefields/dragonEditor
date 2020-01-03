@@ -14,7 +14,6 @@ import { addLinkBox } from './linkBox';
 import { addYoutube, addCodepen } from './embed';
 import { addImage } from './image';
 import { addSticker } from './sticker';
-
 import { changeFontSize, changeColor, makeLink, unLink, makeTextDecoration, makeWordBlock } from './word';
 import { fetchURL } from './api';
 
@@ -304,7 +303,7 @@ export function bindingEvent(){
                 addTextBlock(storage.contentArea, '', 'beforeend');
             }
         }else{
-            alert($.messageNotSelect);
+            alert(storage.messageNotSelect);
         }
     });
 
@@ -357,6 +356,7 @@ export function bindingEvent(){
     storage.widthInput.addEventListener('keyup', function(e){
         if(e.key === 'Enter'){
             let value = this.value;
+<<<<<<< HEAD
             let $el = getEl('.lastset .img');
             let massage = storage.messageExceedSize.replace('[size]', storage.maxImageWidth);
 
@@ -377,6 +377,9 @@ export function bindingEvent(){
             }else{
                 alert(storage.messageNotSelecImage);
             }
+=======
+            changeImageWidth(this, value);
+>>>>>>> 68f8acc (module)
         }
     });
 
@@ -388,7 +391,7 @@ export function bindingEvent(){
             let massage = storage.messageExceedSize.replace('[size]', storage.maxCodepenHeight);
             
             if($el !== null){
-                if($.numberReg.test(value)){
+                if(storage.numberReg.test(value)){
                     if(value <= storage.maxCodepenHeight){
                         $el.setAttribute('height', value);
                     }else{
@@ -720,9 +723,10 @@ export function bindingEvent(){
     storage.languageChangeBtn.forEach(function(btn){
         btn.addEventListener('click', function(){
             let prevLang = storage.langStatus;
-            let contentData = getJsonData();
+            let contentData = getContentJSON();
             let lang = this.dataset['value'];
             let jsonData = storage.contentData[lang];
+            storage.contentData[prevLang] = contentData;
             storage.langStatus = lang;
 
             storage.languageChangeBtn.forEach(function(btn){
@@ -736,7 +740,7 @@ export function bindingEvent(){
                 let message = confirm(storage.messageDuplicateContent);
 
                 if(message === true){
-                    setContent(contentData[prevLang]);
+                    setContent(contentData);
                 }else{
                     setContent([
                         {
@@ -754,6 +758,116 @@ export function bindingEvent(){
             }
         });
     });
+}
+
+function setContent(jsonArr){
+    let html = '';
+
+    jsonArr.forEach(function(item){
+        switch(item.type){
+            case 'title' :
+                html += `<h1 class="${item.class.join(' ')}" contenteditable="true" data-type="${item.type}">${item.textContent}</h1>`;
+            break;
+            case 'text' :
+                html += `<p class="${item.class.join(' ')}" contenteditable="true" data-type="${item.type}">${item.textContent}</p>`;
+            break;
+            case 'image' :
+                if(storage.useWebp === true){
+                    html += `<picture class="${item.class.join(' ')}" data-type="${item.type}">`;
+                    if(item.hasWebp === true){
+                        html += `<source srcset="${item.src}.webp" type="image/webp">`;
+                    }
+                    html += `<img src="${item.src}.${item.defaultFormat}" width="${item.size}" alt="${item.alt}" class="img"></picture>`;
+                }else{
+                    html += `<div class="${item.class.join(' ')}" data-type="image"><img src="${item.src}.${item.defaultFormat}" width="${item.size}" alt="${item.alt}" class="img"></div>`;
+                }
+            break;
+            case 'btn' :
+                if(item.value === 'image'){
+                    html += `<div class="btn" data-type="${item.type}" data-value="${item.value}">`;
+                    if(item.icon.type === 'svg'){
+                        html += `<svg viewBox="${item.icon.viewBox}" class="${item.icon.class.join(' ')}"><use class="path" xlink:href="${item.icon.url}" href="${item.icon.url}"></use></svg>`;
+                    }else{
+                        html += `<img src="${item.icon.url}" alt="image icon" class="">`;
+                    }
+                    html += `${item.textContent.replace(/\n/i, '').replace(/^\s*/i, '').replace(/\s*$/i, '')}</div>`;
+                }else if(item.value === 'youtube'){
+                    html += `<div class="btn" data-type="${item.type}" data-value="${item.value}">`;
+                    if(item.icon.type === 'svg'){
+                        html += `<svg viewBox="${item.icon.viewBox}" class="${item.icon.class.join(' ')}"><use class="path" xlink:href="${item.icon.url}" href="${item.icon.url}"></use></svg>`;
+                    }else{
+                        html += `<img src="${item.icon.url}" alt="youtube icon" class="">`;
+                    }
+                    html += `${item.textContent.replace(/\n/i, '').replace(/^\s*/i, '').replace(/\s*$/i, '')}</div>`;
+                }else if(item.value === 'codepen'){
+                    html += `<div class="btn" data-type="${item.type}" data-value="${item.value}">`;
+                    if(item.icon.type === 'svg'){
+                        html += `<svg viewBox="${item.icon.viewBox}" class="${item.icon.class.join(' ')}"><use class="path" xlink:href="${item.icon.url}" href="${item.icon.url}"></use></svg>`;
+                    }else{
+                        html += `<img src="${item.icon.url}" alt="codepen icon" class="">`;
+                    }
+                    html += `${item.textContent.replace(/\n/i, '').replace(/^\s*/i, '').replace(/\s*$/i, '')}</div>`;
+                }
+            break;
+            case 'youtube' :
+                html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><iframe src="${item.src}" allow="${item.allow}" allowfullscreen="" class="video"></iframe></div>`;
+            break;
+            case 'codepen' :
+                html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><iframe height="${item.height}" title="" src="${item.src}" allowfullscreen="" class="iframe"></iframe></div>`;
+            break;
+            case 'list' :
+                if(item.listType === null){
+                    html += `<${item.tag} class="${item.class.join(' ')}" data-type="${item.type}">`;
+                }else{
+                    html += `<${item.tag} type="${item.listType}" class="${item.class.join(' ')}" data-type="${item.type}">`;
+                }
+                item.child.forEach(function(row){
+                    if(row.class.length > 0){
+                        html += `<li class="${row.class.join(' ')}" contenteditable="true">${row.textContent}</li>`;
+                    }else{
+                        html += `<li contenteditable="true">${row.textContent}</li>`;
+                    }
+                });
+                html += `</${item.tag}>`;
+            break;
+            case 'quote' :
+                html += `<blockquote class="${item.class.join(' ')}" data-type="${item.type}"><p class="text" contenteditable="true">${item.text}</p><p class="author" contenteditable="true">${item.author}</p></blockquote>`;
+            break;
+            case 'table' :
+                let rowNum = 0;
+                html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><div class="scroll"><table class="item_table"><caption contenteditable="true">${item.caption}</caption><colgroup>`;
+                item.colgroup.forEach(function(col){
+                    html += `<col class="${col}">`;
+                });
+                html += '</colgroup><tbody>';
+                item.child.forEach(function(tr){
+                    let cellNum = 0;
+                    html += '<tr>';
+                    tr.forEach(function(cell){
+                        if(cell.class.length > 0){
+                            html += `<${cell.tag} class="${cell.class.join(' ')}" contenteditable="true" data-x="${cellNum}" data-y="${rowNum}">${cell.textContent}</${cell.tag}>`;
+                        }else{
+                            html += `<${cell.tag} contenteditable="true" data-x="${cellNum}" data-y="${rowNum}">${cell.textContent}</${cell.tag}>`;
+                        }
+                        cellNum += 1;
+                    });
+                    html += '</tr>';
+                    rowNum += 1;
+                });
+                html += '</tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
+            break;
+            case 'codeblock' :
+                html += `<pre class="${item.class.join(' ')}" data-type="${item.type}" data-theme="${item.theme}" data-lang="${item.lang}"><code class="${item.code.class.join(' ')}" contenteditable="true">${item.code.innerHTML}</code></pre>`;
+            break;
+            case 'link_box' :
+                html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><a href="${item.url}" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="${item.imgSrc}" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">${item.title}</p><p class="link_description ellipsis">${item.description}</p><p class="link_domain">${item.domain}</p></div></a></div>`;
+            break;
+            default :
+                html += item.other;
+        }
+    });
+
+    storage.contentArea.innerHTML = html;
 }
 
 export function getContentJSON(){
