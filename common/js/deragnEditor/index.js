@@ -2213,3 +2213,10 @@ export function setOptionValue(name, value){
 		return storage[name];
 	}
 }
+
+export function addLanguage(lang){
+	if(storage.contentData[lang] === undefined){
+		storage.contentData[lang] = [];
+	}
+	console.log(storage.contentData[lang]);
+}

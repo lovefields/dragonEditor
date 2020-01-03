@@ -126,9 +126,9 @@ export default class setting {
 
 		this.linkBoxData = {};
 		this.contentData = {
-			'ko' : {},
-			'en' : {},
-			'es' : {}
+			'ko' : [],
+			'en' : [],
+			'es' : []
 		};
 		this.logData = [];
 	}
