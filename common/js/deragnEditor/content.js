@@ -12,10 +12,11 @@ import { tableConstrol, addTable, changeCell } from './table';
 import { addCodeBlock } from './codeBlock';
 import { addLinkBox } from './linkBox';
 import { addYoutube, addCodepen } from './embed';
-
+import { addImage } from './image';
+import { addSticker } from './sticker';
 
 import { changeFontSize, changeColor, makeLink, unLink, makeTextDecoration, makeWordBlock } from './word';
-import { ajax, fetchURL } from './api';
+import { fetchURL } from './api';
 
 export function bindingEvent(){
     let resizeFn;
@@ -171,7 +172,7 @@ export function bindingEvent(){
                     storage.fileInput.click();
                 break;
                 case 'sticker':
-                    $.addSticker($target, this);
+                    addSticker($target, this);
                 break;
                 case 'youtube':
                     addBtn($target, storage.youtubeIconId, 'youtube', 'Add Youtube');
@@ -369,7 +370,7 @@ export function bindingEvent(){
                         $el.setAttribute('width', storage.maxImageWidth);
                     }
                     let offset = getEl('.lastset').getBoundingClientRect();
-                    openOptionPop(offset, 'img');
+                    openOptionPop(offset, 'image');
                 }else{
                     alert(storage.messageWrongValue);
                 }
@@ -541,7 +542,11 @@ export function bindingEvent(){
         form.append('temp_idx', temp_idx);
 
         // ajax
-        let result = await ajax('post', storage.mediaUploadURL, form, 'form');
+       // let result = await ajax('post', storage.mediaUploadURL, form, 'form');
+        let result = await fetchURL(storage.mediaUploadURL, {
+            method : 'POST',
+            body : form
+        });
         if(result['result'] === true){
             let $el = getEl('.lastset') === null ? getEl(`${storage.contentAreaName} > *:nth-last-child(1)`) : getEl('.lastset');
             let imgList = result['list'];
@@ -596,7 +601,7 @@ export function bindingEvent(){
         switch($target.tagName){
             case 'IMG' : 
                 let src = $target.getAttribute('src');
-                let $el = getEl('.lastset') === null ? getEl(`${$.contentAreaName} > *:nth-last-child(1)`) : getEl('.lastset');
+                let $el = getEl('.lastset') === null ? getEl(`${storage.contentAreaName} > *:nth-last-child(1)`) : getEl('.lastset');
 
                 data = {
                     'width' : $target.getAttribute('width'),
@@ -619,7 +624,10 @@ export function bindingEvent(){
                     };
 
                     //ajax
-                    let updateResult = await ajax('post', storage.mediaUpdateURL, data, 'json');
+                    let updateResult = await fetchURL(storage.mediaUpdateURL, {
+                        method : 'POST',
+                        body : data
+                    }, 'json');
                     if(updateResult['result'] === true){
                         let src = row.querySelector('.img').getAttribute('src');
                         storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
@@ -634,14 +642,16 @@ export function bindingEvent(){
                 $target.focus();
             break;
             case 'BUTTON' : 
-                if($target.classList.contains($.addMediaListBtnName.substring(1)) === false){
+                if($target.classList.contains(storage.addMediaListBtnName.substring(1)) === false){
                     let idx = row.dataset['idx'];
                     let message = confirm(storage.messageDelImage);
                     //'작성중인 내용 안의 이미지도 전부 삭제됩니다.\n정말로 삭제하시겠습니까?'
 
                     if(message === true){
                         //ajax
-                        let delateResult = await ajax('delete', `${$.mediaDelURL}/${idx}`, [], 'form');
+                        let delateResult = await fetchURL(`${storage.mediaDelURL}/${idx}`, {
+                            method : 'delete'
+                        });
                         if(delateResult['result'] === true){
                             let src = row.querySelector('.img').getAttribute('src');
                             storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
@@ -664,7 +674,10 @@ export function bindingEvent(){
                     $p.removeAttribute('contenteditable');
 
                     //ajax
-                    let updateResult2 = await ajax('post', storage.mediaUpdateURL, data, 'json');
+                    let updateResult2 = await fetchURL(storage.mediaUpdateURL, {
+                        method : 'POST',
+                        body : data
+                    }, 'json');
                     if(updateResult2['result'] === true){
                         let src = row.querySelector('.img').getAttribute('src');
                         storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
@@ -688,7 +701,10 @@ export function bindingEvent(){
             };
 
             //ajax
-            let result = await ajax('post', storage.mediaUpdateURL, data, 'json');
+            let result = await fetchURL(storage.mediaUpdateURL, {
+                method : 'POST',
+                body : data
+            }, 'json');
             if(result['result'] === true){
                 let src = row.querySelector('.img').getAttribute('src');
                 storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
