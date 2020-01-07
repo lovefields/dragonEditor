@@ -14,6 +14,8 @@ import { addLinkBox } from './linkBox';
 import { addYoutube, addCodepen } from './embed';
 import { addImage } from './image';
 import { addSticker } from './sticker';
+import { changeImageWidth, addImage } from './image';
+import { addSticker } from './sticker';
 import { changeFontSize, changeColor, makeLink, unLink, makeTextDecoration, makeWordBlock } from './word';
 import { fetchURL } from './api';
 
@@ -356,30 +358,11 @@ export function bindingEvent(){
     storage.widthInput.addEventListener('keyup', function(e){
         if(e.key === 'Enter'){
             let value = this.value;
-<<<<<<< HEAD
-            let $el = getEl('.lastset .img');
-            let massage = storage.messageExceedSize.replace('[size]', storage.maxImageWidth);
-
-            if($el !== null){
-                if(storage.numberReg.test(value)){
-                    if(value <= storage.maxImageWidth){
-                        $el.setAttribute('width', value);
-                    }else{
-                        alert(massage);
-                        this.value = storage.maxImageWidth;
-                        $el.setAttribute('width', storage.maxImageWidth);
-                    }
-                    let offset = getEl('.lastset').getBoundingClientRect();
-                    openOptionPop(offset, 'image');
-                }else{
-                    alert(storage.messageWrongValue);
-                }
-            }else{
-                alert(storage.messageNotSelecImage);
-            }
-=======
             changeImageWidth(this, value);
+<<<<<<< HEAD
 >>>>>>> 68f8acc (module)
+=======
+>>>>>>> 266123b (module)
         }
     });
 

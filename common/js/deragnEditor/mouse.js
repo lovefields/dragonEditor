@@ -60,9 +60,21 @@ export function contentCheckByMouse(target, eventType){
         if(eventType === 'click'){
             setLastElement($target, $children);
             openOptionPop(offset, type);
-        }else if(eventType === 'mouseover' && (type === 'youtube' || type === 'codepen')){
-            setLastElement($target, $children);
-            openOptionPop(offset, type);
+        }else if(eventType === 'mouseover'){
+            if((type === 'youtube' || type === 'codepen') && isBtn === false){
+                setLastElement($target, $children);
+                openOptionPop(offset, type);
+            }else if(isBtn === true){
+                let value = $target.dataset['value'];
+                if(value === 'image'){
+                    openOptionPop(offset, type);
+                }else{
+                    storage.popOptions.classList.remove('act');
+                }
+            }else{
+                storage.popOptions.classList.remove('act');
+            }
+            
         }
     }
 }
