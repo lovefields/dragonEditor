@@ -12,13 +12,9 @@ import { tableConstrol, addTable, changeCell } from './table';
 import { addCodeBlock } from './codeBlock';
 import { addLinkBox } from './linkBox';
 import { addYoutube, addCodepen } from './embed';
-<<<<<<< HEAD
-import { addImage } from './image';
-import { addSticker } from './sticker';
-=======
 import { changeImageWidth, addImage } from './image';
+import { addSticker } from './sticker';
 
->>>>>>> e55148af9b8d6bf84ae3fed6c00ad8ca3a9e0149
 
 import { changeFontSize, changeColor, makeLink, unLink, makeTextDecoration, makeWordBlock } from './word';
 import { fetchURL } from './api';
@@ -362,30 +358,7 @@ export function bindingEvent(){
     storage.widthInput.addEventListener('keyup', function(e){
         if(e.key === 'Enter'){
             let value = this.value;
-<<<<<<< HEAD
-            let $el = getEl('.lastset .img');
-            let massage = storage.messageExceedSize.replace('[size]', storage.maxImageWidth);
-
-            if($el !== null){
-                if(storage.numberReg.test(value)){
-                    if(value <= storage.maxImageWidth){
-                        $el.setAttribute('width', value);
-                    }else{
-                        alert(massage);
-                        this.value = storage.maxImageWidth;
-                        $el.setAttribute('width', storage.maxImageWidth);
-                    }
-                    let offset = getEl('.lastset').getBoundingClientRect();
-                    openOptionPop(offset, 'image');
-                }else{
-                    alert(storage.messageWrongValue);
-                }
-            }else{
-                alert(storage.messageNotSelecImage);
-            }
-=======
             changeImageWidth(this, value);
->>>>>>> e55148af9b8d6bf84ae3fed6c00ad8ca3a9e0149
         }
     });
 

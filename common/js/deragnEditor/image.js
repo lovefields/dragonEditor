@@ -1,7 +1,6 @@
 import { removeLastsetClass } from './element';
-<<<<<<< HEAD
-=======
 import { getEl, getElList, findParent } from './selector';
+import { openOptionPop, checkOptionsValue } from './option';
 
 export function changeImageWidth(parent, width){
     let $el = getEl('.lastset .img');
@@ -17,7 +16,7 @@ export function changeImageWidth(parent, width){
                 $el.setAttribute('width', storage.maxImageWidth);
             }
             let offset = getEl('.lastset').getBoundingClientRect();
-            openOptionPop(offset, 'img');
+            openOptionPop(offset, 'image');
         }else{
             alert(storage.messageWrongValue);
         }
@@ -25,7 +24,6 @@ export function changeImageWidth(parent, width){
         alert(storage.messageNotSelecImage);
     }
 }
->>>>>>> e55148af9b8d6bf84ae3fed6c00ad8ca3a9e0149
 
 export function addImage($target, data, position = 'afterend'){
     removeLastsetClass($target);
