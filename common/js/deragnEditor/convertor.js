@@ -54,10 +54,18 @@ export function jsonToHtml(json){
                 html += `<div class="${item.class.join(' ')}" data-type="${item.type}"><iframe height="${item.height}" title="" src="${item.src}" allowfullscreen="" class="iframe"></iframe></div>`;
             break;
             case 'list' :
+                let listType = '';
+                if(item.tag === 'ol'){
+                    listType = 'list_o';
+                }else if(item.tag === 'ul'){
+                    listType = 'list_u';
+                }
+                console.log(listType);
+
                 if(item.listType === null){
-                    html += `<${item.tag} class="${item.class.join(' ')}" data-type="${item.type}">`;
+                    html += `<${item.tag} class="${item.class.join(' ')}" data-type="${listType}">`;
                 }else{
-                    html += `<${item.tag} type="${item.listType}" class="${item.class.join(' ')}" data-type="${item.type}">`;
+                    html += `<${item.tag} type="${item.listType}" class="${item.class.join(' ')}" data-type="${listType}">`;
                 }
                 item.child.forEach(function(row){
                     if(row.class.length > 0){
@@ -288,6 +296,7 @@ export function htmlToJson(nodeList){
             break;
             default : 
                 arr.push({
+                    'type' : 'other',
                     'other' : item.outerHTML
                 });
         }
