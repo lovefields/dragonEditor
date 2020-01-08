@@ -1,5 +1,5 @@
 import setting from './setting';
-import { setStorage, getContentJSON, bindingEvent } from './content';
+import { setContent, setStorage, getContentJSON, bindingEvent } from './content';
 //let storage;
 
 class index {
@@ -2202,6 +2202,11 @@ export function getContentData(){
 
 export function getStorage(){
 	return storage;
+}
+
+export function setContentData(json){
+	storage.contentData = json;
+	setContent(storage.contentData[storage.langStatus]);
 }
 
 export function setOptionValue(name, value){
