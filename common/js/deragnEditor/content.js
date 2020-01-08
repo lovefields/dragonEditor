@@ -739,7 +739,7 @@ export function bindingEvent(){
     });
 }
 
-function setContent(jsonArr){
+export function setContent(jsonArr){
     let html = '';
 
     jsonArr.forEach(function(item){
