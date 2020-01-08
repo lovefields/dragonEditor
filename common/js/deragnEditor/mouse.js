@@ -71,10 +71,7 @@ export function contentCheckByMouse(target, eventType){
                 }else{
                     storage.popOptions.classList.remove('act');
                 }
-            }else{
-                storage.popOptions.classList.remove('act');
             }
-            
         }
     }
 }
