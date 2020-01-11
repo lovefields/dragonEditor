@@ -1,5 +1,4 @@
-import { getLastSetOrFocus, setLastElement, getClassName, findContenteditable } from './element';
-import { getEl, getElList, findParent } from './selector';
+import { getClassName, findContenteditable } from './element';
 
 export function changeFontSize(size){
     let $target = storage.activeElement;

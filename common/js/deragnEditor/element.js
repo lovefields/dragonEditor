@@ -1,4 +1,4 @@
-import { getEl, getElList, findParent } from './selector';
+import {  findParent } from './selector';
 
 export function getLastSetOrFocus($target){
     let $activeEl = document.activeElement;

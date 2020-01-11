@@ -1,6 +1,6 @@
-import { getEl, getElList, findParent } from './selector';
-import { getLastSetOrFocus, setLastElement, getClassName } from './element';
-import { openOptionPop, checkOptionsValue } from './option';
+import { getElList, findParent } from './selector';
+import { getLastSetOrFocus, setLastElement } from './element';
+import { openOptionPop } from './option';
 
 export function contentCheckByMouse(target, eventType){
     if(eventType === 'click'){

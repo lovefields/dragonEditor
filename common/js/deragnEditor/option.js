@@ -1,5 +1,5 @@
-import { getEl, getElList, findParent } from './selector';
-import { getLastSetOrFocus, setLastElement, getClassName } from './element';
+import { findParent } from './selector';
+import { getClassName } from './element';
 
 export function openOptionPop(offset, type){
     let y = Math.floor(offset.top + offset.height);

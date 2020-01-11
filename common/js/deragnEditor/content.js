@@ -3,7 +3,7 @@ import { jsonToHtml, htmlToJson } from './convertor';
 import { actionPrev, actionNext } from './log';
 import { contentCheckByMouse, mouseUpEvent } from './mouse';
 import { keybroadControl } from './keyboard';
-import { getLastSetOrFocus, setLastElement, getClassName } from './element';
+import { getClassName } from './element';
 import { openOptionPop, checkOptionsValue } from './option';
 import { addTextBlock, addQuote, setTextAlgin } from './phrase';
 import { addBtn } from './button';
