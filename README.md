@@ -10,7 +10,7 @@
     - IOS 11+
     - Android 7+
  - License : MIT
- - Version : 0.1
+ - Version : 1.0
  - Using Plugin : highlight.js
 
 ## Using

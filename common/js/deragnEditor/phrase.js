@@ -1,5 +1,5 @@
 import { removeLastsetClass, findContenteditable, getClassName } from './element';
-import { getEl, getElList, findParent } from './selector';
+import { findParent } from './selector';
 
 export function addTextBlock($target, content = '', position = 'afterend'){
     removeLastsetClass($target);

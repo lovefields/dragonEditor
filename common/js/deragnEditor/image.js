@@ -1,6 +1,6 @@
 import { removeLastsetClass } from './element';
-import { getEl, getElList, findParent } from './selector';
-import { openOptionPop, checkOptionsValue } from './option';
+import { getEl } from './selector';
+import { openOptionPop } from './option';
 
 export function changeImageWidth(parent, width){
     let $el = getEl('.lastset .img');
