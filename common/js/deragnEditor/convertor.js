@@ -294,6 +294,13 @@ export function htmlToJson(nodeList){
                     }
                 });
             break;
+            case type === 'sticker' :
+                arr.push({
+                    'type' : 'sticker',
+                    'code' : item.innerHTML,
+                    'class' : [...item.classList]
+                });
+            break;
             default : 
                 arr.push({
                     'type' : 'other',
