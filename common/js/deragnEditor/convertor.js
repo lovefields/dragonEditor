@@ -60,7 +60,6 @@ export function jsonToHtml(json){
                 }else if(item.tag === 'ul'){
                     listType = 'list_u';
                 }
-                console.log(listType);
 
                 if(item.listType === null){
                     html += `<${item.tag} class="${item.class.join(' ')}" data-type="${listType}">`;
