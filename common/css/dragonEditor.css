@@ -649,11 +649,8 @@
 .btn_media{left:60px}
 .btn_lang{left:110px}
 .btn_mod{display:none}
-.btn_history{right:60px}
+.btn_history{right:10px}
 .btn_change_area{right:10px}
-.btn_change_area::before{display:block;content:'';position:absolute;top:19px;left:10px;width:20px;height:2px;background:#fff}
-.btn_change_area::after{display:block;content:'';position:absolute;top:14px;left:16px;width:8px;height:8px;border:2px solid transparent;border-top-color:#fff;border-right-color:#fff;transform:rotate(45deg)}
-.btn_change_area.act::after{content:'';left:10px;transform:rotate(225deg)}
 
 .btn_content_list{display:block;position:fixed;bottom:10px;left:10px;width:40px;height:40px;background:#fff;color:transparent;border:1px solid #999;border-radius:50%;font-size:0;z-index:110}
 .btn_content_list::after{display:block;content:'';position:absolute;top:9px;left:18px;width:2px;height:20px;background:#999}
