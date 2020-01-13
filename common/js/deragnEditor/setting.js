@@ -13,7 +13,7 @@ export default class setting {
 		this.changePint = typeof options.changePint !== 'number' ? 1120 : options.changePint;
 		this.maxImageWidth = typeof options.maxImageWidth !== 'number' ? 800 : options.maxImageWidth;
 		this.maxCodepenHeight = typeof options.maxCodepenHeight !== 'number' ? 1000 : options.maxCodepenHeight;
-		this.clickCehck = false;
+		this.popOptionHeight = typeof options.popOptionHeight !== 'number' ? 30 : options.popOptionHeight;
 		this.useWebp = true;
 		this.loading = true;
 		this.codepenTheme = typeof options.codepenTheme !== 'string' ? 'dark' : options.codepenTheme;

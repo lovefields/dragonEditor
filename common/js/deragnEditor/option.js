@@ -2,9 +2,13 @@ import { findParent } from './selector';
 import { getClassName } from './element';
 
 export function openOptionPop(offset, type){
-    let y = Math.floor(offset.top + offset.height);
+    let y = Math.floor(offset.top - storage.popOptionHeight);
     let $child = storage.popOptions.querySelectorAll('.col');
     let typeReg = new RegExp(type, 'i');
+    let width = 0;
+
+    storage.popOptions.classList.add('act');
+    storage.popOptions.querySelector('.pop').classList.remove('act');
 
     if($child !== null){
         $child.forEach(function($col){
@@ -13,9 +17,11 @@ export function openOptionPop(offset, type){
             switch(true){
                 case type === 'all' :
                     $col.classList.add('act');
+                    width += $col.getBoundingClientRect().width;
                 break;
                 case typeReg.test(type) === true :
                     $col.classList.add('act');
+                    width += $col.getBoundingClientRect().width;
                 break;
                 case typeReg.test(type) === false :
                     $col.classList.remove('act');
@@ -24,13 +30,12 @@ export function openOptionPop(offset, type){
         })
     }
 
-    storage.popOptions.classList.add('act');
-    storage.popOptions.querySelector('.pop').classList.remove('act');
     let x =  Math.floor((storage.windowWidth - storage.popOptions.getBoundingClientRect().width) / 2);
     if(storage.windowWidth > storage.changePint){
         storage.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
     }else{
         storage.popOptions.removeAttribute('style');
+        storage.popOptions.querySelector('.scroll').style.width = `${width}px`;
     }
 }
 

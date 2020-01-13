@@ -2,7 +2,7 @@
 
 ## 사용법
 ```js
-const editor = new dragonEditor(wrap, {
+const editor = dragonEditor.init(wrap, {
    'options' : 'value'
 });
 ```
@@ -49,11 +49,15 @@ const editor = new dragonEditor(wrap, {
 값 : String::URL<br>
 기본값 : 없음<br>
 미디어 업로드를 위한 URL 값입니다, 설정하지 않을경우 에디터가 동작하지 않습니다.<br>
+서버에 다음과 같은 정보를 보냅니다.<br>
+```json
+
+```
 서버에서 다음과 같은 포멧을 반환 해야 합니다.
 ```json
 // 업로드 성공시
 {
-   "result" : "Boolean",
+   "result" : "true",
    "list" : [
       {
 
@@ -62,11 +66,11 @@ const editor = new dragonEditor(wrap, {
 }
 // 업로드 실패시
 {
-   "result" : "Boolean",
-   "message" : "String"
+   "result" : "false",
+   "message" : "false mssage"
 }
 
-// ex
+// list
 {
    "idx" : 1,
    "src" : "/img/logo",
