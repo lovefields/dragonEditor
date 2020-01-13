@@ -26,12 +26,6 @@ export function bindingEvent(){
         resizeFn = setTimeout(() => {
             storage.windowWidth = window.innerWidth;
             storage.windowHeight = window.innerHeight;
-
-            if(storage.windowWidth > storage.changePint){
-                storage.contentAddList.classList.add('act');
-            }else if(storage.windowWidth < storage.changePint){
-                storage.contentAddList.classList.remove('act');
-            }
         }, 250);
     });
 

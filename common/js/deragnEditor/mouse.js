@@ -88,9 +88,6 @@ export function mouseUpEvent(e){
                 if($btnPop === null){
                     item.classList.remove('act');
                 }
-                if(storage.windowWidth > storage.changePint){
-                    storage.contentAddList.classList.add('act');
-                }
             });
 
             if($pop !== null){

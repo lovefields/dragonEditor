@@ -20,12 +20,6 @@ export function init(wrap, options = {}){
 			storage.lodingArea.classList.remove('act');
 		}
 
-		if(storage.windowWidth > storage.changePint){
-			storage.contentAddList.classList.add('act');
-		}else if(storage.windowWidth < storage.changePint){
-			storage.contentAddList.classList.remove('act');
-		}
-
 		bindingEvent();
 		return this;
 	}
