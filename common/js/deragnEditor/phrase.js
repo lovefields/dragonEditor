@@ -7,7 +7,9 @@ export function addTextBlock($target, content = '', position = 'afterend'){
     let html = storage.HTMLTextBlock.replace('[content]', content);
 
     $target.insertAdjacentHTML(position, html);
-    $target.nextElementSibling.focus();
+    setTimeout(() => {
+        $target.nextElementSibling.focus();
+    }, 10);
 }
 
 export function addQuote($target){

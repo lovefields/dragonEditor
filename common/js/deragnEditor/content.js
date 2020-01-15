@@ -90,17 +90,19 @@ export function bindingEvent(){
         }
     });
 
-//    document.addEventListener('paste', function(e){
-//        console.log('paste', e);
-//    });
+    document.addEventListener('paste', function(e){
+        console.log('paste', e);
+    });
 //
 //    document.addEventListener('copy', function(e){
 //        console.log('copy', e);
 //    });
 
     window.addEventListener('scroll', function(e){
-        document.activeElement.blur();
-        storage.popOptions.classList.remove('act');
+        if(storage.windowWidth > storage.changePint){
+            document.activeElement.blur();
+            storage.popOptions.classList.remove('act');
+        }
     });
 
 //    let setDrag;
@@ -146,6 +148,9 @@ export function bindingEvent(){
     // key event control
     storage.contentArea.addEventListener('keydown', function(e){
         keybroadControl(e);
+        setTimeout(() => {
+            storage.enterCount = 0;
+        }, 150);
     });
 
     // content add event

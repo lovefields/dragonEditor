@@ -1,11 +1,15 @@
 import { findParent } from './selector';
 import { addTextBlock } from './phrase';
+import { openOptionPop } from './option';
 
-export function keybroadControl(event){
+export async function keybroadControl(event){
+    let selection = window.getSelection();
     let key = event.key;
     let shift = event.shiftKey;
     let $activeEl = document.activeElement.constructor.name === 'HTMLBodyElement' ? false : document.activeElement;
     let $item = findParent($activeEl, 'item');
+    let tagName = $activeEl.tagName;
+    let textContent = $activeEl.textContent;
 
     if($activeEl !== false){
         storage.activeElement = document.activeElement;
@@ -13,28 +17,30 @@ export function keybroadControl(event){
 
     switch(true){
         case key === 'Enter' && $activeEl !== false :
-            let tagName = $activeEl.tagName;
-
             if(shift !== true){
-                if(tagName === 'LI'){
-                    event.preventDefault();
+                event.preventDefault();
+                if(storage.enterCount === 0){
+                    if(tagName === 'LI'){
+                        if(textContent === ''){
+                            let count = $item.querySelectorAll('li').length;
 
-                    let text = $activeEl.textContent;
-
-                    if(text === ''){
-                        let count = $item.querySelectorAll('li').length;
-
-                        addTextBlock($item);
-                        if(count > 1){
-                            $activeEl.remove();
+                            addTextBlock($item);
+                            if(count > 1){
+                                $activeEl.remove();
+                            }
+                        }else{
+                            $activeEl.insertAdjacentHTML('afterend', storage.HTMLChildList.replace('[content]', ''));
+                            setTimeout(() => {
+                                $activeEl.nextElementSibling.focus();
+                            }, 10);
                         }
                     }else{
-                        $activeEl.insertAdjacentHTML('afterend', storage.HTMLChildList.replace('[content]', ''));
-                        $activeEl.nextElementSibling.focus();
+                        addTextBlock($item);
+                        let $target = $item.nextElementSibling;
+                        storage.activeElement = $target;
+                        openOptionPop($target.getBoundingClientRect(), 'text');
                     }
-                }else{
-                    event.preventDefault();
-                    addTextBlock($item);
+                    storage.enterCount += 1;
                 }
             }
         break;
@@ -49,6 +55,28 @@ export function keybroadControl(event){
                     event.preventDefault();
                 }
             }
+        break;
+        case key === 'Backspace'&& $activeEl !== false:
+            if(selection.focusOffset === 0 && selection.focusNode === $item.childNodes[0]){
+                if(textContent === ''){
+                    if(tagName === 'LI'){
+
+                    }else if(tagName === 'P'){
+    
+                    }
+                }else{
+                    console.log(selection.focusNode, $activeEl.childNodes[0]);
+                    console.log(selection.focusOffset === 0 , selection.focusNode === $item.childNodes[0]);
+                    console.log('y');
+                    if(tagName === 'LI'){
+
+                    }else if(tagName === 'P'){
+    
+                    }
+                }
+            }
+        break;
+        case key === 'Delete':
         break;
     }
 }
