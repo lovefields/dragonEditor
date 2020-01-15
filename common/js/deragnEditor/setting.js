@@ -2,6 +2,7 @@ import { checkElement } from './selector';
 
 export default class setting {
 	constructor(wrap, options){
+		this.enterCount = 0;
 		this.startTextCursor = 0;
 		this.endTextCursor = 0;
 		this.activeElement;
