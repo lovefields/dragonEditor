@@ -2,7 +2,7 @@ const path = require('path');
 const name = 'dragonEditor';
 
 module.exports = {
-    mode : 'production', //development
+    mode : 'development', //production
     entry : {
         'common' : './common/js/deragnEditor/index.js'
     },
