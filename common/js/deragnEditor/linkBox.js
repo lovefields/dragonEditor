@@ -1,6 +1,6 @@
 import { removeLastsetClass } from './element';
 
-export function addLinkBox($target, data){
+export function addLinkBox($target, data, position = 'afterend'){
     removeLastsetClass($target);
     if(data.img === ''){
         data.img = storage.defaultLinkBoxImage;
@@ -11,5 +11,9 @@ export function addLinkBox($target, data){
                 .replace('[description]', data.description)
                 .replace('[domain]', data.domain);
 
-    $target.innerHTML = html;
+    if(position === 'innerHTML'){
+        $target.innerHTML = html;
+    }else{
+        $target.insertAdjacentHTML(position, html);
+    }
 }
