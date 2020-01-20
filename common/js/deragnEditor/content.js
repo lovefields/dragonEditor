@@ -289,10 +289,9 @@ export function bindingEvent(){
                     });
 
                     if(data['result'] === true){
-                        delete data.result;
-                        storage.linkBoxData = json;
+                        storage.linkBoxData = data;
                         $submitBtn.removeAttribute('disabled');
-                        addLinkBox($viewEl, json, 'innerHTML');
+                        addLinkBox($viewEl, data, 'innerHTML');
                     }else{
                         $submitBtn.setAttribute('disabled', 'true');
                         $viewEl.innerHTML = data['message'];
