@@ -38,7 +38,6 @@ export default class setting {
 		this.addMediaListBtnName = typeof options.addMediaListBtn !== 'string' ? '.btn_add_media_list' : options.addMediaListBtn;
 
 		this.wrap = checkElement(wrap, '.editor_area');
-		this.editorSection = checkElement(options.editorSection, '.editor_section');
 		this.contentArea = checkElement(options.contentArea, '.content_area');
 		this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
 		this.popMedia = checkElement(options.popMedia, '.pop_media');
