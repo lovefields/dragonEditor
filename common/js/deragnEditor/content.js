@@ -275,13 +275,28 @@ export function bindingEvent(){
                         json.domain = json.domain.split(':')[0];
                         storage.linkBoxData = json;
                         $submitBtn.removeAttribute('disabled');
-                        addLinkBox($viewEl, json);
+                        addLinkBox($viewEl, json, 'innerHTML');
                     }else{
                         $submitBtn.setAttribute('disabled', 'true');
                         $viewEl.innerHTML = storage.messageNoData;
                     }
                 }else{
-                    // self server ajax
+                    let formData = new FormData();
+                    formData.append('url', url);
+                    let data = await fetchURL(storage.linkBoxApi, {
+                        method : 'POST',
+                        body : formData
+                    });
+
+                    if(data['result'] === true){
+                        delete data.result;
+                        storage.linkBoxData = json;
+                        $submitBtn.removeAttribute('disabled');
+                        addLinkBox($viewEl, json, 'innerHTML');
+                    }else{
+                        $submitBtn.setAttribute('disabled', 'true');
+                        $viewEl.innerHTML = data['message'];
+                    }
                 }
             }else{
                 alert(storage.messageWrongURL);

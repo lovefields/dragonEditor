@@ -22,8 +22,8 @@ export async function keybroadControl(event){
             if(shift !== true){
                 event.preventDefault();
                 if(storage.enterCount === 0){
-                    if(tagName === 'LI'){
-                        if(textContent === ''){
+                    if(textContent === ''){
+                        if(tagName === 'LI'){
                             let count = $item.querySelectorAll('li').length;
 
                             addTextBlock($item);
@@ -34,16 +34,23 @@ export async function keybroadControl(event){
                             storage.activeElement = $target;
                             openOptionPop($target.getBoundingClientRect(), 'text');
                         }else{
+                            addTextBlock($item);
+                            let $target = $item.nextElementSibling;
+                            storage.activeElement = $target;
+                            openOptionPop($target.getBoundingClientRect(), 'text');
+                        }
+                    }else{
+                        if(tagName === 'LI'){
                             $activeEl.insertAdjacentHTML('afterend', storage.HTMLChildList.replace('[content]', ''));
                             setTimeout(() => {
                                 $activeEl.nextElementSibling.focus();
                             }, 10);
+                        }else{
+                            addTextBlock($item);
+                            let $target = $item.nextElementSibling;
+                            storage.activeElement = $target;
+                            openOptionPop($target.getBoundingClientRect(), 'text');
                         }
-                    }else{
-                        addTextBlock($item);
-                        let $target = $item.nextElementSibling;
-                        storage.activeElement = $target;
-                        openOptionPop($target.getBoundingClientRect(), 'text');
                     }
                     storage.enterCount += 1;
                 }
@@ -279,7 +286,7 @@ export async function keybroadControl(event){
             }
         break;
         case key === 'Delete':
-
+            
         break;
     }
 }
