@@ -1,4 +1,5 @@
 import setting from './setting';
+import { findParent, findContenteditable } from './selector';
 import { setContent, getContentJSON, bindingEvent } from './content';
 
 export function init(wrap, options = {}){
@@ -42,6 +43,18 @@ export function getContentData(){
 
 export function getStorage(){
 	return storage;
+}
+
+export function getActiveElement(){
+	return storage.activeElement;
+}
+
+export function getEditableElement(){
+	return findContenteditable(storage.activeElement);
+}
+
+export function getItemElement(){
+	return findParent(storage.activeElement, 'item');
 }
 
 export function setContentData(json){
