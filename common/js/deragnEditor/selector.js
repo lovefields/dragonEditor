@@ -41,3 +41,25 @@ export function checkElement(name, defaultName, type = 'single') {
         return $item;
     }
 }
+
+export function findContenteditable(node){
+    let constructorName = node.constructor.name;
+    let target;
+
+    if(constructorName !== 'HTMLBodyElement'){
+        if(constructorName === 'Text'){
+            target = node.parentElement;
+        }else{
+            target = node;
+        }
+
+        let hasAttr = target.getAttribute('contenteditable');
+        if(hasAttr === 'true'){
+            return target;
+        }else{
+            return this.findContenteditable(target.parentElement);
+        }
+    }else{
+        return false;
+    }
+}

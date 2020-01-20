@@ -68,9 +68,12 @@ export function makeLink(){
 
     if(storage.urlReg.test(url) === true){
         let isSameNode = checkSameNode();
+        let nodeName = storage.activeElement.tagName;
 
         if(isSameNode === true){
-            wrapElement('link', url);
+            if(nodeName !== 'A'){
+                wrapElement('link', url);
+            }
         }else{
             alert(storage.messageWrongNode);
         }

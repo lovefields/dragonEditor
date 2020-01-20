@@ -208,7 +208,7 @@ export function bindingEvent(){
 
     // change view size
     storage.viewBtn.addEventListener('click', function(){
-        storage.editorSection.classList.toggle('mobile');
+        storage.contentArea.classList.toggle('mobile');
         this.classList.toggle('act');
     });
 
@@ -275,7 +275,7 @@ export function bindingEvent(){
                         json.domain = json.domain.split(':')[0];
                         storage.linkBoxData = json;
                         $submitBtn.removeAttribute('disabled');
-                        addLinkBox($viewEl, json, 'afterbegin');
+                        addLinkBox($viewEl, json);
                     }else{
                         $submitBtn.setAttribute('disabled', 'true');
                         $viewEl.innerHTML = storage.messageNoData;
