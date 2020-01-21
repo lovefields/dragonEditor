@@ -39,34 +39,30 @@ export function bindingEvent(){
     });
 
     // pop btns work
-    storage.popBtns.forEach(function($btn){
-        $btn.addEventListener('click', function(){
-            let target = this.dataset['target'];
-            let type = this.dataset['type'];
-            let $el = getEl(target);
-            let btnOffset = this.getBoundingClientRect();
-            let optionsOffset = storage.popOptions.getBoundingClientRect();
+    bindinEventFunction(storage.popBtns, 'click', function(){
+        let target = this.dataset['target'];
+        let type = this.dataset['type'];
+        let $el = getEl(target);
+        let btnOffset = this.getBoundingClientRect();
+        let optionsOffset = storage.popOptions.getBoundingClientRect();
 
-            $el.removeAttribute('style');
-            $el.classList.toggle('act');
-            if(type === 'position' && storage.windowWidth > storage.changePint){
-                let x = Math.floor(btnOffset.left - optionsOffset.left);
-                let y = storage.popOptions.getBoundingClientRect().height;
-                $el.style.cssText = `transform:translate(${x}px, ${y}px)`;
-            }else{
-                this.classList.toggle('act');
-            }
-        });
+        $el.removeAttribute('style');
+        $el.classList.toggle('act');
+        if(type === 'position' && storage.windowWidth > storage.changePint){
+            let x = Math.floor(btnOffset.left - optionsOffset.left);
+            let y = storage.popOptions.getBoundingClientRect().height;
+            $el.style.cssText = `transform:translate(${x}px, ${y}px)`;
+        }else{
+            this.classList.toggle('act');
+        }
     });
 
-    storage.popCloseBtns.forEach(function($btn){
-        $btn.addEventListener('click', function(){
-            let target = this.dataset['target'];
-            let $el = getEl(target);
+    bindinEventFunction(storage.popCloseBtns, 'click', function(){
+        let target = this.dataset['target'];
+        let $el = getEl(target);
 
-            $el.removeAttribute('style');
-            $el.classList.toggle('act');
-        });
+        $el.removeAttribute('style');
+        $el.classList.toggle('act');
     });
 
     document.addEventListener('keydown', function(e){
@@ -124,7 +120,7 @@ export function bindingEvent(){
 //    };
 
     let clickFn;
-    storage.contentArea.addEventListener('click', function(e){
+    bindinEventFunction(storage.contentArea, 'click', function(e){
         clearTimeout(clickFn);
         clickFn = setTimeout(() => {
             if(e.button === 0 || e.isTrusted === false){
@@ -136,7 +132,7 @@ export function bindingEvent(){
     });
 
     let overFn;
-    storage.contentArea.addEventListener('mouseover', function(e){
+    bindinEventFunction(storage.contentArea, 'mouseover', function(e){
         clearTimeout(overFn);
         overFn = setTimeout(() => {
             if(storage.windowWidth > storage.changePint){
@@ -147,7 +143,7 @@ export function bindingEvent(){
     });
 
     // key event control
-    storage.contentArea.addEventListener('keydown', function(e){
+    bindinEventFunction(storage.contentArea, 'keydown', function(e){
         keybroadControl(e);
         setTimeout(() => {
             storage.enterCount = 0;
@@ -155,163 +151,152 @@ export function bindingEvent(){
     });
 
     // content add event
-    storage.contentAddBtn.forEach(function($btn){
-        $btn.addEventListener('click', function(){
-            let type = this.dataset['value'];
-            let childCount = storage.contentArea.childElementCount;
-            let $lastEl = getEl('.lastset');
-            let $target = $lastEl === null ? storage.contentArea.children[childCount - 1] : $lastEl
+    bindinEventFunction(storage.contentAddBtn, 'click', function(){
+        let type = this.dataset['value'];
+        let childCount = storage.contentArea.childElementCount;
+        let $lastEl = getEl('.lastset');
+        let $target = $lastEl === null ? storage.contentArea.children[childCount - 1] : $lastEl
 
-            switch(type){
-                case 'text':
-                    addTextBlock($target);
-                break;
-                case 'image':
-                    addBtn($target, storage.imageIconId, 'image', 'Add on image');
-                    storage.fileInput.dataset['type'] = 'image';
-                    storage.fileInput.setAttribute('accept', 'image/*');
-                    storage.fileInput.click();
-                break;
-                case 'sticker':
-                    addSticker($target, this);
-                break;
-                case 'youtube':
-                    addBtn($target, storage.youtubeIconId, 'youtube', 'Add Youtube');
-                break;
-                case 'codepen':
-                    addBtn($target, storage.codepenIconId, 'codepen', 'Add Codepen');
-                break;
-                case 'bulletedlist':
-                    addList($target, 'ul');
-                break;
-                case 'numberedlist':
-                    addList($target, 'ol', '1');
-                break;
-                case 'quote':
-                    addQuote($target);
-                break;
-                case 'table':
-                    addTable($target);
-                break;
-                case 'codeblock':
-                    addCodeBlock($target);
-                break;
-                case 'link':
-                    addLinkBox($target, storage.linkBoxData);
-                    storage.popLink.classList.remove('act');
-                    storage.popLink.querySelector('.url').value = '';
-                    storage.popLink.querySelector('.view').innerHTML = '';
-                    storage.popLink.querySelector('.btn_submit').setAttribute('disabled', 'true');
-                break;
-            }
-        });
+        switch(type){
+            case 'text':
+                addTextBlock($target);
+            break;
+            case 'image':
+                addBtn($target, storage.imageIconId, 'image', 'Add on image');
+                storage.fileInput.dataset['type'] = 'image';
+                storage.fileInput.setAttribute('accept', 'image/*');
+                storage.fileInput.click();
+            break;
+            case 'sticker':
+                addSticker($target, this);
+            break;
+            case 'youtube':
+                addBtn($target, storage.youtubeIconId, 'youtube', 'Add Youtube');
+            break;
+            case 'codepen':
+                addBtn($target, storage.codepenIconId, 'codepen', 'Add Codepen');
+            break;
+            case 'bulletedlist':
+                addList($target, 'ul');
+            break;
+            case 'numberedlist':
+                addList($target, 'ol', '1');
+            break;
+            case 'quote':
+                addQuote($target);
+            break;
+            case 'table':
+                addTable($target);
+            break;
+            case 'codeblock':
+                addCodeBlock($target);
+            break;
+            case 'link':
+                addLinkBox($target, storage.linkBoxData);
+                storage.popLink.classList.remove('act');
+                storage.popLink.querySelector('.url').value = '';
+                storage.popLink.querySelector('.view').innerHTML = '';
+                storage.popLink.querySelector('.btn_submit').setAttribute('disabled', 'true');
+            break;
+        }
     });
 
     // change view size
-    storage.viewBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.viewBtn, 'click', function(e){
         storage.contentArea.classList.toggle('mobile');
         this.classList.toggle('act');
     });
 
-    bindinEventFunction(storage.viewBtn, 'click', function(self){
-        console.log(slef);
-    });
+    bindinEventFunction(getEl(storage.popLinkName + ' .btn_check'), 'click', async function(){
+        let json = {};
+        let $viewEl = getEl(storage.popLinkName + ' .view');
+        let $submitBtn = getEl(storage.popLinkName + ' .btn_submit');
+        let url = getEl(storage.popLinkName + ' .url').value;
 
-    let $linkCheckBtn = getEl(storage.popLinkName + ' .btn_check');
-    if($linkCheckBtn !== null){
-        $linkCheckBtn.addEventListener('click', async function(){
-            let json = {};
-            let $viewEl = getEl(storage.popLinkName + ' .view');
-            let $submitBtn = getEl(storage.popLinkName + ' .btn_submit');
-            let url = getEl(storage.popLinkName + ' .url').value;
+        if(storage.urlReg.test(url) === true){
+            json.url = url;
 
-            if(storage.urlReg.test(url) === true){
-                json.url = url;
+            if(storage.linkBoxApi === ''){
+                let data = await fetchURL(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                let contents = data.contents;
 
-                if(storage.linkBoxApi === ''){
-                    let data = await fetchURL(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-                    let contents = data.contents;
+                if(contents !== null){
+                    let regTitleCheck = new RegExp('property=\\"og:title\\"', 'g');
+                    let regTitle01 = new RegExp('([^])*\\<title>([^"]*)<\\/title>([^]*)', 'g');
+                    let regTitle02 = new RegExp('([^])*\\<meta property=\\"og:title\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+                    let regImgCheck = new RegExp('property=\\"og:image\\"', 'g');
+                    let regImg01 = new RegExp('([^])*\\<meta name=\\"image\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+                    let regImg02 = new RegExp('([^])*\\<meta property=\\"og:image\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+                    let regDecripCheck = new RegExp('property=\\"og:description\\"', 'g');
+                    let regDecrip01 = new RegExp('([^])*\\<meta name=\\"description\\" content=\\"([^"]*)"\\>([^]*)', 'g');
+                    let regDecrip02 = new RegExp('([^])*\\<meta property=\\"og:description\\" content=\\"([^"]*)"\\>([^]*)', 'g')
 
-                    if(contents !== null){
-                        let regTitleCheck = new RegExp('property=\\"og:title\\"', 'g');
-                        let regTitle01 = new RegExp('([^])*\\<title>([^"]*)<\\/title>([^]*)', 'g');
-                        let regTitle02 = new RegExp('([^])*\\<meta property=\\"og:title\\" content=\\"([^"]*)"\\>([^]*)', 'g');
-                        let regImgCheck = new RegExp('property=\\"og:image\\"', 'g');
-                        let regImg01 = new RegExp('([^])*\\<meta name=\\"image\\" content=\\"([^"]*)"\\>([^]*)', 'g');
-                        let regImg02 = new RegExp('([^])*\\<meta property=\\"og:image\\" content=\\"([^"]*)"\\>([^]*)', 'g');
-                        let regDecripCheck = new RegExp('property=\\"og:description\\"', 'g');
-                        let regDecrip01 = new RegExp('([^])*\\<meta name=\\"description\\" content=\\"([^"]*)"\\>([^]*)', 'g');
-                        let regDecrip02 = new RegExp('([^])*\\<meta property=\\"og:description\\" content=\\"([^"]*)"\\>([^]*)', 'g')
-
-                        if(regTitleCheck.test(contents)){
-                            json.title = contents.replace(regTitle02, '$2');
-                        }else{
-                            json.title = contents.replace(regTitle01, '$2');
-                        }
-
-                        if(regImgCheck.test(contents)){
-                            json.img = contents.replace(regImg02, '$2');
-                        }else{
-                            let img = contents.replace(regImg01, '$2')
-                            if(img.length > 500){
-                                json.img = '';
-                            }else{
-                                json.img = img;
-                            }
-                        }
-
-                        if(regDecripCheck.test(contents)){
-                            json.description = contents.replace(regDecrip02, '$2');
-                        }else{
-                            let description = contents.replace(regDecrip01, '$2')
-                            if(description.length > 500){
-                                json.description = '';
-                            }else{
-                                json.description = description;
-                            }
-                        }
-
-                        if(url.indexOf("://") > -1){
-                            json.domain = url.split('/')[2];
-                        }else{
-                            json.domain = url.split('/')[0];
-                        }
-                    
-                        json.domain = json.domain.split(':')[0];
-                        storage.linkBoxData = json;
-                        $submitBtn.removeAttribute('disabled');
-                        addLinkBox($viewEl, json, 'innerHTML');
+                    if(regTitleCheck.test(contents)){
+                        json.title = contents.replace(regTitle02, '$2');
                     }else{
-                        $submitBtn.setAttribute('disabled', 'true');
-                        $viewEl.innerHTML = storage.messageNoData;
+                        json.title = contents.replace(regTitle01, '$2');
                     }
+
+                    if(regImgCheck.test(contents)){
+                        json.img = contents.replace(regImg02, '$2');
+                    }else{
+                        let img = contents.replace(regImg01, '$2')
+                        if(img.length > 500){
+                            json.img = '';
+                        }else{
+                            json.img = img;
+                        }
+                    }
+
+                    if(regDecripCheck.test(contents)){
+                        json.description = contents.replace(regDecrip02, '$2');
+                    }else{
+                        let description = contents.replace(regDecrip01, '$2')
+                        if(description.length > 500){
+                            json.description = '';
+                        }else{
+                            json.description = description;
+                        }
+                    }
+
+                    if(url.indexOf("://") > -1){
+                        json.domain = url.split('/')[2];
+                    }else{
+                        json.domain = url.split('/')[0];
+                    }
+                
+                    json.domain = json.domain.split(':')[0];
+                    storage.linkBoxData = json;
+                    $submitBtn.removeAttribute('disabled');
+                    addLinkBox($viewEl, json, 'innerHTML');
                 }else{
-                    let formData = new FormData();
-                    formData.append('url', url);
-                    let data = await fetchURL(storage.linkBoxApi, {
-                        method : 'POST',
-                        body : formData
-                    });
-
-                    if(data['result'] === true){
-                        storage.linkBoxData = data;
-                        $submitBtn.removeAttribute('disabled');
-                        addLinkBox($viewEl, data, 'innerHTML');
-                    }else{
-                        $submitBtn.setAttribute('disabled', 'true');
-                        $viewEl.innerHTML = data['message'];
-                    }
+                    $submitBtn.setAttribute('disabled', 'true');
+                    $viewEl.innerHTML = storage.messageNoData;
                 }
             }else{
-                alert(storage.messageWrongURL);
+                let formData = new FormData();
+                formData.append('url', url);
+                let data = await fetchURL(storage.linkBoxApi, {
+                    method : 'POST',
+                    body : formData
+                });
+
+                if(data['result'] === true){
+                    storage.linkBoxData = data;
+                    $submitBtn.removeAttribute('disabled');
+                    addLinkBox($viewEl, data, 'innerHTML');
+                }else{
+                    $submitBtn.setAttribute('disabled', 'true');
+                    $viewEl.innerHTML = data['message'];
+                }
             }
-        });
-    }else{
-        console.warn('We need link check button from ' + storage.popLinkName);
-    }
+        }else{
+            alert(storage.messageWrongURL);
+        }
+    });
 
     // delete content
-    storage.contentDelBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.contentDelBtn, 'click', function(){
         let $target = getEl('.lastset');
 
         if($target !== null){
@@ -328,52 +313,50 @@ export function bindingEvent(){
     });
 
     // font size
-    storage.fontSizeSelect.addEventListener('change', function(){
+    bindinEventFunction(storage.fontSizeSelect, 'change', function(){
         let value = this.value;
         changeFontSize(value);
     });
 
     // color
-    storage.btnColor.forEach(function($btn){
-        $btn.addEventListener('click', function(){
-            let value = this.dataset['class'];
-            changeColor(value);
-        });
+    bindinEventFunction(storage.btnColor, 'click', function(){
+        let value = this.dataset['class'];
+        changeColor(value);
     });
 
     // 텍스트 링크 추가
-    storage.addLinkBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.addLinkBtn, 'click', function(){
         makeLink();
     });
 
     // remove link
-    storage.unlinkBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.unlinkBtn, 'click', function(){
         unLink();
     });
 
     // bold
-    storage.boldBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.boldBtn, 'click', function(){
         makeTextDecoration('b', 'B', 'bold');
     });
 
-    storage.italicBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.italicBtn, 'click', function(){
         makeTextDecoration('i', 'I', 'italic');
     });
 
-    storage.underlineBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.underlineBtn, 'click', function(){
         makeTextDecoration('u', 'U', 'underline');
     });
 
-    storage.strikeBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.strikeBtn, 'click', function(){
         makeTextDecoration('s', 'S', 'strike');
     });
 
-    storage.wordblockBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.wordblockBtn, 'click', function(){
         makeWordBlock();
     });
 
     // image width
-    storage.widthInput.addEventListener('keyup', function(e){
+    bindinEventFunction(storage.widthInput, 'keyup', function(e){
         if(e.key === 'Enter'){
             let value = this.value;
             changeImageWidth(this, value);
@@ -381,7 +364,7 @@ export function bindingEvent(){
     });
 
     // codepen height
-    storage.heightInput.addEventListener('keyup', function(e){
+    bindinEventFunction(storage.heightInput, 'keyup', function(e){
         if(e.key === 'Enter'){
             let value = this.value;
             let $el = getEl('.lastset .iframe');
@@ -408,7 +391,7 @@ export function bindingEvent(){
     });
 
     // list type
-    storage.listTypeSelect.addEventListener('change', function(){
+    bindinEventFunction(storage.listTypeSelect, 'change', function(){
         let value = this.value;
         let $el = getEl('.lastset');
 
@@ -418,7 +401,7 @@ export function bindingEvent(){
     });
 
     // col size
-    storage.colSizeSelect.addEventListener('change', function(){
+    bindinEventFunction(storage.colSizeSelect, 'change', function(){
         let value = this.value;
         let elName = storage.activeElement.constructor.name
         let $el = getEl('.lastset');
@@ -434,7 +417,7 @@ export function bindingEvent(){
     });
 
     // codeblock theme
-    storage.themeSelect.addEventListener('change', function(){
+    bindinEventFunction(storage.themeSelect, 'change', function(){
         let value = this.value;
         let $el = getEl('.lastset');
 
@@ -444,7 +427,7 @@ export function bindingEvent(){
     });
 
     // codeblock language
-    storage.languageSelect.addEventListener('change', function(){
+    bindinEventFunction(storage.languageSelect, 'change', function(){
         let value = this.value;
         let $el = getEl('.lastset');
 
@@ -459,24 +442,22 @@ export function bindingEvent(){
     });
 
     // ctable td / th change
-    storage.changeThBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.changeThBtn, 'click', function(){
         changeCell('th');
     });
 
-    storage.changeTdBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.changeTdBtn, 'click', function(){
         changeCell('td');
     });
 
     // text align
-    storage.textAlgin.forEach(function(item){
-        item.addEventListener('click', function(){
-            let type = this.dataset['value'];
-            setTextAlgin(type);
-        });
+    bindinEventFunction(storage.textAlgin, 'click', function(){
+        let type = this.dataset['value'];
+        setTextAlgin(type);
     });
 
     // url change
-    storage.changeUrlBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.changeUrlBtn, 'click', function(){
         let url = storage.urlInput.value;
         let $el = getEl('.lastset');
         let type = $el.dataset['type'];
@@ -525,7 +506,7 @@ export function bindingEvent(){
     });
 
     // 파일 업로드
-    storage.fileInput.addEventListener('change',async function(){
+    bindinEventFunction(storage.fileInput, 'change', async function(){
         let contentArea = storage.contentArea;
         let file = this.files;
         let form = new FormData();
@@ -585,14 +566,14 @@ export function bindingEvent(){
     });
 
     // add media
-    storage.addMediaListBtn.addEventListener('click', function(){
+    bindinEventFunction(storage.addMediaListBtn, 'click', function(){
         storage.fileInput.dataset['type'] = 'image';
         storage.fileInput.setAttribute('accept', 'image/*');
         storage.fileInput.click();
     });
 
     // media content
-    storage.popMedia.addEventListener('click',async function(e){
+    bindinEventFunction(storage.popMedia, 'click', async function(e){
         let $target = e.target;
         let row = findParent($target, 'btn_add_media');
         let $p = this.querySelector('*[contenteditable]');
@@ -690,7 +671,7 @@ export function bindingEvent(){
         }
     });
 
-    storage.popMedia.addEventListener('keydown',async function(e){
+    bindinEventFunction(storage.popMedia, 'keydown', async function(e){
         if(e.key === 'Enter'){
             e.preventDefault();
             let row = findParent(e.target, 'btn_add_media');
@@ -717,56 +698,54 @@ export function bindingEvent(){
         }
     });
 
-    storage.languageChangeBtn.forEach(function(btn){
-        btn.addEventListener('click', function(){
-            let prevLang = storage.langStatus;
-            let contentData = getContentJSON();
-            let lang = this.dataset['value'];
-            let jsonData = storage.contentData[lang];
-            storage.contentData[prevLang] = contentData;
-            storage.langStatus = lang;
+    bindinEventFunction(storage.languageChangeBtn, 'click', function(){
+        let prevLang = storage.langStatus;
+        let contentData = getContentJSON();
+        let lang = this.dataset['value'];
+        let jsonData = storage.contentData[lang];
+        storage.contentData[prevLang] = contentData;
+        storage.langStatus = lang;
 
-            storage.languageChangeBtn.forEach(function(btn){
-                btn.classList.remove('act');
-            });
-            this.classList.add('act');
-
-            if(jsonData.length > 0){
-                setContent(jsonData);
-            }else{
-                let message = confirm(storage.messageDuplicateContent);
-
-                if(message === true){
-                    setContent(contentData);
-                }else{
-                    setContent([
-                        {
-                            "type" : "title",
-                            "class" : ["title"],
-                            "textContent" : ""
-                        },
-                        {
-                            "type" : "text",
-                            "class" : ["item"],
-                            "textContent" : ""
-                        }
-                    ]);
-                }
-            }
+        storage.languageChangeBtn.forEach(function(btn){
+            btn.classList.remove('act');
         });
+        this.classList.add('act');
+
+        if(jsonData.length > 0){
+            setContent(jsonData);
+        }else{
+            let message = confirm(storage.messageDuplicateContent);
+
+            if(message === true){
+                setContent(contentData);
+            }else{
+                setContent([
+                    {
+                        "type" : "title",
+                        "class" : ["title"],
+                        "textContent" : ""
+                    },
+                    {
+                        "type" : "text",
+                        "class" : ["item"],
+                        "textContent" : ""
+                    }
+                ]);
+            }
+        }
     });
 }
 
 function bindinEventFunction($target, event, fn){
     if($target !== null){
-        let type = typeof $target === 'object' && $target.constructor.name === 'nodeList' ? 'nodeList' : 'element';
+        let type = typeof $target === 'object' && $target.constructor.name === 'NodeList' ? 'NodeList' : 'element';
 
-        if(type === 'nodeList'){
+        if(type === 'NodeList'){
             $target.forEach(function($item){
-                $item.addEventListener(event, fn(self = this));
+                $item.addEventListener(event, fn);
             });
         }else{
-            $target.addEventListener(event, fn(self = this));
+            $target.addEventListener(event, fn);
         }
     }
 }
