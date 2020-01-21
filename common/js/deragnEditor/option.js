@@ -2,7 +2,6 @@ import { findParent } from './selector';
 import { getClassName } from './element';
 
 export function openOptionPop(offset, type){
-    let y = Math.floor(offset.top - storage.popOptionHeight);
     let $child = storage.popOptions.querySelectorAll('.col');
     let typeReg = new RegExp(type, 'i');
     let width = 0;
@@ -30,6 +29,8 @@ export function openOptionPop(offset, type){
         })
     }
 
+    let optionsOffset = storage.popOptions.getBoundingClientRect();
+    let y = Math.floor(offset.top - optionsOffset.height);
     let x =  Math.floor((storage.windowWidth - storage.popOptions.getBoundingClientRect().width) / 2);
     if(storage.windowWidth > storage.changePint){
         storage.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
