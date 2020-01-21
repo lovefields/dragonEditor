@@ -213,6 +213,10 @@ export function bindingEvent(){
         this.classList.toggle('act');
     });
 
+    bindinEventFunction(storage.viewBtn, 'click', function(self){
+        console.log(slef);
+    });
+
     let $linkCheckBtn = getEl(storage.popLinkName + ' .btn_check');
     if($linkCheckBtn !== null){
         $linkCheckBtn.addEventListener('click', async function(){
@@ -755,6 +759,20 @@ export function bindingEvent(){
             }
         });
     });
+}
+
+function bindinEventFunction($target, event, fn){
+    if($target !== null){
+        let type = typeof $target === 'object' && $target.constructor.name === 'nodeList' ? 'nodeList' : 'element';
+
+        if(type === 'nodeList'){
+            $target.forEach(function($item){
+                $item.addEventListener(event, fn(self = this));
+            });
+        }else{
+            $target.addEventListener(event, fn(self = this));
+        }
+    }
 }
 
 export function setContent(jsonArr){
