@@ -16,7 +16,7 @@ export default class setting {
 		this.maxCodepenHeight = typeof options.maxCodepenHeight !== 'number' ? 1000 : options.maxCodepenHeight;
 		this.popOptionHeight = typeof options.popOptionHeight !== 'number' ? 30 : options.popOptionHeight;
 		this.useWebp = true;
-		this.loading = true;
+		this.loading = typeof options.loading !== 'boolean' ? true : options.loading;
 		this.codepenTheme = typeof options.codepenTheme !== 'string' ? 'dark' : options.codepenTheme;
 		this.multiUpload = typeof options.multiUpload !== 'boolean' ? false : options.multiUpload;
 		this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
