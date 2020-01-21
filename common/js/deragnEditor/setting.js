@@ -41,10 +41,12 @@ export default class setting {
 		this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
 		this.popMedia = checkElement(options.popMedia, '.pop_media');
 		this.popLang = checkElement(options.popLang, '.pop_lang');
-		this.popBgArea = checkElement(options.popBgArea, '.pop_bg');
+		if(this.loading === true){
+			this.popBgArea = checkElement(options.popBgArea, '.pop_bg');
+			this.lodingArea = checkElement(options.lodingArea, '.pop_loding');
+		}
 		this.popOptions = checkElement(options.popOptions, '.pop_options');
 		this.popLink = checkElement(options.popLink, '.pop_link_box');
-		this.lodingArea = checkElement(options.lodingArea, '.pop_loding');
 		this.fileInput = checkElement(options.fileInput, '.file_check');
 		this.uploadForm = checkElement(options.uploadForm, '.file_uploader');
 		this.contentAddBtn = checkElement(options.contentAddBtn, '.btn_add_content', 'multi');

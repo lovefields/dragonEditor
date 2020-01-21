@@ -35,13 +35,7 @@ export function checkElement(name, defaultName, type = 'single') {
         $item = typeof name !== 'string' ? getElList(defaultName) : getElList(name);
     }
 
-    if($item === null){
-        let className = name === undefined ? defaultName : name;
-        console.warn('Can not find Element : ' + className);
-        return null;
-    }else{
-        return $item;
-    }
+    return $item;
 }
 
 export function findContenteditable(node){
