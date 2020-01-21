@@ -51,7 +51,8 @@ export function bindingEvent(){
             $el.classList.toggle('act');
             if(type === 'position' && storage.windowWidth > storage.changePint){
                 let x = Math.floor(btnOffset.left - optionsOffset.left);
-                $el.style.cssText = `transform:translate(${x}px, 30px)`;
+                let y = storage.popOptions.getBoundingClientRect().height;
+                $el.style.cssText = `transform:translate(${x}px, ${y}px)`;
             }else{
                 this.classList.toggle('act');
             }
