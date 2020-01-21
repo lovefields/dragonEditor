@@ -1,5 +1,5 @@
 import setting from './setting';
-import { findParent, findContenteditable } from './selector';
+import { getEl, findParent, findContenteditable } from './selector';
 import { setContent, getContentJSON, bindingEvent } from './content';
 
 export function init(wrap, options = {}){
@@ -80,4 +80,11 @@ export function addLanguage(lang){
 		console.error(`"${lang}" is already exists.`);
 		return false;
 	}
+}
+
+export function addContent(html){
+	let childCount = storage.contentArea.childElementCount;
+	let $lastEl = getEl('.lastset');
+	let $target = $lastEl === null ? storage.contentArea.children[childCount - 1] : $lastEl;
+	$target.insertAdjacentHTML('afterend', html);
 }
