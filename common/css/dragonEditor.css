@@ -615,7 +615,7 @@
 .pop_link_box .url{width:300px;height:30px;padding:0 10px;font-size:14px;box-sizing:border-box}
 .pop_link_box .btn_check{width:70px;height:30px;font-size:14px;line-height:30px}
 .pop_link_box .view{padding:25px 0}
-.pop_link_box .btn_area .btn{width:50px;font-size:14px}
+.pop_link_box .btn_area .btn{display:inline-block;width:50px;font-size:14px}
 .pop_link_box .btn_submit[disabled]{color:#999;cursor:default}
 
 @keyframes loding{

@@ -36,7 +36,9 @@ export function checkElement(name, defaultName, type = 'single') {
     }
 
     if($item === null){
-        console.error('Can not find Element : ' + name);
+        let className = name === undefined ? defaultName : name;
+        console.warn('Can not find Element : ' + className);
+        return null;
     }else{
         return $item;
     }

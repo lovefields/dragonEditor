@@ -91,7 +91,7 @@ export function bindingEvent(){
     });
 
     document.addEventListener('paste', function(e){
-        console.log('paste', e);
+        //console.log('paste', e);
     });
 //
 //    document.addEventListener('copy', function(e){
