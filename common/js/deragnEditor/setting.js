@@ -14,7 +14,7 @@ export default class setting {
 		this.changePint = typeof options.changePint !== 'number' ? 1120 : options.changePint;
 		this.maxImageWidth = typeof options.maxImageWidth !== 'number' ? 800 : options.maxImageWidth;
 		this.maxCodepenHeight = typeof options.maxCodepenHeight !== 'number' ? 1000 : options.maxCodepenHeight;
-		this.useWebp = true;
+		this.useWebp = typeof options.useWebp !== 'boolean' ? true : options.useWebp;
 		this.loading = typeof options.loading !== 'boolean' ? true : options.loading;
 		this.codepenTheme = typeof options.codepenTheme !== 'string' ? 'dark' : options.codepenTheme;
 		this.multiUpload = typeof options.multiUpload !== 'boolean' ? false : options.multiUpload;
@@ -23,6 +23,7 @@ export default class setting {
 		this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
 		this.linkBoxApi = typeof options.linkBoxApi !== 'string' ? '' : options.linkBoxApi;
 		this.defaultLinkBoxImage = typeof options.defaultLinkBoxImage !== 'string' ? './common/img/img_cover.png' : options.defaultLinkBoxImage;
+		this.iconSize = typeof options.iconSize !== 'string' ? '0 0 50 50' : options.iconSize;
 		
 		this.makeLinkBoxType = typeof options.makeLinkBoxType !== 'self' ? 'self' : 'api';
 		this.makeLinkBoxURL = typeof options.makeLinkBoxURL !== 'string' ? '' : options.makeLinkBoxURL;
@@ -79,7 +80,7 @@ export default class setting {
 		this.addMediaListBtn = checkElement(options.addMediaListBtn, '.btn_add_media_list');
 
 		this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
-		this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="0 0 50 50" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
+		this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="[icon_size]" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
 		this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
 		this.HTMLChildList = '<li contenteditable="true">[content]</li>';
 		this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
