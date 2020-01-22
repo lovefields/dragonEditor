@@ -1,6 +1,6 @@
 import { findParent, findContenteditable } from './selector';
 import { addTextBlock } from './phrase';
-import { openOptionPop } from './option';
+import { openOptionPop, checkOptionsValue } from './option';
 import { setCursor } from './cursor';
 
 export async function keybroadControl(event){
@@ -32,11 +32,13 @@ export async function keybroadControl(event){
                             }
                             let $target = $item.nextElementSibling;
                             storage.activeElement = $target;
+                            checkOptionsValue($target);
                             openOptionPop($target.getBoundingClientRect(), 'text');
                         }else{
                             addTextBlock($item);
                             let $target = $item.nextElementSibling;
                             storage.activeElement = $target;
+                            checkOptionsValue($target);
                             openOptionPop($target.getBoundingClientRect(), 'text');
                         }
                     }else{
@@ -49,6 +51,7 @@ export async function keybroadControl(event){
                             addTextBlock($item);
                             let $target = $item.nextElementSibling;
                             storage.activeElement = $target;
+                            checkOptionsValue($target);
                             openOptionPop($target.getBoundingClientRect(), 'text');
                         }
                     }
@@ -60,11 +63,19 @@ export async function keybroadControl(event){
             if(shift === true){
                 if($activeEl.classList.contains('title') === true){
                     event.preventDefault();
+                }else{
+                    let $target = $item.previousElementSibling;
+                    checkOptionsValue($target);
+                    openOptionPop($target.getBoundingClientRect(), $target.dataset['type']);
                 }
             }else{
                 let $lastItem = storage.contentArea.querySelector('.item:nth-last-child(1)');
                 if($lastItem === $item){
                     event.preventDefault();
+                }else{
+                    let $target = $item.nextElementSibling;
+                    checkOptionsValue($target);
+                    openOptionPop($target.getBoundingClientRect(), $target.dataset['type']);
                 }
             }
         break;
@@ -94,6 +105,7 @@ export async function keybroadControl(event){
                             $item.remove();
                             $prevEl.classList.add('lastset');
 
+                            checkOptionsValue($target);
                             if(prevElTagName === 'UL'){
                                 openOptionPop($prevEl.getBoundingClientRect(), 'list_u');
                             }else if(prevElTagName === 'OL'){
@@ -108,6 +120,7 @@ export async function keybroadControl(event){
                             }
                             $item.remove();
                             $prevEl.classList.add('lastset');
+                            checkOptionsValue($prevEl);
                             openOptionPop($prevEl.getBoundingClientRect(), 'text');
                         }
                         storage.activeElement = $prevEl;
@@ -155,6 +168,7 @@ export async function keybroadControl(event){
                                 }else{
                                     $item.remove();
                                 }
+                                checkOptionsValue($target);
                                 openOptionPop($prevEl.getBoundingClientRect(), type);
                                 storage.activeElement = $prevEl;
                             }
@@ -199,6 +213,7 @@ export async function keybroadControl(event){
                             }else if(prevElTagName === 'OL'){
                                 openOptionPop($prevEl.getBoundingClientRect(), 'list_o');
                             }
+                            checkOptionsValue($prevEl);
                         }else if(prevElTagName === 'P'){
                             if(prevElChildCount > 0){
                                 let nodeNumber = prevElChildCount -1;
@@ -211,6 +226,7 @@ export async function keybroadControl(event){
                             }
                             $item.remove();
                             $prevEl.classList.add('lastset');
+                            checkOptionsValue($prevEl);
                             openOptionPop($prevEl.getBoundingClientRect(), 'text');
                         }
                         storage.activeElement = $prevEl;
@@ -263,6 +279,7 @@ export async function keybroadControl(event){
                                 }else{
                                     $item.remove();
                                 }
+                                checkOptionsValue($prevEl);
                                 openOptionPop($prevEl.getBoundingClientRect(), type);
                                 storage.activeElement = $prevEl;
                             }

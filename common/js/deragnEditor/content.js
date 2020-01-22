@@ -695,7 +695,7 @@ export function bindingEvent(){
             let row = findParent(e.target, 'btn_add_media');
             let img = row.querySelector('.img');
             let textContent = e.target.textContent;
-            data = {
+            let data = {
                 'request_type' : 'update',
                 'idx' : row.dataset['idx'],
                 'width' : img.getAttribute('width'),
@@ -714,7 +714,7 @@ export function bindingEvent(){
             if(result['result'] === true){
                 let src = row.querySelector('.img').getAttribute('src');
                 storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
-                    item.setAttribute('alt', $p.textContent);
+                    item.setAttribute('alt', textContent);
                 });
             }else{
                 alert(result['message']);
