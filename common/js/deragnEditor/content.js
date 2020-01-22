@@ -518,7 +518,7 @@ export function bindingEvent(){
         let article_idx = contentArea.dataset['idx'];
         let temp_idx = contentArea.dataset['tempIdx'];
 
-        form.append('request_ype', 'upload');
+        form.append('request_type', 'upload');
         form.append('file_type', type);
         for(let item of file){
             form.append('file[]', item);
@@ -581,7 +581,7 @@ export function bindingEvent(){
         let $target = e.target;
         let row = findParent($target, 'btn_add_media');
         let $p = this.querySelector('*[contenteditable]');
-        let data;
+        let data, img;
         
         switch($target.tagName){
             case 'IMG' : 
@@ -602,10 +602,17 @@ export function bindingEvent(){
             case 'P' : 
                 if($p !== null){
                     row = findParent($p, 'btn_add_media');
+                    img = row.querySelector('.img');
                     $p.removeAttribute('contenteditable');
                     data = {
+                        'request_type' : 'update',
                         'idx' : row.dataset['idx'],
-                        'textContent' : $p.textContent
+                        'width' : img.getAttribute('width'),
+                        'height' : img.dataset['height'],
+                        'webp' : row.dataset['webp'],
+                        'alt' : row.querySelector('.name').textContent,
+                        'src' : img.getAttribute('src').replace(storage.srcReg, '$1'),
+                        'format' : img.getAttribute('src').replace(storage.srcReg, '$2')
                     };
 
                     //ajax
@@ -614,7 +621,7 @@ export function bindingEvent(){
                         body : data
                     }, 'json');
                     if(updateResult['result'] === true){
-                        let src = row.querySelector('.img').getAttribute('src');
+                        let src = img.getAttribute('src');
                         storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
                             item.setAttribute('alt', $p.textContent);
                         });
@@ -652,11 +659,18 @@ export function bindingEvent(){
             default :
                 if($p !== null){
                     row = findParent($p, 'btn_add_media');
-                    data = {
-                        'idx' : row.dataset['idx'],
-                        'textContent' : $p.textContent
-                    };
+                    img = row.querySelector('.img');
                     $p.removeAttribute('contenteditable');
+                    data = {
+                        'request_type' : 'update',
+                        'idx' : row.dataset['idx'],
+                        'width' : img.getAttribute('width'),
+                        'height' : img.dataset['height'],
+                        'webp' : row.dataset['webp'],
+                        'alt' : row.querySelector('.name').textContent,
+                        'src' : img.getAttribute('src').replace(storage.srcReg, '$1'),
+                        'format' : img.getAttribute('src').replace(storage.srcReg, '$2')
+                    };
 
                     //ajax
                     let updateResult2 = await fetchURL(storage.mediaUpdateURL, {
@@ -664,7 +678,7 @@ export function bindingEvent(){
                         body : data
                     }, 'json');
                     if(updateResult2['result'] === true){
-                        let src = row.querySelector('.img').getAttribute('src');
+                        let src = img.getAttribute('src');
                         storage.contentArea.querySelectorAll(`*[src="${src}"]`).forEach(function(item){
                             item.setAttribute('alt', $p.textContent);
                         });
@@ -679,10 +693,17 @@ export function bindingEvent(){
         if(e.key === 'Enter'){
             e.preventDefault();
             let row = findParent(e.target, 'btn_add_media');
+            let img = row.querySelector('.img');
             let textContent = e.target.textContent;
-            let data = {
+            data = {
+                'request_type' : 'update',
                 'idx' : row.dataset['idx'],
-                'textContent' : textContent
+                'width' : img.getAttribute('width'),
+                'height' : img.dataset['height'],
+                'webp' : row.dataset['webp'],
+                'alt' : textContent,
+                'src' : img.getAttribute('src').replace(storage.srcReg, '$1'),
+                'format' : img.getAttribute('src').replace(storage.srcReg, '$2')
             };
 
             //ajax

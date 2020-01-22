@@ -40,7 +40,7 @@ export function addImage($target, data, position = 'afterend'){
         width = storage.maxImageWidth;
     }
 
-    if(storage.useWebp === true == true){
+    if(storage.useWebp === true){
         html = storage.HTMLImageType01.replace('[src]', `${data.src}.${data.format}`)
                 .replace('[alt]', data.alt)
                 .replace('[width]', width);
