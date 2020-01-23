@@ -393,7 +393,7 @@
 .pop_loding{top:50%;left:0;width:100%;height:30px;color:#fff;font-size:20px;font-weight:bold;text-align:center;line-height:30px;transform:translateY(-50%)}
 .pop_loding::after{display:block;content:'Loding';animation:loding 1s ease infinite}
 
-.add_content_list{position:fixed;top:50%;left:50%;width:40px;background:#fff;transform:translate(-455px, -50%);z-index:100}
+.add_content_list{position:fixed;top:50%;left:50%;width:40px;transform:translate(-455px, -50%);z-index:100}
 .add_content_list .btn{display:block;position:relative;width:25px;height:25px;margin-bottom:10px;text-align:center;line-height:25px;box-sizing:border-box}
 .add_content_list .btn:last-child{margin-bottom:0}
 .add_content_list .btn::before{display:none;content:attr(data-text);position:Absolute;top:0;right:100%;height:25px;padding-right:5px;font-size:12px;line-height:25px}
@@ -649,7 +649,7 @@
 
 .btn_chang_lang{width:40px;height:40px;line-height:38px}
 
-.add_content_list{top:0;left:0;width:100%;border-bottom:1px solid #ccc;transform:translate(0, 0);overflow-x:auto}
+.add_content_list{top:0;left:0;width:100%;background:#fff;border-bottom:1px solid #ccc;transform:translate(0, 0);overflow-x:auto}
 .add_content_list .scroll{width:440px}
 .add_content_list .btn{float:left;width:40px;height:30px;padding:0 5px;margin:0;border-right:1px solid #ccc}
 .add_content_list .btn:hover::before{display:none}

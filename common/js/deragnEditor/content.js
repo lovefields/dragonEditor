@@ -26,6 +26,8 @@ export function bindingEvent(){
         resizeFn = setTimeout(() => {
             storage.windowWidth = window.innerWidth;
             storage.windowHeight = window.innerHeight;
+            storage.popOptions.removeAttribute('style');
+            storage.popOptions.classList.remove('act');
         }, 250);
     });
 
