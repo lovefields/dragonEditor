@@ -131,5 +131,7 @@ export default class setting {
 			'es' : []
 		};
 		this.logData = [];
+
+		return this;
 	}
 }

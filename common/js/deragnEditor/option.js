@@ -35,7 +35,6 @@ export function openOptionPop(offset, type){
     if(storage.windowWidth > storage.changePint){
         storage.popOptions.style.cssText = 'transform:translate('+ x +'px, '+ y +'px)';
     }else{
-        storage.popOptions.removeAttribute('style');
         storage.popOptions.querySelector('.scroll').style.width = `${width}px`;
     }
 }
