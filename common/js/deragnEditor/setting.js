@@ -8,6 +8,7 @@ export default class setting {
 		this.activeElement;
 		this.focusNode;
 		this.baseNode;
+		this.edited = false;
 		this.langStatus = 'ko';
 		this.windowWidth = window.innerWidth;
 		this.windowHeight = window.innerHeight;
