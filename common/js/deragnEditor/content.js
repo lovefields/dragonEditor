@@ -96,7 +96,7 @@ export function bindingEvent(){
         }
     });
 
-    document.addEventListener('paste', function(e){
+    bindinEventFunction(storage.contentArea, 'paste', function(e){
         e.preventDefault();
         let data = e.clipboardData.getData('text');
         let dataArr = data.trim().split('\n');
