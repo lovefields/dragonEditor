@@ -237,7 +237,7 @@ export function bindingEvent(){
         let type = this.dataset['value'];
         let childCount = storage.contentArea.childElementCount;
         let $lastEl = getEl('.lastset');
-        let $target = $lastEl === null ? storage.contentArea.children[childCount - 1] : $lastEl
+        let $target = $lastEl === null ? storage.contentArea.children[childCount - 1] : $lastEl;
 
         switch(type){
             case 'text':
@@ -351,6 +351,7 @@ export function bindingEvent(){
                     storage.linkBoxData = json;
                     $submitBtn.removeAttribute('disabled');
                     addLinkBox($viewEl, json, 'innerHTML');
+                    $viewEl.querySelector('.item').classList.remove('lastset');
                 }else{
                     $submitBtn.setAttribute('disabled', 'true');
                     $viewEl.innerHTML = storage.messageNoData;
