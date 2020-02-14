@@ -20,6 +20,5 @@ const editor = dragonEditor.init(wrap, {
 });
 ```
 
-## Document
-- [Korean](https://github.com/lovefields/dragonEditor/blob/master/document/document_kr.md)
-- [English](https://github.com/lovefields/dragonEditor/blob/master/document/document_en.md)
+## Wiki
+- [DragonEditor wiki](https://github.com/lovefields/dragonEditor/wiki)
