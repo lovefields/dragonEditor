@@ -15,8 +15,11 @@
 
 ## Using
 ```js
-const editor = dragonEditor.init(wrap, {
-   'options' : 'value'
+const editor = dragonEditor.init('.editor_area', {
+    'mediaUploadURL' : 'yourURL',
+    'mediaUpdateURL' : 'yourURL',
+    'mediaDelURL' : 'yourURL',
+    'defaultLinkBoxImage' : 'imageURL'
 });
 ```
 
