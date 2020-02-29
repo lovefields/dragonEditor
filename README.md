@@ -15,11 +15,13 @@
 
 ## Using
 ```js
-const editor = dragonEditor.init(wrap, {
-   'options' : 'value'
+const editor = dragonEditor.init('.editor_area', {
+    'mediaUploadURL' : 'yourURL',
+    'mediaUpdateURL' : 'yourURL',
+    'mediaDelURL' : 'yourURL',
+    'defaultLinkBoxImage' : 'imageURL'
 });
 ```
 
-## Document
-- [Korean](https://github.com/lovefields/dragonEditor/blob/master/document/document_kr.md)
-- [English](https://github.com/lovefields/dragonEditor/blob/master/document/document_en.md)
+## Wiki
+- [DragonEditor wiki](https://github.com/lovefields/dragonEditor/wiki)
