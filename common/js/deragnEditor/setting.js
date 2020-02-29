@@ -123,6 +123,7 @@ export default class setting {
 		this.messageWrongUrlType = typeof options.messageWrongUrlType !== 'string' ? 'Wrong URL type.' : options.messageWrongUrlType;
 		this.messageDelImage = typeof options.messageDelImage !== 'string' ? 'All images of the document you area creating will also disappear.\nAre you sure you want to delete it?' : options.messageDelImage;
 		this.messageDuplicateContent = typeof options.messageDuplicateContent !== 'string' ? 'This language not have content.\nDo you want duplicate to content?' : options.messageDuplicateContent;
+		this.messageRePasteCode = typeof options.messageRePasteCode !== 'string' ? 'This codeblock has other code.\nDo you want re-paste?' : options.messageRePasteCode;
 		this.messageNotSetAjax = 'Didn\'t setting Ajax url.';
 
 		this.linkBoxData = {};

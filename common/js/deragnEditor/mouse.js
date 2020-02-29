@@ -17,6 +17,10 @@ export function contentCheckByMouse(target, eventType){
         let isBtn = $target.classList.contains('btn');
 
         switch(true){
+            case target.tagName === 'TH' || target.tagName === 'TD' :
+                type = 'table';
+                offset = target.getBoundingClientRect();
+            break;
             case $target.tagName === 'CODE' && $target.parentElement.tagName === 'PRE' :
                 type = 'codeblock';
             break;
