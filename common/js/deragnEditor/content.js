@@ -14,6 +14,7 @@ import { addLinkBox } from './linkBox';
 import { addYoutube, addCodepen } from './embed';
 import { changeImageWidth, addImage } from './image';
 import { addSticker } from './sticker';
+import { pasteClipboard } from './clipboard';
 
 
 import { changeFontSize, changeColor, makeLink, unLink, makeTextDecoration, makeWordBlock } from './word';
@@ -98,77 +99,7 @@ export function bindingEvent(){
 
     bindinEventFunction(storage.contentArea, 'paste', function(e){
         e.preventDefault();
-        let data = e.clipboardData.getData('text');
-        let dataArr = data.trim().split('\n');
-        let count = dataArr.length;
-        let olListReg = new RegExp(' ?\\d\\.', 'i');
-        let ulListReg = new RegExp(' ?\\- ?', 'i');
-        let type = 'text';
-        let textOrHtml = '';
-        let $target = storage.activeElement;
-
-        if(count > 1){
-            if(olListReg.test(data) || ulListReg.test(data)){
-                type = 'html';
-            }
-
-            if(type === 'html'){
-                let start = false;
-                let listType;
-                dataArr.forEach(function(row){
-                    if(olListReg.test(row)){
-                        if(start === false){
-                            start = true;
-                            listType = 'ol';
-                            textOrHtml += '<ol type="1" class="item item_list lastset" data-type="list_o">';
-                            textOrHtml += storage.HTMLChildList.replace('[content]', row.replace(olListReg, '').trim());
-                        }else{
-                            textOrHtml += storage.HTMLChildList.replace('[content]', row.replace(olListReg, '').trim());
-                        }
-                    }else if(ulListReg.test(row)){
-                        if(start === false){
-                            start = true;
-                            listType = 'ul';
-                            textOrHtml += '<ul class="item item_list lastset" data-type="list_u">';
-                            textOrHtml += storage.HTMLChildList.replace('[content]', row.replace(ulListReg, '').trim());
-                        }else{
-                            textOrHtml += storage.HTMLChildList.replace('[content]', row.replace(ulListReg, '').trim());
-                        }
-                    }else{
-                        if(start === true){
-                            start = false;
-                            if(listType === 'ol'){
-                                textOrHtml += '</ol>';
-                            }else{
-                                textOrHtml += '</ul>';
-                            }
-                            textOrHtml += storage.HTMLTextBlock.replace('[content]', row);
-                        }else{
-                            textOrHtml += storage.HTMLTextBlock.replace('[content]', row);
-                        }
-                    }
-                });
-            }else{
-                textOrHtml = dataArr.join('');
-            }
-        }else{
-            textOrHtml = dataArr[0];
-        }
-
-        if(type === 'html'){
-            $target.insertAdjacentHTML('afterend', textOrHtml);
-            window.scrollTo(0, window.scrollY + 1);
-        }else{
-            let textContent = $target.textContent;
-
-            if(textContent === ''){
-                let position = textOrHtml.length;
-                $target.textContent = textOrHtml;
-                setCursor($target.childNodes[0], position);
-            }else{
-                alert('Sorry we are not ready for this.');
-            }
-        }
+        pasteClipboard(e);
     });
 
 //    document.addEventListener('copy', function(e){
