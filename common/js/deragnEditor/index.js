@@ -2,6 +2,13 @@ import setting from './setting';
 import { getEl, findParent, findContenteditable } from './selector';
 import { setContent, getContentJSON, bindingEvent } from './content';
 
+global.typeCheck = (target, type) => {
+	if(typeof type == 'string'){
+		if(typeof target != type) throw `invaild type ${target} : ${type}`;
+	}else if(!(target instanceof type)) throw `invaild type ${target} : ${type}`;
+	return target;
+};
+
 export function init(wrap, options = {}){
 	wrap = wrap === null ? '.editor_area' : wrap;
 	global.storage = new setting(wrap, options);
