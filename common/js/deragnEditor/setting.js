@@ -9,7 +9,7 @@ export default class setting {
 		this.focusNode;
 		this.baseNode;
 		this.edited = false;
-		this.langStatus = 'ko';
+		this.langStatus = 'kr';
 		this.windowWidth = window.innerWidth;
 		this.windowHeight = window.innerHeight;
 		this.changePint = typeof options.changePint !== 'number' ? 1120 : options.changePint;
@@ -128,7 +128,7 @@ export default class setting {
 
 		this.linkBoxData = {};
 		this.contentData = {
-			'ko' : [],
+			'kr' : [],
 			'en' : [],
 			'es' : []
 		};
