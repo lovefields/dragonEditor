@@ -23,7 +23,7 @@ export default class setting {
 		this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
 		this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
 		this.linkBoxApi = typeof options.linkBoxApi !== 'string' ? '' : options.linkBoxApi;
-		this.defaultLinkBoxImage = typeof options.defaultLinkBoxImage !== 'string' ? './common/img/img_cover.png' : options.defaultLinkBoxImage;
+		this.defaultLinkBoxImage = typeof options.defaultLinkBoxImage !== 'string' ? 'https://via.placeholder.com/600x300.png' : options.defaultLinkBoxImage;
 		this.iconSize = typeof options.iconSize !== 'string' ? '0 0 50 50' : options.iconSize;
 		
 		this.makeLinkBoxType = typeof options.makeLinkBoxType !== 'self' ? 'self' : 'api';
