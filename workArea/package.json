@@ -1,0 +1,27 @@
+{
+  "name": "dragon-editor",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "dependencies": {
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "echo npx webpack && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lovefields/dragonEditor.git"
+  },
+  "keywords": [
+    "editor"
+  ],
+  "author": "Lovefield",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lovefields/dragonEditor/issues"
+  },
+  "homepage": "https://github.com/lovefields/dragonEditor#readme"
+}
