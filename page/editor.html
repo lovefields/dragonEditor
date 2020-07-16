@@ -9,8 +9,8 @@
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
 
-	<link rel="stylesheet" href="./common/css/base.css">
-	<link rel="stylesheet" href="./common/css/dragonEditor.css">
+	<link rel="stylesheet" href="../assets/css/base.css">
+	<link rel="stylesheet" href="../assets/css/dragonEditor.css">
 	<title>Dragon Editor</title>
 </head>
 <body>
@@ -155,7 +155,7 @@
 		</g>
 	</defs>
 </svg>
-<div class="wrap editor_area">
+<div class="wrap editor-dragon">
 	<section class="content_area ts"  data-lang="kr"  data-idx="0" data-temp-idx="0">
 		<h1 class="title" contentEditable="true" data-type="title"></h1>
 		<p class="item" contenteditable="true" data-type="text"></p>
@@ -637,8 +637,8 @@
 <form action="#" enctype="multipart/form-data" method="post" class="file_uploader">
 	<input type="file" class="file_check">
 </form>
-<script src="../assets/highlight.pack.js"></script>
-<script src="../assets/dragonEditor.min.js"></script>
+<script src="../assets/js/highlight.pack.js"></script>
+<script src="../assets/js/dragonEditor.js"></script>
 <script>
 const editor = dragonEditor.init(null, {
 	'mediaUploadURL' : '/articles/image',
