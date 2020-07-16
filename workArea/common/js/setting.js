@@ -38,7 +38,7 @@ export default class setting {
 		this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
 		this.addMediaListBtnName = typeof options.addMediaListBtn !== 'string' ? '.btn_add_media_list' : options.addMediaListBtn;
 
-		this.wrap = checkElement(wrap, '.editor_area');
+		this.wrap = checkElement(wrap, '.editor-dragon');
 		this.contentArea = checkElement(options.contentArea, '.content_area');
 		this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
 		this.popMedia = checkElement(options.popMedia, '.pop_media');

@@ -12,6 +12,9 @@
 - `highlight.js`
 
 ## Using
+```html
+<link rel="stylesheet" href="yourdri/dragonEditor.css">
+```
 ```js
 const editor = dragonEditor.init(".editor-dragon");
 ```
