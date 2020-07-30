@@ -2,12 +2,12 @@
 <html lang="ko">
 <head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=5">
 	<meta name="format-detection" content="telephone=no">
 
-	<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&amp;display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="../assets/css/base.css">
 	<link rel="stylesheet" href="../assets/css/dragonEditor.css">
@@ -155,11 +155,10 @@
 		</g>
 	</defs>
 </svg>
-<div class="wrap editor-dragon">
+<div class="editor-dragon">
 	<section class="content_area ts"  data-lang="kr"  data-idx="0" data-temp-idx="0">
 		<h1 class="title" contentEditable="true" data-type="title"></h1>
 		<p class="item" contenteditable="true" data-type="text"></p>
-		
 	</section>
 </div>
 <button class="btn_bottom btn_pop btn_media blind" data-target=".pop_media">
@@ -640,13 +639,7 @@
 <script src="../assets/js/highlight.pack.js"></script>
 <script src="../assets/js/dragonEditor.js"></script>
 <script>
-const editor = dragonEditor.init(null, {
-	'mediaUploadURL' : '/articles/image',
-	'mediaUpdateURL' : '/articles/image',
-	'mediaDelURL' : '/articles/image',
-	'codepenTheme' : 'test',
-	'defaultLinkBoxImage' : 'test'
-});
+const editor = dragonEditor.init();
 
 editor.addLanguage('ja');
 
