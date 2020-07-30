@@ -9,11 +9,12 @@
     "sass": "^1.26.10",
     "sass-loader": "^9.0.2",
     "webpack": "^4.44.0",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "webpack-fix-style-only-entries": "^0.5.1"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "npx webpack"
+    "start": "npx webpack --config webpack.script.js & npx webpack --config webpack.style.js"
   },
   "repository": {
     "type": "git",

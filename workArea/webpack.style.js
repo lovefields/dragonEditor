@@ -1,4 +1,5 @@
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 const path = require("path");
 const commonPath = path.resolve(__dirname, "common");
 const name = "dragonEditor";
@@ -6,18 +7,22 @@ const name = "dragonEditor";
 module.exports = {
     mode: "production", // ['development', 'production']
     entry: {
-        common: [`${commonPath}/css/index.scss`],
+        styles: [`${commonPath}/css/index.scss`],
     },
     output: {
-        filename: `js/${name}.js`,
-        path: path.resolve(__dirname, "../assets"),
+        path: path.resolve(__dirname, "../assets/css")
     },
     module: {
         rules: [
             {
                 test: /\.scss$/i,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    {
+                        loader : MiniCssExtractPlugin.loader,
+                        options:{
+                            publicPath: ''
+                        }
+                    },
                     {
                         loader: "css-loader",
                         options: {
@@ -30,8 +35,9 @@ module.exports = {
         ],
     },
     plugins: [
+        new FixStyleOnlyEntriesPlugin(),
         new MiniCssExtractPlugin({
-            filename: path.resolve(__dirname, `../assets/css/${name}.css`),
+            filename: `${name}.css`,
         }),
     ],
     watch: true,
