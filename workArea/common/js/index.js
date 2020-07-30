@@ -15,6 +15,7 @@ let typeCheck = (target, type) => {
 
 export function init(wrap = '.editor-dragon', options = {}, _0 = typeCheck(wrap, "string"), _1 = typeCheck(options, "object")) {
 	console.log(wrap, options);
+	
     // wrap = wrap === null ? ".editor_area" : wrap;
     // global.storage = new setting(wrap, options);
 
