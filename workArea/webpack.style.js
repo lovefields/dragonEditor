@@ -10,7 +10,7 @@ module.exports = {
         styles: [`${commonPath}/css/index.scss`],
     },
     output: {
-        path: path.resolve(__dirname, "../assets/css")
+        path: path.resolve(__dirname, "../assets/css"),
     },
     module: {
         rules: [
