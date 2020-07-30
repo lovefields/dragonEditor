@@ -11,12 +11,26 @@
 ## Using Plugin
 - `highlight.js`
 
+## Using font
+- Inconsolata
+
 ## Using
 ```html
-<link rel="stylesheet" href="yourdri/dragonEditor.css">
+<!-- font -->
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap" rel="stylesheet">
+
+<!-- css -->
+<link rel="stylesheet" href="_yourdri_/dragonEditor.css">
+
+<!-- js -->
+<script src="_yourdri_/highlight.pack.js"></script>
+<script src="_yourdri_/dragonEditor.js"></script>
 ```
+
 ```js
-const editor = dragonEditor.init(".editor-dragon");
+const editor = dragonEditor.init();
+// OR
+const editor = dragonEditor.init(".class-name");
 ```
 
 ## Wiki
