@@ -1,23 +1,27 @@
 # dragonEditor
 
 ## Support browser
-- Chrome 53+
-- Safari 13+
-- Firefox 63+
-- Edge 18+ (44+)
-- IOS 11+
-- Android 7+
+
+-   Chrome 53+
+-   Safari 13+
+-   Firefox 63+
+-   Edge 18+ (44+)
+-   IOS 11+
+-   Android 7+
 
 ## Using Plugin
-- `highlight.js`
+
+-   `highlight.js`
 
 ## Using font
-- Inconsolata
+
+-   Inconsolata
 
 ## Using
+
 ```html
 <!-- font -->
-<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 
 <!-- css -->
 <link rel="stylesheet" href="_yourdri_/dragonEditor.css">
@@ -33,4 +37,5 @@
 ```
 
 ## Wiki
-- [DragonEditor wiki](https://github.com/lovefields/dragonEditor/wiki)
+
+-   [DragonEditor wiki](https://github.com/lovefields/dragonEditor/wiki)

@@ -21,7 +21,11 @@ import { changeFontSize, changeColor, makeLink, unLink, makeTextDecoration, make
 import { setCursor } from './cursor';
 import { fetchURL } from './api';
 
-export function bindingEvent(){
+export function bindingEvent(self){
+    console.log(self);
+
+    return;
+
     window.onbeforeunload = function(e){
         if(storage.edited === true){
             return e.returnValue;

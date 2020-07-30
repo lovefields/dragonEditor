@@ -1,47 +1,32 @@
-// import setting from "./setting";
-// import { getEl, findParent, findContenteditable } from "./selector";
-// import { setContent, getContentJSON, bindingEvent } from "./content";
+const { typeCheckThrow } = require("./common/common");
+const { condition } = require("./condition/condition");
+//import { condition } from "./condition/condition";
 
-let typeCheck = (target, type) => {
-    if (typeof type == "string") {
-        if (typeof target != type) {
-            throw `invaild type ${target} : ${type}`;
-        }
-    } else if (!(target instanceof type)) {
-        throw `invaild type ${target} : ${type}`;
+module.exports = class {
+    constructor(
+        wrap = ".editor-dragon",
+        options = {},
+        _0 = typeCheckThrow(wrap, "string"),
+        _1 = typeCheckThrow(options, "object"),
+    ) {
+        console.log(wrap, options);
+
+        global.editorCondition = new condition(wrap, options);
+        console.log(editorCondition);
+
+        //     storage.activeElement = storage.wrap;
+        //     if (storage.multiUpload === true) {
+        //         storage.fileInput.setAttribute("multiple", true);
+        //     }
+        //     if (storage.loading === true) {
+        //         storage.popBgArea.classList.remove("act");
+        //         storage.lodingArea.classList.remove("act");
+        //     }
+        //bindingEvent();
+
+        return this;
     }
-    return target;
 };
-
-export function init(wrap = '.editor-dragon', options = {}, _0 = typeCheck(wrap, "string"), _1 = typeCheck(options, "object")) {
-	console.log(wrap, options);
-	
-    // wrap = wrap === null ? ".editor_area" : wrap;
-    // global.storage = new setting(wrap, options);
-
-    // if (
-    //     storage.mediaUploadURL === "" ||
-    //     storage.mediaUpdateURL === "" ||
-    //     storage.mediaDelURL === ""
-    // ) {
-    //     console.warn(storage.messageNotSetAjax);
-    //     return;
-    // } else {
-    //     storage.activeElement = storage.wrap;
-
-    //     if (storage.multiUpload === true) {
-    //         storage.fileInput.setAttribute("multiple", true);
-    //     }
-
-    //     if (storage.loading === true) {
-    //         storage.popBgArea.classList.remove("act");
-    //         storage.lodingArea.classList.remove("act");
-    //     }
-
-    //     bindingEvent();
-    //     return this;
-    // }
-}
 
 // export function getOptionValue(name) {
 //     if (storage[name] === undefined) {
