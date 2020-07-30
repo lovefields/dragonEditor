@@ -25,12 +25,11 @@
 <!-- js -->
 <script src="_yourdri_/highlight.pack.js"></script>
 <script src="_yourdri_/dragonEditor.js"></script>
-```
-
-```js
-const editor = dragonEditor.init();
-// OR
-const editor = dragonEditor.init(".class-name");
+<script>
+    const editor = dragonEditor.init();
+    // OR
+    const editor = dragonEditor.init(".class-name");
+</script>
 ```
 
 ## Wiki
