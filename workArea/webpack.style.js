@@ -17,12 +17,7 @@ module.exports = {
             {
                 test: /\.scss$/i,
                 use: [
-                    {
-                        loader : MiniCssExtractPlugin.loader,
-                        options:{
-                            publicPath: ''
-                        }
-                    },
+                    MiniCssExtractPlugin.loader,
                     {
                         loader: "css-loader",
                         options: {
