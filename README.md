@@ -2,10 +2,10 @@
 
 ## Support browser
 
--   Chrome 53+
+-   Chrome 55+
 -   Safari 13+
 -   Firefox 63+
--   Edge 18+ (44+)
+-   Edge 79+
 -   IOS 11+
 -   Android 7+
 
@@ -38,7 +38,7 @@
 <!-- 
 * js
 * Load highlight plugin if are you using code block.
- -->
+-->
 <script src="[yourdri]/highlight.pack.js"></script>
 <script src="[yourdri]/dragonEditor.js"></script>
 <script>
