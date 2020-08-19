@@ -11,24 +11,36 @@
 
 ## Using Plugin
 
--   `highlight.js`
-
-## Using font
-
--   Inconsolata
+-   `highlight.js` [(Link)](https://highlightjs.org/)
 
 ## Using
 
 ```html
-<!-- font -->
+<!-- 
+* css
+* Load Google font(Inconsolata) if are you using code block.
+-->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
+<link rel="stylesheet" href="[yourdri]/dragonEditor.css">
 
-<!-- css -->
-<link rel="stylesheet" href="_yourdri_/dragonEditor.css">
+<!-- 
+* html
+* You must set svg icon pack. Default pack is in assets.
+-->
+<svg hidden>
+    <defs>
+        <g id="iconId">...</g>
+        ...
+    </defs>
+</svg>
+<div class=".editor-dragon"></div>
 
-<!-- js -->
-<script src="_yourdri_/highlight.pack.js"></script>
-<script src="_yourdri_/dragonEditor.js"></script>
+<!-- 
+* js
+* Load highlight plugin if are you using code block.
+ -->
+<script src="[yourdri]/highlight.pack.js"></script>
+<script src="[yourdri]/dragonEditor.js"></script>
 <script>
     const editor = dragonEditor.init();
     // OR
