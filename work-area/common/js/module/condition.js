@@ -1,5 +1,5 @@
-const { typeCheckBoolean } = require("../common/common");
-const { checkElement } = require("../module/selector");
+const { typeCheckBoolean } = require("./default");
+const { checkElement } = require("./selector");
 // import { checkElement } from "../module/selector";
 
 export class condition {

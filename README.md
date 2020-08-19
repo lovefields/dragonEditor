@@ -9,7 +9,7 @@
 -   IOS 11+
 -   Android 7+
 
-## Using Plugin
+## Plugin
 
 -   `highlight.js` [(Link)](https://highlightjs.org/)
 
@@ -18,7 +18,7 @@
 ```html
 <!-- 
 * css
-* Load Google font(Inconsolata) if are you using code block.
+* Load Google font(Inconsolata) if you using code block.
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdri]/dragonEditor.css">
@@ -37,7 +37,7 @@
 
 <!-- 
 * js
-* Load highlight plugin if are you using code block.
+* Load highlight plugin if you using code block.
 -->
 <script src="[yourdri]/highlight.pack.js"></script>
 <script src="[yourdri]/dragonEditor.js"></script>

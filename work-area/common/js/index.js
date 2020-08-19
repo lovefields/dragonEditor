@@ -1,6 +1,5 @@
-const { typeCheckThrow } = require("./common/common");
-const { condition } = require("./condition/condition");
-//import { condition } from "./condition/condition";
+const { typeCheckThrow } = require("./module/default");
+const { condition } = require("./module/condition");
 
 module.exports = class {
     constructor(
@@ -26,6 +25,9 @@ module.exports = class {
 
         return this;
     }
+
+    // langChangeTrigger
+    // 
 };
 
 // export function getOptionValue(name) {
