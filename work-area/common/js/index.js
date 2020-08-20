@@ -1,17 +1,19 @@
 const { typeCheckThrow } = require("./module/default");
 const { condition } = require("./module/condition");
+const { makeView } = require("./module/layout");
 
 module.exports = class {
     constructor(
-        wrap = ".editor-dragon",
+        wrap = "",
         options = {},
         _0 = typeCheckThrow(wrap, "string"),
         _1 = typeCheckThrow(options, "object"),
     ) {
-        console.log(wrap, options);
-
         global.editorCondition = new condition(wrap, options);
-        console.log(editorCondition);
+
+        makeView();
+
+        //console.log(editorCondition);
 
         //     storage.activeElement = storage.wrap;
         //     if (storage.multiUpload === true) {
@@ -27,8 +29,39 @@ module.exports = class {
     }
 
     // langChangeTrigger
-    // 
+    //
 };
+
+/*
+icon-text-block
+icon-image-block
+icon-ul-block
+icon-ol-block
+icon-quotaion-block
+icon-table-block
+icon-linkbox-block
+icon-emoticon-block
+icon-youtube-block
+icon-codepen-block
+icon-code-block
+
+icon-arrow-bottom
+icon-delete-link
+icon-btn-accept
+icon-align-left
+icon-align-right
+icon-align-center
+icon-bold
+icon-italic
+icon-underline
+icon-strikethrough
+icon-table-header
+icon-table-body
+icon-link
+icon-theme
+icon-word-block
+icon-delete-block
+*/
 
 // export function getOptionValue(name) {
 //     if (storage[name] === undefined) {

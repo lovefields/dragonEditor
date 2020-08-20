@@ -1,9 +1,11 @@
 const { typeCheckBoolean } = require("./default");
 const { checkElement } = require("./selector");
-// import { checkElement } from "../module/selector";
 
 export class condition {
 	constructor(wrap, options){
+		this.wrap = checkElement(wrap, '.editor-dragon', false);
+
+		this.setStatus(options);
 
 
 
@@ -15,6 +17,12 @@ export class condition {
 
 
 
+		console.log(this.wrap);
+	}
+
+	setStatus(options){
+		console.log(options);
+	}
 
 
 
@@ -23,8 +31,7 @@ export class condition {
 
 
 
-
-
+/*
 		this.enterCount = 0;
 		this.startTextCursor = 0;
 		this.endTextCursor = 0;
@@ -61,7 +68,7 @@ export class condition {
 		this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
 		this.addMediaListBtnName = typeof options.addMediaListBtn !== 'string' ? '.btn_add_media_list' : options.addMediaListBtn;
 
-		this.wrap = checkElement(wrap, '.editor-dragon');
+		
 		this.contentArea = checkElement(options.contentArea, '.content_area');
 		this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
 		this.popMedia = checkElement(options.popMedia, '.pop_media');
@@ -156,5 +163,6 @@ export class condition {
 			'es' : []
 		};
 		this.logData = [];
-	}
+		*/
+
 }
