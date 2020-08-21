@@ -3,15 +3,12 @@ const { condition } = require("./module/condition");
 const { makeView } = require("./module/layout");
 
 module.exports = class {
-    constructor(
-        wrap = "",
-        options = {},
-        _0 = typeCheckThrow(wrap, "string"),
-        _1 = typeCheckThrow(options, "object"),
-    ) {
+    constructor(wrap = "", options = {}, _0 = typeCheckThrow(wrap, "string"), _1 = typeCheckThrow(options, "object")) {
         global.editorCondition = new condition(wrap, options);
+        //setStatus(wrap, options);
 
         makeView();
+        //editorCondition.setElement();
 
         //console.log(editorCondition);
 
@@ -33,17 +30,7 @@ module.exports = class {
 };
 
 /*
-icon-text-block
-icon-image-block
-icon-ul-block
-icon-ol-block
-icon-quotaion-block
-icon-table-block
-icon-linkbox-block
-icon-emoticon-block
-icon-youtube-block
-icon-codepen-block
-icon-code-block
+
 
 icon-arrow-bottom
 icon-delete-link
