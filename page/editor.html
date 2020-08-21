@@ -596,7 +596,21 @@
 <script src="../assets/js/highlight.pack.js"></script>
 <script src="../assets/js/dragonEditor.js"></script>
 <script>
-const editor = new dragonEditor(".test-test");
+const editor = new dragonEditor(".test-test", {
+	lang: null,
+	blockName: {
+		textBlock: "텍스트"
+	},
+	removeMenu: ["codepenBlock"],
+	addMenu: [
+		{
+			menuName:{
+				text: "name",
+				icon : "#id"
+			}
+		}
+	]
+});
 
 //editor.addLanguage('ja');
 
