@@ -1,1 +1,6 @@
-@import "include/layout";
+@import "layout/container";
+@import "layout/menu";
+
+@media all and (max-width: 800px) {
+    @include mobile-menu;
+}
