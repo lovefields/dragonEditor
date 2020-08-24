@@ -5,12 +5,13 @@ const { makeView } = require("./module/layout");
 module.exports = class {
     constructor(wrap = "", options = {}, _0 = typeCheckThrow(wrap, "string"), _1 = typeCheckThrow(options, "object")) {
         global.editorCondition = new condition(wrap, options);
-        //setStatus(wrap, options);
 
         makeView();
+
+
         //editorCondition.setElement();
 
-        //console.log(editorCondition);
+        console.log(editorCondition);
 
         //     storage.activeElement = storage.wrap;
         //     if (storage.multiUpload === true) {

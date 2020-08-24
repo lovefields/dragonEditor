@@ -18,9 +18,11 @@ export class condition {
         this.enterCount = 0;
         this.startTextCursor = 0;
         this.endTextCursor = 0;
+        this.activeItem;
         this.activeElement;
         this.focusNode;
         this.baseNode;
+
         this.changePint = typeCheckBoolean(options.changePint, "number") ? options.changePint : 800;
         this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 800;
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;
@@ -28,15 +30,14 @@ export class condition {
         this.codepenTheme = typeCheckBoolean(options.codepenTheme, "string") ? options.codepenTheme : "dark";
         this.uploadURL = typeCheckBoolean(options.uploadURL, "string") ? options.uploadURL : "";
         this.blockName = typeCheckBoolean(options.blockName, Object) ? options.blockName : {};
-        this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : {};
+        this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
+        this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
 
         this.setLang(options.lang);
         this.setContentData();
         this.setBlockMenu();
-        console.log(this.defaultMenu);
-
-
+        this.addLanguage();
     }
 
     setLang(lang) {
@@ -58,85 +59,96 @@ export class condition {
         }
     }
 
+    addLanguage() {
+        let list = [];
+
+        this.addLang.forEach((lang) => {
+            if (typeCheckBoolean(lang, "string")) {
+                if (lang.length == 2) {
+                    list.push(lang);
+                }
+            }
+        });
+
+        this.langCategory = [...new Set(this.langCategory.concat(list))];
+        delete this.addLang;
+    }
+
     setContentData() {
         let data = {};
 
-        this.langCategory.forEach(function (lang) {
+        this.langCategory.forEach((lang) => {
             data[lang] = [];
         });
 
         this.contentData = data;
     }
 
-    setBlockMenu(){
+    setBlockMenu() {
         let defaultMenu = {
             textBlock: {
-                text:  typeCheckBoolean(this.blockName.textBlock, "string") ? this.blockName.textBlock : "Text",
+                text: typeCheckBoolean(this.blockName.textBlock, "string") ? this.blockName.textBlock : "Text",
                 icon: "#icon-text-block",
             },
             imageBlock: {
-                text:  typeCheckBoolean(this.blockName.imageBlock, "string") ? this.blockName.imageBlock : "Image",
+                text: typeCheckBoolean(this.blockName.imageBlock, "string") ? this.blockName.imageBlock : "Image",
                 icon: "#icon-image-block",
             },
             ulBlock: {
-                text:  typeCheckBoolean(this.blockName.ulBlock, "string") ? this.blockName.ulBlock : "Unnumbered list",
+                text: typeCheckBoolean(this.blockName.ulBlock, "string") ? this.blockName.ulBlock : "Unnumbered list",
                 icon: "#icon-ul-block",
             },
             olBlock: {
-                text:  typeCheckBoolean(this.blockName.olBlock, "string") ? this.blockName.olBlock : "Numbered list",
+                text: typeCheckBoolean(this.blockName.olBlock, "string") ? this.blockName.olBlock : "Numbered list",
                 icon: "#icon-ol-block",
             },
             quotaionBlock: {
-                text:  typeCheckBoolean(this.blockName.quotaionBlock, "string") ? this.blockName.quotaionBlock : "Quotaion",
+                text: typeCheckBoolean(this.blockName.quotaionBlock, "string") ? this.blockName.quotaionBlock : "Quotaion",
                 icon: "#icon-quotaion-block",
             },
             tableBlock: {
-                text:  typeCheckBoolean(this.blockName.tableBlock, "string") ? this.blockName.tableBlock : "Table",
+                text: typeCheckBoolean(this.blockName.tableBlock, "string") ? this.blockName.tableBlock : "Table",
                 icon: "#icon-table-block",
             },
             linkboxBlock: {
-                text:  typeCheckBoolean(this.blockName.linkboxBlock, "string") ? this.blockName.linkboxBlock : "Link box",
+                text: typeCheckBoolean(this.blockName.linkboxBlock, "string") ? this.blockName.linkboxBlock : "Link box",
                 icon: "#icon-linkbox-block",
             },
             emoticonBlock: {
-                text:  typeCheckBoolean(this.blockName.emoticonBlock, "string") ? this.blockName.emoticonBlock : "Emoticon",
+                text: typeCheckBoolean(this.blockName.emoticonBlock, "string") ? this.blockName.emoticonBlock : "Emoticon",
                 icon: "#icon-emoticon-block",
             },
             youtubeBlock: {
-                text:  typeCheckBoolean(this.blockName.youtubeBlock, "string") ? this.blockName.youtubeBlock : "Youtube",
+                text: typeCheckBoolean(this.blockName.youtubeBlock, "string") ? this.blockName.youtubeBlock : "Youtube",
                 icon: "#icon-youtube-block",
             },
             codepenBlock: {
-                text:  typeCheckBoolean(this.blockName.codepenBlock, "string") ? this.blockName.codepenBlock : "Codepen",
+                text: typeCheckBoolean(this.blockName.codepenBlock, "string") ? this.blockName.codepenBlock : "Codepen",
                 icon: "#icon-codepen-block",
             },
             codeBlock: {
-                text:  typeCheckBoolean(this.blockName.codeBlock, "string") ? this.blockName.codeBlock : "Code",
+                text: typeCheckBoolean(this.blockName.codeBlock, "string") ? this.blockName.codeBlock : "Code",
                 icon: "#icon-code-block",
             },
         };
 
-        if(this.uploadURL == ""){
+        if (this.uploadURL == "") {
             delete defaultMenu.imageBlock;
         }
 
-        this.removeMenu.forEach(function(item){
+        this.removeMenu.forEach((item) => {
             delete defaultMenu[item];
         });
 
-        this.addMenu.forEach(function(item){
-            console.log(item);
-        });
-
-        console.log(this.addMenu);
+        for (const [key, value] of Object.entries(this.addMenu)) {
+            defaultMenu[key] = {
+                text: value.text,
+                icon: value.icon,
+            };
+        }
 
         this.defaultMenu = defaultMenu;
     }
-
-
-
-
-
 
     setElement() {
         console.log("set Element");

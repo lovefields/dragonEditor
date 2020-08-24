@@ -1,0 +1,69 @@
+.editor-menu-block {
+    position: fixed;
+    top: 50px;
+    right: 50%;
+    width: 30px;
+    transform: translateX(calc(370px + 100%));
+    z-index: 10;
+
+    .editor-btn {
+        display: block;
+        width: 30px;
+        height: 30px;
+        margin-bottom: 10px;
+        color: transparent;
+        font-size: 0;
+
+        &:hover .path {
+            fill: #333;
+        }
+
+        .path {
+            fill: #999;
+        }
+    }
+}
+
+.editor-menu-bottom {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    font-size: 0;
+    transform: translateX(-50%);
+    z-index: 10;
+
+    .editor-btn {
+        display: inline-block;
+        width: 30px;
+        margin: 0 5px;
+        color: transparent;
+        font-size: 0;
+
+        &:hover .path {
+            fill: #333;
+        }
+
+        .path {
+            fill: #999;
+        }
+    }
+}
+
+.editor-switch-device {
+    &.--act {
+        .editor-pc {
+            display: none;
+        }
+
+        .editor-mobile {
+            display: block;
+        }
+    }
+
+    .editor-mobile {
+        display: none;
+    }
+}
+
+@mixin mobile-menu {
+}
