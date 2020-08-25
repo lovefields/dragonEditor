@@ -42,9 +42,11 @@
 <script src="[yourdri]/highlight.pack.js"></script>
 <script src="[yourdri]/dragonEditor.js"></script>
 <script>
-    const editor = dragonEditor.init();
+    const editor = new dragonEditor();
     // OR
-    const editor = dragonEditor.init(".class-name");
+    const editor = new dragonEditor(".class-name", {
+        key: "value",
+    });
 </script>
 ```
 

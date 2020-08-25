@@ -1,5 +1,5 @@
 const { typeCheckThrow, typeCheckBoolean } = require("./default");
-const { checkElement } = require("./selector");
+const { getElement, checkElement } = require("./selector");
 const { message } = require("./message");
 
 export class condition {
@@ -33,6 +33,7 @@ export class condition {
         this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
+        this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
 
         this.setLang(options.lang);
         this.setContentData();
@@ -131,6 +132,7 @@ export class condition {
                 icon: "#icon-code-block",
             },
         };
+        delete this.blockName;
 
         if (this.uploadURL == "") {
             delete defaultMenu.imageBlock;
@@ -139,18 +141,67 @@ export class condition {
         this.removeMenu.forEach((item) => {
             delete defaultMenu[item];
         });
+        delete this.removeMenu;
 
         for (const [key, value] of Object.entries(this.addMenu)) {
             defaultMenu[key] = {
                 text: value.text,
                 icon: value.icon,
+                fn: value.fn,
             };
         }
+        delete this.addMenu;
 
         this.defaultMenu = defaultMenu;
     }
 
-    setElement() {
+    setElement(data) {
+        this.btnToggleTarget = getElement(".js-toggle-target");
+        this.btnOpenTarget = getElement(".js-open-target");
+
+        this.areaContent = checkElement(data.contentArea, ".js-content", false);
+        this.btnAddBlock = checkElement(data.contentArea, ".js-add-block");
+        this.btnSwitchDevice = checkElement(data.contentArea, ".js-switch-device", false);
+        this.btnChangeLang = checkElement(data.contentArea, ".js-change-lang");
+
+        // this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
+        // this.popMedia = checkElement(options.popMedia, '.pop_media');
+        // this.popLang = checkElement(options.popLang, '.pop_lang');
+        // this.popBgArea = checkElement(options.popBgArea, '.pop_bg');
+        // this.lodingArea = checkElement(options.lodingArea, '.pop_loding');
+        // this.popOptions = checkElement(options.popOptions, '.pop_options');
+        // this.popLink = checkElement(options.popLink, '.pop_link_box');
+        // this.fileInput = checkElement(options.fileInput, '.file_check');
+        // this.uploadForm = checkElement(options.uploadForm, '.file_uploader');
+        // this.contentAddBtn = checkElement(options.contentAddBtn, '.btn_add_content', 'multi');
+        // this.viewBtn = checkElement(options.viewBtn, '.btn_mod');
+        // this.popBtns = checkElement(options.popBtn, '.btn_pop', 'multi');
+        // this.popCloseBtns = checkElement(options.popCloseBtns, '.btn_pop_close', 'multi');
+        // this.fontSizeSelect = checkElement(options.fontSizeSelect, '.select_font_size');
+        // this.btnColorSelect = checkElement(options.colorSelect, '.select_color');
+        // this.btnColor = checkElement(options.colorSelect, '.btn_set_color', 'multi');
+        // this.textAlgin = checkElement(options.textAlgin, '.btn_text_algin', 'multi');
+        // this.listTypeSelect = checkElement(options.listTypeSelect, '.select_list_type');
+        // this.colSizeSelect = checkElement(options.colSizeSelect, '.select_col');
+        // this.themeSelect = checkElement(options.themeSelect, '.select_theme');
+        // this.languageSelect = checkElement(options.languageSelect, '.select_language');
+        // this.changeThBtn = checkElement(options.changeThBtn, '.btn_change_th');
+        // this.changeTdBtn = checkElement(options.changeTdBtn, '.btn_change_td');
+        // this.widthInput = checkElement(options.widthInput, '.options_width .value');
+        // this.heightInput = checkElement(options.heightInput, '.options_height .value');
+        // this.urlInput = checkElement(options.urlInput, '.options_url .value');
+        // this.changeUrlBtn = checkElement(options.changeUrlBtn, '.btn_url_change');
+        // this.addLinkBtn = checkElement(options.addLinkBtn, '.btn_url_link');
+        // this.unlinkBtn = checkElement(options.unlinkBtn, '.btn_url_unlink');
+        // this.boldBtn = checkElement(options.boldBtn, '.btn_bold');
+        // this.italicBtn = checkElement(options.italicBtn, '.btn_italic');
+        // this.underlineBtn = checkElement(options.underlineBtn, '.btn_underline');
+        // this.strikeBtn = checkElement(options.strikeBtn, '.btn_strike');
+        // this.wordblockBtn = checkElement(options.wordblockBtn, '.btn_wordblock');
+        // this.contentDelBtn = checkElement(options.contentDelBtn, '.btn_del_content');
+        // this.languageChangeBtn = checkElement(options.languageChangeBtn, '.btn_chang_lang', 'multi');
+        // this.addMediaListBtn = checkElement(options.addMediaListBtn, '.btn_add_media_list');
+
         console.log("set Element");
     }
 
@@ -177,46 +228,7 @@ export class condition {
         this.addMediaListBtnName = typeof options.addMediaListBtn !== 'string' ? '.btn_add_media_list' : options.addMediaListBtn;
 
         
-        this.contentArea = checkElement(options.contentArea, '.content_area');
-        this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
-        this.popMedia = checkElement(options.popMedia, '.pop_media');
-        this.popLang = checkElement(options.popLang, '.pop_lang');
-        if(this.loading === true){
-            this.popBgArea = checkElement(options.popBgArea, '.pop_bg');
-            this.lodingArea = checkElement(options.lodingArea, '.pop_loding');
-        }
-        this.popOptions = checkElement(options.popOptions, '.pop_options');
-        this.popLink = checkElement(options.popLink, '.pop_link_box');
-        this.fileInput = checkElement(options.fileInput, '.file_check');
-        this.uploadForm = checkElement(options.uploadForm, '.file_uploader');
-        this.contentAddBtn = checkElement(options.contentAddBtn, '.btn_add_content', 'multi');
-        this.viewBtn = checkElement(options.viewBtn, '.btn_mod');
-        this.popBtns = checkElement(options.popBtn, '.btn_pop', 'multi');
-        this.popCloseBtns = checkElement(options.popCloseBtns, '.btn_pop_close', 'multi');
-        this.fontSizeSelect = checkElement(options.fontSizeSelect, '.select_font_size');
-        this.btnColorSelect = checkElement(options.colorSelect, '.select_color');
-        this.btnColor = checkElement(options.colorSelect, '.btn_set_color', 'multi');
-        this.textAlgin = checkElement(options.textAlgin, '.btn_text_algin', 'multi');
-        this.listTypeSelect = checkElement(options.listTypeSelect, '.select_list_type');
-        this.colSizeSelect = checkElement(options.colSizeSelect, '.select_col');
-        this.themeSelect = checkElement(options.themeSelect, '.select_theme');
-        this.languageSelect = checkElement(options.languageSelect, '.select_language');
-        this.changeThBtn = checkElement(options.changeThBtn, '.btn_change_th');
-        this.changeTdBtn = checkElement(options.changeTdBtn, '.btn_change_td');
-        this.widthInput = checkElement(options.widthInput, '.options_width .value');
-        this.heightInput = checkElement(options.heightInput, '.options_height .value');
-        this.urlInput = checkElement(options.urlInput, '.options_url .value');
-        this.changeUrlBtn = checkElement(options.changeUrlBtn, '.btn_url_change');
-        this.addLinkBtn = checkElement(options.addLinkBtn, '.btn_url_link');
-        this.unlinkBtn = checkElement(options.unlinkBtn, '.btn_url_unlink');
-        this.boldBtn = checkElement(options.boldBtn, '.btn_bold');
-        this.italicBtn = checkElement(options.italicBtn, '.btn_italic');
-        this.underlineBtn = checkElement(options.underlineBtn, '.btn_underline');
-        this.strikeBtn = checkElement(options.strikeBtn, '.btn_strike');
-        this.wordblockBtn = checkElement(options.wordblockBtn, '.btn_wordblock');
-        this.contentDelBtn = checkElement(options.contentDelBtn, '.btn_del_content');
-        this.languageChangeBtn = checkElement(options.languageChangeBtn, '.btn_chang_lang', 'multi');
-        this.addMediaListBtn = checkElement(options.addMediaListBtn, '.btn_add_media_list');
+        
 
         this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
         this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="[icon_size]" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';

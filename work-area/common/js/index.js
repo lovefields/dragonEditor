@@ -1,38 +1,24 @@
 const { typeCheckThrow } = require("./module/default");
 const { condition } = require("./module/condition");
 const { makeView } = require("./module/layout");
+const { setEvent } = require("./module/event");
 
 module.exports = class {
     constructor(wrap = "", options = {}, _0 = typeCheckThrow(wrap, "string"), _1 = typeCheckThrow(options, "object")) {
         global.editorCondition = new condition(wrap, options);
 
         makeView();
-
-
-        //editorCondition.setElement();
-
+        editorCondition.setElement(options);
+        setEvent();
         console.log(editorCondition);
-
-        //     storage.activeElement = storage.wrap;
-        //     if (storage.multiUpload === true) {
-        //         storage.fileInput.setAttribute("multiple", true);
-        //     }
-        //     if (storage.loading === true) {
-        //         storage.popBgArea.classList.remove("act");
-        //         storage.lodingArea.classList.remove("act");
-        //     }
-        //bindingEvent();
 
         return this;
     }
 
-    // langChangeTrigger
-    //
+    // triggerLangChange
 };
 
 /*
-
-
 icon-arrow-bottom
 icon-delete-link
 icon-btn-accept

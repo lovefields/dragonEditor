@@ -1,0 +1,45 @@
+.editor-pop-lang {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    width: 100px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 0);
+    transition: all 0.3s ease;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -10px);
+    }
+
+    @for $i from 3 through 10 {
+        &[data-length="#{$i}"] {
+            width: (50px * $i);
+        }
+    }
+
+    .editor-btn-lang {
+        width: 50px;
+        height: 30px;
+        color: #333;
+        border-right: 1px solid #e8e9ea;
+        text-align: center;
+        line-height: 30px;
+        box-sizing:border-box;
+
+        &:last-child {
+            border-right: 0;
+        }
+
+        &.--act {
+            color: #3f80e9;
+            font-weight: bold;
+        }
+    }
+}
