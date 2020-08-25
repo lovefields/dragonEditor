@@ -142,7 +142,7 @@
             </g>
         </defs>
     </svg>
-    <div class="editor-dragon"></div>
+    <div class="editor-dragon" data-layout="" data-mode="white"></div>
 </div>
 
 
@@ -612,9 +612,13 @@
 <script src="../assets/js/highlight.pack.js"></script>
 <script src="../assets/js/dragonEditor.js"></script>
 <script>
-const editor = new dragonEditor(".test-test", {
-    addLang : ["ko",1 , "es" , null, "dsafasfskfjlsdfjljdflajflk"]
+const editor = new dragonEditor("", {
+    triggerLangChange: changeLang
 });
+
+function changeLang(lang){
+    console.log(`change to ${lang}`);
+}
 
 /*
 
@@ -625,11 +629,12 @@ const editor = new dragonEditor(".test-test", {
     },
     removeMenu: ["codepenBlock"],
     addMenu: {
-        menuName: {
-            text: "menuName",
-            icon : "#id"
+        testBlock : {
+            text: "test",
+            icon: "#icon-theme",
+            fn : function(){}
         }
-    }
+    },
 }
 */
 
