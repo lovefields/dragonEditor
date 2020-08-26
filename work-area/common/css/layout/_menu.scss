@@ -66,4 +66,9 @@
 }
 
 @mixin mobile-menu {
+    .editor-menu-bottom {
+        .editor-switch-device {
+            display: none;
+        }
+    }
 }

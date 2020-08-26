@@ -27,23 +27,8 @@
     &.--mobile {
         max-width: 320px;
     }
+}
 
-    .editor-item {
-        margin-bottom: 10px;
-        outline: 0;
-
-        &[data-type="text"]:empty {
-            min-height: 1.7em;
-
-            &::after {
-                display: inline;
-                content: "Add text";
-                color: #ccc;
-                cursor: text;
-            }
-        }
-
-        &[data-type="image"] {
-        }
-    }
+.editor-uploader{
+    display:none;
 }

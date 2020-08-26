@@ -15,7 +15,8 @@ module.exports = class {
         return this;
     }
 
-    // triggerLangChange
+    // setEmoticon
+    // setMedia
 };
 
 /*
