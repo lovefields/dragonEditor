@@ -149,31 +149,6 @@
 
 
 <!--
-<section class="editor-content" data-lang="kr">
-    <p class="item" contenteditable="true" data-type="text"></p>
-</section>
-
-<button class="btn_bottom btn_pop btn_media blind" data-target=".pop_media">
-    <svg class="icon" viewbox="0 0 50 50">
-        <use class="path" xlink:href="#icon_folder" href="#icon_folder" />
-    </svg>
-    미디어 리스트 보기&#47;닫기
-</button>
-
-<button class="btn_bottom btn_pop btn_lang blind" data-target=".pop_lang">
-    <svg class="icon" viewbox="0 0 50 50">
-        <use class="path" xlink:href="#icon_language" href="#icon_language" />
-    </svg>
-    언어 변경
-</button>
-
-<button class="btn_bottom btn_mod blind">
-    <svg class="icon" viewbox="0 0 50 50">
-        <use class="path mod_pc" xlink:href="#icon_pc" href="#icon_pc" />
-        <use class="path mod_mobile" xlink:href="#icon_mobile" href="#icon_mobile" />
-    </svg>
-    뷰 변경
-</button>
 
 <div class="pop pop_options">
     <div class="scroll">
@@ -400,6 +375,7 @@
         </button>
     </div>
 </div>
+
 <div class="pop pop_media ts">
     <ul class="media_list clearfix">
         <li class="btn_add_media" data-webp="false" dtat-idx="2">
@@ -420,6 +396,7 @@
     </ul>
     <button class="btn_add_media_list">미디어 추가</button>
 </div>
+
 <div class="pop pop_sticker ts">
     <div class="media_list">
         <button class="btn btn_add_content" data-value="sticker" data-url="#sticker01">
@@ -527,11 +504,7 @@
         <button class="btn"></button>
     </div>
 </div>
-<div class="pop pop_lang">
-    <button class="btn_chang_lang ts act" data-value="kr">KR</button>
-    <button class="btn_chang_lang ts" data-value="en">EN</button>
-    <button class="btn_chang_lang ts" data-value="es">ES</button>
-</div>
+
 
 <div class="pop pop_link_box">
     <div class="top">
@@ -546,65 +519,7 @@
         <button class="btn btn_add_content btn_submit" disabled data-value="link">삽입</button>
     </div>
 </div>
-<div class="add_content_list">
-    <div class="scroll clearfix">
-        <button class="btn btn_add_content" data-value="text" data-text="Text">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_text" href="#icon_text" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="image" data-text="Image">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_image" href="#icon_image" />
-            </svg>
-        </button>
-        <button class="btn btn_pop" data-target=".pop_link_box" data-text="Link&nbsp;Box">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_link" href="#icon_link" />
-            </svg>
-        </button>
-        <button class="btn btn_pop" data-target=".pop_sticker" data-text="Sticker">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_emotion" href="#icon_emotion" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="youtube" data-text="Youtube">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_youtube" href="#icon_youtube" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="codepen" data-text="Codepen">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_codepen" href="#icon_codepen" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="bulletedlist" data-text="Bulleted&nbsp;List">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_bulleted_list" href="#icon_bulleted_list" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="numberedlist" data-text="Numbered&nbsp;List">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_numbered_list" href="#icon_numbered_list" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="quote" data-text="Quote">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_quote" href="#icon_quote" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="table" data-text="Table">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_table" href="#icon_table" />
-            </svg>
-        </button>
-        <button class="btn btn_add_content" data-value="codeblock" data-text="Code&nbsp;Block">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_codeblock" href="#icon_codeblock" />
-            </svg>
-        </button>
-    </div>
-</div>
+
 <form action="#" enctype="multipart/form-data" method="post" class="file_uploader">
     <input type="file" class="file_check">
 </form>
@@ -613,7 +528,10 @@
 <script src="../assets/js/dragonEditor.js"></script>
 <script>
 const editor = new dragonEditor("", {
-    triggerLangChange: changeLang
+    blockName: {
+        textBlock: "텍스트"
+    },
+    uploadURL : "sdf"
 });
 
 function changeLang(lang){
@@ -627,6 +545,7 @@ function changeLang(lang){
     blockName: {
         textBlock: "텍스트"
     },
+    multiLang: false
     removeMenu: ["codepenBlock"],
     addMenu: {
         testBlock : {
@@ -635,6 +554,7 @@ function changeLang(lang){
             fn : function(){}
         }
     },
+    triggerLangChange: changeLang,
 }
 */
 

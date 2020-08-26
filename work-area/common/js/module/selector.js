@@ -21,12 +21,12 @@ export function checkElement(className = "", defaultName, multiple = true, _0 = 
 
 export function findParentByClass($node, className, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(className, "string")) {
     if ($node.constructor.name !== "HTMLBodyElement" && $node.constructor.name !== "HTMLHtmlElement") {
-        let check = $node.classList.contains(name);
+        let check = $node.classList.contains(className);
 
         if (check === true) {
             return $node;
         } else {
-            return findParentByClass($node.parentElement, name);
+            return findParentByClass($node.parentElement, className);
         }
     } else {
         return null;

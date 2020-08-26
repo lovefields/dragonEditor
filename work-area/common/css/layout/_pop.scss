@@ -31,7 +31,7 @@
         border-right: 1px solid #e8e9ea;
         text-align: center;
         line-height: 30px;
-        box-sizing:border-box;
+        box-sizing: border-box;
 
         &:last-child {
             border-right: 0;
@@ -42,4 +42,36 @@
             font-weight: bold;
         }
     }
+}
+
+.editor-list-pop {
+    position: absolute;
+    width: 240px;
+    height: 200px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    overflow: hidden;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+}
+
+.editor-pop-emoticon {
+    top: 0;
+    right: 100%;
+}
+
+.editor-pop-folder {
+    bottom: 100%;
+    right: 100%;
+    margin-right: -30px;
 }

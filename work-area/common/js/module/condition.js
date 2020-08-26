@@ -7,6 +7,7 @@ export class condition {
         this.wrap = checkElement(wrap, ".editor-dragon", false);
 
         this.setStatus(options);
+        this.setMessage(options.message);
     }
 
     setStatus(options) {
@@ -23,22 +24,32 @@ export class condition {
         this.focusNode;
         this.baseNode;
 
+        this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.changePint = typeCheckBoolean(options.changePint, "number") ? options.changePint : 800;
         this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 800;
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;
         this.useWebp = typeCheckBoolean(options.useWebp, "boolean") ? options.useWebp : true;
         this.codepenTheme = typeCheckBoolean(options.codepenTheme, "string") ? options.codepenTheme : "dark";
-        this.uploadURL = typeCheckBoolean(options.uploadURL, "string") ? options.uploadURL : "";
         this.blockName = typeCheckBoolean(options.blockName, Object) ? options.blockName : {};
         this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
+        this.multiUpload = typeCheckBoolean(options.multiUpload, "boolean") ? false : options.multiUpload;
 
+        this.setUploadURL(options.uploadURL);
         this.setLang(options.lang);
         this.setContentData();
         this.setBlockMenu();
         this.addLanguage();
+    }
+
+    setUploadURL(url) {
+        if (typeCheckBoolean(url, "string") == true) {
+
+        } else {
+            this.uploadURL = "";
+        }
     }
 
     setLang(lang) {
@@ -88,50 +99,56 @@ export class condition {
     setBlockMenu() {
         let defaultMenu = {
             textBlock: {
-                text: typeCheckBoolean(this.blockName.textBlock, "string") ? this.blockName.textBlock : "Text",
+                text: "Text",
                 icon: "#icon-text-block",
             },
             imageBlock: {
-                text: typeCheckBoolean(this.blockName.imageBlock, "string") ? this.blockName.imageBlock : "Image",
+                text: "Image",
                 icon: "#icon-image-block",
             },
             ulBlock: {
-                text: typeCheckBoolean(this.blockName.ulBlock, "string") ? this.blockName.ulBlock : "Unnumbered list",
+                text: "Unnumbered list",
                 icon: "#icon-ul-block",
             },
             olBlock: {
-                text: typeCheckBoolean(this.blockName.olBlock, "string") ? this.blockName.olBlock : "Numbered list",
+                text: "Numbered list",
                 icon: "#icon-ol-block",
             },
             quotaionBlock: {
-                text: typeCheckBoolean(this.blockName.quotaionBlock, "string") ? this.blockName.quotaionBlock : "Quotaion",
+                text: "Quotaion",
                 icon: "#icon-quotaion-block",
             },
             tableBlock: {
-                text: typeCheckBoolean(this.blockName.tableBlock, "string") ? this.blockName.tableBlock : "Table",
+                text: "Table",
                 icon: "#icon-table-block",
             },
             linkboxBlock: {
-                text: typeCheckBoolean(this.blockName.linkboxBlock, "string") ? this.blockName.linkboxBlock : "Link box",
+                text: "Link box",
                 icon: "#icon-linkbox-block",
             },
             emoticonBlock: {
-                text: typeCheckBoolean(this.blockName.emoticonBlock, "string") ? this.blockName.emoticonBlock : "Emoticon",
+                text: "Emoticon",
                 icon: "#icon-emoticon-block",
             },
             youtubeBlock: {
-                text: typeCheckBoolean(this.blockName.youtubeBlock, "string") ? this.blockName.youtubeBlock : "Youtube",
+                text: "Youtube",
                 icon: "#icon-youtube-block",
             },
             codepenBlock: {
-                text: typeCheckBoolean(this.blockName.codepenBlock, "string") ? this.blockName.codepenBlock : "Codepen",
+                text: "Codepen",
                 icon: "#icon-codepen-block",
             },
             codeBlock: {
-                text: typeCheckBoolean(this.blockName.codeBlock, "string") ? this.blockName.codeBlock : "Code",
+                text: "Code",
                 icon: "#icon-code-block",
             },
         };
+
+        for (const [key, value] of Object.entries(this.blockName)) {
+            if(typeCheckBoolean(value, "string") == true){
+                defaultMenu[key].text = value;
+            }
+        }
         delete this.blockName;
 
         if (this.uploadURL == "") {
@@ -156,13 +173,19 @@ export class condition {
     }
 
     setElement(data) {
-        this.btnToggleTarget = getElement(".js-toggle-target");
-        this.btnOpenTarget = getElement(".js-open-target");
+        this.btnToggleTarget = getElement(".djs-toggle-target");
+        this.btnOpenTarget = getElement(".djs-open-target");
+        this.uploadForm = getElement(".djs-uploader", false);
+        this.uploadInput = getElement(".djs-uploader .djs-file", false);
 
-        this.areaContent = checkElement(data.contentArea, ".js-content", false);
-        this.btnAddBlock = checkElement(data.contentArea, ".js-add-block");
-        this.btnSwitchDevice = checkElement(data.contentArea, ".js-switch-device", false);
-        this.btnChangeLang = checkElement(data.contentArea, ".js-change-lang");
+        this.areaContent = checkElement(data.contentArea, ".djs-content", false);
+
+        this.btnAddBlock = checkElement(data.btnAddBlock, ".djs-add-block");
+        this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
+        this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
+
+        this.popEmoticon = checkElement(data.popEmoticon, ".djs-emoticon-pop");
+        this.popFolder = checkElement(data.popFolder, ".djs-folder-pop");
 
         // this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
         // this.popMedia = checkElement(options.popMedia, '.pop_media');
@@ -205,6 +228,10 @@ export class condition {
         console.log("set Element");
     }
 
+    setMessage(message){
+
+    }
+
     /*
         
 
@@ -227,25 +254,7 @@ export class condition {
         this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
         this.addMediaListBtnName = typeof options.addMediaListBtn !== 'string' ? '.btn_add_media_list' : options.addMediaListBtn;
 
-        
-        
 
-        this.HTMLTextBlock = '<p class="item item_text lastset" contenteditable="true" data-type="text">[content]</p>';
-        this.HTMLBtn = '<div class="btn lastset" data-type="btn" data-value="[type]"><svg viewbox="[icon_size]" class="icon"><use class="path" xlink:href="[icon_id]" href="[icon_id]" /></svg>[text]</div>';
-        this.HTMLList = '<[tag] [type] class="item item_list lastset" data-type="[dataType]">[child]</[tag]>';
-        this.HTMLChildList = '<li contenteditable="true">[content]</li>';
-        this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
-        this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
-        this.HTMLTable = '<div class="item item_table_area" data-type="table"><div class="scroll"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
-        this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
-        this.HTMLLinkBox = '<div class="item lastset" data-type="link_box"><a href="[url]" target="_blank" rel="nofollow" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
-        this.HTMLOption = '<option value="[value]">[text]</option>';
-        this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" data-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
-        this.HTMLImageType01 = '<picture class="item item_image lastset" data-type="image">[source]<img src="[src]" width="[width]" alt="[alt]" class="img"></picture>';
-        this.HTMLImageSource = '<source srcset="[webp]" type="image/webp">';
-        this.HTMLImageType02 = '<div class="item item_image lastset" data-type="image"><img src="[src]" width="[width]" alt="[alt]" class="img"></div>';
-        this.HTMLYoutube = '<div class="item item_video lastset" data-type="youtube"><iframe src="[src]" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="video"></iframe></div>';
-        this.HTMLCodepen = '<div class="item item_codepen lastset" data-type="codepen"><iframe height="[height]" title="" src="[src]" allowfullscreen class="iframe"></iframe></div>';
 
         this.srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
         this.youtubeReg = new RegExp('www.youtube.com', 'g');
