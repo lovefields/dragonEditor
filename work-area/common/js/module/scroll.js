@@ -1,7 +1,9 @@
 const { typeCheckThrow } = require("./default");
 
 export function setScroll(nodeList, _0 = typeCheckThrow(nodeList, NodeList)){
-    console.log(nodeList);
+    nodeList.forEach(node=>{
+        console.log(node);
+    });
 };
 
 function makeScroll(){
