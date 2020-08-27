@@ -129,11 +129,11 @@ function makeLanguagePop() {
 }
 
 function makeEmoticonPop() {
-    return `<div class="editor-list-pop editor-scroll editor-pop-emoticon djs-emoticon-pop djs-scroll djs-trigger"></div>`;
+    return `<div class="editor-list-pop editor-pop-emoticon editor-scroll djs-emoticon-pop djs-trigger djs-scroll"><div class="editor-scroll-content djs-scroll-content"><ul class="editor-list-emoticon djs-list-emoticon"></ul></div></div>`;
 }
 
 function makeFolderPop() {
-    return `<div class="editor-list-pop editor-scroll editor-pop-folder djs-folder-pop djs-scroll djs-trigger"></div>`;
+    return `<div class="editor-list-pop editor-pop-folder editor-scroll djs-folder-pop djs-trigger djs-scroll"><div class="editor-scroll-content djs-scroll-content"><ul class="editor-list-media djs-list-media"></ul></div></div>`;
 }
 
 function makeUploadForm(){
