@@ -8,6 +8,14 @@ export function getElement(className, multiple = true, _0 = typeCheckThrow(class
     }
 }
 
+export function getChild(parent, className, multiple = true, _0 = typeCheckThrow(parent, Node), _1 = typeCheckThrow(className, "string"), _2 = typeCheckThrow(multiple, "boolean")) {
+    if (multiple == true) {
+        return parent.querySelectorAll(className);
+    } else {
+        return parent.querySelector(className);
+    }
+}
+
 function isDocumentHasElement(className, _0 = typeCheckThrow(className, "string")) {
     let $node = document.querySelector(className);
     return $node === null ? false : true;
@@ -34,11 +42,6 @@ export function findParentByClass($node, className, _0 = typeCheckThrow($node, N
 }
 
 /*
-export function findParent($el, name) {
-    
-}
-
-
 export function findContenteditable(node) {
     let constructorName = node.constructor.name;
     let target;

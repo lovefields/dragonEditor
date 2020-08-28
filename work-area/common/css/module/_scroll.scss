@@ -11,4 +11,15 @@
         overflow-y: auto;
         box-sizing: content-box;
     }
+
+    .scroll-bar {
+        position: absolute;
+        top: 4px;
+        right: 3px;
+        width: 4px;
+        background: #d2d4d7;
+        border-radius: 4px;
+        cursor: default;
+        transition: transform 0.3s ease;
+    }
 }

@@ -1,6 +1,7 @@
-const { eventBinding, classControl } = require("./default");
-const { getElement, findParentByClass } = require("./selector");
-const { setScroll } = require("./scroll");
+const { typeCheckThrow } = require("./default");
+const { eventBinding, classControl, removeEvent } = require("./default");
+const { getElement, findParentByClass, getChild } = require("./selector");
+const { setScroll, getScrollInfo } = require("./scroll");
 
 export function setEvent() {
     setGlobalEvent();
@@ -39,8 +40,8 @@ function setGlobalEvent() {
         let $target = getElement(targetName, false);
         let $itemList = getElement(".djs-trigger");
 
-        $itemList.forEach($item => {
-            if($item !== $target){
+        $itemList.forEach(($item) => {
+            if ($item !== $target) {
                 classControl($item, "remove", "--act");
             }
         });
@@ -63,5 +64,59 @@ function setMenuEvent() {
     eventBinding(editorCondition.btnSwitchDevice, "click", function () {
         classControl(editorCondition.areaContent, "toggle", "--mobile");
         classControl(this, "toggle", "--act");
+    });
+}
+
+export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
+    let $content = getChild($wrap, ".djs-scroll-content", false);
+    let $bar = getChild($wrap, ".djs-scroll-bar", false);
+    let contentOffset = $content.getBoundingClientRect();
+    let value = getScrollInfo($wrap);
+    let maxScrollTop = value.contentHeight - contentOffset.height;
+    let maxBarTop = (contentOffset.height - 8) - value.scrollHeight;
+    let cssReg = new RegExp('[^\\d]', 'g');
+    let mouseY;
+
+    eventBinding($content, "scroll", function () {
+        let scrollTop = this.scrollTop;
+        let scrollPercent = Math.floor((100 / maxScrollTop) * scrollTop);
+        let barTop = Math.floor((scrollPercent/100) * maxBarTop);
+
+        $bar.style.transform = `translateY(${barTop}px)`;
+    });
+
+    function mousemoveEvent(e){
+        let barTop = parseInt($bar.style.transform.replace(cssReg, ''));
+        let moveValue = mouseY - e.clientY;
+        let changeBarTop = barTop - moveValue;
+        let percent = Math.floor((100 / maxBarTop) * changeBarTop);
+        let scrollTop;
+
+        if(percent < 0){
+            percent = 0;
+        }
+
+        if(changeBarTop < 0){
+            changeBarTop = 0;
+        }else if(changeBarTop > maxBarTop){
+            changeBarTop = maxBarTop;
+        }
+
+        scrollTop = Math.floor((maxScrollTop/100) * percent);
+
+        // console.log(maxBarTop, changeBarTop);
+        console.log(percent, scrollTop);
+        $content.scrollTop = scrollTop;
+        $bar.style.transform = `translateY(${changeBarTop}px)`;
+        mouseY = e.clientY;
+    }
+
+    eventBinding($bar, "mousedown", function(e){
+        mouseY = e.clientY;
+        eventBinding($wrap, "mousemove", mousemoveEvent, true);
+    });
+
+    eventBinding($wrap, "mouseup", function(e){
+        removeEvent($wrap, "mousemove", mousemoveEvent);
     });
 }

@@ -129,11 +129,80 @@ function makeLanguagePop() {
 }
 
 function makeEmoticonPop() {
-    return `<div class="editor-list-pop editor-pop-emoticon editor-scroll djs-emoticon-pop djs-trigger djs-scroll"><div class="editor-scroll-content djs-scroll-content"><ul class="editor-list-emoticon djs-list-emoticon"></ul></div></div>`;
+    return `<div class="editor-list-pop editor-pop-emoticon editor-scroll djs-emoticon-pop djs-trigger djs-scroll">
+                <div class="editor-scroll-content djs-scroll-content">
+                    <ul class="editor-list-emoticon djs-list-emoticon">
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                        <li>1</li>
+                    </ul>
+                </div>
+            </div>
+    `;
 }
 
 function makeFolderPop() {
-    return `<div class="editor-list-pop editor-pop-folder editor-scroll djs-folder-pop djs-trigger djs-scroll"><div class="editor-scroll-content djs-scroll-content"><ul class="editor-list-media djs-list-media"></ul></div></div>`;
+    return `<div class="editor-list-pop editor-pop-folder editor-scroll djs-folder-pop djs-trigger djs-scroll">
+                <div class="editor-scroll-content djs-scroll-content">
+                    <ul class="editor-list-media djs-list-media"></ul>
+                </div>
+            </div>
+    `;
 }
 
 function makeUploadForm(){
@@ -147,4 +216,8 @@ function makeUploadForm(){
     html += `</form>`;
 
     return html;
+}
+
+export function scrollButtonHTML(){
+    return `<button class="scroll-bar djs-scroll-bar" style="transform:translateY(0)"></button>`;
 }
