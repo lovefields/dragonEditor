@@ -20,13 +20,23 @@ export function typeCheckBoolean(target, type) {
     return true;
 }
 
-export function eventBinding($node, type, fn, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function")) {
+export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function"), _3 = typeCheckThrow(useCapture, "boolean")) {
     if ($node.length > 0) {
         $node.forEach(($item) => {
-            $item.addEventListener(type, fn);
+            $item.addEventListener(type, fn, useCapture);
         });
     } else {
-        $node.addEventListener(type, fn);
+        $node.addEventListener(type, fn, useCapture);
+    }
+}
+
+export function removeEvent($node, type, fn, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function")) {
+    if ($node.length > 0) {
+        $node.forEach(($item) => {
+            $item.removeEventListener(type, fn, true);
+        });
+    } else {
+        $node.removeEventListener(type, fn, true);
     }
 }
 
