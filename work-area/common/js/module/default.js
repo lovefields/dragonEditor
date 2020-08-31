@@ -30,15 +30,15 @@ export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheck
     }
 }
 
-// export function removeEvent($node, type, fn, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function")) {
-//     if ($node.length > 0) {
-//         $node.forEach(($item) => {
-//             $item.removeEventListener(type, fn, true);
-//         });
-//     } else {
-//         $node.removeEventListener(type, fn, true);
-//     }
-// }
+export function removeEvent($node, type, fn, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function")) {
+    if ($node.length > 0) {
+        $node.forEach(($item) => {
+            $item.removeEventListener(type, fn, true);
+        });
+    } else {
+        $node.removeEventListener(type, fn, true);
+    }
+}
 
 export function classControl($node, action, className, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(action, "string"), _2 = typeCheckThrow(className, "string")) {
     if ($node.length > 0) {

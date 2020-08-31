@@ -41,6 +41,17 @@ export function findParentByClass($node, className, _0 = typeCheckThrow($node, N
     }
 }
 
+export function getActiveElement() {
+    let childCount = editorCondition.areaContent.childElementCount;
+    let childList = getElement(".djs-content > *");
+
+    if (editorCondition.activeItem == undefined) {
+        return childList[childCount - 1];
+    } else {
+        return editorCondition.activeItem;
+    }
+}
+
 /*
 export function findContenteditable(node) {
     let constructorName = node.constructor.name;

@@ -26,7 +26,7 @@ export class condition {
 
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.changePint = typeCheckBoolean(options.changePint, "number") ? options.changePint : 800;
-        this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 800;
+        this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 700;
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;
         this.useWebp = typeCheckBoolean(options.useWebp, "boolean") ? options.useWebp : true;
         this.codepenTheme = typeCheckBoolean(options.codepenTheme, "string") ? options.codepenTheme : "dark";
@@ -101,46 +101,57 @@ export class condition {
             textBlock: {
                 text: "Text",
                 icon: "#icon-text-block",
+                type: "block"
             },
             imageBlock: {
                 text: "Image",
                 icon: "#icon-image-block",
+                type: "file"
             },
             ulBlock: {
                 text: "Unnumbered list",
                 icon: "#icon-ul-block",
+                type: "block"
             },
             olBlock: {
                 text: "Numbered list",
                 icon: "#icon-ol-block",
+                type: "block"
             },
             quotaionBlock: {
                 text: "Quotaion",
                 icon: "#icon-quotaion-block",
+                type: "block"
             },
             tableBlock: {
                 text: "Table",
                 icon: "#icon-table-block",
+                type: "block"
             },
             linkboxBlock: {
                 text: "Link box",
                 icon: "#icon-linkbox-block",
+                type: "pop"
             },
             emoticonBlock: {
                 text: "Emoticon",
                 icon: "#icon-emoticon-block",
+                type: "pop"
             },
             youtubeBlock: {
                 text: "Youtube",
                 icon: "#icon-youtube-block",
+                type: "pop"
             },
             codepenBlock: {
                 text: "Codepen",
                 icon: "#icon-codepen-block",
+                type: "pop"
             },
             codeBlock: {
                 text: "Code",
                 icon: "#icon-code-block",
+                type: "block"
             },
         };
 
@@ -175,12 +186,12 @@ export class condition {
     setElement(data) {
         this.btnToggleTarget = getElement(".djs-toggle-target");
         this.btnOpenTarget = getElement(".djs-open-target");
+        this.btnAddBlock = getElement(".djs-add-block");
+        this.areaContent = getElement(".djs-content", false);
         this.uploadForm = getElement(".djs-uploader", false);
         this.uploadInput = getElement(".djs-uploader .djs-file", false);
 
-        this.areaContent = checkElement(data.contentArea, ".djs-content", false);
 
-        this.btnAddBlock = checkElement(data.btnAddBlock, ".djs-add-block");
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
         this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
 

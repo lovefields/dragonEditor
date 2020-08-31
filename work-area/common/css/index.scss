@@ -12,9 +12,6 @@
     position:relative;
 }
 
-.has-custom-scroll {
-}
-
 @media all and (max-width: 800px) {
     @include mobile-menu;
 }
