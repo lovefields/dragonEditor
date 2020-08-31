@@ -1,7 +1,8 @@
-const { typeCheckThrow } = require("./default");
-const { eventBinding, classControl, hasClass } = require("./default");
-const { getElement, findParentByClass, getChild } = require("./selector");
+const { typeCheckThrow, eventBinding, classControl, hasClass } = require("./default");
+const { getElement, findParentByClass, getChild, getActiveElement } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
+const { getDefaultBlockHTML } = require("./layout");
+const { setCursor } = require("./cursor");
 
 export function setEvent() {
     setGlobalEvent();
@@ -53,6 +54,29 @@ function setGlobalEvent() {
         });
 
         classControl($target, "toggle", "--act");
+    });
+
+    eventBinding(editorCondition.btnAddBlock, "click", function () {
+        let type = this.dataset["type"];
+
+        if(type === "block"){
+            let value = this.dataset["value"];
+            let $target = getActiveElement();
+            let block = getDefaultBlockHTML(value);
+            let $selectedItem = getElement(".--djs-selected");
+
+            $target.insertAdjacentHTML("afterend", block);
+            setCursor($target.nextElementSibling, 0);
+
+            if($selectedItem.length > 0){
+                classControl($selectedItem, "remove", "--djs-selected");
+            }
+            editorCondition.activeItem = $target.nextElementSibling;
+        }else if(type === "pop"){
+
+        }else if(type === "file"){
+            
+        }
     });
 }
 

@@ -2,17 +2,102 @@
     margin-bottom: 10px;
     outline: 0;
 
-    &[data-type="text"]:empty {
-        min-height: 1.7em;
+    &[data-type="text"] {
+        &:empty {
+            min-height: 1.7em;
 
-        &::after {
-            display: inline;
-            content: "Add text";
-            color: #ccc;
-            cursor: text;
+            &::after {
+                display: inline;
+                content: "Add text";
+                color: #ccc;
+                cursor: text;
+            }
         }
     }
 
     &[data-type="image"] {
+    }
+
+    &[data-type="ul"] {
+        li {
+            position: relative;
+            padding-left: 15px;
+            margin-bottom: 5px;
+            outline: 0;
+
+            &::before {
+                position: absolute;
+                content: "";
+                top: 11px;
+                left: 0;
+                width: 5px;
+                height: 5px;
+                background: #333;
+                border-radius: 50%;
+            }
+
+            &:last-child {
+                border-bottom: 0;
+            }
+
+            &:empty {
+                min-height: 1.7em;
+
+                &::after {
+                    display: inline;
+                    content: "Add text";
+                    color: #ccc;
+                    cursor: text;
+                }
+            }
+        }
+    }
+
+    &[data-type="ol"] {
+        padding-left: 20px;
+        list-style-type: decimal;
+
+        &[type="a"] {
+            list-style-type: lower-alpha;
+        }
+
+        &[type="A"] {
+            list-style-type: upper-alpha;
+        }
+
+        &[type="i"] {
+            padding-left: 40px;
+            list-style-type: lower-roman;
+        }
+
+        &[type="I"] {
+            padding-left: 40px;
+            list-style-type: upper-roman;
+        }
+
+        li {
+            margin-bottom: 5px;
+            outline: 0;
+            list-style-type: inherit;
+
+            &:last-child {
+                border-bottom: 0;
+            }
+
+            &:empty {
+                min-height: 1.7em;
+
+                &::after {
+                    display: inline;
+                    content: "Add text";
+                    color: #ccc;
+                    cursor: text;
+                }
+            }
+        }
+    }
+
+    &[data-type="quote"] {
+        
     }
 }
