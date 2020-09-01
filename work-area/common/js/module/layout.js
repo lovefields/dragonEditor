@@ -35,7 +35,7 @@ function makeBlockMenu(data) {
         if (key === "emoticonBlock") {
             html += `
                 <div class="editor-relative">
-                    <button class="editor-btn djs-toggle-target" title="${value.text}" data-value="${key}" data-type="${value.type}" data-target=".editor-pop-emoticon">
+                    <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
                         <svg viewbox="0 0 64 64" class="editor-icon">
                             <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
                         </svg>
@@ -164,7 +164,11 @@ export function getDefaultBlockHTML(type, _0 = typeCheckThrow(type, "string")) {
         case "quotaionBlock":
             html = getQuotaionBlock();
             break;
-        case "":
+        case "tableBlock":
+            html = getTableBlock();
+            break;
+        case "codeBlock":
+            html = getCodeBlock();
             break;
         default:
             html = "";
@@ -228,11 +232,49 @@ function getQuotaionBlock(){
     return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>`;
 }
 
+function getTableBlock(){
+    return `
+        <div class="editor-item djs-item --djs-selected" data-type="table">
+            <div class="scroll">
+                <table class="table">
+                    <caption contenteditable="true"></caption>
+                    <colgroup>
+                        <col data-size="100">
+                        <col data-size="100">
+                        <col data-size="100">
+                        <col data-size="100">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th contenteditable="true" data-x="0" data-y="0"></th>
+                            <th contenteditable="true" data-x="1" data-y="0"></th>
+                            <th contenteditable="true" data-x="2" data-y="0"></th>
+                            <th contenteditable="true" data-x="3" data-y="0"></th>
+                        </tr>
+                        <tr>
+                            <td contenteditable="true" data-x="0" data-y="1"></td>
+                            <td contenteditable="true" data-x="1" data-y="1"></td>
+                            <td contenteditable="true" data-x="2" data-y="1"></td>
+                            <td contenteditable="true" data-x="3" data-y="1"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+function getCodeBlock(){
+    return `
+        <pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>
+    `;
+}
+
 
 // this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
-// this.HTMLQuote = '<blockquote class="item item_quote lastset" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>';
-// this.HTMLTable = '<div class="item item_table_area" data-type="table"><div class="scroll"><table class="item_table"><caption contenteditable="true"></caption><colgroup><col class="size_100"><col class="size_100"><col class="size_100"><col class="size_100"></colgroup><tbody><tr><th contenteditable="true" data-x="0" data-y="0"></th><th contenteditable="true" data-x="1" data-y="0"></th><th contenteditable="true" data-x="2" data-y="0"></th><th contenteditable="true" data-x="3" data-y="0"></th></tr><tr><td contenteditable="true" data-x="0" data-y="1"></td><td contenteditable="true" data-x="1" data-y="1"></td><td contenteditable="true" data-x="2" data-y="1"></td><td contenteditable="true" data-x="3" data-y="1"></td></tr></tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
-// this.HTMLCodeBlock = '<pre class="item item_codeblock lastset" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>';
+
+// this.HTMLTable = '';
+// this.HTMLCodeBlock = '';
 // this.HTMLLinkBox = '<div class="item lastset" data-type="link_box"><a href="[url]" target="_blank" rel="nofollow" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 // this.HTMLOption = '<option value="[value]">[text]</option>';
 // this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" data-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';

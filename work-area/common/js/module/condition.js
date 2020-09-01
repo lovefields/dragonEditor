@@ -24,6 +24,7 @@ export class condition {
         this.focusNode;
         this.baseNode;
 
+        this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.changePint = typeCheckBoolean(options.changePint, "number") ? options.changePint : 800;
         this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 700;
