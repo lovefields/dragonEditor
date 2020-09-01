@@ -13,6 +13,11 @@
             position: absolute;
         }
     }
+
+    *::after,
+    *::before {
+        font: normal 16px/1.2 "Open Sans", "Noto Sans", sans-serif;
+    }
 }
 
 .editor-content {
@@ -29,6 +34,6 @@
     }
 }
 
-.editor-uploader{
-    display:none;
+.editor-uploader {
+    display: none;
 }
