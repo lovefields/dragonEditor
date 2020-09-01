@@ -3,6 +3,7 @@ const { getElement, findParentByClass, getChild, getActiveElement } = require(".
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML } = require("./layout");
 const { setCursor } = require("./cursor");
+const { openPop } = require("./pop");
 
 export function setEvent() {
     setGlobalEvent();
@@ -26,11 +27,10 @@ function setGlobalEvent() {
         let $target = e.target;
         let $list = getElement(".djs-trigger");
         let checkTrigger = findParentByClass($target, "djs-trigger") == null ? false : true;
-        let checkBtn1 = findParentByClass($target, "djs-open-target") == null ? false : true;
-        let checkBtn2 = findParentByClass($target, "djs-toggle-target") == null ? false : true;
+        let checkBtn = findParentByClass($target, "djs-btn-ignore") == null ? false : true;
 
-        if (checkBtn1 == false && checkBtn2 == false) {
-            if (checkTrigger == false && $list.length > 0) {
+        if (checkBtn == false && checkTrigger == false) {
+            if ($list.length > 0) {
                 classControl($list, "remove", "--act");
             }
         }
@@ -58,9 +58,9 @@ function setGlobalEvent() {
 
     eventBinding(editorCondition.btnAddBlock, "click", function () {
         let type = this.dataset["type"];
+        let value = this.dataset["value"];
 
         if(type === "block"){
-            let value = this.dataset["value"];
             let $target = getActiveElement();
             let block = getDefaultBlockHTML(value);
             let $selectedItem = getElement(".--djs-selected");
@@ -73,7 +73,7 @@ function setGlobalEvent() {
             }
             editorCondition.activeItem = $target.nextElementSibling;
         }else if(type === "pop"){
-
+            openPop(value);
         }else if(type === "file"){
             
         }
