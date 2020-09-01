@@ -191,13 +191,13 @@ export class condition {
         this.areaContent = getElement(".djs-content", false);
         this.uploadForm = getElement(".djs-uploader", false);
         this.uploadInput = getElement(".djs-uploader .djs-file", false);
+        this.popEmoticon = getElement(".djs-emoticon-pop", false);
+        this.popFolder = getElement(".djs-folder-pop", false);
+        this.popLinkbox = getElement(".djs-linkbox-pop", false);
 
 
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
         this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
-
-        this.popEmoticon = checkElement(data.popEmoticon, ".djs-emoticon-pop");
-        this.popFolder = checkElement(data.popFolder, ".djs-folder-pop");
 
         // this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
         // this.popMedia = checkElement(options.popMedia, '.pop_media');
