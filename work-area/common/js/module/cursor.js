@@ -1,7 +1,7 @@
 const { typeCheckThrow } = require("./default");
 
 export function setCursor($node, position, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(position, "number")) {
-    let contentEditable = $node.contentEditable;
+    let contentEditable = Boolean($node.contentEditable);
     let select = window.getSelection();
     let range = document.createRange();
 

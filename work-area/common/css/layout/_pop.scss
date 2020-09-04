@@ -79,3 +79,69 @@
 .editor-list-media {
     font-size: 12px;
 }
+
+.editor-pop-linkbox {
+    position: fixed;
+    width: 220px;
+    height: 32px;
+    padding: 5px 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    &[data-type="new"] {
+        .--del {
+            display: none;
+        }
+    }
+
+    &[data-type="del"] {
+        .--new {
+            display: none;
+        }
+    }
+
+    .editor-input {
+        float: left;
+        width: 176px;
+        height: 100%;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid #ccc;
+        transition: all 0.3s ease;
+
+        &::placeholder {
+            color: #ddd;
+        }
+
+        &.--wrong {
+            border-bottom-color: #ff0000;
+        }
+    }
+
+    .editor-link {
+        float: left;
+        width: 176px;
+        height: 20px;
+        color: #3f80e9;
+        line-height: 20px;
+        @include ellipsis;
+    }
+
+    .editor-btn {
+        float: right;
+        width: 12px;
+        margin-top: 4px;
+    }
+}

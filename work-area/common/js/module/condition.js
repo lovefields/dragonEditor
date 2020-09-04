@@ -23,6 +23,25 @@ export class condition {
         this.activeElement;
         this.focusNode;
         this.baseNode;
+        this.regList = {
+            youtubeURL : new RegExp('(https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)?', 'i'),
+            youtubeCode : new RegExp('((https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)\\/(embed\\/|watch\\?v=)?)([^=\\/& :]*)(.*)', 'i'),
+            codepenURL : new RegExp('codepen.io', 'g'),
+            codepenCode : new RegExp('(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)', 'i')
+        };
+
+
+
+
+        // this.srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
+        // this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
+        // this.numberReg = new RegExp('[0-9]', 'g');
+        // this.classReg = {
+        //     'color' : new RegExp('color_[a-z0-9_]*', 'i'),
+        //     'size' : new RegExp('size_[0-9]*', 'i'),
+        //     'align' : new RegExp('align_(left|center|right)*', 'i')
+        // };
+        // this.classList = ['color', 'size', 'align'];
 
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
@@ -186,7 +205,7 @@ export class condition {
 
     setElement(data) {
         this.btnToggleTarget = getElement(".djs-toggle-target");
-        this.btnOpenTarget = getElement(".djs-open-target");
+        //this.btnOpenTarget = getElement(".djs-open-target");
         this.btnAddBlock = getElement(".djs-add-block");
         this.areaContent = getElement(".djs-content", false);
         this.uploadForm = getElement(".djs-uploader", false);
@@ -194,48 +213,11 @@ export class condition {
         this.popEmoticon = getElement(".djs-emoticon-pop", false);
         this.popFolder = getElement(".djs-folder-pop", false);
         this.popLinkbox = getElement(".djs-linkbox-pop", false);
+        this.btnLinkbox = getElement(".djs-linkbox-pop .djs-btn", false);
 
 
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
         this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
-
-        // this.mediaList = checkElement(options.mediaList, '.pop_media .media_list');
-        // this.popMedia = checkElement(options.popMedia, '.pop_media');
-        // this.popLang = checkElement(options.popLang, '.pop_lang');
-        // this.popBgArea = checkElement(options.popBgArea, '.pop_bg');
-        // this.lodingArea = checkElement(options.lodingArea, '.pop_loding');
-        // this.popOptions = checkElement(options.popOptions, '.pop_options');
-        // this.popLink = checkElement(options.popLink, '.pop_link_box');
-        // this.fileInput = checkElement(options.fileInput, '.file_check');
-        // this.uploadForm = checkElement(options.uploadForm, '.file_uploader');
-        // this.contentAddBtn = checkElement(options.contentAddBtn, '.btn_add_content', 'multi');
-        // this.viewBtn = checkElement(options.viewBtn, '.btn_mod');
-        // this.popBtns = checkElement(options.popBtn, '.btn_pop', 'multi');
-        // this.popCloseBtns = checkElement(options.popCloseBtns, '.btn_pop_close', 'multi');
-        // this.fontSizeSelect = checkElement(options.fontSizeSelect, '.select_font_size');
-        // this.btnColorSelect = checkElement(options.colorSelect, '.select_color');
-        // this.btnColor = checkElement(options.colorSelect, '.btn_set_color', 'multi');
-        // this.textAlgin = checkElement(options.textAlgin, '.btn_text_algin', 'multi');
-        // this.listTypeSelect = checkElement(options.listTypeSelect, '.select_list_type');
-        // this.colSizeSelect = checkElement(options.colSizeSelect, '.select_col');
-        // this.themeSelect = checkElement(options.themeSelect, '.select_theme');
-        // this.languageSelect = checkElement(options.languageSelect, '.select_language');
-        // this.changeThBtn = checkElement(options.changeThBtn, '.btn_change_th');
-        // this.changeTdBtn = checkElement(options.changeTdBtn, '.btn_change_td');
-        // this.widthInput = checkElement(options.widthInput, '.options_width .value');
-        // this.heightInput = checkElement(options.heightInput, '.options_height .value');
-        // this.urlInput = checkElement(options.urlInput, '.options_url .value');
-        // this.changeUrlBtn = checkElement(options.changeUrlBtn, '.btn_url_change');
-        // this.addLinkBtn = checkElement(options.addLinkBtn, '.btn_url_link');
-        // this.unlinkBtn = checkElement(options.unlinkBtn, '.btn_url_unlink');
-        // this.boldBtn = checkElement(options.boldBtn, '.btn_bold');
-        // this.italicBtn = checkElement(options.italicBtn, '.btn_italic');
-        // this.underlineBtn = checkElement(options.underlineBtn, '.btn_underline');
-        // this.strikeBtn = checkElement(options.strikeBtn, '.btn_strike');
-        // this.wordblockBtn = checkElement(options.wordblockBtn, '.btn_wordblock');
-        // this.contentDelBtn = checkElement(options.contentDelBtn, '.btn_del_content');
-        // this.languageChangeBtn = checkElement(options.languageChangeBtn, '.btn_chang_lang', 'multi');
-        // this.addMediaListBtn = checkElement(options.addMediaListBtn, '.btn_add_media_list');
 
         console.log("set Element");
     }
@@ -268,19 +250,7 @@ export class condition {
 
 
 
-        this.srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
-        this.youtubeReg = new RegExp('www.youtube.com', 'g');
-        this.youtubeCodeReg = new RegExp('((https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)\\/(embed\\/|watch\\?v=)?)([^=\\/& :]*)(.*)', 'i');
-        this.codepenReg = new RegExp('codepen.io', 'g');
-        this.codepenCodeReg = new RegExp('(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)', 'i');
-        this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
-        this.numberReg = new RegExp('[0-9]', 'g');
-        this.classReg = {
-            'color' : new RegExp('color_[a-z0-9_]*', 'i'),
-            'size' : new RegExp('size_[0-9]*', 'i'),
-            'align' : new RegExp('align_(left|center|right)*', 'i')
-        };
-        this.classList = ['color', 'size', 'align'];
+        
 
         
 

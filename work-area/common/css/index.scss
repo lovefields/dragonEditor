@@ -1,16 +1,12 @@
+@import "include/global";
+@import "include/mixin";
+
 @import "module/scroll";
+
 @import "layout/container";
 @import "layout/menu";
 @import "layout/pop";
 @import "layout/item";
-
-.icon-pack {
-    display: none;
-}
-
-.editor-relative{
-    position:relative;
-}
 
 @media all and (max-width: 800px) {
     @include mobile-menu;

@@ -1,7 +1,7 @@
 const { typeCheckThrow, eventBinding, classControl, hasClass } = require("./default");
 const { getElement, findParentByClass, getChild, getActiveElement } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
-const { getDefaultBlockHTML } = require("./layout");
+const { getDefaultBlockHTML, getYoutubeBlock } = require("./layout");
 const { setCursor } = require("./cursor");
 const { openPop } = require("./pop");
 
@@ -14,6 +14,7 @@ export function setEvent() {
 }
 
 function setGlobalEvent() {
+    // window size update
     let resizeFn;
     eventBinding(window, "resize", function (e) {
         clearTimeout(resizeFn);
@@ -23,6 +24,7 @@ function setGlobalEvent() {
         }, 250);
     });
 
+    // modal
     eventBinding(document, "click", function (e) {
         let $target = e.target;
         let $list = getElement(".djs-trigger");
@@ -36,6 +38,7 @@ function setGlobalEvent() {
         }
     });
 
+    // toggle target event
     eventBinding(editorCondition.btnToggleTarget, "click", function (e) {
         let targetName = this.dataset["target"];
         let $target = getElement(targetName, false);
@@ -56,11 +59,12 @@ function setGlobalEvent() {
         classControl($target, "toggle", "--act");
     });
 
+    // add block(item) event
     eventBinding(editorCondition.btnAddBlock, "click", function () {
         let type = this.dataset["type"];
         let value = this.dataset["value"];
 
-        if(type === "block"){
+        if (type === "block") {
             let $target = getActiveElement();
             let block = getDefaultBlockHTML(value);
             let $selectedItem = getElement(".--djs-selected");
@@ -68,14 +72,66 @@ function setGlobalEvent() {
             $target.insertAdjacentHTML("afterend", block);
             setCursor($target.nextElementSibling, 0);
 
-            if($selectedItem.length > 0){
+            if ($selectedItem.length > 0) {
                 classControl($selectedItem, "remove", "--djs-selected");
             }
             editorCondition.activeItem = $target.nextElementSibling;
-        }else if(type === "pop"){
-            openPop(value);
-        }else if(type === "file"){
-            
+        } else if (type === "pop") {
+            openPop(value, this);
+        } else if (type === "file") {
+            openFile(value);
+        }
+    });
+
+    // add link(linkbox, youtube, codepen, link) event
+    eventBinding(editorCondition.btnLinkbox, "click", function () {
+        let $target = getActiveElement();
+        let $selectedItem = getElement(".--djs-selected");
+        let $input = getChild(editorCondition.popLinkbox, ".djs-input", false);
+        let value = $input.value;
+        let type = this.dataset["value"];
+        let boolean = false;
+        let html;
+
+        if (type == "linkbox") {
+            console.log("linkbox");
+        } else if (type == "youtube") {
+            if (editorCondition.regList["youtubeURL"].test(value)) {
+                let code = value.replace(editorCondition.regList["youtubeCode"], "$7");
+
+                html = getYoutubeBlock(code);
+                boolean = true;
+            }
+        } else if (type == "codepen") {
+            console.log("codepen");
+        } else if (type == "word") {
+            console.log("word");
+        }
+
+        if (boolean == true) {
+            $target.insertAdjacentHTML("afterend", html);
+            setCursor($target.nextElementSibling, 0);
+
+            if ($selectedItem.length > 0) {
+                classControl($selectedItem, "remove", "--djs-selected");
+            }
+            editorCondition.activeItem = $target.nextElementSibling;
+            $input.value = "";
+            classControl(editorCondition.popLinkbox, "remove", "--act");
+        } else {
+            classControl($input, "add", "--wrong");
+            $input.focus();
+            setTimeout(() => {
+                classControl($input, "remove", "--wrong");
+            }, 1000);
+        }
+    });
+
+    eventBinding(getChild(editorCondition.popLinkbox, ".djs-input", false), "keydown", function (e) {
+        if (e.code == "Enter") {
+            let event = document.createEvent("HTMLEvents");
+            event.initEvent("click", true, false);
+            editorCondition.btnLinkbox.dispatchEvent(event);
         }
     });
 }

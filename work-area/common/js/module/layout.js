@@ -165,8 +165,15 @@ function makeFolderPop() {
 
 function makeLinkboxPop(){
     return `
-        <div class="editor-pop-linkbox djs-pop-linkbox">
-            
+        <div class="editor-pop-linkbox djs-linkbox-pop editor-clearfix djs-trigger" data-type="new">
+            <input type="url" class="editor-input djs-input --new" placeholder="https://dico.me">
+            <a href="" class="editor-link --del djs-link"></a>
+            <button class="editor-btn djs-btn" data-value="">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path --del" xlink:href="#icon-delete-link" href="#icon-delete-link"></use>
+                    <use class="path --new" xlink:href="#icon-btn-accept" href="#icon-btn-accept"></use>
+                </svg>
+            </button>
         </div>
     `;
 }
@@ -306,7 +313,15 @@ function getTableBlock(){
 
 function getCodeBlock(){
     return `
-        <pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight" contenteditable="true"></code></pre>
+        <pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight editor-code" contenteditable="true"></code></pre>
+    `;
+}
+
+export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")){
+    return `
+        <div class="editor-item djs-item --djs-selected" data-type="youtube">
+            <iframe src="https://www.youtube.com/embed/${code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe"></iframe>
+        </div>
     `;
 }
 
@@ -319,5 +334,5 @@ function getCodeBlock(){
 // this.HTMLOption = '<option value="[value]">[text]</option>';
 // this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" data-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
 
-// this.HTMLYoutube = '<div class="item item_video lastset" data-type="youtube"><iframe src="[src]" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="video"></iframe></div>';
+// this.HTMLYoutube = '';
 // this.HTMLCodepen = '<div class="item item_codepen lastset" data-type="codepen"><iframe height="[height]" title="" src="[src]" allowfullscreen class="iframe"></iframe></div>';
