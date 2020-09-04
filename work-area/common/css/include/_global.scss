@@ -1,0 +1,13 @@
+.editor-clearfix::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
+.icon-pack {
+    display: none;
+}
+
+.editor-relative{
+    position:relative;
+}
