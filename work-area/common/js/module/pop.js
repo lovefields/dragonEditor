@@ -22,16 +22,18 @@ export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = t
     }
 }
 
-function openLinkPop(type, option = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(option, "object")){
+function openLinkPop(type, option = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(option, "object")) {
+    let $input = getChild(editorCondition.popLinkbox, ".djs-input", false);
     let $btn = getChild(editorCondition.popLinkbox, ".djs-btn", false);
-    let right = (editorCondition.windowWidth - option.right) + (option.width + 10);
+    let right = editorCondition.windowWidth - option.right + (option.width + 10);
 
-    if(type == "word"){
+    if (type == "word") {
         $btn.dataset["value"] = type;
         editorCondition.popLinkbox.dataset["type"] = option.type;
         $btn.dataset["type"] = option.type;
-    }else{
+    } else {
         $btn.dataset["value"] = type;
+        $input.value = "";
         editorCondition.popLinkbox.style.top = `${option.top}px`;
         editorCondition.popLinkbox.style.right = `${right}px`;
     }

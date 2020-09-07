@@ -13,3 +13,7 @@ export function fetchURL(url, option = {}, type = 'form'){
         throw new Error('Network response was not ok.')
     })
 }
+
+// fetch("https://api.allorigins.win/get?url=regexr.com").then(res => {
+// res.json();
+// }).catch((error) => {console.log(error);});

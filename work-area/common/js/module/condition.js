@@ -24,14 +24,12 @@ export class condition {
         this.focusNode;
         this.baseNode;
         this.regList = {
-            youtubeURL : new RegExp('(https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)?', 'i'),
-            youtubeCode : new RegExp('((https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)\\/(embed\\/|watch\\?v=)?)([^=\\/& :]*)(.*)', 'i'),
-            codepenURL : new RegExp('codepen.io', 'g'),
-            codepenCode : new RegExp('(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)', 'i')
+            defaultURL: new RegExp("https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?", "i"),
+            youtubeURL: new RegExp("(https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)?", "i"),
+            youtubeCode: new RegExp("((https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)\\/(embed\\/|watch\\?v=)?)([^=\\/& :]*)(.*)", "i"),
+            codepenURL: new RegExp("codepen.io", "g"),
+            codepenCode: new RegExp("(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)", "i"),
         };
-
-
-
 
         // this.srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
         // this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
@@ -55,7 +53,9 @@ export class condition {
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
-        this.multiUpload = typeCheckBoolean(options.multiUpload, "boolean") ? false : options.multiUpload;
+        this.multiUpload = typeCheckBoolean(options.multiUpload, "boolean") ? options.multiUpload : false;
+        this.defaultLinkBoxImage = typeCheckBoolean(options.defaultLinkBoxImage, "string") ? options.defaultLinkBoxImage : "https://via.placeholder.com/600x300.png";
+        this.linkBoxApi = typeCheckBoolean(options.linkBoxApi, "string") ? options.linkBoxApi : "";
 
         this.setUploadURL(options.uploadURL);
         this.setLang(options.lang);
@@ -66,7 +66,6 @@ export class condition {
 
     setUploadURL(url) {
         if (typeCheckBoolean(url, "string") == true) {
-
         } else {
             this.uploadURL = "";
         }
@@ -121,62 +120,62 @@ export class condition {
             textBlock: {
                 text: "Text",
                 icon: "#icon-text-block",
-                type: "block"
+                type: "block",
             },
             imageBlock: {
                 text: "Image",
                 icon: "#icon-image-block",
-                type: "file"
+                type: "file",
             },
             ulBlock: {
                 text: "Unnumbered list",
                 icon: "#icon-ul-block",
-                type: "block"
+                type: "block",
             },
             olBlock: {
                 text: "Numbered list",
                 icon: "#icon-ol-block",
-                type: "block"
+                type: "block",
             },
             quotaionBlock: {
                 text: "Quotaion",
                 icon: "#icon-quotaion-block",
-                type: "block"
+                type: "block",
             },
             tableBlock: {
                 text: "Table",
                 icon: "#icon-table-block",
-                type: "block"
+                type: "block",
             },
             linkboxBlock: {
                 text: "Link box",
                 icon: "#icon-linkbox-block",
-                type: "pop"
+                type: "pop",
             },
             emoticonBlock: {
                 text: "Emoticon",
                 icon: "#icon-emoticon-block",
-                type: "pop"
+                type: "pop",
             },
             youtubeBlock: {
                 text: "Youtube",
                 icon: "#icon-youtube-block",
-                type: "pop"
+                type: "pop",
             },
             codepenBlock: {
                 text: "Codepen",
                 icon: "#icon-codepen-block",
-                type: "pop"
+                type: "pop",
             },
             codeBlock: {
                 text: "Code",
                 icon: "#icon-code-block",
-                type: "block"
+                type: "block",
             },
         };
 
         for (const [key, value] of Object.entries(this.blockName)) {
-            if(typeCheckBoolean(value, "string") == true){
+            if (typeCheckBoolean(value, "string") == true) {
                 defaultMenu[key].text = value;
             }
         }
@@ -215,16 +214,13 @@ export class condition {
         this.popLinkbox = getElement(".djs-linkbox-pop", false);
         this.btnLinkbox = getElement(".djs-linkbox-pop .djs-btn", false);
 
-
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
         this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
 
         console.log("set Element");
     }
 
-    setMessage(message){
-
-    }
+    setMessage(message) {}
 
     /*
         
@@ -234,7 +230,7 @@ export class condition {
         this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
         this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
         this.linkBoxApi = typeof options.linkBoxApi !== 'string' ? '' : options.linkBoxApi;
-        this.defaultLinkBoxImage = typeof options.defaultLinkBoxImage !== 'string' ? 'https://via.placeholder.com/600x300.png' : options.defaultLinkBoxImage;
+        
         
         this.makeLinkBoxType = typeof options.makeLinkBoxType !== 'self' ? 'self' : 'api';
         this.makeLinkBoxURL = typeof options.makeLinkBoxURL !== 'string' ? '' : options.makeLinkBoxURL;

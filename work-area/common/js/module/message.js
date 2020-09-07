@@ -1,5 +1,6 @@
 export const message = {
-    wrongValue : (valueName) => `DRAGON EDITOR : Wrong type value in "${valueName}".`
+    wrongValue : (valueName) => `DRAGON EDITOR : Wrong type value in "${valueName}".`,
+    apiNotWorking : "API server is not responding."
 };
 
 

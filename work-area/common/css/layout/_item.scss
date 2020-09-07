@@ -16,6 +16,11 @@
     }
 
     &[data-type="image"] {
+        // @for $i from 1 through 14 {
+        //     &[data-width="#{50 * $i}"] {
+        //         max-width: 50px * $i;
+        //     }
+        // }
     }
 
     &[data-type="ul"] {
@@ -603,6 +608,121 @@
         }
     }
 
-    &[data-type=""] {
+    &[data-type="codepen"] {
+        position: relative;
+
+        .editor-iframe {
+            display: block;
+            width: 100%;
+            border: 0;
+        }
+
+        .editor-btn-resize {
+            position: absolute;
+            left: 50%;
+            bottom: 10px;
+            width: 100px;
+            height: 6px;
+            background: #f1f1f1;
+            color: transparent;
+            border-radius: 10px;
+            font-size: 0;
+            transform: translateX(-50%);
+            cursor: row-resize;
+            z-index: 10;
+        }
+    }
+
+    &[data-type="linkbox"] {
+        text-align: center;
+
+        .editor-linkbox {
+            display: inline-block;
+            width: 300px;
+            background: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .editor-linkbox-img {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 50%;
+            border-bottom: 1px solid #ccc;
+            overflow: hidden;
+
+            .editor-img {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                transform: translateY(-50%);
+            }
+        }
+
+        .editor-linkbox-text {
+            padding: 10px;
+            font-size: 14px;
+            text-align: left;
+
+            .editor-title {
+                @include ellipsis;
+            }
+
+            .editor-description {
+                color: #999;
+                @include ellipsis;
+            }
+
+            .editor-domain {
+                color: #3f80e9;
+                font-size: 12px;
+                text-align: right;
+            }
+        }
+    }
+}
+
+@mixin mobile-item{
+    .editor-item {
+        &[data-type="linkbox"] {
+            .editor-linkbox {
+                width: 100%;
+                font-size:0;
+            }
+    
+            .editor-linkbox-img {
+                display:inline-block;
+                width: 100px;
+                height: 50px;
+                padding-bottom: 0;
+                border-bottom: 0;
+                border-right:1px solid #ccc;
+            }
+    
+            .editor-linkbox-text {
+                padding: 10px;
+                font-size: 14px;
+                text-align: left;
+    
+                .editor-title {
+                    @include ellipsis;
+                }
+    
+                .editor-description {
+                    color: #999;
+                    @include ellipsis;
+                }
+    
+                .editor-domain {
+                    color: #3f80e9;
+                    font-size: 12px;
+                    text-align: right;
+                }
+            }
+        }
     }
 }
