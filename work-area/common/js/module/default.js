@@ -67,10 +67,10 @@ export function hasClass($node, className, _0 = typeCheckThrow($node, Node), _1 
     let nameList = className.split(".");
 
     nameList.some((name) => {
-        if(name !== ""){
-            if($node.classList.contains(name)){
+        if (name !== "") {
+            if ($node.classList.contains(name)) {
                 value = true;
-            }else{
+            } else {
                 value = false;
             }
 
@@ -79,4 +79,27 @@ export function hasClass($node, className, _0 = typeCheckThrow($node, Node), _1 
     });
 
     return value;
+}
+
+export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(url, "string"), _1 = typeCheckThrow(option, "object"), _2 = typeCheckThrow(type, "string")) {
+    let formData = new FormData();
+
+    if (type === "json") {
+        for (let key in option.body) {
+            formData.append(key, option.body[key]);
+        }
+
+        option.body = formData;
+    }
+
+    return fetch(url, option)
+        .then((res) => {
+            return res.json();
+        })
+        .catch((error) => {
+            return {
+                respon: false,
+                error: error,
+            };
+        });
 }

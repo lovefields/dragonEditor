@@ -34,7 +34,7 @@ function makeBlockMenu(data) {
     let html = "";
 
     for (const [key, value] of Object.entries(data)) {
-        if(value.type === "block"){
+        if (value.type === "block") {
             html += `
                 <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
                     <svg viewbox="0 0 64 64" class="editor-icon">
@@ -43,8 +43,8 @@ function makeBlockMenu(data) {
                     ${value.text}
                 </button>
             `;
-        }else if(value.type === "pop"){
-            if(key === "emoticonBlock"){
+        } else if (value.type === "pop") {
+            if (key === "emoticonBlock") {
                 html += `
                     <div class="editor-relative">
                         <button class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
@@ -56,7 +56,7 @@ function makeBlockMenu(data) {
                 `;
                 html += makeEmoticonPop();
                 html += `</div>`;
-            }else{
+            } else {
                 html += `
                     <button class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
                         <svg viewbox="0 0 64 64" class="editor-icon">
@@ -66,7 +66,7 @@ function makeBlockMenu(data) {
                     </button>
                 `;
             }
-        }else if(value.type === "file"){
+        } else if (value.type === "file") {
             html += `
                 <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
                     <svg viewbox="0 0 64 64" class="editor-icon">
@@ -77,14 +77,10 @@ function makeBlockMenu(data) {
             `;
         }
 
-
-
-
-
         // if (key === "emoticonBlock") {
-            
+
         // } else {
-            
+
         // }
     }
 
@@ -163,7 +159,7 @@ function makeFolderPop() {
     `;
 }
 
-function makeLinkboxPop(){
+function makeLinkboxPop() {
     return `
         <div class="editor-pop-linkbox djs-linkbox-pop editor-clearfix djs-trigger" data-type="new">
             <input type="url" class="editor-input djs-input --new" placeholder="https://dico.me">
@@ -275,11 +271,11 @@ function getOlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
     return html;
 }
 
-function getQuotaionBlock(){
+function getQuotaionBlock() {
     return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>`;
 }
 
-function getTableBlock(){
+function getTableBlock() {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="table">
             <div class="scroll">
@@ -311,13 +307,13 @@ function getTableBlock(){
     `;
 }
 
-function getCodeBlock(){
+function getCodeBlock() {
     return `
         <pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight editor-code" contenteditable="true"></code></pre>
     `;
 }
 
-export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")){
+export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="youtube">
             <iframe src="https://www.youtube.com/embed/${code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe"></iframe>
@@ -325,14 +321,33 @@ export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")){
     `;
 }
 
+export function getCodepenBlock(nickname, code, height = 300, _0 = typeCheckThrow(nickname, "string"), _1 = typeCheckThrow(code, "string"), _2 = typeCheckThrow(height, "number")) {
+    return `
+        <div class="editor-item djs-item --djs-selected" data-type="codepen">
+            <iframe height="${height}" title="" src="https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${editorCondition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe"></iframe>
+            <button class="editor-btn-resize djs-resize-height">Resize height</button>
+        </div>
+    `;
+}
+
+export function getLinkboxBlock(data, _0 = typeCheckThrow(data, "object")) {
+    return `
+        <div class="editor-item djs-item --djs-selected" data-type="linkbox">
+            <a href="${data.url}" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix" draggable="false">
+                <div class="editor-linkbox-img">
+                    <img src="${data.img}" alt="미리보기 이미지" class="editor-img" draggable="false">
+                </div>
+
+                <div class="editor-linkbox-text">
+                    <p class="editor-title">${data.title}</p>
+                    <p class="editor-description">${data.description}</p>
+                    <p class="editor-domain">${data.domain}</p>
+                </div>
+            </a>
+        </div>
+    `;
+}
 
 // this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
-
-// this.HTMLTable = '';
-// this.HTMLCodeBlock = '';
-// this.HTMLLinkBox = '<div class="item lastset" data-type="link_box"><a href="[url]" target="_blank" rel="nofollow" class="link_box clearfix" draggable="false"><div class="img_area"><img src="[imgSrc]" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">[title]</p><p class="link_description ellipsis">[description]</p><p class="link_domain">[domain]</p></div></a></div>';
 // this.HTMLOption = '<option value="[value]">[text]</option>';
 // this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" data-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';
-
-// this.HTMLYoutube = '';
-// this.HTMLCodepen = '<div class="item item_codepen lastset" data-type="codepen"><iframe height="[height]" title="" src="[src]" allowfullscreen class="iframe"></iframe></div>';

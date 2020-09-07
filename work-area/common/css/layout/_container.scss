@@ -23,6 +23,7 @@
 .editor-content {
     max-width: 700px;
     min-height: 300px;
+    padding-bottom: 50px;
     margin: 0 auto;
     font-size: 16px;
     line-height: 1.7;
@@ -31,6 +32,8 @@
 
     &.--mobile {
         max-width: 320px;
+
+        @include mobile-item;
     }
 }
 

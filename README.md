@@ -17,8 +17,8 @@
 
 ```html
 <!-- 
-* css
 * Load Google font(Inconsolata) if you using code block.
+* Load DragonEditor CSS
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdri]/dragonEditor.css">
@@ -29,22 +29,22 @@
 -->
 <svg hidden>
     <defs>
-        <g id="iconId">...</g>
+        <g id="icon-id">...</g>
         ...
     </defs>
 </svg>
 <div class=".editor-dragon"></div>
 
 <!-- 
-* js
 * Load highlight plugin if you using code block.
+* Load dragonEditor js
 -->
 <script src="[yourdri]/highlight.pack.js"></script>
 <script src="[yourdri]/dragonEditor.js"></script>
 <script>
     const editor = new dragonEditor();
     // OR
-    const editor = new dragonEditor(".class-name", {
+    const editor = new dragonEditor("selector", {
         key: "value",
     });
 </script>
@@ -52,4 +52,4 @@
 
 ## Wiki
 
--   [DragonEditor wiki](https://github.com/lovefields/dragonEditor/wiki)
+-   [DragonEditor Document](https://lovefields.github.io/dragonEditor/)

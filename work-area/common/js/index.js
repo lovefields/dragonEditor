@@ -21,8 +21,6 @@ module.exports = class {
 
 /*
 icon-arrow-bottom
-icon-delete-link
-icon-btn-accept
 icon-align-left
 icon-align-right
 icon-align-center
