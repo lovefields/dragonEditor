@@ -11,7 +11,7 @@ export function setEvent() {
     setMenuEvent();
     setScroll(getElement(".djs-scroll"));
 
-    console.log("set Event");
+    console.log("doing - set Event");
 }
 
 function setGlobalEvent() {
