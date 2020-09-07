@@ -1,4 +1,6 @@
-# dragonEditor
+# DragonEditor
+I made DragonEditor because I needed an WYSIWYG editor to use in my blog. And I wanted to make every design acceptable.
+So DragonEditor is an WYSIWYG editor and can be customized.
 
 ## Support browser
 
@@ -8,6 +10,8 @@
 -   Edge 79+
 -   IOS 11+
 -   Android 7+
+
+We never ever support IE.
 
 ## Plugin
 
@@ -50,6 +54,6 @@
 </script>
 ```
 
-## Wiki
+## Document
 
 -   [DragonEditor Document](https://lovefields.github.io/dragonEditor/)
