@@ -144,62 +144,194 @@
         width: 12px;
         margin-top: 4px;
 
-        &.--ing{
-            position:relative;
-            height:12px;
+        &.--ing {
+            position: relative;
+            height: 12px;
             animation: loding 2s infinite ease;
 
-            &::before{
-                display:block;
-                content:"";
-                position:absolute;
-                top:0;
-                left:0;
-                width:4px;
-                height:4px;
-                background:#333;
-                border-radius:50%;
-                z-index:10;
+            &::before {
+                display: block;
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 4px;
+                background: #333;
+                border-radius: 50%;
+                z-index: 10;
             }
 
-            &::after{
-                display:block;
-                content:"";
-                position:absolute;
-                bottom:0;
-                right:0;
-                width:4px;
-                height:4px;
-                background:#333;
-                border-radius:50%;
-                z-index:10;
+            &::after {
+                display: block;
+                content: "";
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 4px;
+                height: 4px;
+                background: #333;
+                border-radius: 50%;
+                z-index: 10;
             }
 
-            .icon{
-                display:none;
+            .icon {
+                display: none;
             }
         }
     }
 }
 
-@keyframes loding{
-    0%{
-        transform:rotate(0);
+@keyframes loding {
+    0% {
+        transform: rotate(0);
     }
 
-    25%{
-        transform:rotate(90deg);
+    25% {
+        transform: rotate(90deg);
     }
 
-    50%{
-        transform:rotate(180deg);
+    50% {
+        transform: rotate(180deg);
     }
 
-    75%{
-        transform:rotate(270deg);
+    75% {
+        transform: rotate(270deg);
     }
 
-    100%{
-        transform:rotate(360deg);
+    100% {
+        transform: rotate(360deg);
     }
 }
+
+.editor-pop-option {
+    position: fixed;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 0;
+    z-index: 100;
+
+    .editor-col {
+        display: inline-block;
+        position: relative;
+        height: 46px;
+        vertical-align: top;
+    }
+
+    .editor-fontsize {
+        width: 60px;
+        height: 46px;
+        padding-left: 17px;
+        border-right: 1px solid #ccc;
+        text-align: left;
+        line-height: 46px;
+        box-sizing: border-box;
+
+        .icon {
+            width: 12px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+    }
+
+    .editor-list-fontsize {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 59px;
+        height: 200px;
+        border: 1px solid #ccc;
+
+        .editor-scroll-content {
+            overflow-x: hidden;
+        }
+
+        .editor-btn {
+            width: 55px;
+            padding: 5px 0;
+
+            &:first-child {
+                padding-top: 10px;
+            }
+
+            &:last-child {
+                padding-bottom: 10px;
+            }
+        }
+    }
+
+    .editor-color {
+        position: relative;
+        width: 48px;
+        height: 46px;
+        border-right: 1px solid #ccc;
+
+        &::before {
+            display: block;
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 18px;
+            height: 18px;
+            background: #333;
+            border-radius: 50%;
+            box-sizing: border-box;
+            transform: translate(-50%, -50%);
+        }
+
+        @each $color in $color-list {
+            &[data-value="#{$color}"]::before {
+                background-color: $color;
+            }
+        }
+
+        &[data-value="#fff"]::before {
+            border: 1px solid #ccc;
+        }
+    }
+
+    .editor-list-color {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 160px;
+        height: 236px;
+        padding: 15px 10px 10px 15px;
+        border: 1px solid #ccc;
+        font-size: 0;
+        box-sizing: border-box;
+
+        .editor-btn {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin: 0 5px 5px 0;
+            color: transparent;
+            border-radius: 50%;
+            font-size: 0;
+
+            @each $color in $color-list {
+                &[data-value="#{$color}"] {
+                    background-color: $color;
+                }
+            }
+
+            &[data-value="#fff"] {
+                border: 1px solid #ccc;
+            }
+        }
+    }
+}
+
+// opacity: 0;
+// visibility: hidden;
+// transform: translateY(10px);
+// transition: all 0.3s ease;
+
+// &.--act {
+//     opacity: 1;
+//     visibility: visible;
+//     transform: translateY(0);
+// }

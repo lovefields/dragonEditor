@@ -31,8 +31,6 @@ export class condition {
             codepenCode: new RegExp("(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)", "i"),
         };
 
-        // this.srcReg = new RegExp('(.*)\\.((jpg|png|gif|webp|bmp))', 'i');
-        // this.urlReg = new RegExp('https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?', 'i');
         // this.numberReg = new RegExp('[0-9]', 'g');
         // this.classReg = {
         //     'color' : new RegExp('color_[a-z0-9_]*', 'i'),
@@ -50,6 +48,89 @@ export class condition {
         this.codepenTheme = typeCheckBoolean(options.codepenTheme, "string") ? options.codepenTheme : "dark";
         this.blockName = typeCheckBoolean(options.blockName, Object) ? options.blockName : {};
         this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
+        this.frontSize = typeCheckBoolean(options.frontSize, Array) ? options.frontSize : [12, 14, 16, 18, 20, 24, 28, 30, 34, 38];
+        this.colorList = typeCheckBoolean(options.colorList, Array)
+            ? options.colorList
+            : [
+                  "#fff",
+                  "#efefef",
+                  "#ccc",
+                  "#999",
+                  "#777",
+                  "#555",
+                  "#333",
+                  "#e6b8af",
+                  "#dd7e6b",
+                  "#cc4125",
+                  "#980000",
+                  "#a61c00",
+                  "#85200c",
+                  "#5b0f00",
+                  "#f4cccc",
+                  "#ea9999",
+                  "#e06666",
+                  "#ff0000",
+                  "#cc0000",
+                  "#990000",
+                  "#660000",
+                  "#fce5cd",
+                  "#f9cb9c",
+                  "#f6b36b",
+                  "#ff9900",
+                  "#e69138",
+                  "#b45f06",
+                  "#783f04",
+                  "#fff2cc",
+                  "#ffe599",
+                  "#ffd966",
+                  "#ffff00",
+                  "#f1c232",
+                  "#bf9000",
+                  "#7f6000",
+                  "#d9ead3",
+                  "#b6d7a8",
+                  "#93c47d",
+                  "#00ff00",
+                  "#6aa84f",
+                  "#38761d",
+                  "#274e13",
+                  "#d0e0e3",
+                  "#a2c4c9",
+                  "#76a5af",
+                  "#00ffff",
+                  "#45818e",
+                  "#134f5c",
+                  "#0c343d",
+                  "#c9daf8",
+                  "#a4c2f4",
+                  "#6d9eeb",
+                  "#4a87e8",
+                  "#3c78d8",
+                  "#1156cc",
+                  "#1c4587",
+                  "#cfe2f3",
+                  "#9fc5e8",
+                  "#6fa8dc",
+                  "#0000ff",
+                  "#3d85c6",
+                  "#0b5394",
+                  "#073763",
+                  "#d9d2e9",
+                  "#b4a7d6",
+                  "#8e7cc3",
+                  "#9900ff",
+                  "#674ea7",
+                  "#351c75",
+                  "#20124d",
+                  "#ead1dc",
+                  "#d5a6bd",
+                  "#c27ba0",
+                  "#ff00ff",
+                  "#a64d79",
+                  "#741b47",
+                  "#4c1130",
+              ];
+
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
@@ -66,6 +147,12 @@ export class condition {
 
     setUploadURL(url) {
         if (typeCheckBoolean(url, "string") == true) {
+            if (this.regList["defaultURL"].test(url) == true || url.substr(0, 1) == "/") {
+                this.uploadURL = url;
+            } else {
+                console.warn(message.wrongURL(url));
+                this.uploadURL = "";
+            }
         } else {
             this.uploadURL = "";
         }
@@ -217,15 +304,13 @@ export class condition {
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
         this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
 
-        console.log("set Element");
+        console.log("doing - set Element");
     }
 
-    setMessage(message) {}
+    setMessage() {}
 
     /*
         
-
-        this.multiUpload = typeof options.multiUpload !== 'boolean' ? false : options.multiUpload;
         this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
         this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
         this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
