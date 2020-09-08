@@ -686,42 +686,29 @@
     }
 }
 
-@mixin mobile-item{
+@mixin mobile-item {
     .editor-item {
         &[data-type="linkbox"] {
             .editor-linkbox {
                 width: 100%;
-                font-size:0;
+                font-size: 0;
             }
-    
+
             .editor-linkbox-img {
-                display:inline-block;
+                display: inline-block;
                 width: 100px;
-                height: 50px;
+                height: 100px;
                 padding-bottom: 0;
                 border-bottom: 0;
-                border-right:1px solid #ccc;
+                border-right: 1px solid #ccc;
+                vertical-align: middle;
             }
-    
+
             .editor-linkbox-text {
-                padding: 10px;
-                font-size: 14px;
-                text-align: left;
-    
-                .editor-title {
-                    @include ellipsis;
-                }
-    
-                .editor-description {
-                    color: #999;
-                    @include ellipsis;
-                }
-    
-                .editor-domain {
-                    color: #3f80e9;
-                    font-size: 12px;
-                    text-align: right;
-                }
+                display: inline-block;
+                width: calc(100% - 101px);
+                box-sizing: border-box;
+                vertical-align: middle;
             }
         }
     }
