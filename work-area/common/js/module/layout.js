@@ -356,8 +356,9 @@ function makeOptionPop() {
     html += `
         <div class="editor-scroll-wrap">
             <div class="editor-col" data-group="text,li,table,codeblock,word">
-                <button class="editor-fontsize djs-fontisze editor-toggle-target" data-target=".editor-list-fontsize">
-                    16
+                <button class="editor-select djs-fontisze editor-toggle-target" data-target=".editor-list-fontsize">
+                    <span class="editor-text djs-text">16</span>
+
                     <svg class="icon" viewbox="0 0 64 64">
                         <use class="path" xlink:href="#icon-arrow-bottom" href="#icon-arrow-bottom"></use>
                     </svg>
@@ -392,8 +393,142 @@ function makeOptionPop() {
         </div>
     `;
 
-    html += ``;
-    html += ``;
+    html += `
+        <div class="editor-col editor-btn-area" data-group="text,li,table,image,sticker">
+            <button class="editor-btn djs-change-align" data-value="left">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-align-left" href="#icon-align-left"></use>
+                </svg>
+
+                align left
+            </button>
+
+            <button class="editor-btn djs-change-align" data-value="center">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-align-center" href="#icon-align-center"></use>
+                </svg>
+
+                align center
+            </button>
+
+            <button class="editor-btn djs-change-align" data-value="right">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-align-right" href="#icon-align-right"></use>
+                </svg>
+
+                align right
+            </button>
+        </div>
+
+        <div class="editor-col editor-btn-area" data-group="text,li,table,word,link">
+            <button class="editor-btn djs-toggle-bold">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-bold" href="#icon-bold"></use>
+                </svg>
+
+                bold
+            </button>
+
+            <button class="editor-btn djs-toggle-italic">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-italic" href="#icon-italic"></use>
+                </svg>
+
+                italic
+            </button>
+
+            <button class="editor-btn djs-toggle-underline">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-underline" href="#icon-underline"></use>
+                </svg>
+
+                underline
+            </button>
+
+            <button class="editor-btn djs-toggle-strikethrough">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-strikethrough" href="#icon-strikethrough"></use>
+                </svg>
+
+                strikethrough
+            </button>
+        </div>
+
+        <div class="editor-col editor-btn-area" data-group="td">
+            <button class="editor-btn djs-table-header">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-table-header" href="#icon-table-header"></use>
+                </svg>
+
+                change to table header
+            </button>
+        </div>
+
+        <div class="editor-col editor-btn-area" data-group="td">
+            <button class="editor-btn djs-table-body">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-table-body" href="#icon-table-body"></use>
+                </svg>
+
+                change to table body
+            </button>
+        </div>
+
+        <div class="editor-col editor-btn-area" data-group="word,link">
+            <button class="editor-btn djs-open-linkbox">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-link" href="#icon-link"></use>
+                </svg>
+
+                open linkbox pop
+            </button>
+        </div>
+
+        <div class="editor-col editor-btn-area" data-group="codeblock">
+            <button class="editor-btn djs-toggle-target" data-target=".editor-list-theme">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-theme" href="#icon-theme"></use>
+                </svg>
+
+                open theme pop
+            </button>
+
+            <div class="editor-list-select editor-list-theme">
+    `;
+    
+    editorCondition.codeTheme.forEach(theme => {
+        html += `<button class="editor-btn djs-set-theme" data-value="${theme}">${theme.charAt(0).toUpperCase() + theme.slice(1)}</button>`;
+    });
+
+    html += `
+            </div>
+        </div>
+    `;
+
+    html += `
+        <div class="editor-col" data-group="codeblock">
+            <button class="editor-select djs-toggle-target" data-target=".editor-list-lang">
+                <span class="editor-text djs-text">Text</span>
+
+                <svg class="icon" viewbox="0 0 64 64">
+                    <use class="path" xlink:href="#icon-arrow-bottom" href="#icon-arrow-bottom"></use>
+                </svg>
+            </button>
+
+            <div class="editor-list-select editor-list-lang">
+    `;
+
+    editorCondition.codeLang.forEach(lang => {
+        html += `<button class="editor-btn djs-set-lang" data-value="${lang}">${lang.charAt(0).toUpperCase() + lang.slice(1)}</button>`;
+    });
+
+    html += `
+            </div>
+        </div>
+    `;
+
+
+
     html += ``;
     html += ``;
     html += ``;
@@ -402,110 +537,7 @@ function makeOptionPop() {
     return html;
 
     /*
-<div class="pop pop_options">
-    <div class="scroll">
-        
 
-
-
-        <button class="col select_color btn_pop" data-target=".pop_color" data-type="position" data-class="default" data-group="text,list_u,list_o,table,word,link"></button>
-        <div class="pop pop_color clearfix">
-            <button class="btn btn_set_color" data-class="color_white" title="흰색"></button>
-            <button class="btn btn_set_color" data-class="color_light_gray" title="밝은 회색"></button>
-            <button class="btn btn_set_color" data-class="color_gray" title="회색"></button>
-            <button class="btn btn_set_color" data-class="color_dark_gray_1" title="어두운 회색 1"></button>
-            <button class="btn btn_set_color" data-class="color_dark_gray_2" title="어두운 회색 2"></button>
-            <button class="btn btn_set_color" data-class="default" title="기본색"></button>
-            <button class="btn btn_set_color" data-class="color_black" title="검은색"></button>
-            <button class="btn btn_set_color" data-class="color_light_red_berry_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_red_berry_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_red_berry_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_red_berry" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_red_berry_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_red_berry_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_red_berry_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_red_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_red_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_red_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_red" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_red_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_red_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_red_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_orange_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_orange_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_orange_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_orange" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_orange_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_orange_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_orange_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_yellow_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_yellow_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_yellow_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_yellow" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_yellow_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_yellow_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_yellow_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_green_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_green_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_green_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_green" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_green_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_green_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_green_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_cyan_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_cyan_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_cyan_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_cyan" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_cyan_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_cyan_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_cyan_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_cornflower_blue_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_cornflower_blue_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_cornflower_blue_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_cornflower_blue" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_cornflower_blue_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_cornflower_blue_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_cornflower_blue_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_blue_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_blue_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_blue_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_blue" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_blue_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_blue_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_blue_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_purple_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_purple_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_purple_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_purple" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_purple_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_purple_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_purple_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_magenta_3" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_magenta_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_light_magenta_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_magenta" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_magenta_1" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_magenta_2" title=""></button>
-            <button class="btn btn_set_color" data-class="color_dark_magenta_3" title=""></button>
-        </div>
-        <button class="col btn_text_algin blind" data-group="text,list_u,list_o,table,image,sticker" data-value="align_left">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_align_left" href="#icon_align_left" />
-            </svg>
-            Align left
-        </button>
-        <button class="col btn_text_algin blind" data-group="text,list_u,list_o,table,image,sticker" data-value="align_center">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_align_center" href="#icon_align_center" />
-            </svg>
-            Align center
-        </button>
-        <button class="col btn_text_algin blind" data-group="text,list_u,list_o,table,image,sticker" data-value="align_right">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_align_right" href="#icon_align_right" />
-            </svg>
-            Align right
-        </button>
         <label class="col select_area" data-group="list_o">
             <select class="select select_list_type">
                 <option value="1">1 - Numbered</option>
@@ -515,6 +547,8 @@ function makeOptionPop() {
                 <option value="a">a - Lower-alpha</option>
             </select>
         </label>
+
+
         <label class="col select_area" data-group="table">
             <select class="select select_col">
                 <option value="size_100">100px</option>
@@ -534,35 +568,7 @@ function makeOptionPop() {
                 <option value="size_800">800px</option>
             </select>
         </label>
-        <label class="col select_area" data-group="codeblock">
-            <select class="select select_theme">
-                <option value="default">Default theme</option>
-                <option value="vs2015">VS2015 theme</option>
-                <option value="androidstudio">Androidstudio theme</option>
-                <option value="monokai">Monokai theme</option>
-            </select>
-        </label>
-        <label class="col select_area" data-group="codeblock">
-            <select class="select select_language">
-                <option value="text">Text</option>
-                <option value="css">css</option>
-                <option value="html">html</option>
-                <option value="xml">xml</option>
-                <option value="json">json</option>
-                <option value="java">java</option>
-                <option value="javascript">javascript</option>
-                <option value="markdown">markdown</option>
-                <option value="objective-c">objective-c</option>
-                <option value="php">php</option>
-                <option value="python">python</option>
-                <option value="sql">sql</option>
-                <option value="shell">Shell Session</option>
-                <option value="kotlin">kotlin</option>
-                <option value="swift">swift</option>
-            </select>
-        </label>
-        <button class="col btn_change_th" data-group="table">th</button>
-        <button class="col btn_change_td" data-group="table">td</button>
+        
         <label class="col options_width" data-group="image">
             <span class="text">Width : </span>
             <input type="text" maxlength="3" class="value">
@@ -571,37 +577,7 @@ function makeOptionPop() {
             <span class="text">Height : </span>
             <input type="text" maxlength="4" class="value">
         </label>
-        <label class="col options_url" data-group="youtube,codepen,word,link">
-            <span class="text">URL : </span>
-            <input type="text" class="value">
-        </label>
-        <button class="col btn_url_change" data-group="youtube,codepen">Change</button>
-        <button class="col btn_url_link" data-group="word,link">Link</button>
-        <button class="col btn_url_unlink" data-group="word,link">Unlink</button>
-        <button class="col btn_bold blind" data-group="text,list_u,list_o,table,word,link">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_bold" href="#icon_bold" />
-            </svg>
-            굵게
-        </button>
-        <button class="col btn_italic blind" data-group="text,list_u,list_o,table,word,link">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_italic" href="#icon_italic" />
-            </svg>
-            기울게
-        </button>
-        <button class="col btn_underline blind" data-group="text,list_u,list_o,table,word,link">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_underline" href="#icon_underline" />
-            </svg>
-            밑줄
-        </button>
-        <button class="col btn_strike blind" data-group="text,list_u,list_o,table,word,link">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_strike" href="#icon_strike" />
-            </svg>
-            취소선
-        </button>
+
         <button class="col btn_wordblock blind" data-group="word,wordblock">
             <svg class="icon" viewbox="0 0 50 50">
                 <use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
