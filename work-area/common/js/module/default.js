@@ -1,10 +1,10 @@
 export function typeCheckThrow(target, type) {
     if (typeof type == "string") {
         if (typeof target != type) {
-            throw `invaild type ${target} : ${type}`;
+            throw `DRAGON EDITOR - invalid type ${target} : ${type}`;
         }
     } else if (!(target instanceof type)) {
-        throw `invaild type ${target} : ${type}`;
+        throw `DRAGON EDITOR - invalid type ${target} : ${type}`;
     }
     return target;
 }

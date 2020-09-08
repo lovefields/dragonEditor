@@ -10,12 +10,14 @@ module.exports = class {
         makeView();
         editorCondition.setElement(options);
         setEvent();
-        console.log(editorCondition);
 
         return this;
     }
 
-    // setEmoticon
+    setEmoticon(data, _0 = typeCheckThrow(data, Array)) {
+        console.log(data);
+    }
+
     // setMedia
 };
 

@@ -156,11 +156,10 @@
 <script src="../assets/js/dragonEditor.js"></script>
 <script>
 const editor = new dragonEditor("", {
-    blockName: {
-        textBlock: "텍스트"
-    },
     uploadURL : "/sdf"
 });
+
+editor.setEmoticon([1,2]);
 
 /*
 
@@ -179,6 +178,10 @@ const editor = new dragonEditor("", {
         }
     },
     triggerLangChange: changeLang,
+    message: {
+        apiNotWorking: "API가 응답하지 않습니다.",
+        apiNotWo: "API가 응답하지 않습니다."
+    }
 }
 
 function changeLang(lang){
