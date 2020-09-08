@@ -76,6 +76,9 @@
     margin-right: -30px;
 }
 
+.editor-list-emoticon {
+}
+
 .editor-list-media {
     font-size: 12px;
 }
@@ -219,18 +222,25 @@
         vertical-align: top;
     }
 
-    .editor-fontsize {
-        width: 60px;
+    .editor-select {
+        position: relative;
         height: 46px;
-        padding-left: 17px;
+        padding-right: 27px;
         border-right: 1px solid #ccc;
         text-align: left;
         line-height: 46px;
         box-sizing: border-box;
 
+        .editor-text {
+            display: block;
+            padding-left: 17px;
+        }
+
         .icon {
+            position: absolute;
+            top: 18px;
+            right: 10px;
             width: 12px;
-            margin-left: 5px;
             vertical-align: middle;
         }
     }
@@ -321,6 +331,56 @@
             &[data-value="#fff"] {
                 border: 1px solid #ccc;
             }
+        }
+    }
+
+    .editor-btn-area {
+        padding: 0 10px;
+        border-right: 1px solid #ccc;
+        line-height: 46px;
+
+        .editor-btn {
+            margin: 0 5px;
+            color: transparent;
+            font-size: 0;
+
+            &.--act .path {
+                fill: #3f80e9;
+            }
+        }
+
+        .icon {
+            width: 18px;
+        }
+
+        .path {
+            fill: #333;
+        }
+    }
+
+    .editor-list-select {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 170px;
+        padding: 5px 20px;
+        border: 1px solid #ccc;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+
+        &.--act {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .editor-btn {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            text-align: left;
         }
     }
 }

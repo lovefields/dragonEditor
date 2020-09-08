@@ -49,6 +49,8 @@ export class condition {
         this.blockName = typeCheckBoolean(options.blockName, Object) ? options.blockName : {};
         this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
         this.frontSize = typeCheckBoolean(options.frontSize, Array) ? options.frontSize : [12, 14, 16, 18, 20, 24, 28, 30, 34, 38];
+        this.codeTheme = typeCheckBoolean(options.codeTheme, Array) ? options.codeTheme : ["default", "vs2015", "androidstudio", "monokai"];
+        this.codeLang = typeCheckBoolean(options.codeLang, Array) ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift"];
         this.colorList = typeCheckBoolean(options.colorList, Array)
             ? options.colorList
             : [
