@@ -103,3 +103,7 @@ export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(ur
             };
         });
 }
+
+export function upperFirstChar(text, _0 = typeCheckThrow(text, "string")) {
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}

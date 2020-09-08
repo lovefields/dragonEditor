@@ -1,4 +1,4 @@
-const { typeCheckThrow } = require("./default");
+const { typeCheckThrow, upperFirstChar } = require("./default");
 
 export function makeView() {
     let view = "";
@@ -356,7 +356,7 @@ function makeOptionPop() {
     html += `
         <div class="editor-scroll-wrap">
             <div class="editor-col" data-group="text,li,table,codeblock,word">
-                <button class="editor-select djs-fontisze editor-toggle-target" data-target=".editor-list-fontsize">
+                <button class="editor-select djs-fontisze djs-toggle-target djs-btn-ignore" data-target=".editor-list-fontsize">
                     <span class="editor-text djs-text">16</span>
 
                     <svg class="icon" viewbox="0 0 64 64">
@@ -364,7 +364,7 @@ function makeOptionPop() {
                     </svg>
                 </button>
 
-                <div class="editor-list-fontsize editor-scroll djs-scroll">
+                <div class="editor-list-fontsize editor-scroll djs-scroll djs-trigger">
                     <div class="editor-scroll-content djs-scroll-content">
     `;
 
@@ -380,8 +380,8 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col" data-group="text,li,table,codeblock,word">
-            <button class="editor-color djs-color editor-toggle-target" data-target=".editor-list-color" data-value="#333"></button>
-            <div class="editor-list-color">
+            <button class="editor-color djs-color djs-toggle-target djs-btn-ignore" data-target=".editor-list-color" data-value="#333"></button>
+            <div class="editor-list-color djs-trigger">
     `;
 
     editorCondition.colorList.forEach((color) => {
@@ -485,7 +485,7 @@ function makeOptionPop() {
         </div>
 
         <div class="editor-col editor-btn-area" data-group="codeblock">
-            <button class="editor-btn djs-toggle-target" data-target=".editor-list-theme">
+            <button class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-list-theme">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-theme" href="#icon-theme"></use>
                 </svg>
@@ -493,11 +493,11 @@ function makeOptionPop() {
                 open theme pop
             </button>
 
-            <div class="editor-list-select editor-list-theme">
+            <div class="editor-list-select editor-list-theme djs-trigger">
     `;
-    
-    editorCondition.codeTheme.forEach(theme => {
-        html += `<button class="editor-btn djs-set-theme" data-value="${theme}">${theme.charAt(0).toUpperCase() + theme.slice(1)}</button>`;
+
+    editorCondition.codeTheme.forEach((theme) => {
+        html += `<button class="editor-btn djs-set-theme" data-value="${theme}">${upperFirstChar(theme)}</button>`;
     });
 
     html += `
@@ -507,7 +507,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col" data-group="codeblock">
-            <button class="editor-select djs-toggle-target" data-target=".editor-list-lang">
+            <button class="editor-select djs-toggle-target djs-btn-ignore" data-target=".editor-list-lang">
                 <span class="editor-text djs-text">Text</span>
 
                 <svg class="icon" viewbox="0 0 64 64">
@@ -515,11 +515,11 @@ function makeOptionPop() {
                 </svg>
             </button>
 
-            <div class="editor-list-select editor-list-lang">
+            <div class="editor-list-select editor-list-lang djs-trigger">
     `;
 
-    editorCondition.codeLang.forEach(lang => {
-        html += `<button class="editor-btn djs-set-lang" data-value="${lang}">${lang.charAt(0).toUpperCase() + lang.slice(1)}</button>`;
+    editorCondition.codeLang.forEach((lang) => {
+        html += `<button class="editor-btn djs-set-lang" data-value="${lang}">${upperFirstChar(lang)}</button>`;
     });
 
     html += `
@@ -527,76 +527,65 @@ function makeOptionPop() {
         </div>
     `;
 
+    html += `
+        <div class="editor-col" data-group="ol">
+            <button class="editor-select djs-toggle-target djs-btn-ignore" data-target=".editor-list-type">
+                <span class="editor-text djs-text">1 - Numbered</span>
+
+                <svg class="icon" viewbox="0 0 64 64">
+                    <use class="path" xlink:href="#icon-arrow-bottom" href="#icon-arrow-bottom"></use>
+                </svg>
+            </button>
+
+            <div class="editor-list-select editor-list-type djs-trigger">
+                <button class="editor-btn djs-set-type" data-value="1">1 - Numbered</button>
+                <button class="editor-btn djs-set-type" data-value="I">I - Upper-roman</button>
+                <button class="editor-btn djs-set-type" data-value="i">i - Lower-roman</button>
+                <button class="editor-btn djs-set-type" data-value="A">A - Upper-alpha</button>
+                <button class="editor-btn djs-set-type" data-value="a">a - Lower-alpha</button>
+            </div>
+        </div>
+    `;
 
 
     html += ``;
     html += ``;
     html += ``;
+    html += ``;
+    html += ``;
+    html += ``;
+    html += ``;
+
+
+
+
+    html += `
+        <div class="editor-col editor-btn-area" data-group="word">
+            <button class="editor-btn">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-word-block" href="#icon-word-block"></use>
+                </svg>
+
+                make word block
+            </button>
+        </div>
+    `;
+
+    html += `
+        <div class="editor-col editor-btn-area --noline" data-group="all">
+            <button class="editor-btn djs-delete-block">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path --red" xlink:href="#icon-delete-block" href="#icon-delete-block"></use>
+                </svg>
+
+                delete block
+            </button>
+        </div>
+    `;
+
     html += `</div>`;
 
     return html;
-
-    /*
-
-        <label class="col select_area" data-group="list_o">
-            <select class="select select_list_type">
-                <option value="1">1 - Numbered</option>
-                <option value="I">I - Upper-roman</option>
-                <option value="i">i - Lower-roman</option>
-                <option value="A">A - Upper-alpha</option>
-                <option value="a">a - Lower-alpha</option>
-            </select>
-        </label>
-
-
-        <label class="col select_area" data-group="table">
-            <select class="select select_col">
-                <option value="size_100">100px</option>
-                <option value="size_150">150px</option>
-                <option value="size_200">200px</option>
-                <option value="size_250">250px</option>
-                <option value="size_300">300px</option>
-                <option value="size_350">350px</option>
-                <option value="size_400">400px</option>
-                <option value="size_450">450px</option>
-                <option value="size_500">500px</option>
-                <option value="size_550">550px</option>
-                <option value="size_600">600px</option>
-                <option value="size_650">650px</option>
-                <option value="size_700">700px</option>
-                <option value="size_750">750px</option>
-                <option value="size_800">800px</option>
-            </select>
-        </label>
-        
-        <label class="col options_width" data-group="image">
-            <span class="text">Width : </span>
-            <input type="text" maxlength="3" class="value">
-        </label>
-        <label class="col options_height" data-group="codepen">
-            <span class="text">Height : </span>
-            <input type="text" maxlength="4" class="value">
-        </label>
-
-        <button class="col btn_wordblock blind" data-group="word,wordblock">
-            <svg class="icon" viewbox="0 0 50 50">
-                <use class="path" xlink:href="#icon_workblock" href="#icon_workblock" />
-            </svg>
-            단어블럭
-        </button>
-    
-        <button class="col btn_del_content blind" data-group="all">
-            <svg viewbox="0 0 50 50" class="icon">
-                <use class="path" xlink:href="#icon_delete" href="#icon_delete" />
-            </svg>
-            컨텐츠 삭제
-        </button>
-    </div>
-</div>
-
-
-</label>
-*/
 }
 
 // this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';

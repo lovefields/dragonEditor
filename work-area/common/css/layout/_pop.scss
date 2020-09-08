@@ -213,7 +213,15 @@
     border: 1px solid #ccc;
     border-radius: 2px;
     font-size: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
     z-index: 100;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+    }
 
     .editor-col {
         display: inline-block;
@@ -249,16 +257,26 @@
         position: absolute;
         top: 100%;
         left: -1px;
-        width: 59px;
+        width: 57px;
         height: 200px;
         border: 1px solid #ccc;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+
+        &.--act {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
 
         .editor-scroll-content {
             overflow-x: hidden;
         }
 
         .editor-btn {
-            width: 55px;
+            width: 54px;
             padding: 5px 0;
 
             &:first-child {
@@ -312,6 +330,16 @@
         border: 1px solid #ccc;
         font-size: 0;
         box-sizing: border-box;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+
+        &.--act {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
 
         .editor-btn {
             display: inline-block;
@@ -339,6 +367,10 @@
         border-right: 1px solid #ccc;
         line-height: 46px;
 
+        &.--noline {
+            border-right: 0;
+        }
+
         .editor-btn {
             margin: 0 5px;
             color: transparent;
@@ -355,6 +387,10 @@
 
         .path {
             fill: #333;
+
+            &.--red {
+                fill: #ff6a6a;
+            }
         }
     }
 
@@ -364,6 +400,7 @@
         left: -1px;
         width: 170px;
         padding: 5px 20px;
+        background: #fff;
         border: 1px solid #ccc;
         opacity: 0;
         visibility: hidden;
@@ -379,19 +416,10 @@
         .editor-btn {
             display: block;
             width: 100%;
-            margin: 5px 0;
+            padding: 5px 0;
+            color: #333;
+            font-size: 12px;
             text-align: left;
         }
     }
 }
-
-// opacity: 0;
-// visibility: hidden;
-// transform: translateY(10px);
-// transition: all 0.3s ease;
-
-// &.--act {
-//     opacity: 1;
-//     visibility: visible;
-//     transform: translateY(0);
-// }
