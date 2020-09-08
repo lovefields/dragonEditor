@@ -6,8 +6,8 @@ export class condition {
     constructor(wrap, options) {
         this.wrap = checkElement(wrap, ".editor-dragon", false);
 
-        this.setStatus(options);
         this.setMessage(options.message);
+        this.setStatus(options);
     }
 
     setStatus(options) {
@@ -30,15 +30,6 @@ export class condition {
             codepenURL: new RegExp("codepen.io", "g"),
             codepenCode: new RegExp("(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)", "i"),
         };
-
-        // this.numberReg = new RegExp('[0-9]', 'g');
-        // this.classReg = {
-        //     'color' : new RegExp('color_[a-z0-9_]*', 'i'),
-        //     'size' : new RegExp('size_[0-9]*', 'i'),
-        //     'align' : new RegExp('align_(left|center|right)*', 'i')
-        // };
-        // this.classList = ['color', 'size', 'align'];
-
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.changePint = typeCheckBoolean(options.changePint, "number") ? options.changePint : 800;
@@ -132,7 +123,6 @@ export class condition {
                   "#741b47",
                   "#4c1130",
               ];
-
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
@@ -309,34 +299,13 @@ export class condition {
         console.log("doing - set Element");
     }
 
-    setMessage() {}
+    setMessage(data = {}, _0 = typeCheckThrow(data, Object)) {
+        let check = ["apiNotWorking"];
 
-    /*
-        
-        this.mediaUploadURL = typeof options.mediaUploadURL !== 'string' ? '' : options.mediaUploadURL;
-        this.mediaUpdateURL = typeof options.mediaUpdateURL !== 'string' ? '' : options.mediaUpdateURL;
-        this.mediaDelURL = typeof options.mediaDelURL !== 'string' ? '' : options.mediaDelURL;
-        this.linkBoxApi = typeof options.linkBoxApi !== 'string' ? '' : options.linkBoxApi;
-        
-        
-        this.makeLinkBoxType = typeof options.makeLinkBoxType !== 'self' ? 'self' : 'api';
-        this.makeLinkBoxURL = typeof options.makeLinkBoxURL !== 'string' ? '' : options.makeLinkBoxURL;
-        this.imageIconId = typeof options.imageIconId !== 'string' ? '#icon_image' : options.imageIconId;
-        this.youtubeIconId = typeof options.youtubeIconId !== 'string' ? '#icon_youtube' : options.youtubeIconId;
-        this.codepenIconId = typeof options.codepenIconId !== 'string' ? '#icon_codepen' : options.codepenIconId;
-
-        this.contentAreaName = typeof options.contentArea !== 'string' ? '.content_area' : options.contentArea;
-        this.popOptionsName = typeof options.popOptions !== 'string' ? '.pop_options' : options.popOptions;
-        this.popLinkName = typeof options.popLink !== 'string' ? '.pop_link_box' : options.popLink;
-        this.stickerListName = typeof options.stickerList !== 'string' ? '.pop_sticker' : options.stickerList;
-        this.addMediaListBtnName = typeof options.addMediaListBtn !== 'string' ? '.btn_add_media_list' : options.addMediaListBtn;
-
-
-
-        
-
-        
-
-        
-        */
+        for(const [key, value] of Object.entries(data)){
+            if(check.indexOf(key) > -1){
+                message[key] = value;
+            }
+        }
+    }
 }
