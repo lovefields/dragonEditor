@@ -31,7 +31,7 @@ We never ever support IE.
 * html
 * You must set svg icon pack. Default pack is in assets.
 -->
-<svg hidden>
+<svg class="icon-pack">
     <defs>
         <g id="icon-id">...</g>
         ...
