@@ -1,6 +1,5 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { getElement, getChild } = require("./selector");
-const { condition } = require("./condition");
 
 export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, Node)) {
     let trigger = getElement(".djs-trigger");

@@ -42,13 +42,13 @@ export function findParentByClass($node, className, _0 = typeCheckThrow($node, N
 }
 
 export function getActiveElement() {
-    let childCount = editorCondition.areaContent.childElementCount;
+    let childCount = condition.areaContent.childElementCount;
     let childList = getElement(".djs-content > *");
 
-    if (editorCondition.activeItem == undefined) {
+    if (condition.activeItem == undefined) {
         return childList[childCount - 1];
     } else {
-        return editorCondition.activeItem;
+        return condition.activeItem;
     }
 }
 

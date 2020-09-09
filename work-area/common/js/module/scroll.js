@@ -2,7 +2,6 @@ const { typeCheckThrow } = require("./default");
 const { getChild } = require("./selector");
 const { scrollButtonHTML } = require("./layout");
 const { bindingScrollEvent } = require("./event");
-const { condition } = require("./condition");
 
 export function setScroll() {
     condition.scrollArea.forEach((node) => {
