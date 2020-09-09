@@ -122,7 +122,7 @@ function setMenuEvent() {
                 if (condition.linkBoxApi === "") {
                     let request = await fetchURL(`https://api.allorigins.win/get?url=${value}`);
 
-                    if (request.contents !== null) {
+                    if (request.respon !== false) {
                         let text = request.contents;
                         let regTitleCheck = new RegExp('property=\\"og:title\\"', "g");
                         let regTitle01 = new RegExp('([^])*\\<title>([^"]*)<\\/title>([^]*)', "g");
@@ -175,7 +175,7 @@ function setMenuEvent() {
                         html = getLinkboxBlock(data);
                         boolean = true;
                     } else {
-                        console.error(content.error);
+                        console.error(request.error);
                         alert(message.apiNotWorking);
                     }
                 } else {
