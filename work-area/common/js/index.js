@@ -1,15 +1,15 @@
 const { typeCheckThrow } = require("./module/default");
-const { condition, setCcondition, setElement } = require("./module/condition");
-const { makeView, setEmoticonList } = require("./module/layout");
+const { storage } = require("./module/condition");
+const { makeView, setEmoticonList, setMediaList } = require("./module/layout");
 const { refreshScroll } = require("./module/scroll");
-const { setEvent } = require("./module/event");
+const { setEvent, setEmoticonBtnEvent } = require("./module/event");
 
 module.exports = class {
     constructor(wrap = "", options = {}, _0 = typeCheckThrow(wrap, "string"), _1 = typeCheckThrow(options, "object")) {
-        setCcondition(wrap, options);
+        global.condition = new storage(wrap, options);
 
         makeView();
-        setElement(options);
+        condition.setElement(options);
         setEvent();
 
         return this;
@@ -18,9 +18,13 @@ module.exports = class {
     setEmoticon(data, _0 = typeCheckThrow(data, Array)) {
         setEmoticonList(data);
         refreshScroll();
+        setEmoticonBtnEvent();
     }
 
-    // setMedia
+    setMedia(data, _0 = typeCheckThrow(data, Array)) {
+        setMediaList(data);
+        refreshScroll();
+    }
 };
 
 /*

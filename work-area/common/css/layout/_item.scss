@@ -24,7 +24,13 @@
     }
 
     &[data-type="emoticon"] {
-        
+        text-align: center;
+
+        .img,
+        svg {
+            display: inline-block;
+            max-width: 150px;
+        }
     }
 
     &[data-type="ul"] {

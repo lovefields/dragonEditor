@@ -1,11 +1,10 @@
 const { typeCheckThrow, typeCheckBoolean, eventBinding, classControl, hasClass, fetchURL } = require("./default");
 const { getElement, findParentByClass, getChild, getActiveElement } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
-const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock } = require("./layout");
+const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML } = require("./layout");
 const { setCursor } = require("./cursor");
 const { openPop } = require("./pop");
 const { message } = require("./message");
-const { condition } = require("./condition");
 
 export function setEvent() {
     setGlobalEvent();
@@ -96,6 +95,7 @@ function setMenuEvent() {
             if ($selectedItem.length > 0) {
                 classControl($selectedItem, "remove", "--djs-selected");
             }
+
             condition.activeItem = $target.nextElementSibling;
         } else if (type === "pop") {
             openPop(value, this);
@@ -245,5 +245,24 @@ export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
         let barTop = Math.floor((scrollPercent / 100) * value.maxBarTop);
 
         $bar.style.transform = `translateY(${barTop}px)`;
+    });
+}
+
+export function setEmoticonBtnEvent() {
+    condition.btnEmoticon = getChild(condition.listEmoticon, ".djs-add-emoticon");
+
+    eventBinding(condition.btnEmoticon, "click", function () {
+        let code = this.innerHTML.trim();
+        let block = getEmoticonBlockHTML(code);
+        let $target = getActiveElement();
+        let $selectedItem = getElement(".--djs-selected");
+
+        $target.insertAdjacentHTML("afterend", block);
+
+        if ($selectedItem.length > 0) {
+            classControl($selectedItem, "remove", "--djs-selected");
+        }
+
+        condition.activeItem = $target.nextElementSibling;
     });
 }

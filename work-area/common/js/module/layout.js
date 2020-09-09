@@ -1,5 +1,4 @@
 const { typeCheckThrow, upperFirstChar } = require("./default");
-const { condition } = require("./condition");
 
 export function makeView() {
     let view = "";
@@ -250,6 +249,10 @@ function getImageBlockHTML(attr, _0 = typeCheckThrow(attr, "object")) {
     html += `</div>`;
 
     return html;
+}
+
+export function getEmoticonBlockHTML(code, _0 = typeCheckThrow(code, "string")) {
+    return `<div class="editor-item djs-item --djs-selected" data-type="emoticon">${code}</div>`;
 }
 
 function getUlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
@@ -607,6 +610,20 @@ export function setEmoticonList(data) {
     });
 
     condition.listEmoticon.insertAdjacentHTML("beforeend", html);
+}
+
+export function setMediaList(data) {
+    let html = "";
+
+    // data.forEach((row) => {
+    //     html += `
+    //         <button class="editor-emoticon djs-add-emoticon">
+    //             ${row.value}
+    //         </button>
+    //     `;
+    // });
+
+    condition.listMedia.insertAdjacentHTML("beforeend", html);
 }
 
 // this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
