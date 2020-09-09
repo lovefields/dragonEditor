@@ -97,7 +97,55 @@
 }
 
 .editor-list-media {
-    font-size: 12px;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    .editor-media {
+        position: relative;
+        float: left;
+        width: 115px;
+        padding: 5px;
+        box-sizing: border-box;
+
+        .eidtor-img-area {
+            position: relative;
+            width: 100%;
+            height: 70px;
+            overflow: hidden;
+        }
+
+        .editor-img {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+
+        .editor-name {
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+            @include ellipsis;
+        }
+
+        .editor-btn-del {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: transparent;
+            font-size: 0;
+
+            .path {
+                fill: #fff;
+            }
+        }
+    }
 }
 
 .editor-pop-linkbox {

@@ -1,3 +1,4 @@
 export function openFile(type){
-    console.log(file);
+    // to-do open file input
+    console.log(type);
 }

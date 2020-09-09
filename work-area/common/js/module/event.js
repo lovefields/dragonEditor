@@ -2,6 +2,7 @@ const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL } = requi
 const { getElement, findParentByClass, getChild, getActiveElement } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML } = require("./layout");
+const { openFile } = require("./file");
 const { setCursor } = require("./cursor");
 const { openPop } = require("./pop");
 const { message } = require("./message");
@@ -288,6 +289,24 @@ export function setEmoticonBtnEvent() {
 
         condition.activeItem = $target.nextElementSibling;
     });
+}
+
+export function setMediaEvent(){
+    eventBinding(condition.listMedia, "click", function(e){
+        switch(true){
+            case findParentByClass(e.target, "djs-add-media") !== null :
+                console.log("add");
+            break;
+            case findParentByClass(e.target, "djs-del-media") !== null :
+                console.log("del");
+            break;
+            case findParentByClass(e.target, "djs-name") !== null :
+                console.log("edit");
+            break;
+        }
+    });
+
+    console.log("media event");
 }
 
 function setContentEvent() {

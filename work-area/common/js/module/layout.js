@@ -157,7 +157,7 @@ function makeFolderPop() {
     return `
         <div class="editor-list-pop editor-pop-folder editor-scroll djs-folder-pop djs-trigger djs-scroll">
             <div class="editor-scroll-content djs-scroll-content">
-                <div class="editor-list-media djs-list-media"></div>
+                <ul class="editor-list-media djs-list-media editor-clearfix"></ul>
             </div>
         </div>
     `;
@@ -631,13 +631,26 @@ export function setEmoticonList(data) {
 export function setMediaList(data) {
     let html = "";
 
-    // data.forEach((row) => {
-    //     html += `
-    //         <button class="editor-emoticon djs-add-emoticon">
-    //             ${row.value}
-    //         </button>
-    //     `;
-    // });
+    data.forEach((row) => {
+        if(row.type == "image"){
+            html += `
+                <li class="editor-media">
+                    <div class="eidtor-img-area djs-add-media" data-src="${row.src}" data-defaultFormat="${row.defaultFormat}" data-webp="${row.webp}" data-width="${row.width}" data-height="${row.height}">
+                        <img src="${`${row.src}.${row.defaultFormat}`}" alt="${row.alt}" class="editor-img">
+                    </div>
+
+                    <p class="editor-name djs-name">${row.alt}</p>
+                    <button class="editor-btn-del djs-del-media" data-idx="${row.idx}">
+                        <svg viewBox="0 0 64 64" class="icon">
+                            <use class="path" xlink:href="#icon-delete-block" href="#icon-delete-block"></use>
+                        </svg>
+
+                        delete media
+                    </button>
+                </li>
+            `;
+        }
+    });
 
     condition.listMedia.insertAdjacentHTML("beforeend", html);
 }
