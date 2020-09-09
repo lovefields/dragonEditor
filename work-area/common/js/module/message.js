@@ -1,19 +1,9 @@
 export const message = {
-    wrongValue : (valueName) => `DRAGON EDITOR - Wrong type value in "${valueName}".`,
-    wrongURL : (url) => `DRAGON EDITOR - Wrong URL option in uploadURL "${url}"`,
-    apiNotWorking : "API server is not responding."
+    wrongValue: (valueName) => `DRAGON EDITOR - Wrong type value in "${valueName}".`,
+    wrongURL: (name, url) => `DRAGON EDITOR - Wrong URL value { ${name} : "${url}" }`,
+    wrongKey: (name, key) => `DRAGON EDITOR - Wrong key set "${name}" : { "${key}" : ... }`,
+    apiNotWorking: "API server is not responding.",
 };
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 function setErrorMessage(){

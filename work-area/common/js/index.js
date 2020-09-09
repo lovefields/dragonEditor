@@ -14,10 +14,6 @@ module.exports = class {
         return this;
     }
 
-    setEmoticon(data, _0 = typeCheckThrow(data, Array)) {
-        console.log(data);
-    }
-
     // setMedia
 };
 

@@ -77,6 +77,23 @@
 }
 
 .editor-list-emoticon {
+    width: 240px;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    .editor-emoticon {
+        float: left;
+        width: 115px;
+        height: 115px;
+        padding: 5px;
+        box-sizing: border-box;
+
+        .img,
+        svg {
+            width: 100%;
+        }
+    }
 }
 
 .editor-list-media {

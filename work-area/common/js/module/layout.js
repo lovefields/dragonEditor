@@ -143,19 +143,47 @@ function makeLanguagePop() {
 }
 
 function makeEmoticonPop() {
-    return `<div class="editor-list-pop editor-pop-emoticon editor-scroll djs-emoticon-pop djs-trigger djs-scroll">
-                <div class="editor-scroll-content djs-scroll-content">
-                    <ul class="editor-list-emoticon djs-list-emoticon"></ul>
-                </div>
-            </div>
+    let html = `<div class="editor-list-pop editor-pop-emoticon editor-scroll djs-emoticon-pop djs-trigger djs-scroll">
+        <div class="editor-scroll-content djs-scroll-content">
+            <div class="editor-list-emoticon djs-list-emoticon editor-clearfix">
     `;
+
+    html += makeEmoticonList();
+
+    html += `</div>
+        </div>
+    </div>
+    `;
+    return html;
+}
+
+function makeEmoticonList() {
+    let html = ``;
+
+    editorCondition.emoticonData.forEach((row) => {
+        if (row.type == "image") {
+            html += `
+                <button class="editor-emoticon djs-add-emoticon">
+                    <img src="${row.value}" alt="${row.caption}" class="img">
+                </button>
+            `;
+        } else if (row.type == "svg") {
+            html += `
+                <button class="editor-emoticon djs-add-emoticon">
+                    ${row.value}
+                </button>
+            `;
+        }
+    });
+
+    return html;
 }
 
 function makeFolderPop() {
     return `
         <div class="editor-list-pop editor-pop-folder editor-scroll djs-folder-pop djs-trigger djs-scroll">
             <div class="editor-scroll-content djs-scroll-content">
-                <ul class="editor-list-media djs-list-media"></ul>
+                <div class="editor-list-media djs-list-media"></div>
             </div>
         </div>
     `;
@@ -547,7 +575,6 @@ function makeOptionPop() {
         </div>
     `;
 
-
     html += ``;
     html += ``;
     html += ``;
@@ -555,9 +582,6 @@ function makeOptionPop() {
     html += ``;
     html += ``;
     html += ``;
-
-
-
 
     html += `
         <div class="editor-col editor-btn-area" data-group="word">
