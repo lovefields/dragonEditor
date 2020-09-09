@@ -59,6 +59,25 @@ function setGlobalEvent() {
 
         classControl($target, "toggle", "--act");
     });
+}
+
+function setMenuEvent() {
+    // change language event
+    eventBinding(editorCondition.btnChangeLang, "click", function () {
+        let lang = this.dataset["value"];
+
+        classControl(editorCondition.btnChangeLang, "remove", "--act");
+        classControl(this, "add", "--act");
+
+        console.log(editorCondition.lang);
+        editorCondition.triggerLangChange(lang);
+    });
+
+    // device switch event
+    eventBinding(editorCondition.btnSwitchDevice, "click", function () {
+        classControl(editorCondition.areaContent, "toggle", "--mobile");
+        classControl(this, "toggle", "--act");
+    });
 
     // add block(item) event
     eventBinding(editorCondition.btnAddBlock, "click", function () {
@@ -100,7 +119,7 @@ function setGlobalEvent() {
             if (editorCondition.regList["defaultURL"].test(value)) {
                 classControl(this, "add", "--ing");
 
-                if(editorCondition.linkBoxApi === ""){
+                if (editorCondition.linkBoxApi === "") {
                     let request = await fetchURL(`https://api.allorigins.win/get?url=${value}`);
 
                     if (request.contents !== null) {
@@ -114,13 +133,13 @@ function setGlobalEvent() {
                         let regDecripCheck = new RegExp('property=\\"og:description\\"', "g");
                         let regDecrip01 = new RegExp('([^])*\\<meta name=\\"description\\" content=\\"([^"]*)(?=\\")([^]*)', "g");
                         let regDecrip02 = new RegExp('([^])*\\<meta property=\\"og:description\\" content=\\"([^"]*)(?=\\")([^]*)', "g");
-    
+
                         if (regTitleCheck.test(text) == true) {
                             data.title = text.replace(regTitle02, "$2");
                         } else {
                             data.title = text.replace(regTitle01, "$2");
                         }
-    
+
                         if (regImgCheck.test(text) == true) {
                             data.img = text.replace(regImg02, "$2");
                         } else {
@@ -131,7 +150,7 @@ function setGlobalEvent() {
                                 data.img = img;
                             }
                         }
-    
+
                         if (regDecripCheck.test(text) == true) {
                             data.description = text.replace(regDecrip02, "$2");
                         } else {
@@ -142,24 +161,24 @@ function setGlobalEvent() {
                                 data.description = description;
                             }
                         }
-    
+
                         if (value.indexOf("://") > -1) {
                             data.domain = value.split("/")[2];
                         } else {
                             data.domain = value.split("/")[0];
                         }
-    
+
                         data.domain = data.domain.split(":")[0];
-    
+
                         data.url = value;
-    
+
                         html = getLinkboxBlock(data);
                         boolean = true;
-                    }else{
+                    } else {
                         console.error(content.error);
                         alert(message.apiNotWorking);
                     }
-                }else{
+                } else {
                     // to-do : make self post
                     console.log("self!");
                 }
@@ -212,22 +231,9 @@ function setGlobalEvent() {
             editorCondition.btnLinkbox.dispatchEvent(event);
         }
     });
-}
 
-function setMenuEvent() {
-    eventBinding(editorCondition.btnChangeLang, "click", function () {
-        let lang = this.dataset["value"];
-
-        classControl(editorCondition.btnChangeLang, "remove", "--act");
-        classControl(this, "add", "--act");
-
-        console.log(editorCondition.lang);
-        editorCondition.triggerLangChange(lang);
-    });
-
-    eventBinding(editorCondition.btnSwitchDevice, "click", function () {
-        classControl(editorCondition.areaContent, "toggle", "--mobile");
-        classControl(this, "toggle", "--act");
+    eventBinding(editorCondition.btnEmoticon, "click", function () {
+        console.log(this);
     });
 }
 

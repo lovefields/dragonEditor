@@ -125,6 +125,7 @@ export class condition {
               ];
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
+        this.emoticonData = typeCheckBoolean(options.emoticonData, Array) ? options.emoticonData : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
         this.multiUpload = typeCheckBoolean(options.multiUpload, "boolean") ? options.multiUpload : false;
         this.defaultLinkBoxImage = typeCheckBoolean(options.defaultLinkBoxImage, "string") ? options.defaultLinkBoxImage : "https://via.placeholder.com/600x300.png";
@@ -137,15 +138,21 @@ export class condition {
         this.addLanguage();
     }
 
-    setUploadURL(url) {
+    setUploadURL(url = "") {
+        if (url == "") {
+            this.uploadURL = "";
+            return;
+        }
+
         if (typeCheckBoolean(url, "string") == true) {
             if (this.regList["defaultURL"].test(url) == true || url.substr(0, 1) == "/") {
                 this.uploadURL = url;
             } else {
-                console.warn(message.wrongURL(url));
+                console.warn(message.wrongURL("uploadURL", url));
                 this.uploadURL = "";
             }
         } else {
+            console.warn(message.wrongURL("uploadURL", url));
             this.uploadURL = "";
         }
     }
@@ -292,6 +299,7 @@ export class condition {
         this.popFolder = getElement(".djs-folder-pop", false);
         this.popLinkbox = getElement(".djs-linkbox-pop", false);
         this.btnLinkbox = getElement(".djs-linkbox-pop .djs-btn", false);
+        this.btnEmoticon = getElement(".djs-list-emoticon .djs-add-emoticon");
 
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
         this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
@@ -302,9 +310,11 @@ export class condition {
     setMessage(data = {}, _0 = typeCheckThrow(data, Object)) {
         let check = ["apiNotWorking"];
 
-        for(const [key, value] of Object.entries(data)){
-            if(check.indexOf(key) > -1){
+        for (const [key, value] of Object.entries(data)) {
+            if (check.indexOf(key) > -1) {
                 message[key] = value;
+            }else{
+                console.warn(message.wrongKey("message", key));
             }
         }
     }
