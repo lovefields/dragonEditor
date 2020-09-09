@@ -1,4 +1,4 @@
-const { typeCheckThrow, typeCheckBoolean, eventBinding, classControl, hasClass, fetchURL } = require("./default");
+const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL } = require("./default");
 const { getElement, findParentByClass, getChild, getActiveElement } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML } = require("./layout");
@@ -10,8 +10,7 @@ export function setEvent() {
     setGlobalEvent();
     setMenuEvent();
     setScroll();
-
-    console.log("doing - set Event");
+    setContentEvent();
 }
 
 function setGlobalEvent() {
@@ -265,4 +264,8 @@ export function setEmoticonBtnEvent() {
 
         condition.activeItem = $target.nextElementSibling;
     });
+}
+
+function setContentEvent(){
+    console.log('set content event');
 }
