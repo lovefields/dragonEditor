@@ -237,6 +237,11 @@ export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
     let $content = getChild($wrap, ".djs-scroll-content", false);
     let $bar = getChild($wrap, ".djs-scroll-bar", false);
     let value = getScrollInfo($wrap);
+    let status = {
+        activity: false,
+        mouseY: 0,
+        scrollY: 0,
+    };
 
     eventBinding($content, "scroll", function () {
         let scrollTop = this.scrollTop;
@@ -244,6 +249,25 @@ export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
         let barTop = Math.floor((scrollPercent / 100) * value.maxBarTop);
 
         $bar.style.transform = `translateY(${barTop}px)`;
+    });
+
+    eventBinding($wrap, "mousemove", function (e) {
+        if (status.activity == true) {
+            let value = -(status.mouseY - e.clientY);
+            let contentScroll = status.scrollY + value;
+
+            $content.scrollTo(0, contentScroll);
+        }
+    });
+
+    eventBinding($bar, "mousedown", function (e) {
+        status.activity = true;
+        status.mouseY = e.clientY;
+        status.scrollY = $content.scrollTop;
+    });
+
+    eventBinding($wrap, "mouseup", function () {
+        status.activity = false;
     });
 }
 
@@ -266,6 +290,6 @@ export function setEmoticonBtnEvent() {
     });
 }
 
-function setContentEvent(){
-    console.log('set content event');
+function setContentEvent() {
+    console.log("set content event");
 }
