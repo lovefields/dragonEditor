@@ -37,7 +37,7 @@ We never ever support IE.
         ...
     </defs>
 </svg>
-<div class=".editor-dragon"></div>
+<div class="editor-dragon"></div>
 
 <!-- 
 * Load highlight plugin if you using code block.
