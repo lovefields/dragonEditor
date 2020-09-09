@@ -2,10 +2,11 @@ const { typeCheckThrow } = require("./default");
 const { getChild } = require("./selector");
 const { scrollButtonHTML } = require("./layout");
 const { bindingScrollEvent } = require("./event");
+const { condition } = require("./condition");
 
-export function setScroll(nodeList, _0 = typeCheckThrow(nodeList, NodeList)) {
-    nodeList.forEach((node) => {
-        node.innerHTML += scrollButtonHTML();
+export function setScroll() {
+    condition.scrollArea.forEach((node) => {
+        node.insertAdjacentHTML("beforeend", scrollButtonHTML());
         setScrollHeight(node);
         bindingScrollEvent(node);
     });
@@ -18,9 +19,10 @@ function setScrollHeight($wrap, _0 = typeCheckThrow($wrap, Node)) {
     $bar.style.height = `${value.scrollHeight}px`;
 }
 
-export function refreshScroll(nodeList, _0 = typeCheckThrow(nodeList, NodeList)) {
-    nodeList.forEach((node) => {
+export function refreshScroll() {
+    condition.scrollArea.forEach((node) => {
         setScrollHeight(node);
+        bindingScrollEvent(node);
     });
 }
 
@@ -40,6 +42,7 @@ export function getScrollInfo($wrap, _0 = typeCheckThrow($wrap, Node)) {
     if (contentHeight < maxHeight) {
         contentHeight = maxHeight;
     }
+
     percent = (100 / contentHeight) * maxHeight;
     height = Math.floor((percent / 100) * maxHeight);
     maxScrollTop = contentHeight - contentOffset.height;

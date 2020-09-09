@@ -5,11 +5,12 @@ const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock }
 const { setCursor } = require("./cursor");
 const { openPop } = require("./pop");
 const { message } = require("./message");
+const { condition } = require("./condition");
 
 export function setEvent() {
     setGlobalEvent();
     setMenuEvent();
-    setScroll(getElement(".djs-scroll"));
+    setScroll();
 
     console.log("doing - set Event");
 }
@@ -20,8 +21,8 @@ function setGlobalEvent() {
     eventBinding(window, "resize", function (e) {
         clearTimeout(resizeFn);
         resizeFn = setTimeout(() => {
-            editorCondition.windowWidth = window.innerWidth;
-            editorCondition.windowHeight = window.innerHeight;
+            condition.windowWidth = window.innerWidth;
+            condition.windowHeight = window.innerHeight;
         }, 250);
     });
 
@@ -40,7 +41,7 @@ function setGlobalEvent() {
     });
 
     // toggle target event
-    eventBinding(editorCondition.btnToggleTarget, "click", function (e) {
+    eventBinding(condition.btnToggleTarget, "click", function (e) {
         let targetName = this.dataset["target"];
         let $target = getElement(targetName, false);
         let $itemList = getElement(".djs-trigger");
@@ -63,24 +64,24 @@ function setGlobalEvent() {
 
 function setMenuEvent() {
     // change language event
-    eventBinding(editorCondition.btnChangeLang, "click", function () {
+    eventBinding(condition.btnChangeLang, "click", function () {
         let lang = this.dataset["value"];
 
-        classControl(editorCondition.btnChangeLang, "remove", "--act");
+        classControl(condition.btnChangeLang, "remove", "--act");
         classControl(this, "add", "--act");
 
-        console.log(editorCondition.lang);
-        editorCondition.triggerLangChange(lang);
+        console.log(condition.lang);
+        condition.triggerLangChange(lang);
     });
 
     // device switch event
-    eventBinding(editorCondition.btnSwitchDevice, "click", function () {
-        classControl(editorCondition.areaContent, "toggle", "--mobile");
+    eventBinding(condition.btnSwitchDevice, "click", function () {
+        classControl(condition.areaContent, "toggle", "--mobile");
         classControl(this, "toggle", "--act");
     });
 
     // add block(item) event
-    eventBinding(editorCondition.btnAddBlock, "click", function () {
+    eventBinding(condition.btnAddBlock, "click", function () {
         let type = this.dataset["type"];
         let value = this.dataset["value"];
 
@@ -95,7 +96,7 @@ function setMenuEvent() {
             if ($selectedItem.length > 0) {
                 classControl($selectedItem, "remove", "--djs-selected");
             }
-            editorCondition.activeItem = $target.nextElementSibling;
+            condition.activeItem = $target.nextElementSibling;
         } else if (type === "pop") {
             openPop(value, this);
         } else if (type === "file") {
@@ -104,10 +105,10 @@ function setMenuEvent() {
     });
 
     // add link(linkbox, youtube, codepen, link) event
-    eventBinding(editorCondition.btnLinkbox, "click", async function () {
+    eventBinding(condition.btnLinkbox, "click", async function () {
         let $target = getActiveElement();
         let $selectedItem = getElement(".--djs-selected");
-        let $input = getChild(editorCondition.popLinkbox, ".djs-input", false);
+        let $input = getChild(condition.popLinkbox, ".djs-input", false);
         let value = $input.value;
         let type = this.dataset["value"];
         let boolean = false;
@@ -116,10 +117,10 @@ function setMenuEvent() {
         if (type == "linkbox") {
             let data = {};
 
-            if (editorCondition.regList["defaultURL"].test(value)) {
+            if (condition.regList["defaultURL"].test(value)) {
                 classControl(this, "add", "--ing");
 
-                if (editorCondition.linkBoxApi === "") {
+                if (condition.linkBoxApi === "") {
                     let request = await fetchURL(`https://api.allorigins.win/get?url=${value}`);
 
                     if (request.contents !== null) {
@@ -186,16 +187,16 @@ function setMenuEvent() {
                 classControl(this, "remove", "--ing");
             }
         } else if (type == "youtube") {
-            if (editorCondition.regList["youtubeURL"].test(value)) {
-                let code = value.replace(editorCondition.regList["youtubeCode"], "$7");
+            if (condition.regList["youtubeURL"].test(value)) {
+                let code = value.replace(condition.regList["youtubeCode"], "$7");
 
                 html = getYoutubeBlock(code);
                 boolean = true;
             }
         } else if (type == "codepen") {
-            if (editorCondition.regList["codepenURL"].test(value)) {
-                let nickname = value.replace(editorCondition.regList["codepenCode"], "$2");
-                let code = value.replace(editorCondition.regList["codepenCode"], "$4");
+            if (condition.regList["codepenURL"].test(value)) {
+                let nickname = value.replace(condition.regList["codepenCode"], "$2");
+                let code = value.replace(condition.regList["codepenCode"], "$4");
 
                 html = getCodepenBlock(nickname, code);
                 boolean = true;
@@ -212,28 +213,24 @@ function setMenuEvent() {
             if ($selectedItem.length > 0) {
                 classControl($selectedItem, "remove", "--djs-selected");
             }
-            editorCondition.activeItem = $target.nextElementSibling;
+            condition.activeItem = $target.nextElementSibling;
             $input.value = "";
-            classControl(editorCondition.popLinkbox, "remove", "--act");
+            classControl(condition.popLinkbox, "remove", "--act");
         } else {
-            classControl(editorCondition.popLinkbox, "add", "--wrong");
+            classControl(condition.popLinkbox, "add", "--wrong");
             $input.focus();
             setTimeout(() => {
-                classControl(editorCondition.popLinkbox, "remove", "--wrong");
+                classControl(condition.popLinkbox, "remove", "--wrong");
             }, 1000);
         }
     });
 
-    eventBinding(getChild(editorCondition.popLinkbox, ".djs-input", false), "keydown", function (e) {
+    eventBinding(getChild(condition.popLinkbox, ".djs-input", false), "keydown", function (e) {
         if (e.code == "Enter") {
             let event = document.createEvent("HTMLEvents");
             event.initEvent("click", true, false);
-            editorCondition.btnLinkbox.dispatchEvent(event);
+            condition.btnLinkbox.dispatchEvent(event);
         }
-    });
-
-    eventBinding(editorCondition.btnEmoticon, "click", function () {
-        console.log(this);
     });
 }
 

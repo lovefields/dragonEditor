@@ -1,5 +1,6 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { getElement, getChild } = require("./selector");
+const { condition } = require("./condition");
 
 export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, Node)) {
     let trigger = getElement(".djs-trigger");
@@ -11,7 +12,7 @@ export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = t
             openLinkPop("linkbox", offset);
             break;
         case "emoticonBlock":
-            classControl(editorCondition.popEmoticon, "toggle", "--act");
+            classControl(condition.popEmoticon, "toggle", "--act");
             break;
         case "youtubeBlock":
             openLinkPop("youtube", offset);
@@ -23,20 +24,20 @@ export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = t
 }
 
 function openLinkPop(type, option = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(option, "object")) {
-    let $input = getChild(editorCondition.popLinkbox, ".djs-input", false);
-    let $btn = getChild(editorCondition.popLinkbox, ".djs-btn", false);
-    let right = editorCondition.windowWidth - option.right + (option.width + 10);
+    let $input = getChild(condition.popLinkbox, ".djs-input", false);
+    let $btn = getChild(condition.popLinkbox, ".djs-btn", false);
+    let right = condition.windowWidth - option.right + (option.width + 10);
 
     if (type == "word") {
         $btn.dataset["value"] = type;
-        editorCondition.popLinkbox.dataset["type"] = option.type;
+        condition.popLinkbox.dataset["type"] = option.type;
         $btn.dataset["type"] = option.type;
     } else {
         $btn.dataset["value"] = type;
         $input.value = "";
-        editorCondition.popLinkbox.style.top = `${option.top}px`;
-        editorCondition.popLinkbox.style.right = `${right}px`;
+        condition.popLinkbox.style.top = `${option.top}px`;
+        condition.popLinkbox.style.right = `${right}px`;
     }
 
-    classControl(editorCondition.popLinkbox, "toggle", "--act");
+    classControl(condition.popLinkbox, "toggle", "--act");
 }

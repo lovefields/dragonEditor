@@ -1,30 +1,32 @@
 const { typeCheckThrow, upperFirstChar } = require("./default");
+const { condition } = require("./condition");
 
 export function makeView() {
     let view = "";
 
-    view += makeContentArea(editorCondition.lang);
+    view += makeContentArea(condition.lang);
 
     view += `<div class="editor-menu-block">`;
-    view += makeBlockMenu(editorCondition.defaultMenu);
+    view += makeBlockMenu(condition.defaultMenu);
     view += `</div>`;
 
     view += `<div class="editor-menu-bottom">`;
     view += makeBottomMenu();
-    if (editorCondition.multiLang == true) {
+    if (condition.multiLang == true) {
         view += makeLanguagePop();
     }
     view += makeFolderPop();
     view += `</div>`;
 
-    if (editorCondition.uploadURL !== "") {
+    if (condition.uploadURL !== "") {
         view += makeUploadForm();
     }
 
     view += makeLinkboxPop();
     view += makeOptionPop();
 
-    editorCondition.wrap.innerHTML = view;
+    condition.wrap.insertAdjacentHTML("afterend", view);
+    // condition.wrap.innerHTML = view;
 }
 
 function makeContentArea(lang) {
@@ -91,7 +93,7 @@ function makeBlockMenu(data) {
 function makeBottomMenu() {
     let html = ``;
 
-    if (editorCondition.uploadURL !== "") {
+    if (condition.uploadURL !== "") {
         html += `
             <button class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-folder">
                 <svg viewbox="0 0 64 64" class="editor-icon">
@@ -102,7 +104,7 @@ function makeBottomMenu() {
         `;
     }
 
-    if (editorCondition.multiLang == true) {
+    if (condition.multiLang == true) {
         html += `
             <button class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-lang">
                 <svg viewbox="0 0 64 64" class="editor-icon">
@@ -127,10 +129,10 @@ function makeBottomMenu() {
 }
 
 function makeLanguagePop() {
-    let html = `<div class="editor-pop-lang djs-trigger" data-length="${editorCondition.langCategory.length}">`;
+    let html = `<div class="editor-pop-lang djs-trigger" data-length="${condition.langCategory.length}">`;
 
-    editorCondition.langCategory.forEach((lang) => {
-        if (lang == editorCondition.lang) {
+    condition.langCategory.forEach((lang) => {
+        if (lang == condition.lang) {
             html += `<button class="editor-btn-lang djs-change-lang --act" data-value="${lang}">${lang.toUpperCase()}</button>`;
         } else {
             html += `<button class="editor-btn-lang djs-change-lang" data-value="${lang}">${lang.toUpperCase()}</button>`;
@@ -143,40 +145,13 @@ function makeLanguagePop() {
 }
 
 function makeEmoticonPop() {
-    let html = `<div class="editor-list-pop editor-pop-emoticon editor-scroll djs-emoticon-pop djs-trigger djs-scroll">
-        <div class="editor-scroll-content djs-scroll-content">
-            <div class="editor-list-emoticon djs-list-emoticon editor-clearfix">
-    `;
-
-    html += makeEmoticonList();
-
-    html += `</div>
+    return `
+        <div class="editor-list-pop editor-pop-emoticon editor-scroll djs-emoticon-pop djs-trigger djs-scroll">
+            <div class="editor-scroll-content djs-scroll-content">
+                <div class="editor-list-emoticon djs-list-emoticon editor-clearfix"></div>
+            </div>
         </div>
-    </div>
     `;
-    return html;
-}
-
-function makeEmoticonList() {
-    let html = ``;
-
-    editorCondition.emoticonData.forEach((row) => {
-        if (row.type == "image") {
-            html += `
-                <button class="editor-emoticon djs-add-emoticon">
-                    <img src="${row.value}" alt="${row.caption}" class="img">
-                </button>
-            `;
-        } else if (row.type == "svg") {
-            html += `
-                <button class="editor-emoticon djs-add-emoticon">
-                    ${row.value}
-                </button>
-            `;
-        }
-    });
-
-    return html;
 }
 
 function makeFolderPop() {
@@ -207,7 +182,7 @@ function makeLinkboxPop() {
 function makeUploadForm() {
     let html = `<form enctype="multipart/form-data" method="post" class="editor-uploader djs-uploader">`;
 
-    if (editorCondition.multiUpload == true) {
+    if (condition.multiUpload == true) {
         html += `<input type="file" multiple class="djs-file">`;
     } else {
         html += `<input type="file" class="djs-file">`;
@@ -257,7 +232,7 @@ function getTextBlockHTML(content = "", _0 = typeCheckThrow(content, "string")) 
 function getImageBlockHTML(attr, _0 = typeCheckThrow(attr, "object")) {
     let html = `<div class="editor-item djs-item --djs-selected" data-type="image">`;
 
-    if (editorCondition.useWebp == true) {
+    if (condition.useWebp == true) {
         html += `<picture>`;
 
         if (attr.hasWebp == true) {
@@ -354,7 +329,7 @@ export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {
 export function getCodepenBlock(nickname, code, height = 300, _0 = typeCheckThrow(nickname, "string"), _1 = typeCheckThrow(code, "string"), _2 = typeCheckThrow(height, "number")) {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="codepen">
-            <iframe height="${height}" title="" src="https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${editorCondition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe"></iframe>
+            <iframe height="${height}" title="" src="https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${condition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe"></iframe>
             <button class="editor-btn-resize djs-resize-height">Resize height</button>
         </div>
     `;
@@ -396,7 +371,7 @@ function makeOptionPop() {
                     <div class="editor-scroll-content djs-scroll-content">
     `;
 
-    editorCondition.frontSize.forEach((size) => {
+    condition.frontSize.forEach((size) => {
         html += `<button class="editor-btn djs-change-fontsize" data-value="${size}">${size}</button>`;
     });
 
@@ -412,7 +387,7 @@ function makeOptionPop() {
             <div class="editor-list-color djs-trigger">
     `;
 
-    editorCondition.colorList.forEach((color) => {
+    condition.colorList.forEach((color) => {
         html += `<button class="editor-btn djs-change-color" data-value="${color}">${color}</button>`;
     });
 
@@ -524,7 +499,7 @@ function makeOptionPop() {
             <div class="editor-list-select editor-list-theme djs-trigger">
     `;
 
-    editorCondition.codeTheme.forEach((theme) => {
+    condition.codeTheme.forEach((theme) => {
         html += `<button class="editor-btn djs-set-theme" data-value="${theme}">${upperFirstChar(theme)}</button>`;
     });
 
@@ -546,7 +521,7 @@ function makeOptionPop() {
             <div class="editor-list-select editor-list-lang djs-trigger">
     `;
 
-    editorCondition.codeLang.forEach((lang) => {
+    condition.codeLang.forEach((lang) => {
         html += `<button class="editor-btn djs-set-lang" data-value="${lang}">${upperFirstChar(lang)}</button>`;
     });
 
@@ -610,6 +585,28 @@ function makeOptionPop() {
     html += `</div>`;
 
     return html;
+}
+
+export function setEmoticonList(data) {
+    let html = "";
+
+    data.forEach((row) => {
+        if (row.type == "image") {
+            html += `
+                <button class="editor-emoticon djs-add-emoticon">
+                    <img src="${row.value}" alt="${row.caption}" class="img">
+                </button>
+            `;
+        } else if (row.type == "svg") {
+            html += `
+                <button class="editor-emoticon djs-add-emoticon">
+                    ${row.value}
+                </button>
+            `;
+        }
+    });
+
+    condition.listEmoticon.insertAdjacentHTML("beforeend", html);
 }
 
 // this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
