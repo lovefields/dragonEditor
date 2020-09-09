@@ -27,22 +27,6 @@ module.exports = class {
     }
 };
 
-/*
-icon-arrow-bottom
-icon-align-left
-icon-align-right
-icon-align-center
-icon-bold
-icon-italic
-icon-underline
-icon-strikethrough
-icon-table-header
-icon-table-body
-icon-link
-icon-theme
-icon-word-block
-icon-delete-block
-*/
 
 // export function getOptionValue(name) {
 //     if (storage[name] === undefined) {
@@ -90,15 +74,6 @@ icon-delete-block
 //     }
 // }
 
-// export function addLanguage(lang) {
-//     if (storage.contentData[lang] === undefined) {
-//         storage.contentData[lang] = [];
-//         return true;
-//     } else {
-//         console.error(`"${lang}" is already exists.`);
-//         return false;
-//     }
-// }
 
 // export function addContent(html) {
 //     let childCount = storage.contentArea.childElementCount;

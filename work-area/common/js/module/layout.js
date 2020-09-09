@@ -553,13 +553,29 @@ function makeOptionPop() {
         </div>
     `;
 
-    html += ``;
-    html += ``;
-    html += ``;
-    html += ``;
-    html += ``;
-    html += ``;
-    html += ``;
+    html += `
+        <div class="editor-col editor-btn-area" data-group="all">
+            <button class="editor-btn">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-arrow-up" href="#icon-arrow-up"></use>
+                </svg>
+
+                move up block
+            </button>
+        </div>
+    `;
+
+    html += `
+        <div class="editor-col editor-btn-area" data-group="all">
+            <button class="editor-btn">
+                <svg viewBox="0 0 64 64" class="icon">
+                    <use class="path" xlink:href="#icon-arrow-down" href="#icon-arrow-down"></use>
+                </svg>
+
+                move down block
+            </button>
+        </div>
+    `;
 
     html += `
         <div class="editor-col editor-btn-area" data-group="word">
