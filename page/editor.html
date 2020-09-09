@@ -156,7 +156,11 @@
 <script src="../assets/js/highlight.pack.js"></script>
 <script src="../assets/js/dragonEditor.js"></script>
 <script>
-let emoticon = [{
+const editor = new dragonEditor("", {
+    uploadURL : "/sdf",
+});
+
+editor.setEmoticon([{
         type : "image",
         value: "https://item.kakaocdn.net/do/f6c654eabea33aaeb35eb61968bdfe38f43ad912ad8dd55b04db6a64cddaf76d",
         caption : "text"
@@ -175,13 +179,7 @@ let emoticon = [{
         type: "svg",
         value : `<svg viewBox="0 0 128 128"><path style="fill:#263740;" d="M124,118.5c0,5.5-4.5,10-10,10H14c-5.5,0-10-4.5-10-10v-96c0-5.5,4.5-10,10-10h100c5.5,0,10,4.5,10,10V118.5z"></path><path style="fill:#1E2C33;" d="M114,12.5h-6c5.5,0,10,4.5,10,10v96c0,5.5-4.5,10-10,10h6c5.5,0,10-4.5,10-10v-96C124,17,119.5,12.5,114,12.5z"></path><path style="fill:#1E2C33;" d="M22,118.5c-4.411,0-8-3.589-8-8v-26c0-2.206,1.794-4,4-4s4,1.794,4,4v26h84v-26c0-2.206,1.794-4,4-4s4,1.794,4,4v26c0,4.411-3.589,8-8,8H22z"></path><path style="fill:#F5F5F5;" d="M106,116.5H22c-3.309,0-6-2.691-6-6v-26c0-1.104,0.896-2,2-2s2,0.896,2,2v26c0,1.104,0.897,2,2,2h84c1.104,0,2-0.896,2-2v-26c0-1.104,0.896-2,2-2s2,0.896,2,2v26C112,113.809,109.309,116.5,106,116.5z"></path><path style="fill:#1E2C33;" d="M25,69.5c-2.206,0-4-1.794-4-4v-21c0-2.206,1.794-4,4-4h27c2.206,0,4,1.794,4,4v21c0,2.206-1.794,4-4,4H25z"></path><path style="fill:#F5F5F5;" d="M54,65.5c0,1.104-0.896,2-2,2H25c-1.104,0-2-0.896-2-2v-21c0-1.104,0.896-2,2-2h27c1.104,0,2,0.896,2,2V65.5z"></path><path style="fill:#1E2C33;" d="M76,69.5c-2.206,0-4-1.794-4-4v-21c0-2.206,1.794-4,4-4h27c2.206,0,4,1.794,4,4v21c0,2.206-1.794,4-4,4H76z"></path><path style="fill:#F5F5F5;" d="M105,65.5c0,1.104-0.896,2-2,2H76c-1.104,0-2-0.896-2-2v-21c0-1.104,0.896-2,2-2h27c1.104,0,2,0.896,2,2V65.5z"></path><circle style="fill:#808080;" cx="89.5" cy="55" r="3"></circle><circle style="fill:#808080;" cx="38.5" cy="55" r="3"></circle><path style="fill:#E6E6E6;" d="M70,12.5h-4c0-3.704-3.915-7-7-7v-4C64.087,1.5,70,6.305,70,12.5z"></path><circle style="fill:#E16B5A;" cx="56" cy="3.5" r="4"></circle></svg>`,
         caption : "text"
-    }];
-
-
-const editor = new dragonEditor("", {
-    uploadURL : "/sdf",
-    emoticonData : emoticon
-});
+    }]);
 
 
 
