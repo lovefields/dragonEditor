@@ -16,20 +16,74 @@
     }
 
     &[data-type="image"] {
-        // @for $i from 1 through 14 {
-        //     &[data-width="#{50 * $i}"] {
-        //         max-width: 50px * $i;
-        //     }
-        // }
+        font-size: 0;
+
+        .editor-size {
+            display: inline-block;
+            position: relative;
+            width: 100%;
+        }
+
+        @for $i from 1 through 14 {
+            .editor-size[data-width="#{50 * $i}"] {
+                max-width: 50px * $i;
+            }
+        }
+
+        .editor-caption {
+            padding: 5px;
+            color: #999;
+            font-size: 12px;
+            outline: 0;
+
+            &:empty{
+                &::after {
+                    display: inline;
+                    content: "Add caption";
+                    color: #ccc;
+                    cursor: text;
+                }
+            }
+        }
+
+        .img {
+            width: 100%;
+        }
+
+        .editor-btn-resize {
+            position: absolute;
+            top: 50%;
+            width: 5px;
+            height: 30%;
+            background: rgba(0, 0, 0, 0.5);
+            color: transparent;
+            border: 1px solid #fff;
+            border-radius: 10px;
+            font-size: 0;
+            transform: translateY(-50%);
+            cursor: col-resize;
+            box-sizing: border-box;
+            z-index: 10;
+
+            &.--left {
+                left: 5px;
+            }
+
+            &.--right {
+                right: 5px;
+            }
+        }
     }
 
     &[data-type="emoticon"] {
+        font-size: 0;
         text-align: center;
 
         .img,
         svg {
             display: inline-block;
-            max-width: 150px;
+            width: 150px;
+            vertical-align: top;
         }
     }
 
@@ -633,12 +687,14 @@
             bottom: 10px;
             width: 100px;
             height: 6px;
-            background: #f1f1f1;
+            background: rgba(0, 0, 0, 0.5);
             color: transparent;
+            border: 1px solid #fff;
             border-radius: 10px;
             font-size: 0;
             transform: translateX(-50%);
             cursor: row-resize;
+            box-sizing: border-box;
             z-index: 10;
         }
     }
