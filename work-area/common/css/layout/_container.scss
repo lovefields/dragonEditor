@@ -25,13 +25,14 @@
     min-height: 300px;
     padding-bottom: 50px;
     margin: 0 auto;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.7;
     word-break: keep-all;
     transition: max-width 0.3s ease;
 
     &.--mobile {
         max-width: 320px;
+        font-size: 16px;
 
         @include mobile-item;
     }
@@ -39,4 +40,10 @@
 
 .editor-uploader {
     display: none;
+}
+
+@mixin mobile-container {
+    .editor-content {
+        font-size: 16px;
+    }
 }

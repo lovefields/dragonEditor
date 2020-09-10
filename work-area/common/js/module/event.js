@@ -1,9 +1,8 @@
 const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL } = require("./default");
 const { getElement, findParentByClass, getChild, getActiveElement } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
-const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML } = require("./layout");
+const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
 const { openFile } = require("./file");
-const { setCursor } = require("./cursor");
 const { openPop } = require("./pop");
 const { message } = require("./message");
 
@@ -85,18 +84,9 @@ function setMenuEvent() {
         let value = this.dataset["value"];
 
         if (type === "block") {
-            let $target = getActiveElement();
             let block = getDefaultBlockHTML(value);
-            let $selectedItem = getElement(".--djs-selected");
 
-            $target.insertAdjacentHTML("afterend", block);
-            setCursor($target.nextElementSibling, 0);
-
-            if ($selectedItem.length > 0) {
-                classControl($selectedItem, "remove", "--djs-selected");
-            }
-
-            condition.activeItem = $target.nextElementSibling;
+            addBlockToContent(block);
         } else if (type === "pop") {
             openPop(value, this);
         } else if (type === "file") {
@@ -106,8 +96,6 @@ function setMenuEvent() {
 
     // add link(linkbox, youtube, codepen, link) event
     eventBinding(condition.btnLinkbox, "click", async function () {
-        let $target = getActiveElement();
-        let $selectedItem = getElement(".--djs-selected");
         let $input = getChild(condition.popLinkbox, ".djs-input", false);
         let value = $input.value;
         let type = this.dataset["value"];
@@ -207,13 +195,7 @@ function setMenuEvent() {
         }
 
         if (boolean == true) {
-            $target.insertAdjacentHTML("afterend", html);
-            setCursor($target.nextElementSibling, 0);
-
-            if ($selectedItem.length > 0) {
-                classControl($selectedItem, "remove", "--djs-selected");
-            }
-            condition.activeItem = $target.nextElementSibling;
+            addBlockToContent(html);
             $input.value = "";
             classControl(condition.popLinkbox, "remove", "--act");
         } else {
@@ -255,7 +237,7 @@ export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
     eventBinding($wrap, "mousemove", function (e) {
         if (status.activity == true) {
             let value = -(status.mouseY - e.clientY);
-            let contentScroll = status.scrollY + value;
+            let contentScroll = status.scrollY + (value * 2);
 
             $content.scrollTo(0, contentScroll);
         }
@@ -278,31 +260,47 @@ export function setEmoticonBtnEvent() {
     eventBinding(condition.btnEmoticon, "click", function () {
         let code = this.innerHTML.trim();
         let block = getEmoticonBlockHTML(code);
-        let $target = getActiveElement();
-        let $selectedItem = getElement(".--djs-selected");
-
-        $target.insertAdjacentHTML("afterend", block);
-
-        if ($selectedItem.length > 0) {
-            classControl($selectedItem, "remove", "--djs-selected");
-        }
-
-        condition.activeItem = $target.nextElementSibling;
+        
+        addBlockToContent(block);
     });
 }
 
-export function setMediaEvent(){
-    eventBinding(condition.listMedia, "click", function(e){
-        switch(true){
-            case findParentByClass(e.target, "djs-add-media") !== null :
-                console.log("add");
-            break;
-            case findParentByClass(e.target, "djs-del-media") !== null :
-                console.log("del");
-            break;
-            case findParentByClass(e.target, "djs-name") !== null :
-                console.log("edit");
-            break;
+export function setMediaEvent() {
+    eventBinding(condition.listMedia, "click", function (e) {
+        let $item = findParentByClass(e.target, "djs-media")
+        let type = $item.dataset["type"];
+        let idx = $item.dataset["idx"];
+
+        if (type == "image") {
+            switch (true) {
+                case findParentByClass(e.target, "djs-add-media") !== null:
+                    let $area = findParentByClass(e.target, "djs-add-media");
+                    let data = {
+                        src: $area.dataset["src"],
+                        alt: $area.dataset["alt"],
+                        defaultFormat: $area.dataset["defaultFormat"],
+                        webp: $area.dataset["webp"],
+                        width: parseInt($area.dataset["width"]),
+                        height: parseInt($area.dataset["height"]),
+                    };
+                    let block;
+
+                    console.log(data);
+                    if(data.width < data.height){
+                        block = getImageBlockHTML(data, 400);
+                    }else{
+                        block = getImageBlockHTML(data);
+                    }
+
+                    addBlockToContent(block);
+                    break;
+                case findParentByClass(e.target, "djs-del-media") !== null:
+                    console.log("del");
+                    break;
+                case findParentByClass(e.target, "djs-name") !== null:
+                    console.log("edit");
+                    break;
+            }
         }
     });
 

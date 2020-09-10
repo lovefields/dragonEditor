@@ -1,4 +1,6 @@
-const { typeCheckThrow, upperFirstChar } = require("./default");
+const { typeCheckThrow, upperFirstChar, classControl } = require("./default");
+const { getElement, getActiveElement } = require("./selector");
+const { setCursor } = require("./cursor");
 
 export function makeView() {
     let view = "";
@@ -228,8 +230,11 @@ function getTextBlockHTML(content = "", _0 = typeCheckThrow(content, "string")) 
     return `<p class="editor-item djs-item --djs-selected" contenteditable="true" data-type="text">${content}</p>`;
 }
 
-function getImageBlockHTML(attr, _0 = typeCheckThrow(attr, "object")) {
-    let html = `<div class="editor-item djs-item --djs-selected" data-type="image">`;
+export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "object"), _1 = typeCheckThrow(width, "number")) {
+    let html = `
+        <div class="editor-item djs-item --djs-selected" data-type="image">
+            <div class="editor-size djs-size" data-width="${width}">
+    `;
 
     if (condition.useWebp == true) {
         html += `<picture>`;
@@ -244,8 +249,10 @@ function getImageBlockHTML(attr, _0 = typeCheckThrow(attr, "object")) {
         html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" class="img">`;
     }
 
-    html += `<button class="btn-size --left djs-image-size" data-position="left"></button>`;
-    html += `<button class="btn-size --right djs-image-size" data-position="right"></button>`;
+    html += `<button class="editor-btn-resize --left djs-resize-width" data-position="left">resize</button>`;
+    html += `<button class="editor-btn-resize --right djs-resize-width" data-position="right">resize</button>`;
+    html += `</div>`;
+    html += `<p class="editor-caption" contenteditable="true" data-type="caption">${attr.alt}</p>`;
     html += `</div>`;
 
     return html;
@@ -288,7 +295,7 @@ function getTableBlock() {
         <div class="editor-item djs-item --djs-selected" data-type="table">
             <div class="scroll">
                 <table class="table">
-                    <caption contenteditable="true"></caption>
+                    <caption contenteditable="true" data-type="caption"></caption>
                     <colgroup>
                         <col data-size="100">
                         <col data-size="100">
@@ -632,11 +639,11 @@ export function setMediaList(data) {
     let html = "";
 
     data.forEach((row) => {
-        if(row.type == "image"){
+        if (row.type == "image") {
             html += `
-                <li class="editor-media">
-                    <div class="eidtor-img-area djs-add-media" data-src="${row.src}" data-defaultFormat="${row.defaultFormat}" data-webp="${row.webp}" data-width="${row.width}" data-height="${row.height}">
-                        <img src="${`${row.src}.${row.defaultFormat}`}" alt="${row.alt}" class="editor-img">
+                <li class="editor-media djs-media" data-type="image" data-idx="${row.idx}">
+                    <div class="eidtor-img-area djs-add-media" data-src="${row.src}" data-alt="${row.alt}" data-default-format="${row.defaultFormat}" data-webp="${row.webp}" data-width="${row.width}" data-height="${row.height}">
+                        <img src="${`${row.src}.${row.defaultFormat}`}" class="editor-img">
                     </div>
 
                     <p class="editor-name djs-name">${row.alt}</p>
@@ -653,6 +660,20 @@ export function setMediaList(data) {
     });
 
     condition.listMedia.insertAdjacentHTML("beforeend", html);
+}
+
+export function addBlockToContent(block, _0 = typeCheckThrow(block, "string")) {
+    let $target = getActiveElement();
+    let $selectedItem = getElement(".--djs-selected");
+
+    $target.insertAdjacentHTML("afterend", block);
+    setCursor($target.nextElementSibling, 0);
+
+    if ($selectedItem.length > 0) {
+        classControl($selectedItem, "remove", "--djs-selected");
+    }
+
+    condition.activeItem = $target.nextElementSibling;
 }
 
 // this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
