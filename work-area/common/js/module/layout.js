@@ -226,14 +226,14 @@ export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "
             html += `<source srcset="${attr.src}.webp" type="image/webp">`;
         }
 
-        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" class="img">`;
+        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" class="img" draggable="false">`;
         html += `</picture>`;
     } else {
-        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" class="img">`;
+        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" class="img" draggable="false">`;
     }
 
-    html += `<button class="editor-btn-resize --left djs-resize-width" data-position="left">resize</button>`;
-    html += `<button class="editor-btn-resize --right djs-resize-width" data-position="right">resize</button>`;
+    html += `<button class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button>`;
+    html += `<button class="editor-btn-resize --right djs-resize" data-value="width" data-position="right">resize</button>`;
     html += `</div>`;
     html += `<p class="editor-caption" contenteditable="true" data-type="caption">${attr.alt}</p>`;
     html += `</div>`;
@@ -322,8 +322,8 @@ export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {
 export function getCodepenBlock(nickname, code, height = 300, _0 = typeCheckThrow(nickname, "string"), _1 = typeCheckThrow(code, "string"), _2 = typeCheckThrow(height, "number")) {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="codepen">
-            <iframe height="${height}" title="" src="https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${condition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe"></iframe>
-            <button class="editor-btn-resize djs-resize-height">Resize height</button>
+            <iframe height="${height}" title="" src="https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${condition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe djs-iframe" data-code="${code}" data-nickname="${nickname}"></iframe>
+            <button class="editor-btn-resize djs-resize" data-value="height">Resize height</button>
         </div>
     `;
 }
