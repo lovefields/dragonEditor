@@ -25,9 +25,9 @@ export function makeView() {
 
     view += makeLinkboxPop();
     view += makeOptionPop();
+    view += makeEmoticonPop();
 
-    condition.wrap.insertAdjacentHTML("afterend", view);
-    // condition.wrap.innerHTML = view;
+    condition.wrap.insertAdjacentHTML("beforeend", view);
 }
 
 function makeContentArea(lang) {
@@ -35,9 +35,10 @@ function makeContentArea(lang) {
 }
 
 function makeBlockMenu(data) {
-    let html = "";
+    let arr = Object.entries(data);
+    let html = `<div class="editor-scroll-col editor-clearfix" data-count="${arr.length}">`;
 
-    for (const [key, value] of Object.entries(data)) {
+    for (const [key, value] of arr) {
         if (value.type === "block") {
             html += `
                 <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
@@ -48,28 +49,14 @@ function makeBlockMenu(data) {
                 </button>
             `;
         } else if (value.type === "pop") {
-            if (key === "emoticonBlock") {
-                html += `
-                    <div class="editor-relative">
-                        <button class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
-                            <svg viewbox="0 0 64 64" class="editor-icon">
-                                <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
-                            </svg>
-                            ${value.text}
-                        </button>
-                `;
-                html += makeEmoticonPop();
-                html += `</div>`;
-            } else {
-                html += `
-                    <button class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
-                        <svg viewbox="0 0 64 64" class="editor-icon">
-                            <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
-                        </svg>
-                        ${value.text}
-                    </button>
-                `;
-            }
+            html += `
+                <button class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
+                    <svg viewbox="0 0 64 64" class="editor-icon">
+                        <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
+                    </svg>
+                    ${value.text}
+                </button>
+            `;
         } else if (value.type === "file") {
             html += `
                 <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
@@ -80,13 +67,9 @@ function makeBlockMenu(data) {
                 </button>
             `;
         }
-
-        // if (key === "emoticonBlock") {
-
-        // } else {
-
-        // }
     }
+
+    html += `</div>`;
 
     return html;
 }
@@ -608,6 +591,7 @@ function makeOptionPop() {
         </div>
     `;
 
+    html += `</div>`;
     html += `</div>`;
 
     return html;

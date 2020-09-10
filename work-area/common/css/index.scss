@@ -10,7 +10,8 @@
 @import "layout/container";
 
 @media all and (max-width: 800px) {
-    @include mobile-menu;
     @include mobile-item;
+    @include mobile-menu;
+    @include mobile-pop;
     @include mobile-container;
 }

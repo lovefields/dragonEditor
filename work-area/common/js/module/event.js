@@ -25,9 +25,9 @@ function setGlobalEvent() {
     });
 
     // modal
-    eventBinding(document, "click", function (e) {
+    eventBinding(document, "mousedown", function (e) {
         let $target = e.target;
-        let $list = getElement(".djs-trigger");
+        let $list = getElement(".djs-trigger.--act");
         let checkTrigger = findParentByClass($target, "djs-trigger") == null ? false : true;
         let checkBtn = findParentByClass($target, "djs-btn-ignore") == null ? false : true;
 
@@ -42,7 +42,7 @@ function setGlobalEvent() {
     eventBinding(condition.btnToggleTarget, "click", function (e) {
         let targetName = this.dataset["target"];
         let $target = getElement(targetName, false);
-        let $itemList = getElement(".djs-trigger");
+        let $itemList = getElement(".djs-trigger.--act");
         let hasScroll = hasClass($target, ".djs-scroll");
 
         $itemList.forEach(($item) => {
@@ -285,7 +285,6 @@ export function setMediaEvent() {
                     };
                     let block;
 
-                    console.log(data);
                     if(data.width < data.height){
                         block = getImageBlockHTML(data, 400);
                     }else{
@@ -295,9 +294,11 @@ export function setMediaEvent() {
                     addBlockToContent(block);
                     break;
                 case findParentByClass(e.target, "djs-del-media") !== null:
+                    // to-do delete media
                     console.log("del");
                     break;
                 case findParentByClass(e.target, "djs-name") !== null:
+                    // to-do update media
                     console.log("edit");
                     break;
             }

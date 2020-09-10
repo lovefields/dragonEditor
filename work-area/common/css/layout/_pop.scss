@@ -66,8 +66,7 @@
 }
 
 .editor-pop-emoticon {
-    top: 0;
-    right: 100%;
+    position: fixed;
 }
 
 .editor-pop-folder {
@@ -375,7 +374,7 @@
         }
 
         @each $color in $color-list {
-            &[data-value="#{$color}"]::before {
+            &[data-value="#{'' + $color}"]::before {
                 background-color: $color;
             }
         }
@@ -415,7 +414,7 @@
             font-size: 0;
 
             @each $color in $color-list {
-                &[data-value="#{$color}"] {
+                &[data-value="#{'' + $color}"] {
                     background-color: $color;
                 }
             }
@@ -485,5 +484,12 @@
             font-size: 12px;
             text-align: left;
         }
+    }
+}
+
+@mixin mobile-pop {
+    .editor-pop-folder {
+        right: 50%;
+        margin-right: -120px;
     }
 }

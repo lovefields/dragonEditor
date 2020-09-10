@@ -107,3 +107,11 @@ export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(ur
 export function upperFirstChar(text, _0 = typeCheckThrow(text, "string")) {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
+
+export function isMobile(){
+    if(condition.windowWidth < condition.changePint){
+        return true;
+    }else{
+        return false;
+    }
+}
