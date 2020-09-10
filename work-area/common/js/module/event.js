@@ -237,7 +237,7 @@ export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
     eventBinding($wrap, "mousemove", function (e) {
         if (status.activity == true) {
             let value = -(status.mouseY - e.clientY);
-            let contentScroll = status.scrollY + (value * 2);
+            let contentScroll = status.scrollY + value * 2;
 
             $content.scrollTo(0, contentScroll);
         }
@@ -260,14 +260,14 @@ export function setEmoticonBtnEvent() {
     eventBinding(condition.btnEmoticon, "click", function () {
         let code = this.innerHTML.trim();
         let block = getEmoticonBlockHTML(code);
-        
+
         addBlockToContent(block);
     });
 }
 
 export function setMediaEvent() {
     eventBinding(condition.listMedia, "click", function (e) {
-        let $item = findParentByClass(e.target, "djs-media")
+        let $item = findParentByClass(e.target, "djs-media");
         let type = $item.dataset["type"];
         let idx = $item.dataset["idx"];
 
@@ -285,9 +285,9 @@ export function setMediaEvent() {
                     };
                     let block;
 
-                    if(data.width < data.height){
+                    if (data.width < data.height) {
                         block = getImageBlockHTML(data, 400);
-                    }else{
+                    } else {
                         block = getImageBlockHTML(data);
                     }
 
@@ -305,9 +305,98 @@ export function setMediaEvent() {
         }
     });
 
-    console.log("media event");
+    console.log("to-do media ajax");
 }
 
 function setContentEvent() {
+    let status = {
+        resize: false,
+        client: {
+            x: 0,
+            y: 0,
+        },
+        type: "",
+        item: "",
+        position: "",
+    };
+
+    eventBinding(condition.areaContent, "mousedown", function (e) {
+        let $target = e.target;
+        let hasClass = $target.classList.contains("djs-resize");
+
+        if (hasClass == true) {
+            status.resize = true;
+            status.client.x = e.clientX;
+            status.client.y = e.clientY;
+            status.item = findParentByClass($target, "djs-item");
+            status.type = status.item.dataset["type"];
+            status.position = $target.dataset["position"];
+
+            if (status.type == "image") {
+                status.target = getChild(status.item, ".djs-size", false);
+                status.defaultValue = parseInt(status.target.dataset["width"]);
+            } else if (status.type == "codepen") {
+                status.target = getChild(status.item, ".djs-iframe", false);
+                status.defaultValue = parseInt(status.target.height);
+                classControl(status.item, "add", "--act");
+            }
+        }
+    });
+
+    eventBinding(condition.areaContent, "mousemove", function (e) {
+        if (status.resize == true) {
+            if (status.type == "image") {
+                let diff;
+
+                if (status.position == "left") {
+                    diff = e.clientX - status.client.x;
+                } else if (status.position == "right") {
+                    diff = status.client.x - e.clientX;
+                }
+
+                let multiple = Math.floor(diff / 50);
+                let count = 50 * multiple;
+                let width = status.defaultValue - count;
+
+                if (width > condition.maxImageWidth) {
+                    width = condition.maxImageWidth;
+                } else if (width < 50) {
+                    width = 50;
+                }
+
+                status.target.dataset["width"] = width;
+            } else if (status.type == "codepen") {
+                let diff = status.client.y - e.clientY;
+                let multiple = Math.floor(diff / 50);
+                let count = 50 * multiple;
+                let height = status.defaultValue - count;
+
+                if (height < 300) {
+                    height = 300;
+                } else if (height > condition.maxCodepenHeight) {
+                    height = condition.maxCodepenHeight;
+                }
+
+                status.target.height = height;
+            }
+        }
+    });
+
+    eventBinding(condition.areaContent, "mouseup", function (e) {
+        status.resize = false;
+
+        if (status.type == "codepen") {
+            classControl(status.item, "remove", "--act");
+        }
+    });
+
+    eventBinding(condition.areaContent, "mouseleave", function (e) {
+        status.resize = false;
+
+        if (status.type == "codepen") {
+            classControl(status.item, "remove", "--act");
+        }
+    });
+
     console.log("set content event");
 }
