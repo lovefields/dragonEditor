@@ -67,7 +67,7 @@ export function findContenteditable($node, _0 = typeCheckThrow($node, Node)) {
         if (hasAttr === "true") {
             return target;
         } else {
-            return this.findContenteditable(target.parentElement);
+            return findContenteditable(target.parentElement);
         }
     } else {
         return null;
