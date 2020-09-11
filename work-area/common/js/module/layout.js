@@ -347,7 +347,7 @@ export function getLinkboxBlock(data, _0 = typeCheckThrow(data, "object")) {
 }
 
 function makeOptionPop() {
-    let html = `<div class="editor-pop-option djs-option-pop">`;
+    let html = `<div class="editor-pop-option djs-option-pop djs-trigger">`;
 
     html += `
         <div class="editor-scroll-wrap">

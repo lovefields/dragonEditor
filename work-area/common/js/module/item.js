@@ -1,4 +1,5 @@
 const { typeCheckThrow } = require("./default");
+const { openOptionPop } = require("./pop");
 const { findParentByClass, findContenteditable } = require("./selector");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
@@ -7,6 +8,8 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $editableItem = findContenteditable($target);
 
     console.log($item, $editableItem);
+
+    openOptionPop(0,0);
 }
 
 export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {

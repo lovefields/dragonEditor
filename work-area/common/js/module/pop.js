@@ -30,7 +30,7 @@ function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "object")) {
 
         top = offset.top + offset.height;
 
-        if(right > maxRight){
+        if (right > maxRight) {
             right = maxRight;
         }
     }
@@ -53,7 +53,7 @@ function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 
 
         top = offset.top + offset.height;
 
-        if(right > maxRight){
+        if (right > maxRight) {
             right = maxRight;
         }
     }
@@ -85,4 +85,13 @@ function closePopIgnore(node, _0 = typeCheckThrow(node, Node)) {
             }
         });
     }
+}
+
+export function openOptionPop(top, left, _0 = typeCheckThrow(top, "number"), _1 = typeCheckThrow(left, "number")) {
+    if (isMobile() !== true) {
+        condition.popOption.style.top = `${top}px`;
+        condition.popOption.style.left = `${left}px`;
+    }
+
+    classControl(condition.popOption, "add", "--act");
 }
