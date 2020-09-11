@@ -52,16 +52,15 @@ export function getActiveElement() {
     }
 }
 
-/*
-export function findContenteditable(node) {
-    let constructorName = node.constructor.name;
+export function findContenteditable($node, _0 = typeCheckThrow($node, Node)) {
+    let constructorName = $node.constructor.name;
     let target;
 
     if (constructorName !== "HTMLBodyElement") {
         if (constructorName === "Text") {
-            target = node.parentElement;
+            target = $node.parentElement;
         } else {
-            target = node;
+            target = $node;
         }
 
         let hasAttr = target.getAttribute("contenteditable");
@@ -71,7 +70,6 @@ export function findContenteditable(node) {
             return this.findContenteditable(target.parentElement);
         }
     } else {
-        return false;
+        return null;
     }
 }
-*/
