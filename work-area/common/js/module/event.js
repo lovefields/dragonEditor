@@ -1,7 +1,8 @@
-const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL } = require("./default");
-const { getElement, findParentByClass, getChild, getActiveElement } = require("./selector");
+const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile } = require("./default");
+const { getElement, findParentByClass, getChild } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
+const { itemClickEvent, itemKeyboardEvent } = require("./item");
 const { openFile } = require("./file");
 const { openPop } = require("./pop");
 const { message } = require("./message");
@@ -283,13 +284,17 @@ export function setMediaEvent() {
                         width: parseInt($area.dataset["width"]),
                         height: parseInt($area.dataset["height"]),
                     };
+                    let setWidth = 700;
                     let block;
 
-                    if (data.width < data.height) {
-                        block = getImageBlockHTML(data, 400);
+                    if (isMobile() == true) {
+                        setWidth = 300;
                     } else {
-                        block = getImageBlockHTML(data);
+                        if (data.width < data.height) {
+                            setWidth = 400;
+                        }
                     }
+                    block = getImageBlockHTML(data, setWidth);
 
                     addBlockToContent(block);
                     break;
@@ -320,14 +325,20 @@ function setContentEvent() {
         position: "",
     };
 
-    eventBinding(condition.areaContent, "mousedown", function (e) {
+    eventBinding(condition.areaContent, "mousedown,touchstart", function (e) {
         let $target = e.target;
         let hasClass = $target.classList.contains("djs-resize");
 
         if (hasClass == true) {
+            if (isMobile() == true) {
+                status.client.x = Math.floor(e.touches[0].clientX);
+                status.client.y = Math.floor(e.touches[0].clientY);
+            } else {
+                status.client.x = e.clientX;
+                status.client.y = e.clientY;
+            }
+
             status.resize = true;
-            status.client.x = e.clientX;
-            status.client.y = e.clientY;
             status.item = findParentByClass($target, "djs-item");
             status.type = status.item.dataset["type"];
             status.position = $target.dataset["position"];
@@ -343,15 +354,25 @@ function setContentEvent() {
         }
     });
 
-    eventBinding(condition.areaContent, "mousemove", function (e) {
+    eventBinding(condition.areaContent, "mousemove,touchmove", function (e) {
         if (status.resize == true) {
+            let clientX, clientY;
+
+            if (isMobile() == true) {
+                clientX = Math.floor(e.touches[0].clientX);
+                clientY = Math.floor(e.touches[0].clientY);
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
             if (status.type == "image") {
                 let diff;
 
                 if (status.position == "left") {
-                    diff = e.clientX - status.client.x;
+                    diff = clientX - status.client.x;
                 } else if (status.position == "right") {
-                    diff = status.client.x - e.clientX;
+                    diff = status.client.x - clientX;
                 }
 
                 let multiple = Math.floor(diff / 50);
@@ -366,7 +387,7 @@ function setContentEvent() {
 
                 status.target.dataset["width"] = width;
             } else if (status.type == "codepen") {
-                let diff = status.client.y - e.clientY;
+                let diff = status.client.y - clientY;
                 let multiple = Math.floor(diff / 50);
                 let count = 50 * multiple;
                 let height = status.defaultValue - count;
@@ -382,21 +403,29 @@ function setContentEvent() {
         }
     });
 
-    eventBinding(condition.areaContent, "mouseup", function (e) {
+    eventBinding(condition.areaContent, "mouseup,touchend", function (e) {
         status.resize = false;
 
         if (status.type == "codepen") {
             classControl(status.item, "remove", "--act");
         }
+
+        itemClickEvent(e);
     });
 
-    eventBinding(condition.areaContent, "mouseleave", function (e) {
-        status.resize = false;
-
-        if (status.type == "codepen") {
-            classControl(status.item, "remove", "--act");
-        }
+    eventBinding(condition.areaContent, "keydown", function (e) {
+        itemKeyboardEvent(e);
     });
+
+    // bug event - why?!
+    // eventBinding(condition.areaContent, "mouseenter", function (e) {
+    //     console.log("in!");
+    //     status.resize = false;
+
+    //     if (status.type == "codepen") {
+    //         classControl(status.item, "remove", "--act");
+    //     }
+    // });
 
     console.log("set content event");
 }

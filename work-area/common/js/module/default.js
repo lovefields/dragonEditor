@@ -21,22 +21,34 @@ export function typeCheckBoolean(target, type) {
 }
 
 export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function"), _3 = typeCheckThrow(useCapture, "boolean")) {
+    let typeList = type.split(",");
+
     if ($node.length > 0) {
         $node.forEach(($item) => {
-            $item.addEventListener(type, fn, useCapture);
+            typeList.forEach((eventName) => {
+                $item.addEventListener(eventName, fn, true);
+            });
         });
     } else {
-        $node.addEventListener(type, fn, useCapture);
+        typeList.forEach((eventName) => {
+            $node.addEventListener(eventName, fn, true);
+        });
     }
 }
 
 export function removeEvent($node, type, fn, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function")) {
+    let typeList = type.split(",");
+
     if ($node.length > 0) {
         $node.forEach(($item) => {
-            $item.removeEventListener(type, fn, true);
+            typeList.forEach((eventName) => {
+                $item.removeEventListener(eventName, fn, true);
+            });
         });
     } else {
-        $node.removeEventListener(type, fn, true);
+        typeList.forEach((eventName) => {
+            $node.removeEventListener(eventName, fn, true);
+        });
     }
 }
 
@@ -108,10 +120,10 @@ export function upperFirstChar(text, _0 = typeCheckThrow(text, "string")) {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export function isMobile(){
-    if(condition.windowWidth < condition.changePint){
+export function isMobile() {
+    if (condition.windowWidth < condition.changePint) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
