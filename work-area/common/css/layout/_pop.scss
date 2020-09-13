@@ -288,10 +288,15 @@
     }
 
     .editor-col {
-        display: inline-block;
+        display: none;
         position: relative;
+        float: left;
         height: 46px;
         vertical-align: top;
+
+        &.--act {
+            display: block;
+        }
     }
 
     .editor-select {

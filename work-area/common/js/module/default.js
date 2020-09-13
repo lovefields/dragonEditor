@@ -127,3 +127,15 @@ export function isMobile() {
         return false;
     }
 }
+
+export function hasValueArrToArr(baseArr, inputArr, _0 = typeCheckThrow(baseArr, Array), _1 = typeCheckThrow(inputArr, Array)) {
+    let boolean = false;
+
+    inputArr.forEach((item) => {
+        if (baseArr.indexOf(item) > -1) {
+            boolean = true;
+        }
+    });
+
+    return boolean;
+}

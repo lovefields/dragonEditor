@@ -347,10 +347,10 @@ export function getLinkboxBlock(data, _0 = typeCheckThrow(data, "object")) {
 }
 
 function makeOptionPop() {
-    let html = `<div class="editor-pop-option djs-option-pop djs-trigger">`;
+    let html = `<div class="editor-pop-option djs-option-pop">`;
 
     html += `
-        <div class="editor-scroll-wrap">
+        <div class="editor-scroll-wrap editor-clearfix">
             <div class="editor-col" data-group="text,li,table,codeblock,word">
                 <button class="editor-select djs-fontisze djs-toggle-target djs-btn-ignore" data-target=".editor-list-fontsize">
                     <span class="editor-text djs-text">16</span>
