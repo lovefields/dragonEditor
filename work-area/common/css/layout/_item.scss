@@ -2,6 +2,18 @@
     margin-bottom: 10px;
     outline: 0;
 
+    .editor-edit {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        padding: 10px;
+        background: #000;
+        color: #fff;
+        border: 1px solid #fff;
+        border-radius: 2px;
+        z-index: 30;
+    }
+
     &[data-type="text"] {
         &:empty {
             min-height: 1.7em;
@@ -181,6 +193,7 @@
                     display: inline;
                     content: "“Quote”";
                     color: #ccc;
+                    cursor: text;
                 }
 
                 &::after {
@@ -208,6 +221,7 @@
                     display: inline;
                     content: "- Author -";
                     color: #ccc;
+                    cursor: text;
                 }
 
                 &::after {

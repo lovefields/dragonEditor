@@ -8,5 +8,5 @@ a:link,a:visited,a:hover,a:active{text-decoration:none}
 a,button,input[type='submit'],input[type='button'],input[type='reset']{border:0;background:transparent;cursor:pointer;-webkit-appearance:none}
 img{border:0;vertical-align:top}
 
-.wrap{padding-top:50px}
+.wrap{padding-top:100px}
 .editor-dragon{max-width:800px;margin:0 auto}

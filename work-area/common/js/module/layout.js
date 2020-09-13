@@ -315,6 +315,7 @@ export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="youtube">
             <iframe src="https://www.youtube.com/embed/${code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe"></iframe>
+            <button class="editor-edit">edit</button>
         </div>
     `;
 }
@@ -324,6 +325,7 @@ export function getCodepenBlock(nickname, code, height = 300, _0 = typeCheckThro
         <div class="editor-item djs-item --djs-selected" data-type="codepen">
             <iframe height="${height}" title="" src="https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${condition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe djs-iframe" data-code="${code}" data-nickname="${nickname}"></iframe>
             <button class="editor-btn-resize djs-resize" data-value="height">Resize height</button>
+            <button class="editor-edit">edit</button>
         </div>
     `;
 }
@@ -450,7 +452,7 @@ function makeOptionPop() {
             </button>
         </div>
 
-        <div class="editor-col editor-btn-area" data-group="td">
+        <div class="editor-col editor-btn-area" data-group="th">
             <button class="editor-btn djs-table-header">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-table-header" href="#icon-table-header"></use>

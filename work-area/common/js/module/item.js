@@ -8,25 +8,44 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $editableItem = findContenteditable($target);
 
     if ($item !== null || $editableItem !== null) {
-        let $offsetTarget = $editableItem == null ? $item : $editableItem;
         let typeArr = ["all"];
-        let offset = $offsetTarget.getBoundingClientRect();
+        let offset = $item.getBoundingClientRect();
         let itemType = $item.dataset["type"];
 
         if ($editableItem !== null) {
+            let selection = window.getSelection();
+            let focusNode = selection.focusNode;
+            let baseNode = selection.baseNode;
+            let focusOffset = selection.focusOffset;
+            let baseOffset = selection.baseOffset;
+
             switch ($editableItem.constructor.name) {
-                case "":
+                case "HTMLLIElement":
+                    typeArr.push("li");
                     break;
+
+                case "HTMLTableCellElement":
+                    if ($editableItem.tagName == "TD") {
+                        typeArr.push("td");
+                    } else if ($editableItem.tagName == "TH") {
+                        typeArr.push("th");
+                    }
+                    break;
+            }
+
+            if (focusNode == baseNode && focusOffset !== baseOffset) {
+                typeArr.push("word");
             }
         }
 
         typeArr.push(itemType);
 
-        console.log($item, $editableItem);
+        condition.activeItem = $item;
+        condition.activeElement = $editableItem;
 
         openOptionPop(
             {
-                top: offset.top + offset.height + 10,
+                top: offset.top - 48,
                 left: offset.left,
             },
             typeArr,
