@@ -1,5 +1,5 @@
-const { typeCheckThrow, classControl, isMobile } = require("./default");
-const { getElement, getChild } = require("./selector");
+const { typeCheckThrow, classControl, isMobile, hasValueArrToArr } = require("./default");
+const { getElement, getChild, findParentByClass } = require("./selector");
 
 export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, Node)) {
     let offset = $node.getBoundingClientRect();
@@ -87,11 +87,31 @@ function closePopIgnore(node, _0 = typeCheckThrow(node, Node)) {
     }
 }
 
-export function openOptionPop(top, left, _0 = typeCheckThrow(top, "number"), _1 = typeCheckThrow(left, "number")) {
-    if (isMobile() !== true) {
-        condition.popOption.style.top = `${top}px`;
-        condition.popOption.style.left = `${left}px`;
+export function closeOptionPop($target, _0 = typeCheckThrow($target, Node)) {
+    let isOptionPop = findParentByClass($target, "djs-option-pop") !== null ? true : false;
+
+    if (isOptionPop == false) {
+        classControl(condition.popOption, "remove", "--act");
     }
+}
+
+export function openOptionPop(offset, type, _0 = typeCheckThrow(offset, Object), _1 = typeCheckThrow(type, Array)) {
+    let $colList = getChild(condition.popOption, ".editor-col");
+
+    if (isMobile() !== true) {
+        condition.popOption.style.top = `${offset.top}px`;
+        condition.popOption.style.left = `${offset.left}px`;
+    }
+
+    $colList.forEach((col) => {
+        let group = col.dataset["group"].split(",");
+
+        if (hasValueArrToArr(group, type) == true) {
+            classControl(col, "add", "--act");
+        } else {
+            classControl(col, "remove", "--act");
+        }
+    });
 
     classControl(condition.popOption, "add", "--act");
 }

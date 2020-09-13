@@ -25,7 +25,7 @@ We never ever support IE.
 * Load DragonEditor CSS
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
-<link rel="stylesheet" href="[yourdri]/dragonEditor.css">
+<link rel="stylesheet" href="[yourdir]/dragonEditor.css">
 
 <!-- 
 * html
@@ -43,8 +43,8 @@ We never ever support IE.
 * Load highlight plugin if you using code block.
 * Load dragonEditor js
 -->
-<script src="[yourdri]/highlight.pack.js"></script>
-<script src="[yourdri]/dragonEditor.js"></script>
+<script src="[yourdir]/highlight.pack.js"></script>
+<script src="[yourdir]/dragonEditor.js"></script>
 <script>
     const editor = new dragonEditor();
     // OR

@@ -4,7 +4,7 @@ const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
 const { itemClickEvent, itemKeyboardEvent } = require("./item");
 const { openFile } = require("./file");
-const { openPop } = require("./pop");
+const { openPop, closeOptionPop } = require("./pop");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -37,6 +37,8 @@ function setGlobalEvent() {
                 classControl($list, "remove", "--act");
             }
         }
+
+        closeOptionPop(e.target);
     });
 
     // toggle target event
