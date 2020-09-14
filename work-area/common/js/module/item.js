@@ -1,5 +1,6 @@
 const { typeCheckThrow } = require("./default");
 const { openOptionPop } = require("./pop");
+const { contentEnterKeyEvent } = require("./keyboard");
 const { findParentByClass, findContenteditable } = require("./selector");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
@@ -14,10 +15,10 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
 
         if ($editableItem !== null) {
             let selection = window.getSelection();
-            let focusNode = selection.focusNode;
-            let baseNode = selection.baseNode;
-            let focusOffset = selection.focusOffset;
-            let baseOffset = selection.baseOffset;
+            condition.focusNode = selection.focusNode;
+            condition.baseNode = selection.baseNode;
+            condition.focusOffset = selection.focusOffset;
+            condition.baseOffset = selection.baseOffset;
 
             switch ($editableItem.constructor.name) {
                 case "HTMLLIElement":
@@ -33,7 +34,7 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
                     break;
             }
 
-            if (focusNode == baseNode && focusOffset !== baseOffset) {
+            if (condition.focusNode == condition.baseNode && condition.focusOffset !== condition.baseOffset) {
                 typeArr.push("word");
             }
         }
@@ -54,5 +55,22 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
 }
 
 export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
-    console.log(e);
+    let $item = findParentByClass(e.target, "djs-item");
+    let $editableItem = findContenteditable(e.target);
+    let selection = window.getSelection();
+    let code = e.code;
+
+    condition.focusNode = selection.focusNode;
+    condition.baseNode = selection.baseNode;
+    condition.focusOffset = selection.focusOffset;
+    condition.baseOffset = selection.baseOffset;
+
+    switch (code) {
+        case "Enter":
+            contentEnterKeyEvent($item, $editableItem, e.shiftKey, e);
+            break;
+        case "":
+            break;
+    }
+    // console.log(e);
 }

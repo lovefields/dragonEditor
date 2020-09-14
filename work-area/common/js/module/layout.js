@@ -1,5 +1,5 @@
 const { typeCheckThrow, upperFirstChar, classControl } = require("./default");
-const { getElement, getActiveElement } = require("./selector");
+const { getElement, getActiveElement, getChild } = require("./selector");
 const { setCursor } = require("./cursor");
 
 export function makeView() {
@@ -209,7 +209,7 @@ export function getDefaultBlockHTML(type, _0 = typeCheckThrow(type, "string")) {
     return html;
 }
 
-function getTextBlockHTML(content = "", _0 = typeCheckThrow(content, "string")) {
+export function getTextBlockHTML(content = "", _0 = typeCheckThrow(content, "string")) {
     return `<p class="editor-item djs-item --djs-selected" contenteditable="true" data-type="text">${content}</p>`;
 }
 
@@ -267,6 +267,10 @@ function getOlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
     html += `</ol>`;
 
     return html;
+}
+
+export function getListChildHTML(content = "", _0 = typeCheckThrow(content, "string")) {
+    return `<li contenteditable="true">${content}</li>`;
 }
 
 function getQuotaionBlock() {
@@ -651,9 +655,18 @@ export function setMediaList(data) {
 export function addBlockToContent(block, _0 = typeCheckThrow(block, "string")) {
     let $target = getActiveElement();
     let $selectedItem = getElement(".--djs-selected");
+    let $newItem;
 
     $target.insertAdjacentHTML("afterend", block);
-    setCursor($target.nextElementSibling, 0);
+
+    $newItem = $target.nextElementSibling;
+
+    if ($newItem.contentEditable == "true") {
+        setCursor($newItem, 0);
+    } else {
+        let $child = getChild($newItem, "*[contenteditable]", false);
+        setCursor($child, 0);
+    }
 
     if ($selectedItem.length > 0) {
         classControl($selectedItem, "remove", "--djs-selected");
