@@ -35,6 +35,8 @@ export class storage {
         this.activeElement;
         this.focusNode;
         this.baseNode;
+        this.focusOffset;
+        this.baseOffset;
         this.regList = {
             defaultURL: new RegExp("https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?", "i"),
             youtubeURL: new RegExp("(https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)?", "i"),

@@ -328,6 +328,7 @@
         left: -1px;
         width: 57px;
         height: 200px;
+        background: #fff;
         border: 1px solid #ccc;
         opacity: 0;
         visibility: hidden;
@@ -362,6 +363,7 @@
         position: relative;
         width: 48px;
         height: 46px;
+        background: #fff;
         border-right: 1px solid #ccc;
 
         &::before {
