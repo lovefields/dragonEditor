@@ -3,6 +3,7 @@
 [![Github stars](https://img.shields.io/github/stars/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/stargazers)
 [![Github top language](https://img.shields.io/github/languages/top/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/)
 [![Github license](https://img.shields.io/github/license/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/)
+[![HitCount](http://hits.dwyl.com/lovefields/dragonEditor.svg)](http://hits.dwyl.com/lovefields/dragonEditor)
 
 # DragonEditor
 I made DragonEditor because I needed an WYSIWYG editor to use in my blog. And I wanted to make every design acceptable.
