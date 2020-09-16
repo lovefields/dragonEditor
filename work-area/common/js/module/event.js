@@ -442,12 +442,17 @@ function setContentEvent() {
 function setOptionEvent() {
     eventBinding(condition.btnFontSize, "click", function () {
         let $btn = getElement(".djs-fontsize", false);
-        let $item = findParentByClass(condition.baseNode, "djs-item");
+        // let $item = findParentByClass(condition.baseNode, "djs-item");
         let size = this.dataset["value"];
         let event = document.createEvent("HTMLEvents");
         event.initEvent("click", true, false);
 
         if (isTextSelect() == true) {
+            if(condition.baseNode == condition.focusNode){
+                console.log("same node");
+            }else{
+                console.log("wrong node");
+            }
         } else {
             let constructorName = condition.baseNode.constructor.name;
             let $target;
@@ -460,15 +465,9 @@ function setOptionEvent() {
 
             $target.setAttribute("data-font-size", size);
             getChild($btn, ".djs-text", false).textContent = size;
-            $btn.dispatchEvent(event);
             $target.focus();
         }
 
-        console.log(condition.focusNode);
-        console.log(condition.baseNode);
-        console.log(condition.focusOffset);
-        console.log(condition.baseOffset);
-
-        console.log(size);
+        $btn.dispatchEvent(event);
     });
 }
