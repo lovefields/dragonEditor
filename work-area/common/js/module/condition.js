@@ -318,5 +318,6 @@ export class storage {
         this.popOption = getElement(".djs-option-pop", false);
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
         this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
+        this.btnFontSize = getElement(".djs-change-fontsize");
     }
 }

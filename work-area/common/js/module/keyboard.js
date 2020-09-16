@@ -1,7 +1,6 @@
 const { typeCheckThrow } = require("./default");
 const { isTextSelect, setCursor } = require("./cursor");
-const { openOptionPop } = require("./pop");
-const { findContenteditable, getChild } = require("./selector");
+const { getChild } = require("./selector");
 const { getTextBlockHTML, getListChildHTML, addBlockToContent } = require("./layout");
 
 export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {

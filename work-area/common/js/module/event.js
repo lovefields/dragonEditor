@@ -5,6 +5,7 @@ const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, 
 const { itemClickEvent, itemKeyboardEvent } = require("./item");
 const { openFile } = require("./file");
 const { openPop, closeOptionPop, openOptionPop } = require("./pop");
+const { isTextSelect } = require("./cursor");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -12,6 +13,7 @@ export function setEvent() {
     setMenuEvent();
     setScroll();
     setContentEvent();
+    setOptionEvent();
 }
 
 function setGlobalEvent() {
@@ -435,4 +437,38 @@ function setContentEvent() {
     // });
 
     console.log("set content event");
+}
+
+function setOptionEvent() {
+    eventBinding(condition.btnFontSize, "click", function () {
+        let $btn = getElement(".djs-fontsize", false);
+        let $item = findParentByClass(condition.baseNode, "djs-item");
+        let size = this.dataset["value"];
+        let event = document.createEvent("HTMLEvents");
+        event.initEvent("click", true, false);
+
+        if (isTextSelect() == true) {
+        } else {
+            let constructorName = condition.baseNode.constructor.name;
+            let $target;
+
+            if (constructorName == "Text") {
+                $target = condition.baseNode.parentNode;
+            } else {
+                $target = condition.baseNode;
+            }
+
+            $target.setAttribute("data-font-size", size);
+            getChild($btn, ".djs-text", false).textContent = size;
+            $btn.dispatchEvent(event);
+            $target.focus();
+        }
+
+        console.log(condition.focusNode);
+        console.log(condition.baseNode);
+        console.log(condition.focusOffset);
+        console.log(condition.baseOffset);
+
+        console.log(size);
+    });
 }

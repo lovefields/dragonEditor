@@ -1,5 +1,6 @@
 const { typeCheckThrow, classControl, isMobile, hasValueArrToArr } = require("./default");
 const { getElement, getChild, findParentByClass } = require("./selector");
+const { getTextItemOption } = require("./option");
 const { getItemType } = require("./item");
 
 export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, Node)) {
@@ -118,5 +119,24 @@ export function openOptionPop() {
         }
     });
 
+    setOptionPopValue();
     classControl(condition.popOption, "add", "--act");
+}
+
+function setOptionPopValue() {
+    let textStyle = getTextItemOption(condition.baseNode);
+    let fontSizeText = getElement(".djs-fontsize .djs-text", false);
+
+    if (textStyle.fontSize != "") {
+        fontSizeText.textContent = textStyle.fontSize;
+    } else {
+        fontSizeText.textContent = "16";
+    }
+
+    console.log(textStyle);
+    // console.log(condition.focusNode);
+    // console.log(condition.baseNode);
+    // console.log(condition.focusOffset);
+    // console.log(condition.baseOffset);
+    console.log("to-do set option pop value");
 }

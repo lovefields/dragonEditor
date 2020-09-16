@@ -9,7 +9,11 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
         align: "",
     };
 
-    if($node.dataset != undefined){
+    if ($node.constructor.name == "Text") {
+        $node = $node.parentNode;
+    }
+
+    if ($node.dataset != undefined) {
         styleList.forEach((value) => {
             attr[value] = $node.dataset[value] == undefined ? "" : $node.dataset[value];
         });

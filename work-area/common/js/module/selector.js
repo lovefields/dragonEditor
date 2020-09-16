@@ -29,6 +29,10 @@ export function checkElement(className = "", defaultName, multiple = true, _0 = 
 
 export function findParentByClass($node, className, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(className, "string")) {
     if ($node.constructor.name !== "HTMLBodyElement" && $node.constructor.name !== "HTMLHtmlElement") {
+        if ($node.constructor.name == "Text") {
+            $node = $node.parentNode;
+        }
+
         let check = $node.classList.contains(className);
 
         if (check === true) {
@@ -48,9 +52,9 @@ export function getActiveElement() {
     if (condition.activeItem == undefined) {
         return childList[childCount - 1];
     } else {
-        if(condition.activeItem.classList.contains("djs-item") == true){
+        if (condition.activeItem.classList.contains("djs-item") == true) {
             return condition.activeItem;
-        }else{
+        } else {
             return childList[childCount - 1];
         }
     }
