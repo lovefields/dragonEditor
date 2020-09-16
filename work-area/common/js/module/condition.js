@@ -23,6 +23,7 @@ export class storage {
     }
 
     setStatus(options) {
+        this.popOptionToClose = true;
         this.log = [];
         this.linkBoxData = {};
         this.langCategory = ["en", "ko"];

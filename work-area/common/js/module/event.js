@@ -1,5 +1,5 @@
 const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile } = require("./default");
-const { getElement, findParentByClass, getChild } = require("./selector");
+const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
 const { itemClickEvent, itemKeyboardEvent } = require("./item");
@@ -440,6 +440,7 @@ function setContentEvent() {
 }
 
 function setOptionEvent() {
+    // font size event
     eventBinding(condition.btnFontSize, "click", function () {
         let $btn = getElement(".djs-fontsize", false);
         // let $item = findParentByClass(condition.baseNode, "djs-item");
@@ -448,9 +449,11 @@ function setOptionEvent() {
         event.initEvent("click", true, false);
 
         if (isTextSelect() == true) {
-            if(condition.baseNode == condition.focusNode){
+            if (condition.baseNode == condition.focusNode) {
+                let $editable = findContenteditable(condition.baseNode);
+                console.log($editable);
                 console.log("same node");
-            }else{
+            } else {
                 console.log("wrong node");
             }
         } else {

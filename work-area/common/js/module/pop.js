@@ -91,9 +91,19 @@ function closePopIgnore(node, _0 = typeCheckThrow(node, Node)) {
 
 export function closeOptionPop($target, _0 = typeCheckThrow($target, Node)) {
     let isOptionPop = findParentByClass($target, "djs-option-pop") !== null ? true : false;
-    let isOpen = condition.popOption.classList.contains("--act");
+    let isItem = findParentByClass($target, "djs-item") !== null ? true : false;
+    let $btn = findParentByClass($target, "djs-add-block");
+    let isBtn = false;
 
-    if (isOptionPop == false && isOpen == true) {
+    if ($btn != null) {
+        let type = $btn.dataset["type"];
+
+        if (type == "block") {
+            isBtn = true;
+        }
+    }
+
+    if (isOptionPop == false && isItem == false && isBtn == false) {
         classControl(condition.popOption, "remove", "--act");
     }
 }
