@@ -48,26 +48,31 @@ export function getActiveElement() {
     if (condition.activeItem == undefined) {
         return childList[childCount - 1];
     } else {
-        return condition.activeItem;
+        if(condition.activeItem.classList.contains("djs-item") == true){
+            return condition.activeItem;
+        }else{
+            return childList[childCount - 1];
+        }
     }
 }
 
 export function findContenteditable($node, _0 = typeCheckThrow($node, Node)) {
     let constructorName = $node.constructor.name;
-    let target;
+    let $target;
 
     if (constructorName !== "HTMLBodyElement") {
         if (constructorName === "Text") {
-            target = $node.parentElement;
+            $target = $node.parentElement;
         } else {
-            target = $node;
+            $target = $node;
         }
 
-        let hasAttr = target.getAttribute("contenteditable");
-        if (hasAttr === "true") {
-            return target;
+        let hasAttr = $target.getAttribute("contenteditable");
+
+        if (hasAttr == "true") {
+            return $target;
         } else {
-            return findContenteditable(target.parentElement);
+            return findContenteditable($target.parentElement);
         }
     } else {
         return null;

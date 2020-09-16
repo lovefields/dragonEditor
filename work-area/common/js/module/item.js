@@ -42,6 +42,12 @@ export function getItemType($item, $editableItem) {
         }
 
         if (condition.focusNode == condition.baseNode && condition.focusOffset !== condition.baseOffset) {
+            let nodeName = condition.baseNode.constructor.name;
+
+            if ((nodeName = "HTMLAnchorElement")) {
+                typeArr.push("link");
+            }
+
             typeArr.push("word");
         }
     }
