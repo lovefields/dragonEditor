@@ -92,7 +92,7 @@ export function closeOptionPop($target, _0 = typeCheckThrow($target, Node)) {
     let isOptionPop = findParentByClass($target, "djs-option-pop") !== null ? true : false;
     let isOpen = condition.popOption.classList.contains("--act");
 
-    if (isOptionPop == false && isOpen == false) {
+    if (isOptionPop == false && isOpen == true) {
         classControl(condition.popOption, "remove", "--act");
     }
 }

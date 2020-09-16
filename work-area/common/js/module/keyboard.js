@@ -26,75 +26,23 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         let lastChildNodeText = lastChildNode.textContent.length;
 
                         if (condition.baseNode == lastChildNode && condition.baseOffset == lastChildNodeText) {
-                            addBlockToContent(getTextBlockHTML());
+                            $item.insertAdjacentHTML("afterend", getTextBlockHTML());
+                            setCursor($item.nextElementSibling, 0);
                         } else if (condition.baseNode == childNodes[0] && condition.baseOffset == 0) {
                             $item.insertAdjacentHTML("beforebegin", getTextBlockHTML());
                         } else {
-                            let childNumber = -1;
-                            let beforeHTML = "";
-                            let afterHTML = "";
-                            let $targetChild, targetChldText, targetChldConstructorName;
+                            let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
 
-                            for (let i = 0; i < childNodesCount; i += 1) {
-                                if (childNodes[i] == condition.baseNode) {
-                                    childNumber = i;
-                                    break;
-                                }
-                            }
-
-                            if (childNumber < 0) {
-                                for (let j = 0; j < childNodesCount; j += 1) {
-                                    if (childNodes[j] == condition.baseNode.parentNode) {
-                                        childNumber = j;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            $targetChild = childNodes[childNumber];
-                            targetChldConstructorName = $targetChild.constructor.name;
-                            targetChldText = $targetChild.textContent;
-
-                            if (targetChldConstructorName == "Text") {
-                                afterHTML += $targetChild.textContent;
-                            } else {
-                                afterHTML += $targetChild.outerHTML;
-                            }
-
-                            for (let k = 0; k < childNodesCount; k += 1) {
-                                let constructorName = childNodes[k].constructor.name;
-
-                                if (k > childNumber) {
-                                    if (constructorName == "Text") {
-                                        afterHTML += childNodes[k].textContent;
-                                    } else {
-                                        afterHTML += childNodes[k].outerHTML;
-                                    }
-                                } else if (k < childNumber) {
-                                    if (constructorName == "Text") {
-                                        beforeHTML += childNodes[k].textContent;
-                                    } else {
-                                        beforeHTML += childNodes[k].outerHTML;
-                                    }
-                                }
-                            }
-
-                            if (targetChldConstructorName == "Text") {
-                                beforeHTML += $targetChild.textContent;
-                            } else {
-                                beforeHTML += $targetChild.outerHTML;
-                            }
-
-                            $item.insertAdjacentHTML("afterend", getTextBlockHTML(afterHTML));
-                            $targetChild.textContent = targetChldText.substring(0, condition.baseOffset);
-                            $item.nextElementSibling.childNodes[0].textContent = targetChldText.substring(condition.baseOffset, targetChldText.length);
+                            $item.innerHTML = value.beforeHTML;
+                            $item.childNodes[value.childNumber].textContent = value.beforeText;
+                            $item.insertAdjacentHTML("afterend", getTextBlockHTML(value.afterHTML));
+                            $item.nextElementSibling.childNodes[0].textContent = value.afterText;
                             setCursor($item.nextElementSibling.childNodes[0], 0);
                         }
                     } else {
-                        addBlockToContent(getTextBlockHTML());
+                        $item.insertAdjacentHTML("afterend", getTextBlockHTML());
+                        setCursor($item.nextElementSibling, 0);
                     }
-
-                    condition.activeItem = $item.nextElementSibling;
                 } else if (type == "ol" || type == "ul") {
                     if (childNodesCount > 0) {
                         let lastChildNode = childNodes[childNodesCount - 1];
@@ -106,94 +54,73 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         } else if (condition.baseNode == childNodes[0] && condition.baseOffset == 0) {
                             $editableItem.insertAdjacentHTML("beforebegin", getListChildHTML());
                         } else {
-                            let childNumber = -1;
-                            let beforeHTML = "";
-                            let afterHTML = "";
-                            let $targetChild, targetChldText, targetChldConstructorName;
+                            let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
 
-                            for (let i = 0; i < childNodesCount; i += 1) {
-                                if (childNodes[i] == condition.baseNode) {
-                                    childNumber = i;
-                                    break;
-                                }
-                            }
-
-                            if (childNumber < 0) {
-                                for (let j = 0; j < childNodesCount; j += 1) {
-                                    if (childNodes[j] == condition.baseNode.parentNode) {
-                                        childNumber = j;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            $targetChild = childNodes[childNumber];
-                            targetChldConstructorName = $targetChild.constructor.name;
-                            targetChldText = $targetChild.textContent;
-
-                            if (targetChldConstructorName == "Text") {
-                                afterHTML += $targetChild.textContent;
-                            } else {
-                                afterHTML += $targetChild.outerHTML;
-                            }
-
-                            for (let k = 0; k < childNodesCount; k += 1) {
-                                let constructorName = childNodes[k].constructor.name;
-
-                                if (k > childNumber) {
-                                    if (constructorName == "Text") {
-                                        afterHTML += childNodes[k].textContent;
-                                    } else {
-                                        afterHTML += childNodes[k].outerHTML;
-                                    }
-                                } else if (k < childNumber) {
-                                    if (constructorName == "Text") {
-                                        beforeHTML += childNodes[k].textContent;
-                                    } else {
-                                        beforeHTML += childNodes[k].outerHTML;
-                                    }
-                                }
-                            }
-
-                            if (targetChldConstructorName == "Text") {
-                                beforeHTML += $targetChild.textContent;
-                            } else {
-                                beforeHTML += $targetChild.outerHTML;
-                            }
-
-                            $editableItem.insertAdjacentHTML("afterend", getListChildHTML(afterHTML));
-                            $targetChild.textContent = targetChldText.substring(0, condition.baseOffset);
-                            $editableItem.nextElementSibling.childNodes[0].textContent = targetChldText.substring(condition.baseOffset, targetChldText.length);
+                            $editableItem.innerHTML = value.beforeHTML;
+                            $editableItem.childNodes[value.childNumber].textContent = value.beforeText;
+                            $editableItem.insertAdjacentHTML("afterend", getListChildHTML(value.afterHTML));
+                            $editableItem.nextElementSibling.childNodes[0].textContent = value.afterText;
                             setCursor($editableItem.nextElementSibling.childNodes[0], 0);
                         }
-
-                        condition.activeItem = $item;
                     } else {
-                        let liCount = getChild($item, `[contenteditable="true"]`).length;
+                        let $liList = getChild($item, `[contenteditable="true"]`);
+                        let liCount = $liList.length;
 
                         if (liCount > 1) {
-                            $editableItem.remove();
-                            addBlockToContent(getTextBlockHTML());
+                            let isLastChild = false;
 
-                            condition.activeItem = $item.nextElementSibling;
+                            $liList.forEach(($row, index) => {
+                                if ($row == $editableItem && index == liCount - 1) {
+                                    isLastChild = true;
+                                }
+                            });
+
+                            if (isLastChild == true) {
+                                $editableItem.remove();
+                                addBlockToContent(getTextBlockHTML());
+                            } else {
+                                $editableItem.insertAdjacentHTML("afterend", getListChildHTML());
+                                setCursor($editableItem.nextElementSibling, 0);
+                            }
                         } else {
                             $editableItem.insertAdjacentHTML("afterend", getListChildHTML());
                             setCursor($editableItem.nextElementSibling, 0);
-
-                            condition.activeItem = $item;
                         }
                     }
                 } else if (type == "table") {
-                    condition.activeItem = $item;
+                    let editableItemName = $editableItem.constructor.name;
+
+                    if (editableItemName == "HTMLTableCaptionElement") {
+                        let $target = getChild($item, `*[data-x="0"][data-y="0"]`, false);
+                        let hasChildNode = $target.childNodes.length > 0 ? true : false;
+
+                        if (hasChildNode == true) {
+                            setCursor($target.childNodes[0], 0);
+                        } else {
+                            setCursor($target, 0);
+                        }
+                    } else {
+                        let x = parseInt($editableItem.dataset["x"]);
+                        let y = parseInt($editableItem.dataset["y"]) + 1;
+                        let $target = getChild($item, `*[data-x="${x}"][data-y="${y}"]`, false);
+
+                        if ($target != null) {
+                            let hasChildNode = $target.childNodes.length > 0 ? true : false;
+
+                            if (hasChildNode == true) {
+                                setCursor($target.childNodes[0], 0);
+                            } else {
+                                setCursor($target, 0);
+                            }
+                        } else {
+                            $item.insertAdjacentHTML("afterend", getTextBlockHTML());
+                            setCursor($item.nextElementSibling, 0);
+                        }
+                    }
                 } else {
-                    addBlockToContent(getTextBlockHTML());
-
-                    condition.activeItem = $item.nextElementSibling;
+                    $item.insertAdjacentHTML("afterend", getTextBlockHTML());
+                    setCursor($item.nextElementSibling, 0);
                 }
-
-                condition.activeElement = findContenteditable(condition.baseNode);
-
-                openOptionPop();
             }, 50);
         }
 
@@ -203,4 +130,69 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
     } else if (condition.enterCount != 0) {
         e.preventDefault();
     }
+}
+
+function splitEditableNodeByNoSelect(childNodes, childNodesCount, _0 = typeCheckThrow(childNodes, NodeList), _1 = typeCheckThrow(childNodesCount, "number")) {
+    let childNumber = -1;
+    let beforeHTML = "";
+    let afterHTML = "";
+    let $targetChild, targetChldText, targetChldConstructorName;
+
+    for (let i = 0; i < childNodesCount; i += 1) {
+        if (childNodes[i] == condition.baseNode) {
+            childNumber = i;
+            break;
+        }
+    }
+
+    if (childNumber < 0) {
+        for (let j = 0; j < childNodesCount; j += 1) {
+            if (childNodes[j] == condition.baseNode.parentNode) {
+                childNumber = j;
+                break;
+            }
+        }
+    }
+
+    $targetChild = childNodes[childNumber];
+    targetChldConstructorName = $targetChild.constructor.name;
+    targetChldText = $targetChild.textContent;
+
+    if (targetChldConstructorName == "Text") {
+        afterHTML += $targetChild.textContent;
+    } else {
+        afterHTML += $targetChild.outerHTML;
+    }
+
+    for (let k = 0; k < childNodesCount; k += 1) {
+        let constructorName = childNodes[k].constructor.name;
+
+        if (k > childNumber) {
+            if (constructorName == "Text") {
+                afterHTML += childNodes[k].textContent;
+            } else {
+                afterHTML += childNodes[k].outerHTML;
+            }
+        } else if (k < childNumber) {
+            if (constructorName == "Text") {
+                beforeHTML += childNodes[k].textContent;
+            } else {
+                beforeHTML += childNodes[k].outerHTML;
+            }
+        }
+    }
+
+    if (targetChldConstructorName == "Text") {
+        beforeHTML += $targetChild.textContent;
+    } else {
+        beforeHTML += $targetChild.outerHTML;
+    }
+
+    return {
+        beforeHTML: beforeHTML,
+        afterHTML: afterHTML,
+        beforeText: targetChldText.substring(0, condition.baseOffset),
+        afterText: targetChldText.substring(condition.baseOffset, targetChldText.length),
+        childNumber: childNumber,
+    };
 }

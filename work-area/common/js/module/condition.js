@@ -31,8 +31,8 @@ export class storage {
         this.enterCount = 0;
         this.startTextCursor = 0;
         this.endTextCursor = 0;
-        this.activeItem;
-        this.activeElement;
+        this.activeItem = this.wrap;
+        this.activeElement = this.wrap;
         this.focusNode;
         this.baseNode;
         this.focusOffset;

@@ -4,7 +4,7 @@ const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
 const { itemClickEvent, itemKeyboardEvent } = require("./item");
 const { openFile } = require("./file");
-const { openPop, closeOptionPop } = require("./pop");
+const { openPop, closeOptionPop, openOptionPop } = require("./pop");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -90,6 +90,7 @@ function setMenuEvent() {
             let block = getDefaultBlockHTML(value);
 
             addBlockToContent(block);
+            openOptionPop();
         } else if (type === "pop") {
             openPop(value, this);
         } else if (type === "file") {
@@ -417,6 +418,10 @@ function setContentEvent() {
 
     eventBinding(condition.areaContent, "keydown", function (e) {
         itemKeyboardEvent(e);
+    });
+
+    eventBinding(condition.areaContent, "keyup", function (e) {
+        itemClickEvent(e);
     });
 
     // bug event - why?!

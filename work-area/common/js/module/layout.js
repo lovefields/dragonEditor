@@ -672,7 +672,7 @@ export function addBlockToContent(block, _0 = typeCheckThrow(block, "string")) {
         classControl($selectedItem, "remove", "--djs-selected");
     }
 
-    condition.activeItem = $target.nextElementSibling;
+    condition.activeItem = $newItem;
 }
 
 // this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
