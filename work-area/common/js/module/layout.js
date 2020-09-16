@@ -662,9 +662,11 @@ export function addBlockToContent(block, _0 = typeCheckThrow(block, "string")) {
     $newItem = $target.nextElementSibling;
 
     if ($newItem.contentEditable == "true") {
+        condition.activeElement = $newItem;
         setCursor($newItem, 0);
     } else {
         let $child = getChild($newItem, "*[contenteditable]", false);
+        condition.activeElement = $child;
         setCursor($child, 0);
     }
 
