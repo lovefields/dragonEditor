@@ -153,6 +153,26 @@ function setOptionPopValue() {
         btnColor.dataset["value"] = condition.defaultColor;
     }
 
+    if (editableStyle.align != "") {
+        condition.btnAlign.forEach(($btn) => {
+            let value = $btn.dataset["value"];
+
+            if (value == editableStyle.align) {
+                classControl($btn, "add", "--act");
+            } else {
+                classControl($btn, "remove", "--act");
+            }
+        });
+    } else {
+        classControl(condition.btnAlign, "remove", "--act");
+    }
+
+    if (textStyle.bold != "") {
+        classControl(condition.btnToggleBold, "add", "--act");
+    } else {
+        classControl(condition.btnToggleBold, "remove", "--act");
+    }
+
     console.log("node:");
     console.log(textStyle);
     console.log("editable:");

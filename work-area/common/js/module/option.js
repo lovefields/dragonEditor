@@ -1,12 +1,15 @@
 const { typeCheckThrow } = require("./default");
 
 export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
-    let styleList = ["textStyle", "color", "fontSize", "align"];
+    let styleList = ["color", "fontSize", "align", "bold"];
     let attr = {
-        textStyle: "",
         color: "",
         fontSize: "",
         align: "",
+        bold: "",
+        italic: "",
+        underline: "",
+        strikethrough: "",
     };
 
     if ($node.constructor.name == "Text") {
@@ -17,6 +20,21 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
         styleList.forEach((value) => {
             attr[value] = $node.dataset[value] == undefined ? "" : $node.dataset[value];
         });
+    }
+
+    switch ($node.tagName) {
+        case "B":
+            attr.bold = "true";
+            break;
+        case "I":
+            attr.italic = "true";
+            break;
+        case "U":
+            attr.underline = "true";
+            break;
+        case "S":
+            attr.strikethrough = "true";
+            break;
     }
 
     return attr;
