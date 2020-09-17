@@ -63,4 +63,4 @@ We never ever support IE.
 
 ## Document
 
--   [DragonEditor Document](https://lovefields.github.io/dragonEditor/)
+-   [DragonEditor Document](https://lovefields.github.io/dragonEditor-doc/)
