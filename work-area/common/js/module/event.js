@@ -443,33 +443,14 @@ function setOptionEvent() {
     // font size event
     eventBinding(condition.btnFontSize, "click", function () {
         let $btn = getElement(".djs-fontsize", false);
-        // let $item = findParentByClass(condition.baseNode, "djs-item");
-        let size = this.dataset["value"];
+        let value = this.dataset["value"];
         let event = document.createEvent("HTMLEvents");
         event.initEvent("click", true, false);
 
         if (isTextSelect() == true) {
-            if (condition.baseNode == condition.focusNode) {
-                let $editable = findContenteditable(condition.baseNode);
-                let $parentNode = condition.baseNode.parentNode;
+            nodeEffect("fontSize", value);
 
-                if ($editable == $parentNode) {
-                    wrappingNode("fontSize", size);
-                } else {
-                    let $parentParentNode = $parentNode.parentNode;
-
-                    if ($editable == $parentParentNode) {
-                        brokenNode("fontSize", size);
-                    } else {
-                        itemStructureValidation();
-                        alert(message.wrongItemStructure);
-                    }
-                }
-            } else {
-                margeNode("fontSize", size);
-            }
-
-            getChild($btn, ".djs-text", false).textContent = size;
+            getChild($btn, ".djs-text", false).textContent = value;
         } else {
             let constructorName = condition.baseNode.constructor.name;
             let $target;
@@ -480,16 +461,88 @@ function setOptionEvent() {
                 $target = condition.baseNode;
             }
 
-            if (condition.defaultFontSize == parseInt(size)) {
+            if (condition.defaultFontSize == parseInt(value)) {
                 $target.removeAttribute("data-font-size");
                 itemStructureValidation();
             } else {
-                $target.setAttribute("data-font-size", size);
+                $target.setAttribute("data-font-size", value);
             }
-            getChild($btn, ".djs-text", false).textContent = size;
+            getChild($btn, ".djs-text", false).textContent = value;
             $target.focus();
         }
 
         $btn.dispatchEvent(event);
     });
+
+    // color event
+    eventBinding(condition.btnColor, "click", function () {
+        let $btn = getElement(".djs-color", false);
+        let value = this.dataset["value"];
+        let event = document.createEvent("HTMLEvents");
+        event.initEvent("click", true, false);
+
+        if (isTextSelect() == true) {
+            nodeEffect("color", value);
+
+            $btn.dataset["value"] = value;
+        } else {
+            let constructorName = condition.baseNode.constructor.name;
+            let $target;
+
+            if (constructorName == "Text") {
+                $target = condition.baseNode.parentNode;
+            } else {
+                $target = condition.baseNode;
+            }
+
+            if (condition.defaultFontSize == parseInt(value)) {
+                $target.removeAttribute("data-color");
+                itemStructureValidation();
+            } else {
+                $target.setAttribute("data-color", value);
+            }
+            $btn.dataset["value"] = value;
+            $target.focus();
+        }
+
+        $btn.dispatchEvent(event);
+    });
+
+    // align event
+    eventBinding(condition.btnAlign, "click", function () {
+        let $target = findContenteditable(condition.baseNode);
+        let value = this.dataset["value"];
+        let isAct = this.classList.contains("--act");
+
+        if (isAct == true) {
+            $target.removeAttribute("data-algin");
+            classControl(this, "remove", "--act");
+        } else {
+            $target.setAttribute("data-algin", value);
+            classControl(condition.btnAlign, "remove", "--act");
+            classControl(this, "add", "--act");
+        }
+    });
+}
+
+function nodeEffect(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+    if (condition.baseNode == condition.focusNode) {
+        let $editable = findContenteditable(condition.baseNode);
+        let $parentNode = condition.baseNode.parentNode;
+
+        if ($editable == $parentNode) {
+            wrappingNode(type, value);
+        } else {
+            let $parentParentNode = $parentNode.parentNode;
+
+            if ($editable == $parentParentNode) {
+                brokenNode(type, value);
+            } else {
+                itemStructureValidation();
+                alert(message.wrongItemStructure);
+            }
+        }
+    } else {
+        margeNode(type, value);
+    }
 }

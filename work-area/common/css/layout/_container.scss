@@ -46,6 +46,24 @@
             font-size: #{$size + "px"};
         }
     }
+
+    @each $color in $color-list {
+        *[data-color="#{'' + $color}"] {
+            color: $color;
+        }
+    }
+
+    *[data-algin="left"] {
+        text-align: left;
+    }
+
+    *[data-algin="center"] {
+        text-align: center;
+    }
+
+    *[data-algin="right"] {
+        text-align: right;
+    }
 }
 
 .editor-uploader {
