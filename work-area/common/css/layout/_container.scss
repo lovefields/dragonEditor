@@ -53,16 +53,32 @@
         }
     }
 
-    *[data-algin="left"] {
+    *[data-align="left"] {
         text-align: left;
     }
 
-    *[data-algin="center"] {
+    *[data-align="center"] {
         text-align: center;
     }
 
-    *[data-algin="right"] {
+    *[data-align="right"] {
         text-align: right;
+    }
+
+    *[data-bold="true"] {
+        font-weight: bold;
+    }
+
+    *[data-italic="true"] {
+        font-style: italic;
+    }
+
+    *[data-underline="true"] {
+        text-decoration: underline;
+    }
+
+    *[data-strikethrough="true"] {
+        text-decoration: line-through;
     }
 }
 

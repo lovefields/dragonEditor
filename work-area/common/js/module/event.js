@@ -6,6 +6,7 @@ const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, wrappingNode
 const { openFile } = require("./file");
 const { openPop, closeOptionPop, openOptionPop } = require("./pop");
 const { isTextSelect } = require("./cursor");
+const { getTextItemOption, setTextItemOption } = require("./option");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -515,17 +516,69 @@ function setOptionEvent() {
         let isAct = this.classList.contains("--act");
 
         if (isAct == true) {
-            $target.removeAttribute("data-algin");
+            $target.removeAttribute("data-align");
             classControl(this, "remove", "--act");
         } else {
-            $target.setAttribute("data-algin", value);
+            $target.setAttribute("data-align", value);
             classControl(condition.btnAlign, "remove", "--act");
             classControl(this, "add", "--act");
         }
     });
+
+    // bold event
+    eventBinding(condition.btnToggleBold, "click", function () {
+        let $editableItem = findContenteditable(condition.baseNode);
+        let isAct = this.classList.contains("--act");
+
+        if (isTextSelect() == true) {
+            nodeEffect("bold");
+        } else {
+            let constructorName = condition.baseNode.constructor.name;
+            let $target;
+
+            if (constructorName == "Text") {
+                $target = condition.baseNode.parentNode;
+            } else {
+                $target = condition.baseNode;
+            }
+
+            let name = $target.tagName;
+
+            if (name == "B") {
+                let hasData = Object.keys($target.dataset) == 0 ? false : true;
+
+                if (hasData == true) {
+                    let option = getTextItemOption($target);
+                    option.bold = "";
+
+                    $target.insertAdjacentHTML("afterend", `<span>${$target.textContent}</span>`);
+                    setTextItemOption($target.nextElementSibling, option);
+                    $target.nextElementSibling.focus();
+                    $target.remove();
+                } else {
+                    $target.outerHTML = $target.textContent;
+                    $target.focus();
+                }
+            } else {
+                if (isAct == true) {
+                    $target.removeAttribute("data-bold", "true");
+                } else {
+                    $target.setAttribute("data-bold", "true");
+                }
+
+                $target.focus();
+            }
+        }
+
+        classControl(this, "toggle", "--act");
+    });
+
+    // btnToggleItalic
+    // btnToggleUnderline
+    // btnToggleStrikethrough
 }
 
-function nodeEffect(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
     if (condition.baseNode == condition.focusNode) {
         let $editable = findContenteditable(condition.baseNode);
         let $parentNode = condition.baseNode.parentNode;

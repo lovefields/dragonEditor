@@ -324,5 +324,9 @@ export class storage {
         this.btnFontSize = getElement(".djs-change-fontsize");
         this.btnColor = getElement(".djs-change-color");
         this.btnAlign = getElement(".djs-change-align");
+        this.btnToggleBold = getElement(".djs-toggle-bold", false);
+        this.btnToggleItalic = getElement(".djs-toggle-italic", false);
+        this.btnToggleUnderline = getElement(".djs-toggle-underline", false);
+        this.btnToggleStrikethrough = getElement(".djs-toggle-strikethrough", false);
     }
 }

@@ -81,7 +81,7 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     // console.log(e);
 }
 
-export function wrappingNode(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+export function wrappingNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
     let $target = condition.baseNode;
     let $editableItem = findContenteditable($target);
     let childNodes = $editableItem.childNodes;
@@ -120,7 +120,7 @@ export function wrappingNode(type, value = "", _0 = typeCheckThrow(type, "string
     setCursor($editableItem.childNodes[targetIndex + 1], 1);
 }
 
-export function brokenNode(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+export function brokenNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
     let $target = condition.baseNode;
     let text = $target.textContent;
     let beforeText = text.substring(0, condition.baseOffset);
@@ -150,7 +150,7 @@ export function brokenNode(type, value = "", _0 = typeCheckThrow(type, "string")
     itemStructureValidation();
 }
 
-export function margeNode(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+export function margeNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
     let $editableItem = findContenteditable(condition.baseNode);
     let $childNode = $editableItem.childNodes;
     let baseNode = condition.baseNode;
@@ -240,6 +240,9 @@ function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"),
         case "color":
             html = `<span data-color="${value}">${text}</span>`;
             break;
+        case "bold":
+            html = `<b>${text}</b>`;
+            break;
         case "":
             break;
     }
@@ -270,7 +273,7 @@ export function itemStructureValidation() {
                     if (hasText == false) {
                         $node.remove();
                     } else {
-                        if (hasData == false || wrongTagList.indexOf(tagName) > -1) {
+                        if (hasData == false && wrongTagList.indexOf(tagName) > -1) {
                             $node.outerHTML = $node.textContent;
                         } else {
                             $childNode.forEach(($child) => {
