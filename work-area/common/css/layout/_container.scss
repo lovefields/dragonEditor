@@ -25,7 +25,7 @@
     min-height: 300px;
     padding-bottom: 50px;
     margin: 0 auto;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.7;
     word-break: keep-all;
     transition: max-width 0.3s ease;
@@ -55,6 +55,6 @@
 @mixin mobile-container {
     .editor-content {
         padding: 100px 20px 50px;
-        font-size: 16px;
+        // font-size: 16px;
     }
 }
