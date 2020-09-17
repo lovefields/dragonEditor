@@ -1,7 +1,7 @@
 const { typeCheckThrow, classControl, isMobile, hasValueArrToArr } = require("./default");
 const { getElement, getChild, findParentByClass } = require("./selector");
 const { getTextItemOption } = require("./option");
-const { getItemType } = require("./item");
+const { getItemType, itemStructureValidation } = require("./item");
 
 export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, Node)) {
     let offset = $node.getBoundingClientRect();
@@ -131,6 +131,7 @@ export function openOptionPop() {
 
     setOptionPopValue();
     classControl(condition.popOption, "add", "--act");
+    itemStructureValidation();
 }
 
 function setOptionPopValue() {
