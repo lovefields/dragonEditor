@@ -151,7 +151,84 @@ export function brokenNode(type, value = "", _0 = typeCheckThrow(type, "string")
 }
 
 export function margeNode(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
-    console.log("marge");
+    let $editableItem = findContenteditable(condition.baseNode);
+    let $childNode = $editableItem.childNodes;
+    let baseNode = condition.baseNode;
+    let focusNode = condition.focusNode;
+    let middleText = "";
+    let html = "";
+    let baseIndex, focusIndex, baseText, focusText;
+
+    if (baseNode.parentNode != $editableItem) {
+        baseNode = baseNode.parentNode;
+    }
+
+    if (focusNode.parentNode != $editableItem) {
+        focusNode = focusNode.parentNode;
+    }
+
+    baseText = baseNode.textContent;
+    focusText = focusNode.textContent;
+
+    $childNode.forEach(($child, index) => {
+        if ($child == baseNode) {
+            baseIndex = index;
+        } else if ($child == focusNode) {
+            focusIndex = index;
+        }
+    });
+
+    middleText += baseText.substring(condition.baseOffset, baseText.length);
+    $childNode.forEach(($child, index) => {
+        if (index > baseIndex && index < focusIndex) {
+            middleText += $child.textContent;
+        }
+    });
+    middleText += focusText.substring(0, condition.focusOffset);
+
+    $childNode.forEach(($child, index) => {
+        if (index < baseIndex) {
+            let name = $child.constructor.name;
+
+            if (name == "Text") {
+                html += $child.textContent;
+            } else {
+                html += $child.outerHTML;
+            }
+        }
+    });
+
+    if (baseNode.constructor.name == "Text") {
+        html += baseText.substring(0, condition.baseOffset);
+    } else {
+        baseNode.textContent = baseText.substring(0, condition.baseOffset);
+        html += baseNode.outerHTML;
+    }
+
+    html += getWrappingNode(type, value, middleText);
+
+    if (focusNode.constructor.name == "Text") {
+        html += focusText.substring(condition.focusOffset, focusText.length);
+    } else {
+        focusNode.textContent = focusText.substring(condition.focusOffset, focusText.length);
+        html += focusNode.outerHTML;
+    }
+
+
+    $childNode.forEach(($child, index) => {
+        if (index > focusIndex) {
+            let name = $child.constructor.name;
+
+            if (name == "Text") {
+                html += $child.textContent;
+            } else {
+                html += $child.outerHTML;
+            }
+        }
+    });
+
+    $editableItem.innerHTML = html;
+    setCursor($editableItem.childNodes[baseIndex + 1], 1);
 }
 
 function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string"), _2 = typeCheckThrow(text, "string")) {
