@@ -214,7 +214,6 @@ export function margeNode(type, value = "", _0 = typeCheckThrow(type, "string"),
         html += focusNode.outerHTML;
     }
 
-
     $childNode.forEach(($child, index) => {
         if (index > focusIndex) {
             let name = $child.constructor.name;
@@ -237,6 +236,9 @@ function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"),
     switch (type) {
         case "fontSize":
             html = `<span data-font-size="${value}">${text}</span>`;
+            break;
+        case "color":
+            html = `<span data-color="${value}">${text}</span>`;
             break;
         case "":
             break;

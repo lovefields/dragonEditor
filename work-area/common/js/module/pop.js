@@ -1,5 +1,5 @@
 const { typeCheckThrow, classControl, isMobile, hasValueArrToArr } = require("./default");
-const { getElement, getChild, findParentByClass } = require("./selector");
+const { getElement, getChild, findParentByClass, findContenteditable } = require("./selector");
 const { getTextItemOption } = require("./option");
 const { getItemType, itemStructureValidation } = require("./item");
 
@@ -135,16 +135,28 @@ export function openOptionPop() {
 }
 
 function setOptionPopValue() {
+    let $editableItem = findContenteditable(condition.baseNode);
+    let editableStyle = getTextItemOption($editableItem);
     let textStyle = getTextItemOption(condition.baseNode);
     let fontSizeText = getElement(".djs-fontsize .djs-text", false);
+    let btnColor = getElement(".djs-color", false);
 
     if (textStyle.fontSize != "") {
         fontSizeText.textContent = textStyle.fontSize;
     } else {
-        fontSizeText.textContent = "16";
+        fontSizeText.textContent = condition.defaultFontSize;
     }
 
+    if (textStyle.color != "") {
+        btnColor.dataset["value"] = textStyle.color;
+    } else {
+        btnColor.dataset["value"] = condition.defaultColor;
+    }
+
+    console.log("node:");
     console.log(textStyle);
+    console.log("editable:");
+    console.log(editableStyle);
     // console.log(condition.focusNode);
     // console.log(condition.baseNode);
     // console.log(condition.focusOffset);
