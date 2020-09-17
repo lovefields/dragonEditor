@@ -47,6 +47,7 @@ export class storage {
         };
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
+        this.defaultFontSize = typeCheckBoolean(options.defaultFontSize, "number") ? options.defaultFontSize : 16;
         this.changePint = typeCheckBoolean(options.changePint, "number") ? options.changePint : 800;
         this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 700;
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;

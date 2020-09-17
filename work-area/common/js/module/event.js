@@ -2,7 +2,7 @@ const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
-const { itemClickEvent, itemKeyboardEvent } = require("./item");
+const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, wrappingNode, brokenNode, margeNode } = require("./item");
 const { openFile } = require("./file");
 const { openPop, closeOptionPop, openOptionPop } = require("./pop");
 const { isTextSelect } = require("./cursor");
@@ -451,11 +451,25 @@ function setOptionEvent() {
         if (isTextSelect() == true) {
             if (condition.baseNode == condition.focusNode) {
                 let $editable = findContenteditable(condition.baseNode);
-                console.log($editable);
-                console.log("same node");
+                let $parentNode = condition.baseNode.parentNode;
+
+                if ($editable == $parentNode) {
+                    wrappingNode("fontSize", size);
+                } else {
+                    let $parentParentNode = $parentNode.parentNode;
+
+                    if ($editable == $parentParentNode) {
+                        brokenNode("fontSize", size);
+                    } else {
+                        itemStructureValidation();
+                        alert(message.wrongItemStructure);
+                    }
+                }
             } else {
-                console.log("wrong node");
+                margeNode("fontSize", size);
             }
+
+            getChild($btn, ".djs-text", false).textContent = size;
         } else {
             let constructorName = condition.baseNode.constructor.name;
             let $target;
@@ -466,7 +480,12 @@ function setOptionEvent() {
                 $target = condition.baseNode;
             }
 
-            $target.setAttribute("data-font-size", size);
+            if (condition.defaultFontSize == parseInt(size)) {
+                $target.removeAttribute("data-font-size");
+                itemStructureValidation();
+            } else {
+                $target.setAttribute("data-font-size", size);
+            }
             getChild($btn, ".djs-text", false).textContent = size;
             $target.focus();
         }
