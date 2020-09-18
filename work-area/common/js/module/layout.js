@@ -574,8 +574,8 @@ function makeOptionPop() {
     `;
 
     html += `
-        <div class="editor-col --act editor-btn-area" data-group="word">
-            <button class="editor-btn">
+        <div class="editor-col --act editor-btn-area" data-group="word,wordblock">
+            <button class="editor-btn djs-word-block">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-word-block" href="#icon-word-block"></use>
                 </svg>
@@ -676,7 +676,3 @@ export function addBlockToContent(block, _0 = typeCheckThrow(block, "string")) {
 
     condition.activeItem = $newItem;
 }
-
-// this.HTMLsticker = '<div class="item item_sticker lastset" data-type="sticker">[el]</div>';
-// this.HTMLOption = '<option value="[value]">[text]</option>';
-// this.HTMLMediaRow = '<li class="btn_add_media" data-webp="[webp]" data-idx="[idx]"><div class="img_area"><img src="[src]" alt="[alt]" width="[width]" data-height="[height]" class="img"></div><p class="name">[name]</p><button class="btn_remove_media" data-idx="[idx]">삭제</button></li>';

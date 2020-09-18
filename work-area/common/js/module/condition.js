@@ -335,5 +335,8 @@ export class storage {
         this.btnLangSet = getElement(".djs-set-lang");
         this.btnItemMobeUp = getElement(".djs-move-up", false);
         this.btnItemMobeDown = getElement(".djs-move-down", false);
+        this.btnWordBlock = getElement(".djs-word-block", false);
+        this.btnWordLink = getElement(".djs-open-linkbox", false);
+        this.btnItemDelete = getElement(".djs-delete-block", false);
     }
 }

@@ -4,7 +4,7 @@ const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
 const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove } = require("./item");
 const { openFile } = require("./file");
-const { openPop, closeOptionPop, openOptionPop } = require("./pop");
+const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
 const { isTextSelect } = require("./cursor");
 const { message } = require("./message");
 
@@ -196,20 +196,34 @@ function setMenuEvent() {
                 boolean = true;
             }
         } else if (type == "word") {
-            // to-do make link form word
-            console.log("word");
+            let $tag = condition.baseNode.parentNode;
+
+            $tag.insertAdjacentHTML("afterend", `<span>${$tag.textContent}</span>`);
+            $tag.remove();
+
+            itemStructureValidation();
+            classControl(condition.popLinkbox, "remove", "--act");
+        } else if (type == "link") {
+            if (condition.regList["defaultURL"].test(value)) {
+                nodeEffect("link", value);
+                boolean = true;
+            }
         }
 
         if (boolean == true) {
-            addBlockToContent(html);
+            if (type != "link") {
+                addBlockToContent(html);
+            }
             $input.value = "";
             classControl(condition.popLinkbox, "remove", "--act");
         } else {
-            classControl(condition.popLinkbox, "add", "--wrong");
-            $input.focus();
-            setTimeout(() => {
-                classControl(condition.popLinkbox, "remove", "--wrong");
-            }, 1000);
+            if (type != "word") {
+                classControl(condition.popLinkbox, "add", "--wrong");
+                $input.focus();
+                setTimeout(() => {
+                    classControl(condition.popLinkbox, "remove", "--wrong");
+                }, 1000);
+            }
         }
     });
 
@@ -640,11 +654,61 @@ function setOptionEvent() {
     });
 
     // move item event
-    eventBinding(condition.btnItemMobeUp, "click", function(){
+    eventBinding(condition.btnItemMobeUp, "click", function () {
         itemMove("up");
     });
 
-    eventBinding(condition.btnItemMobeDown, "click", function(){
+    eventBinding(condition.btnItemMobeDown, "click", function () {
         itemMove("down");
+    });
+
+    // word block event
+    eventBinding(condition.btnWordBlock, "click", function () {
+        let isAct = this.classList.contains("--act");
+
+        if (isTextSelect() == true) {
+            nodeEffect("wordblock");
+        } else {
+            textStylingNode("wordblock", "CODE", isAct);
+        }
+
+        classControl(this, "toggle", "--act");
+    });
+
+    // open word link pop
+    eventBinding(condition.btnWordLink, "click", function () {
+        let isAct = this.classList.contains("--act");
+        let $node, nodeOffset;
+        let offset = {};
+
+        if (condition.baseNode.constructor.name == "Text") {
+            $node = condition.baseNode.parentNode;
+        } else {
+            $node = condition.baseNode;
+        }
+        nodeOffset = $node.getBoundingClientRect();
+
+        offset.top = nodeOffset.top - 37;
+        offset.right = nodeOffset.right + 230;
+        offset.width = nodeOffset.width;
+
+        classControl(condition.popOption, "remove", "--act");
+        if (isAct == true) {
+            openLinkPop("word", offset);
+        } else {
+            openLinkPop("link", offset);
+        }
+    });
+
+    // item delete event
+    eventBinding(condition.btnItemDelete, "click", function () {
+        let $item = findParentByClass(condition.baseNode, "djs-item");
+        $item.remove();
+        let hasItem = getChild(condition.areaContent, ".djs-item").length > 0 ? true : false;
+
+        if (hasItem == false) {
+            condition.areaContent.insertAdjacentHTML("beforeend", getDefaultBlockHTML("textBlock"));
+            condition.areaContent.childNodes[0].focus();
+        }
     });
 }
