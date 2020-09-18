@@ -258,7 +258,7 @@ function getUlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
 }
 
 function getOlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
-    let html = `<ol type="1" class="editor-item djs-item --djs-selected" data-type="ol">`;
+    let html = `<ol class="editor-item djs-item --djs-selected" data-style="number" data-type="ol">`;
 
     child.forEach((row) => {
         html += `<li contenteditable="true">${row}</li>`;
@@ -381,7 +381,7 @@ function makeOptionPop() {
     `;
 
     html += `
-        <div class="editor-col --act" data-group="text,li,table,codeblock,word">
+        <div class="editor-col --act" data-group="text,li,table,word">
             <button class="editor-color djs-color djs-toggle-target djs-btn-ignore" data-target=".editor-list-color" data-value="#333"></button>
             <div class="editor-list-color djs-trigger">
     `;
@@ -456,7 +456,7 @@ function makeOptionPop() {
             </button>
         </div>
 
-        <div class="editor-col --act editor-btn-area" data-group="th">
+        <div class="editor-col --act editor-btn-area" data-group="td">
             <button class="editor-btn djs-table-header">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-table-header" href="#icon-table-header"></use>
@@ -466,7 +466,7 @@ function makeOptionPop() {
             </button>
         </div>
 
-        <div class="editor-col --act editor-btn-area" data-group="td">
+        <div class="editor-col --act editor-btn-area" data-group="th">
             <button class="editor-btn djs-table-body">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-table-body" href="#icon-table-body"></use>
@@ -487,7 +487,7 @@ function makeOptionPop() {
         </div>
 
         <div class="editor-col --act editor-btn-area" data-group="codeblock">
-            <button class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-list-theme">
+            <button class="editor-btn djs-code-theme djs-toggle-target djs-btn-ignore" data-target=".editor-list-theme">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-theme" href="#icon-theme"></use>
                 </svg>
@@ -509,7 +509,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act" data-group="codeblock">
-            <button class="editor-select djs-toggle-target djs-btn-ignore" data-target=".editor-list-lang">
+            <button class="editor-select djs-code-lang djs-toggle-target djs-btn-ignore" data-target=".editor-list-lang">
                 <span class="editor-text djs-text">Text</span>
 
                 <svg class="icon" viewbox="0 0 64 64">
@@ -531,8 +531,8 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act" data-group="ol">
-            <button class="editor-select djs-toggle-target djs-btn-ignore" data-target=".editor-list-type">
-                <span class="editor-text djs-text">1 - Numbered</span>
+            <button class="editor-select djs-list-style djs-toggle-target djs-btn-ignore" data-target=".editor-list-type">
+                <span class="editor-text djs-text">Numbered - 1</span>
 
                 <svg class="icon" viewbox="0 0 64 64">
                     <use class="path" xlink:href="#icon-arrow-bottom" href="#icon-arrow-bottom"></use>
@@ -540,18 +540,18 @@ function makeOptionPop() {
             </button>
 
             <div class="editor-list-select editor-list-type djs-trigger">
-                <button class="editor-btn djs-set-type" data-value="1">1 - Numbered</button>
-                <button class="editor-btn djs-set-type" data-value="I">I - Upper-roman</button>
-                <button class="editor-btn djs-set-type" data-value="i">i - Lower-roman</button>
-                <button class="editor-btn djs-set-type" data-value="A">A - Upper-alpha</button>
-                <button class="editor-btn djs-set-type" data-value="a">a - Lower-alpha</button>
+                <button class="editor-btn djs-set-list-type" data-value="number">Numbered - 1</button>
+                <button class="editor-btn djs-set-list-type" data-value="upper-roman">Upper-roman - I</button>
+                <button class="editor-btn djs-set-list-type" data-value="lower-roman">Lower-roman - i</button>
+                <button class="editor-btn djs-set-list-type" data-value="upper-alpha">Upper-alpha - A</button>
+                <button class="editor-btn djs-set-list-type" data-value="lower-alpha">Lower-alpha - a</button>
             </div>
         </div>
     `;
 
     html += `
         <div class="editor-col --act editor-btn-area" data-group="all">
-            <button class="editor-btn">
+            <button class="editor-btn djs-move-up">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-arrow-up" href="#icon-arrow-up"></use>
                 </svg>
@@ -563,7 +563,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act editor-btn-area" data-group="all">
-            <button class="editor-btn">
+            <button class="editor-btn djs-move-down">
                 <svg viewBox="0 0 64 64" class="icon">
                     <use class="path" xlink:href="#icon-arrow-down" href="#icon-arrow-down"></use>
                 </svg>

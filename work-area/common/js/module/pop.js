@@ -135,11 +135,20 @@ export function openOptionPop() {
 }
 
 function setOptionPopValue() {
+    let $item = findParentByClass(condition.baseNode, "djs-item");
+    let itemType = $item.dataset["type"];
     let $editableItem = findContenteditable(condition.baseNode);
-    let editableStyle = getTextItemOption($editableItem);
     let textStyle = getTextItemOption(condition.baseNode);
     let fontSizeText = getElement(".djs-fontsize .djs-text", false);
     let btnColor = getElement(".djs-color", false);
+    let btnListStyleText = getElement(".djs-list-style .djs-text", false);
+    let btnCodeLangText = getElement(".djs-code-lang .djs-text", false);
+
+    if ($editableItem == null) {
+        $editableItem = $item;
+    }
+
+    let editableStyle = getTextItemOption($editableItem);
 
     if (textStyle.fontSize != "") {
         fontSizeText.textContent = textStyle.fontSize;
@@ -173,13 +182,35 @@ function setOptionPopValue() {
         classControl(condition.btnToggleBold, "remove", "--act");
     }
 
-    console.log("node:");
-    console.log(textStyle);
-    console.log("editable:");
-    console.log(editableStyle);
-    // console.log(condition.focusNode);
-    // console.log(condition.baseNode);
-    // console.log(condition.focusOffset);
-    // console.log(condition.baseOffset);
-    console.log("to-do set option pop value");
+    if (textStyle.italic != "") {
+        classControl(condition.btnToggleItalic, "add", "--act");
+    } else {
+        classControl(condition.btnToggleItalic, "remove", "--act");
+    }
+
+    if (textStyle.underline != "") {
+        classControl(condition.btnToggleUnderline, "add", "--act");
+    } else {
+        classControl(condition.btnToggleUnderline, "remove", "--act");
+    }
+
+    if (itemType == "ol") {
+        let text;
+
+        condition.btnListType.forEach(($btn) => {
+            let value = $btn.dataset["value"];
+
+            if (value == $item.dataset["style"]) {
+                text = $btn.textContent;
+            }
+        });
+
+        btnListStyleText.textContent = text;
+    }
+
+    if (itemType == "codeblock") {
+        let lang = $item.dataset["lang"];
+
+        btnCodeLangText.textContent = lang;
+    }
 }

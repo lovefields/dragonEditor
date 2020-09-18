@@ -328,5 +328,12 @@ export class storage {
         this.btnToggleItalic = getElement(".djs-toggle-italic", false);
         this.btnToggleUnderline = getElement(".djs-toggle-underline", false);
         this.btnToggleStrikethrough = getElement(".djs-toggle-strikethrough", false);
+        this.btnListType = getElement(".djs-set-list-type");
+        this.btnTableHeader = getElement(".djs-table-header", false);
+        this.btnTableBody = getElement(".djs-table-body", false);
+        this.btnThemeSet = getElement(".djs-set-theme");
+        this.btnLangSet = getElement(".djs-set-lang");
+        this.btnItemMobeUp = getElement(".djs-move-up", false);
+        this.btnItemMobeDown = getElement(".djs-move-down", false);
     }
 }

@@ -13,6 +13,7 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
     if ($item !== null || $editableItem !== null) {
         condition.activeItem = $item;
         condition.activeElement = $editableItem;
+        condition.baseNode = $target;
 
         openOptionPop();
     }
@@ -243,11 +244,115 @@ function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"),
         case "bold":
             html = `<b>${text}</b>`;
             break;
-        case "":
+        case "italic":
+            html = `<i>${text}</i>`;
+            break;
+        case "underline":
+            html = `<u>${text}</u>`;
+            break;
+        case "strikethrough":
+            html = `<del>${text}</del>`;
             break;
     }
 
     return html;
+}
+
+export function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+    if (condition.baseNode == condition.focusNode) {
+        let $editable = findContenteditable(condition.baseNode);
+        let $parentNode = condition.baseNode.parentNode;
+
+        if ($editable == $parentNode) {
+            wrappingNode(type, value);
+        } else {
+            let $parentParentNode = $parentNode.parentNode;
+
+            if ($editable == $parentParentNode) {
+                brokenNode(type, value);
+            } else {
+                itemStructureValidation();
+                alert(message.wrongItemStructure);
+            }
+        }
+    } else {
+        margeNode(type, value);
+    }
+}
+
+export function textStylingNode(type, tagName, isAct, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(tagName, "string"), _2 = typeCheckThrow(isAct, "boolean")) {
+    let constructorName = condition.baseNode.constructor.name;
+    let $target;
+
+    if (constructorName == "Text") {
+        $target = condition.baseNode.parentNode;
+    } else {
+        $target = condition.baseNode;
+    }
+
+    let name = $target.tagName;
+
+    if (name == tagName) {
+        let hasData = Object.keys($target.dataset) == 0 ? false : true;
+
+        if (hasData == true) {
+            let option = getTextItemOption($target);
+            option[type] = "";
+
+            $target.insertAdjacentHTML("afterend", `<span>${$target.textContent}</span>`);
+            setTextItemOption($target.nextElementSibling, option);
+            $target.nextElementSibling.focus();
+            $target.remove();
+        } else {
+            $target.outerHTML = $target.textContent;
+            $target.focus();
+        }
+    } else {
+        if (isAct == true) {
+            $target.removeAttribute(`data-${type}`, "true");
+        } else {
+            $target.setAttribute(`data-${type}`, "true");
+        }
+
+        $target.focus();
+    }
+}
+
+export function changeTableCell(type, _0 = typeCheckThrow(type, "string")) {
+    let $editableItem = findContenteditable(condition.baseNode);
+    let html = $editableItem.innerHTML;
+
+    $editableItem.insertAdjacentHTML("afterend", `<${type} contenteditable="true">${html}</${type}>`);
+    setCursor($editableItem.nextElementSibling, 0);
+    condition.activeElement = $editableItem.nextElementSibling;
+    $editableItem.remove();
+    openOptionPop();
+}
+
+export function itemMove(type, _0 = typeCheckThrow(type, "string")) {
+    let $item = findParentByClass(condition.baseNode, "djs-item");
+    let $target, html;
+
+    if (type == "up") {
+        $target = $item.previousElementSibling;
+    } else if (type == "down") {
+        $target = $item.nextElementSibling;
+    }
+
+    if ($target != null) {
+        html = $target.outerHTML;
+
+        if (type == "up") {
+            $item.insertAdjacentHTML("afterend", html);
+        } else if (type == "down") {
+            $item.insertAdjacentHTML("beforebegin", html);
+        }
+
+        $target.remove();
+    }
+
+    openOptionPop();
+    $item.focus();
 }
 
 export function itemStructureValidation() {
@@ -273,8 +378,12 @@ export function itemStructureValidation() {
                     if (hasText == false) {
                         $node.remove();
                     } else {
-                        if (hasData == false && wrongTagList.indexOf(tagName) > -1) {
-                            $node.outerHTML = $node.textContent;
+                        if (hasData == false) {
+                            if (wrongTagList.indexOf(tagName) > -1) {
+                                $node.outerHTML = $node.textContent;
+                            } else if (tagName == "span") {
+                                $node.outerHTML = $node.textContent;
+                            }
                         } else {
                             $childNode.forEach(($child) => {
                                 let type = $child.constructor.name;

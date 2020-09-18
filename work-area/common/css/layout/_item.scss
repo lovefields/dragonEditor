@@ -138,22 +138,22 @@
         padding-left: 20px;
         list-style-type: decimal;
 
-        &[type="a"] {
-            list-style-type: lower-alpha;
-        }
-
-        &[type="A"] {
+        &[data-style="upper-alpha"] {
             list-style-type: upper-alpha;
         }
 
-        &[type="i"] {
-            padding-left: 40px;
-            list-style-type: lower-roman;
+        &[data-style="lower-alpha"] {
+            list-style-type: lower-alpha;
         }
 
-        &[type="I"] {
+        &[data-style="upper-roman"] {
             padding-left: 40px;
             list-style-type: upper-roman;
+        }
+
+        &[data-style="lower-roman"] {
+            padding-left: 40px;
+            list-style-type: lower-roman;
         }
 
         li {
