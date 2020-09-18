@@ -1,8 +1,8 @@
-const { typeCheckThrow } = require("./default");
+const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
 const { contentEnterKeyEvent } = require("./keyboard");
 const { getTextItemOption, setTextItemOption } = require("./option");
-const { setCursor } = require("./cursor");
+const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild } = require("./selector");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
@@ -25,10 +25,18 @@ export function getItemType($item, $editableItem) {
 
     if ($editableItem !== null) {
         let selection = window.getSelection();
+        let $node;
+
         condition.focusNode = selection.focusNode;
         condition.baseNode = selection.baseNode;
         condition.focusOffset = selection.focusOffset;
         condition.baseOffset = selection.baseOffset;
+
+        if (condition.baseNode.constructor.name == "Text") {
+            $node = condition.baseNode.parentNode;
+        } else {
+            $node = condition.baseNode;
+        }
 
         switch ($editableItem.constructor.name) {
             case "HTMLLIElement":
@@ -44,7 +52,21 @@ export function getItemType($item, $editableItem) {
                 break;
         }
 
-        if (condition.focusNode == condition.baseNode && condition.focusOffset !== condition.baseOffset) {
+        classControl(condition.btnWordLink, "remove", "--act");
+        classControl(condition.btnWordBlock, "remove", "--act");
+
+        switch ($node.tagName) {
+            case "A":
+                typeArr.push("link");
+                classControl(condition.btnWordLink, "add", "--act");
+                break;
+            case "CODE":
+                typeArr.push("wordblock");
+                classControl(condition.btnWordBlock, "add", "--act");
+                break;
+        }
+
+        if (isTextSelect() == true) {
             let nodeName = condition.baseNode.constructor.name;
 
             if ((nodeName = "HTMLAnchorElement")) {
@@ -71,6 +93,7 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     condition.focusOffset = selection.focusOffset;
     condition.baseOffset = selection.baseOffset;
 
+    // to-do key event
     switch (code) {
         case "Enter":
             contentEnterKeyEvent($item, $editableItem, e.shiftKey, e);
@@ -252,6 +275,12 @@ function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"),
             break;
         case "strikethrough":
             html = `<del>${text}</del>`;
+            break;
+        case "wordblock":
+            html = `<code>${text}</code>`;
+            break;
+        case "link":
+            html = `<a href="${value}" rel="nofollow">${text}</a>`;
             break;
     }
 

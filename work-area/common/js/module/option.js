@@ -10,6 +10,7 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
         italic: "",
         underline: "",
         strikethrough: "",
+        wordblock: "",
     };
 
     if ($node.constructor.name == "Text") {
@@ -34,6 +35,9 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
             break;
         case "DEL":
             attr.strikethrough = "true";
+            break;
+        case "CODE":
+            attr.wordblock = "true";
             break;
     }
 

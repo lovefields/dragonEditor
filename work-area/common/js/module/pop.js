@@ -43,10 +43,11 @@ function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "object")) {
     classControl(condition.popEmoticon, "toggle", "--act");
 }
 
-function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "object")) {
+export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "object")) {
     let popOffset = condition.popLinkbox.getBoundingClientRect();
     let $input = getChild(condition.popLinkbox, ".djs-input", false);
     let $btn = getChild(condition.popLinkbox, ".djs-btn", false);
+    let $aTag = getChild(condition.popLinkbox, ".djs-link", false);
     let right = condition.windowWidth - offset.right + (offset.width + 10);
     let top = offset.top;
 
@@ -61,9 +62,13 @@ function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 
     }
 
     if (type == "word") {
+        let $link = condition.baseNode.parentNode;
+
+        $aTag.textContent = $link.href;
         $btn.dataset["value"] = type;
-        condition.popLinkbox.dataset["type"] = offset.type;
-        $btn.dataset["type"] = offset.type;
+        condition.popLinkbox.dataset["type"] = "del";
+        $btn.dataset["type"] = type;
+        classControl(condition.popLinkbox, "add", "--act");
     } else {
         $btn.dataset["value"] = type;
         $input.value = "";
@@ -212,5 +217,11 @@ function setOptionPopValue() {
         let lang = $item.dataset["lang"];
 
         btnCodeLangText.textContent = lang;
+    }
+
+    if (textStyle.wordblock != "") {
+        classControl(condition.btnWordBlock, "add", "--act");
+    } else {
+        classControl(condition.btnWordBlock, "remove", "--act");
     }
 }
