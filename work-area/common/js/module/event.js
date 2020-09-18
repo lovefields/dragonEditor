@@ -2,11 +2,10 @@ const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
-const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, wrappingNode, brokenNode, margeNode } = require("./item");
+const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove } = require("./item");
 const { openFile } = require("./file");
 const { openPop, closeOptionPop, openOptionPop } = require("./pop");
 const { isTextSelect } = require("./cursor");
-const { getTextItemOption, setTextItemOption } = require("./option");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -496,7 +495,7 @@ function setOptionEvent() {
                 $target = condition.baseNode;
             }
 
-            if (condition.defaultFontSize == parseInt(value)) {
+            if (condition.defaultColor == value) {
                 $target.removeAttribute("data-color");
                 itemStructureValidation();
             } else {
@@ -515,6 +514,10 @@ function setOptionEvent() {
         let value = this.dataset["value"];
         let isAct = this.classList.contains("--act");
 
+        if ($target == null) {
+            $target = findParentByClass(condition.baseNode, "djs-item");
+        }
+
         if (isAct == true) {
             $target.removeAttribute("data-align");
             classControl(this, "remove", "--act");
@@ -527,75 +530,121 @@ function setOptionEvent() {
 
     // bold event
     eventBinding(condition.btnToggleBold, "click", function () {
-        let $editableItem = findContenteditable(condition.baseNode);
         let isAct = this.classList.contains("--act");
 
         if (isTextSelect() == true) {
             nodeEffect("bold");
         } else {
-            let constructorName = condition.baseNode.constructor.name;
-            let $target;
-
-            if (constructorName == "Text") {
-                $target = condition.baseNode.parentNode;
-            } else {
-                $target = condition.baseNode;
-            }
-
-            let name = $target.tagName;
-
-            if (name == "B") {
-                let hasData = Object.keys($target.dataset) == 0 ? false : true;
-
-                if (hasData == true) {
-                    let option = getTextItemOption($target);
-                    option.bold = "";
-
-                    $target.insertAdjacentHTML("afterend", `<span>${$target.textContent}</span>`);
-                    setTextItemOption($target.nextElementSibling, option);
-                    $target.nextElementSibling.focus();
-                    $target.remove();
-                } else {
-                    $target.outerHTML = $target.textContent;
-                    $target.focus();
-                }
-            } else {
-                if (isAct == true) {
-                    $target.removeAttribute("data-bold", "true");
-                } else {
-                    $target.setAttribute("data-bold", "true");
-                }
-
-                $target.focus();
-            }
+            textStylingNode("bold", "B", isAct);
         }
 
         classControl(this, "toggle", "--act");
     });
 
-    // btnToggleItalic
-    // btnToggleUnderline
-    // btnToggleStrikethrough
-}
+    // italic event
+    eventBinding(condition.btnToggleItalic, "click", function () {
+        let isAct = this.classList.contains("--act");
 
-function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
-    if (condition.baseNode == condition.focusNode) {
-        let $editable = findContenteditable(condition.baseNode);
-        let $parentNode = condition.baseNode.parentNode;
-
-        if ($editable == $parentNode) {
-            wrappingNode(type, value);
+        if (isTextSelect() == true) {
+            nodeEffect("italic");
         } else {
-            let $parentParentNode = $parentNode.parentNode;
-
-            if ($editable == $parentParentNode) {
-                brokenNode(type, value);
-            } else {
-                itemStructureValidation();
-                alert(message.wrongItemStructure);
-            }
+            textStylingNode("italic", "I", isAct);
         }
-    } else {
-        margeNode(type, value);
-    }
+
+        classControl(this, "toggle", "--act");
+    });
+
+    // underline event
+    eventBinding(condition.btnToggleUnderline, "click", function () {
+        let isAct = this.classList.contains("--act");
+
+        if (isTextSelect() == true) {
+            nodeEffect("underline");
+        } else {
+            textStylingNode("underline", "U", isAct);
+        }
+
+        classControl(this, "toggle", "--act");
+    });
+
+    // strikethrough event
+    eventBinding(condition.btnToggleStrikethrough, "click", function () {
+        let isAct = this.classList.contains("--act");
+
+        if (isTextSelect() == true) {
+            nodeEffect("strikethrough");
+        } else {
+            textStylingNode("strikethrough", "DEL", isAct);
+        }
+
+        classControl(this, "toggle", "--act");
+    });
+
+    // list style event
+    eventBinding(condition.btnListType, "click", function () {
+        let $item = findParentByClass(condition.baseNode, "djs-item");
+        let value = this.dataset["value"];
+
+        $item.dataset["style"] = value;
+    });
+
+    // table change event
+    eventBinding(condition.btnTableHeader, "click", function () {
+        changeTableCell("th");
+    });
+
+    eventBinding(condition.btnTableBody, "click", function () {
+        changeTableCell("td");
+    });
+
+    // code theme event
+    eventBinding(condition.btnThemeSet, "click", function () {
+        let $item = findParentByClass(condition.baseNode, "djs-item");
+        let value = this.dataset["value"];
+        let $btn = getElement(".djs-code-theme", false);
+        let event = document.createEvent("HTMLEvents");
+        event.initEvent("click", true, false);
+
+        $item.dataset["theme"] = value;
+        $btn.dispatchEvent(event);
+    });
+
+    // code lang event
+    eventBinding(condition.btnLangSet, "click", function () {
+        let $item = findParentByClass(condition.baseNode, "djs-item");
+        let $editableItem = findContenteditable(condition.baseNode);
+        let value = this.dataset["value"];
+        let $btn = getElement(".djs-code-lang", false);
+        let text = getElement(".djs-code-lang .djs-text", false);
+        let event = document.createEvent("HTMLEvents");
+        event.initEvent("click", true, false);
+
+        if (value == "text") {
+            value = "nohighlight";
+        }
+
+        $item.dataset["lang"] = value;
+        $editableItem.classList = `${value} editor-code`;
+        $editableItem.textContent = $editableItem.textContent;
+        hljs.highlightBlock($editableItem);
+
+        if (value == "text") {
+            text.textContent = "text";
+        } else {
+            text.textContent = value;
+        }
+
+        $btn.dispatchEvent(event);
+        $editableItem.focus();
+        condition.baseNode = $editableItem;
+    });
+
+    // move item event
+    eventBinding(condition.btnItemMobeUp, "click", function(){
+        itemMove("up");
+    });
+
+    eventBinding(condition.btnItemMobeDown, "click", function(){
+        itemMove("down");
+    });
 }

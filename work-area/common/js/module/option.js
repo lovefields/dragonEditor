@@ -1,7 +1,7 @@
 const { typeCheckThrow } = require("./default");
 
 export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
-    let styleList = ["color", "fontSize", "align", "bold"];
+    let styleList = ["color", "fontSize", "align", "bold", "italic", "underline", "strikethrough"];
     let attr = {
         color: "",
         fontSize: "",
@@ -32,7 +32,7 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
         case "U":
             attr.underline = "true";
             break;
-        case "S":
+        case "DEL":
             attr.strikethrough = "true";
             break;
     }
