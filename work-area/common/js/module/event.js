@@ -6,6 +6,7 @@ const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, 
 const { openFile } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
 const { isTextSelect } = require("./cursor");
+const { jsonToHtml } = require("./convertor");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -70,12 +71,29 @@ function setMenuEvent() {
     eventBinding(condition.btnChangeLang, "click", function () {
         let lang = this.dataset["value"];
         let data = getContentData();
+        let html;
 
         classControl(condition.btnChangeLang, "remove", "--act");
         classControl(this, "add", "--act");
 
-        console.log(condition.lang, lang);
-        console.log(data);
+        condition.contentData[condition.lang] = data;
+
+        if (condition.contentData[lang].length == 0) {
+            let duplicate = confirm(message.noContentData(lang));
+
+            if (duplicate == true) {
+                condition.contentData[lang] = data;
+            } else {
+                condition.contentData[lang] = condition.defaultContentData;
+            }
+        }
+
+        html = jsonToHtml(condition.contentData[lang]);
+
+        condition.activeItem = condition.wrap;
+        condition.activeElement = condition.wrap;
+        condition.lang = lang;
+        condition.areaContent.innerHTML = html;
         condition.triggerLangChange(lang);
     });
 
@@ -291,7 +309,7 @@ export function setMediaEvent() {
     eventBinding(condition.listMedia, "click", function (e) {
         let $item = findParentByClass(e.target, "djs-media");
         let type = $item.dataset["type"];
-        let idx = $item.dataset["idx"];
+        let idx = $item.dataset["idx"]; // to-do : set article idx
 
         if (type == "image") {
             switch (true) {
@@ -300,6 +318,7 @@ export function setMediaEvent() {
                     let data = {
                         src: $area.dataset["src"],
                         alt: $area.dataset["alt"],
+                        hasWebp: $area.dataset["webp"],
                         defaultFormat: $area.dataset["defaultFormat"],
                         webp: $area.dataset["webp"],
                         width: parseInt($area.dataset["width"]),

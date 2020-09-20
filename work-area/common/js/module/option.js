@@ -4,7 +4,6 @@ const { findParentByClass } = require("./selector");
 export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
     let $item = findParentByClass($node, "djs-item");
     let itemType = $item.dataset["type"];
-    let styleList = ["color", "fontSize", "align", "bold", "italic", "underline", "strikethrough"];
     let attr = {
         color: "",
         fontSize: "",
@@ -21,9 +20,9 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
     }
 
     if ($node.dataset != undefined) {
-        styleList.forEach((value) => {
-            attr[value] = $node.dataset[value] == undefined ? "" : $node.dataset[value];
-        });
+        for(const [key] of Object.entries(attr)){
+            attr[key] = $node.dataset[key] == undefined ? "" : $node.dataset[key];
+        }
     }
 
     switch ($node.tagName) {

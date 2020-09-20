@@ -227,16 +227,16 @@ export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "
             html += `<source srcset="${attr.src}.webp" type="image/webp">`;
         }
 
-        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" data-height="${attr.height}" class="img djs-img" draggable="false">`;
+        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" data-height="${attr.height}" class="editor-img djs-img" draggable="false">`;
         html += `</picture>`;
     } else {
-        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" data-height="${attr.height}" class="img djs-img" draggable="false">`;
+        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" data-height="${attr.height}" class="editor-img djs-img" draggable="false">`;
     }
 
     html += `<button class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button>`;
     html += `<button class="editor-btn-resize --right djs-resize" data-value="width" data-position="right">resize</button>`;
     html += `</div>`;
-    html += `<p class="editor-caption" contenteditable="true" data-type="caption">${attr.alt}</p>`;
+    html += `<p class="editor-caption djs-caption" contenteditable="true" data-type="caption">${attr.alt}</p>`;
     html += `</div>`;
 
     return html;
@@ -275,7 +275,7 @@ export function getListChildHTML(content = "", _0 = typeCheckThrow(content, "str
 }
 
 function getQuotaionBlock() {
-    return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote"><p class="text djs-text" contenteditable="true"></p><p class="author djs-author" contenteditable="true"></p></blockquote>`;
+    return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote" data-style="default"><p class="text djs-text" contenteditable="true"></p><p class="author djs-author" contenteditable="true"></p></blockquote>`;
 }
 
 function getTableBlock() {
