@@ -23,6 +23,7 @@ export class storage {
     }
 
     setStatus(options) {
+        this.defaultContentData = [{ option: { align: "", bold: "", color: "", fontSize: "", italic: "", strikethrough: "", underline: "", wordblock: "" }, textContent: "", type: "text" }];
         this.popOptionToClose = true;
         this.log = [];
         this.linkBoxData = {};
