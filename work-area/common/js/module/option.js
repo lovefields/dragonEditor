@@ -1,6 +1,9 @@
 const { typeCheckThrow } = require("./default");
+const { findParentByClass } = require("./selector");
 
 export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
+    let $item = findParentByClass($node, "djs-item");
+    let itemType = $item.dataset["type"];
     let styleList = ["color", "fontSize", "align", "bold", "italic", "underline", "strikethrough"];
     let attr = {
         color: "",
@@ -37,7 +40,9 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
             attr.strikethrough = "true";
             break;
         case "CODE":
-            attr.wordblock = "true";
+            if (itemType != "codeblock") {
+                attr.wordblock = "true";
+            }
             break;
     }
 
