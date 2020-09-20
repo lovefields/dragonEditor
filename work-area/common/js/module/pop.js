@@ -124,13 +124,13 @@ export function openOptionPop() {
         condition.popOption.style.left = `${offset.left}px`;
     }
 
-    $colList.forEach((col) => {
-        let group = col.dataset["group"].split(",");
+    $colList.forEach(($col) => {
+        let group = $col.dataset["group"].split(",");
 
         if (hasValueArrToArr(group, type) == true) {
-            classControl(col, "add", "--act");
+            classControl($col, "add", "--act");
         } else {
-            classControl(col, "remove", "--act");
+            classControl($col, "remove", "--act");
         }
     });
 
@@ -141,87 +141,90 @@ export function openOptionPop() {
 
 function setOptionPopValue() {
     let $item = findParentByClass(condition.baseNode, "djs-item");
-    let itemType = $item.dataset["type"];
-    let $editableItem = findContenteditable(condition.baseNode);
-    let textStyle = getTextItemOption(condition.baseNode);
-    let fontSizeText = getElement(".djs-fontsize .djs-text", false);
-    let btnColor = getElement(".djs-color", false);
-    let btnListStyleText = getElement(".djs-list-style .djs-text", false);
-    let btnCodeLangText = getElement(".djs-code-lang .djs-text", false);
 
-    if ($editableItem == null) {
-        $editableItem = $item;
-    }
+    if ($item != null) {
+        let itemType = $item.dataset["type"];
+        let $editableItem = findContenteditable(condition.baseNode);
+        let textStyle = getTextItemOption(condition.baseNode);
+        let fontSizeText = getElement(".djs-fontsize .djs-text", false);
+        let btnColor = getElement(".djs-color", false);
+        let btnListStyleText = getElement(".djs-list-style .djs-text", false);
+        let btnCodeLangText = getElement(".djs-code-lang .djs-text", false);
 
-    let editableStyle = getTextItemOption($editableItem);
+        if ($editableItem == null) {
+            $editableItem = $item;
+        }
 
-    if (textStyle.fontSize != "") {
-        fontSizeText.textContent = textStyle.fontSize;
-    } else {
-        fontSizeText.textContent = condition.defaultFontSize;
-    }
+        let editableStyle = getTextItemOption($editableItem);
 
-    if (textStyle.color != "") {
-        btnColor.dataset["value"] = textStyle.color;
-    } else {
-        btnColor.dataset["value"] = condition.defaultColor;
-    }
+        if (textStyle.fontSize != "") {
+            fontSizeText.textContent = textStyle.fontSize;
+        } else {
+            fontSizeText.textContent = condition.defaultFontSize;
+        }
 
-    if (editableStyle.align != "") {
-        condition.btnAlign.forEach(($btn) => {
-            let value = $btn.dataset["value"];
+        if (textStyle.color != "") {
+            btnColor.dataset["value"] = textStyle.color;
+        } else {
+            btnColor.dataset["value"] = condition.defaultColor;
+        }
 
-            if (value == editableStyle.align) {
-                classControl($btn, "add", "--act");
-            } else {
-                classControl($btn, "remove", "--act");
-            }
-        });
-    } else {
-        classControl(condition.btnAlign, "remove", "--act");
-    }
+        if (editableStyle.align != "") {
+            condition.btnAlign.forEach(($btn) => {
+                let value = $btn.dataset["value"];
 
-    if (textStyle.bold != "") {
-        classControl(condition.btnToggleBold, "add", "--act");
-    } else {
-        classControl(condition.btnToggleBold, "remove", "--act");
-    }
+                if (value == editableStyle.align) {
+                    classControl($btn, "add", "--act");
+                } else {
+                    classControl($btn, "remove", "--act");
+                }
+            });
+        } else {
+            classControl(condition.btnAlign, "remove", "--act");
+        }
 
-    if (textStyle.italic != "") {
-        classControl(condition.btnToggleItalic, "add", "--act");
-    } else {
-        classControl(condition.btnToggleItalic, "remove", "--act");
-    }
+        if (textStyle.bold != "") {
+            classControl(condition.btnToggleBold, "add", "--act");
+        } else {
+            classControl(condition.btnToggleBold, "remove", "--act");
+        }
 
-    if (textStyle.underline != "") {
-        classControl(condition.btnToggleUnderline, "add", "--act");
-    } else {
-        classControl(condition.btnToggleUnderline, "remove", "--act");
-    }
+        if (textStyle.italic != "") {
+            classControl(condition.btnToggleItalic, "add", "--act");
+        } else {
+            classControl(condition.btnToggleItalic, "remove", "--act");
+        }
 
-    if (itemType == "ol") {
-        let text;
+        if (textStyle.underline != "") {
+            classControl(condition.btnToggleUnderline, "add", "--act");
+        } else {
+            classControl(condition.btnToggleUnderline, "remove", "--act");
+        }
 
-        condition.btnListType.forEach(($btn) => {
-            let value = $btn.dataset["value"];
+        if (itemType == "ol") {
+            let text;
 
-            if (value == $item.dataset["style"]) {
-                text = $btn.textContent;
-            }
-        });
+            condition.btnListType.forEach(($btn) => {
+                let value = $btn.dataset["value"];
 
-        btnListStyleText.textContent = text;
-    }
+                if (value == $item.dataset["style"]) {
+                    text = $btn.textContent;
+                }
+            });
 
-    if (itemType == "codeblock") {
-        let lang = $item.dataset["lang"];
+            btnListStyleText.textContent = text;
+        }
 
-        btnCodeLangText.textContent = lang;
-    }
+        if (itemType == "codeblock") {
+            let lang = $item.dataset["lang"];
 
-    if (textStyle.wordblock != "") {
-        classControl(condition.btnWordBlock, "add", "--act");
-    } else {
-        classControl(condition.btnWordBlock, "remove", "--act");
+            btnCodeLangText.textContent = lang;
+        }
+
+        if (textStyle.wordblock != "") {
+            classControl(condition.btnWordBlock, "add", "--act");
+        } else {
+            classControl(condition.btnWordBlock, "remove", "--act");
+        }
     }
 }

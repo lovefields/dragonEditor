@@ -39,6 +39,7 @@ export class storage {
         this.focusOffset;
         this.baseOffset;
         this.regList = {
+            srcURL: new RegExp("(.*)\\.(jpg|png|gif|webp|bmp)", "i"),
             defaultURL: new RegExp("https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?", "i"),
             youtubeURL: new RegExp("(https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)?", "i"),
             youtubeCode: new RegExp("((https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)\\/(embed\\/|watch\\?v=)?)([^=\\/& :]*)(.*)", "i"),

@@ -4,6 +4,7 @@ const { contentEnterKeyEvent } = require("./keyboard");
 const { getTextItemOption, setTextItemOption } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild } = require("./selector");
+const { message } = require("./message");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $target = e.target;
@@ -61,19 +62,23 @@ export function getItemType($item, $editableItem) {
                 classControl(condition.btnWordLink, "add", "--act");
                 break;
             case "CODE":
-                typeArr.push("wordblock");
-                classControl(condition.btnWordBlock, "add", "--act");
+                if (itemType != "codeblock") {
+                    typeArr.push("wordblock");
+                    classControl(condition.btnWordBlock, "add", "--act");
+                }
                 break;
         }
 
         if (isTextSelect() == true) {
             let nodeName = condition.baseNode.constructor.name;
 
-            if ((nodeName = "HTMLAnchorElement")) {
-                typeArr.push("link");
-            }
+            if (itemType != "codeblock") {
+                if ((nodeName = "HTMLAnchorElement")) {
+                    typeArr.push("link");
+                }
 
-            typeArr.push("word");
+                typeArr.push("word");
+            }
         }
     }
 
@@ -362,26 +367,30 @@ export function itemMove(type, _0 = typeCheckThrow(type, "string")) {
     let $item = findParentByClass(condition.baseNode, "djs-item");
     let $target, html;
 
-    if (type == "up") {
-        $target = $item.previousElementSibling;
-    } else if (type == "down") {
-        $target = $item.nextElementSibling;
-    }
-
-    if ($target != null) {
-        html = $target.outerHTML;
-
+    if ($item != null) {
         if (type == "up") {
-            $item.insertAdjacentHTML("afterend", html);
+            $target = $item.previousElementSibling;
         } else if (type == "down") {
-            $item.insertAdjacentHTML("beforebegin", html);
+            $target = $item.nextElementSibling;
         }
 
-        $target.remove();
-    }
+        if ($target != null) {
+            html = $target.outerHTML;
 
-    openOptionPop();
-    $item.focus();
+            if (type == "up") {
+                $item.insertAdjacentHTML("afterend", html);
+            } else if (type == "down") {
+                $item.insertAdjacentHTML("beforebegin", html);
+            }
+
+            $target.remove();
+        }
+
+        openOptionPop();
+        $item.focus();
+    } else {
+        alert(message.missingSelect);
+    }
 }
 
 export function itemStructureValidation() {

@@ -1,7 +1,7 @@
 const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile } = require("./default");
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
-const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML } = require("./layout");
+const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
 const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove } = require("./item");
 const { openFile } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
@@ -69,11 +69,13 @@ function setMenuEvent() {
     // change language event
     eventBinding(condition.btnChangeLang, "click", function () {
         let lang = this.dataset["value"];
+        let data = getContentData();
 
         classControl(condition.btnChangeLang, "remove", "--act");
         classControl(this, "add", "--act");
 
-        console.log(condition.lang);
+        console.log(condition.lang, lang);
+        console.log(data);
         condition.triggerLangChange(lang);
     });
 
@@ -638,7 +640,7 @@ function setOptionEvent() {
         }
 
         $item.dataset["lang"] = value;
-        $editableItem.classList = `${value} editor-code`;
+        $editableItem.classList = `${value} editor-code djs-code`;
         $editableItem.textContent = $editableItem.textContent;
         hljs.highlightBlock($editableItem);
 

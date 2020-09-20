@@ -1,6 +1,7 @@
 const { typeCheckThrow, upperFirstChar, classControl } = require("./default");
 const { getElement, getActiveElement, getChild } = require("./selector");
 const { setCursor } = require("./cursor");
+const { htmlToJson } = require("./convertor");
 
 export function makeView() {
     let view = "";
@@ -215,7 +216,7 @@ export function getTextBlockHTML(content = "", _0 = typeCheckThrow(content, "str
 
 export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "object"), _1 = typeCheckThrow(width, "number")) {
     let html = `
-        <div class="editor-item djs-item --djs-selected" data-type="image">
+        <div class="editor-item djs-item --djs-selected" data-type="image" data-webp="${attr.hasWebp}">
             <div class="editor-size djs-size" data-width="${width}">
     `;
 
@@ -226,10 +227,10 @@ export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "
             html += `<source srcset="${attr.src}.webp" type="image/webp">`;
         }
 
-        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" class="img" draggable="false">`;
+        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" data-height="${attr.height}" class="img djs-img" draggable="false">`;
         html += `</picture>`;
     } else {
-        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" class="img" draggable="false">`;
+        html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" data-height="${attr.height}" class="img djs-img" draggable="false">`;
     }
 
     html += `<button class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button>`;
@@ -274,7 +275,7 @@ export function getListChildHTML(content = "", _0 = typeCheckThrow(content, "str
 }
 
 function getQuotaionBlock() {
-    return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote"><p class="text" contenteditable="true"></p><p class="author" contenteditable="true"></p></blockquote>`;
+    return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote"><p class="text djs-text" contenteditable="true"></p><p class="author djs-author" contenteditable="true"></p></blockquote>`;
 }
 
 function getTableBlock() {
@@ -282,7 +283,7 @@ function getTableBlock() {
         <div class="editor-item djs-item --djs-selected" data-type="table">
             <div class="scroll">
                 <table class="table">
-                    <caption contenteditable="true" data-type="caption"></caption>
+                    <caption class="djs-caption" contenteditable="true"></caption>
                     <colgroup>
                         <col data-size="100">
                         <col data-size="100">
@@ -311,14 +312,14 @@ function getTableBlock() {
 
 function getCodeBlock() {
     return `
-        <pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight editor-code" contenteditable="true"></code></pre>
+        <pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight editor-code djs-code" contenteditable="true"></code></pre>
     `;
 }
 
 export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="youtube">
-            <iframe src="https://www.youtube.com/embed/${code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe"></iframe>
+            <iframe src="https://www.youtube.com/embed/${code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe djs-iframe"></iframe>
             <button class="editor-edit">edit</button>
         </div>
     `;
@@ -337,15 +338,15 @@ export function getCodepenBlock(nickname, code, height = 300, _0 = typeCheckThro
 export function getLinkboxBlock(data, _0 = typeCheckThrow(data, "object")) {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="linkbox">
-            <a href="${data.url}" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix" draggable="false">
+            <a href="${data.url}" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix djs-linkbox" draggable="false">
                 <div class="editor-linkbox-img">
-                    <img src="${data.img}" alt="미리보기 이미지" class="editor-img" draggable="false">
+                    <img src="${data.img}" alt="미리보기 이미지" class="editor-img djs-img" draggable="false">
                 </div>
 
                 <div class="editor-linkbox-text">
-                    <p class="editor-title">${data.title}</p>
-                    <p class="editor-description">${data.description}</p>
-                    <p class="editor-domain">${data.domain}</p>
+                    <p class="editor-title djs-title">${data.title}</p>
+                    <p class="editor-description djs-description">${data.description}</p>
+                    <p class="editor-domain djs-domain">${data.domain}</p>
                 </div>
             </a>
         </div>
@@ -666,8 +667,11 @@ export function addBlockToContent(block, _0 = typeCheckThrow(block, "string")) {
         setCursor($newItem, 0);
     } else {
         let $child = getChild($newItem, "*[contenteditable]", false);
-        condition.activeElement = $child;
-        setCursor($child, 0);
+
+        if ($child != null) {
+            condition.activeElement = $child;
+            setCursor($child, 0);
+        }
     }
 
     if ($selectedItem.length > 0) {
@@ -675,4 +679,10 @@ export function addBlockToContent(block, _0 = typeCheckThrow(block, "string")) {
     }
 
     condition.activeItem = $newItem;
+}
+
+export function getContentData() {
+    let $itemList = getChild(condition.areaContent, ".djs-item");
+
+    return htmlToJson($itemList);
 }
