@@ -281,8 +281,8 @@ function getQuotaionBlock() {
 function getTableBlock() {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="table">
-            <div class="scroll">
-                <table class="table">
+            <div class="editor-scroll">
+                <table class="editor-table">
                     <caption class="djs-caption" contenteditable="true"></caption>
                     <colgroup>
                         <col data-size="100">
@@ -318,7 +318,7 @@ function getCodeBlock() {
 
 export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {
     return `
-        <div class="editor-item djs-item --djs-selected" data-type="youtube">
+        <div class="editor-item djs-item --djs-selected" data-type="youtube" data-code="${code}">
             <iframe src="https://www.youtube.com/embed/${code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe djs-iframe"></iframe>
             <button class="editor-edit">edit</button>
         </div>
@@ -340,7 +340,7 @@ export function getLinkboxBlock(data, _0 = typeCheckThrow(data, "object")) {
         <div class="editor-item djs-item --djs-selected" data-type="linkbox">
             <a href="${data.url}" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix djs-linkbox" draggable="false">
                 <div class="editor-linkbox-img">
-                    <img src="${data.img}" alt="미리보기 이미지" class="editor-img djs-img" draggable="false">
+                    <img src="${data.img}" alt="preview image" class="editor-img djs-img" draggable="false">
                 </div>
 
                 <div class="editor-linkbox-text">

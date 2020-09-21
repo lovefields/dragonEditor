@@ -245,12 +245,12 @@
         position: relative;
         width: 100%;
 
-        .scroll {
+        .editor-scroll {
             width: 100%;
             overflow-x: auto;
         }
 
-        .table {
+        .editor-table {
             width: 100%;
             border-collapse: separate;
             table-layout: fixed;

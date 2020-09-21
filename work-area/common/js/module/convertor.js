@@ -88,43 +88,86 @@ export function jsonToHtml(json) {
                 html += `<blockquote class="editor-item djs-item" data-type="${item.type}" data-style="${item.style}"><p class="text djs-text" contenteditable="true">${item.text}</p><p class="author djs-author" contenteditable="true">${item.author}</p></blockquote>`;
                 break;
             case "table":
-                // let rowNum = 0;
-                // html += `<div class="${item.class.join(" ")}" data-type="${item.type}"><div class="scroll"><table class="item_table"><caption contenteditable="true">${item.caption}</caption><colgroup>`;
-                // item.colgroup.forEach(function (col) {
-                //     html += `<col class="${col}">`;
-                // });
-                // html += "</colgroup><tbody>";
-                // item.child.forEach(function (tr) {
-                //     let cellNum = 0;
-                //     html += "<tr>";
-                //     tr.forEach(function (cell) {
-                //         if (cell.class.length > 0) {
-                //             html += `<${cell.tag} class="${cell.class.join(" ")}" contenteditable="true" data-x="${cellNum}" data-y="${rowNum}">${cell.textContent}</${cell.tag}>`;
-                //         } else {
-                //             html += `<${cell.tag} contenteditable="true" data-x="${cellNum}" data-y="${rowNum}">${cell.textContent}</${cell.tag}>`;
-                //         }
-                //         cellNum += 1;
-                //     });
-                //     html += "</tr>";
-                //     rowNum += 1;
-                // });
-                // html += '</tbody></table></div><button class="btn btn_col_add">Add col</button><button class="btn btn_col_del">Remove col</button><button class="btn btn_row_add">Add row</button><button class="btn btn_row_del">Remove row</button></div>';
+                let rowNum = 0;
+
+                html += `
+                    <div class="editor-item djs-item" data-type="${item.type}">
+                        <div class="editor-scroll">
+                            <table class="editor-table">
+                                <caption class="djs-caption" contenteditable="true">${item.caption}</caption>
+                                <colgroup>`;
+
+                item.colgroup.forEach(function (col) {
+                    html += `<col data-size="${col}">`;
+                });
+
+                html += "</colgroup><tbody>";
+
+                item.body.forEach(function (tr) {
+                    let cellNum = 0;
+
+                    html += "<tr>";
+
+                    tr.forEach(function (cell) {
+                        for (const [key, value] of Object.entries(cell.option)) {
+                            if (value != "") {
+                                option += ` data-${key}="${value}"`;
+                            }
+                        }
+
+                        html += `<${cell.tag} contenteditable="true" data-x="${cellNum}" data-y="${rowNum}"${option}>${cell.textContent}</${cell.tag}>`;
+                        cellNum += 1;
+                        option = "";
+                    });
+
+                    html += "</tr>";
+                    rowNum += 1;
+                });
+                html += "</tbody></table></div></div>";
+                break;
+            case "linkbox":
+                html += `
+                    <div class="editor-item djs-item" data-type="${item.type}">
+                        <a href="${item.url}" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix djs-linkbox" draggable="false">
+                            <div class="editor-linkbox-img">
+                                <img src="${item.imgSrc}" alt="preview image" class="editor-img djs-img" draggable="false">
+                            </div>
+            
+                            <div class="editor-linkbox-text">
+                                <p class="editor-title djs-title">${item.title}</p>
+                                <p class="editor-description djs-description">${item.description}</p>
+                                <p class="editor-domain djs-domain">${item.domain}</p>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                break;
+            case "emoticon":
+                html += `<div class="editor-item djs-item" data-type="${item.type}">${item.code}</div>`;
                 break;
 
-            // case "youtube":
-            //     html += `<div class="${item.class.join(" ")}" data-type="${item.type}"><iframe src="${item.src}" allow="${item.allow}" allowfullscreen="" class="video"></iframe></div>`;
-            //     break;
-            // case "codepen":
-            //     html += `<div class="${item.class.join(" ")}" data-type="${item.type}"><iframe height="${item.height}" title="" src="${item.src}" allowfullscreen="" class="iframe"></iframe></div>`;
-            //     break;
-            // case "codeblock":
-            //     html += `<pre class="${item.class.join(" ")}" data-type="${item.type}" data-theme="${item.theme}" data-lang="${item.lang}"><code class="${item.code.class.join(" ")}" contenteditable="true">${item.code.innerHTML}</code></pre>`;
-            //     break;
-            // case "link_box":
-            //     html += `<div class="${item.class.join(" ")}" data-type="${item.type}"><a href="${item.url}" target="_blank" class="link_box clearfix" draggable="false"><div class="img_area"><img src="${item.imgSrc}" alt="미리보기 이미지" class="img" draggable="false"></div><div class="text_area"><p class="link_title ellipsis">${item.title}</p><p class="link_description ellipsis">${item.description}</p><p class="link_domain">${item.domain}</p></div></a></div>`;
-            //     break;
-            // default:
-            //     html += item.other;
+            case "youtube":
+                html += `
+                    <div class="editor-item djs-item" data-type="${item.type}" data-code="${item.code}">
+                        <iframe src="https://www.youtube.com/embed/${item.code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe djs-iframe"></iframe>
+                        <button class="editor-edit">edit</button>
+                    </div>
+                `;
+                break;
+            case "codepen":
+                html += `
+                    <div class="editor-item djs-item" data-type="${item.type}">
+                        <iframe height="${item.height}" title="" src="https://codepen.io/${item.nickname}/embed/${item.code}?height=${item.height}&theme-id=${condition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe djs-iframe" data-code="${item.code}" data-nickname="${item.nickname}"></iframe>
+                        <button class="editor-btn-resize djs-resize" data-value="height">Resize height</button>
+                        <button class="editor-edit">edit</button>
+                    </div>
+                `;
+                break;
+            case "codeblock":
+                html += `<pre class="editor-item djs-item" data-type="${item.type}" data-theme="${item.theme}" data-lang="${item.lang}"><code class="${item.code.class.join(" ")}" contenteditable="true">${item.code.textContent}</code></pre>`;
+                break;
+            default:
+                html += `<div class="editor-item djs-item" data-type="${item.type}">${item.other}</div>`;
         }
     });
 
@@ -225,7 +268,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) 
                     $child.forEach(($node) => {
                         childArr.push({
                             tag: $node.tagName.toLowerCase(),
-                            optoin: getTextItemOption($node),
+                            option: getTextItemOption($node),
                             textContent: $node.innerHTML,
                         });
                     });
@@ -259,7 +302,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) 
             case "youtube":
                 arr.push({
                     type: "youtube",
-                    src: getChild($item, ".djs-iframe", false).getAttribute("src"),
+                    code: $item.dataset["code"],
                 });
                 break;
             case "codepen":
@@ -271,11 +314,16 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) 
                 });
                 break;
             case "codeblock":
+                let $code = getChild($item, ".djs-code", false);
+
                 arr.push({
                     type: "codeblock",
                     theme: $item.dataset["theme"],
                     lang: $item.dataset["lang"],
-                    code: getChild($item, ".djs-code", false).innerHTML,
+                    code: {
+                        class: [...$code.classList],
+                        textContent: $code.innerHTML,
+                    },
                 });
                 break;
             default:
