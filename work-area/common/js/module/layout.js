@@ -67,6 +67,15 @@ function makeBlockMenu(data) {
                     ${value.text}
                 </button>
             `;
+        } else{
+            html += `
+                <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="custom">
+                    <svg viewbox="0 0 64 64" class="editor-icon">
+                        <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
+                    </svg>
+                    ${value.text}
+                </button>
+            `;
         }
     }
 

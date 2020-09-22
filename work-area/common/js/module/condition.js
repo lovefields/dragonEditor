@@ -31,8 +31,6 @@ export class storage {
         this.windowWidth = window.innerWidth;
         this.windowHeight = window.innerHeight;
         this.enterCount = 0;
-        this.startTextCursor = 0;
-        this.endTextCursor = 0;
         this.activeItem = this.wrap;
         this.activeElement = this.wrap;
         this.focusNode;
@@ -282,6 +280,7 @@ export class storage {
 
         for (const [key, value] of Object.entries(this.addMenu)) {
             defaultMenu[key] = {
+                type: "custom",
                 text: value.text,
                 icon: value.icon,
                 fn: value.fn,
