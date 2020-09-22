@@ -108,15 +108,17 @@ function setMenuEvent() {
         let type = this.dataset["type"];
         let value = this.dataset["value"];
 
-        if (type === "block") {
+        if (type == "block") {
             let block = getDefaultBlockHTML(value);
 
             addBlockToContent(block);
             openOptionPop();
-        } else if (type === "pop") {
+        } else if (type == "pop") {
             openPop(value, this);
-        } else if (type === "file") {
+        } else if (type == "file") {
             openFile(value);
+        }else if(type == "custom"){
+            condition.defaultMenu[value].fn();
         }
     });
 
