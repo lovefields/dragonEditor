@@ -351,8 +351,6 @@ export function setMediaEvent() {
             }
         }
     });
-
-    console.log("to-do media ajax");
 }
 
 function setContentEvent() {

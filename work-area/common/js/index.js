@@ -47,7 +47,11 @@ module.exports = class {
     }
 
     addItem(html, _0 = typeCheckThrow(html, "string")){
-        addBlockToContent(`<div class="editor-item djs-item">${html}</div>`);
+        addBlockToContent(`<div class="editor-item djs-item" data-type="other">${html}</div>`);
+    }
+
+    getStatus(){
+        return condition;
     }
 };
 
@@ -60,11 +64,6 @@ module.exports = class {
 //     }
 // }
 
-// export function getStorage() {
-//     return storage;
-// }
-
-
 // export function setOptionValue(name, value) {
 //     if (storage[name] === undefined) {
 //         console.error("Can not set other option name.");
@@ -75,12 +74,3 @@ module.exports = class {
 //     }
 // }
 
-// export function addContent(html) {
-//     let childCount = storage.contentArea.childElementCount;
-//     let $lastEl = getEl(".lastset");
-//     let $target =
-//         $lastEl === null
-//             ? storage.contentArea.children[childCount - 1]
-//             : $lastEl;
-//     $target.insertAdjacentHTML("afterend", html);
-// }
