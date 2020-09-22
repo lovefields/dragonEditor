@@ -11,7 +11,7 @@ export class storage {
     }
 
     setMessage(data = {}, _0 = typeCheckThrow(data, Object)) {
-        let check = ["apiNotWorking"];
+        let check = ["apiNotWorking", "wrongItemStructure", "missingSelect", "noContentData"];
 
         for (const [key, value] of Object.entries(data)) {
             if (check.indexOf(key) > -1) {
