@@ -14,7 +14,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "npx webpack --config webpack.script.js & npx webpack --config webpack.style.js"
+    "start": "npx webpack --config webpack.script.js & npx webpack --config webpack.style.js & npx webpack --config webpack.viewer.js"
   },
   "repository": {
     "type": "git",
