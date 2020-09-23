@@ -3,7 +3,7 @@ const { getElement, findParentByClass, getChild, findContenteditable } = require
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
 const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove } = require("./item");
-const { openFile } = require("./file");
+const { openFile, fileUpload } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
 const { isTextSelect } = require("./cursor");
 const { jsonToHtml } = require("./convertor");
@@ -67,6 +67,11 @@ function setGlobalEvent() {
 }
 
 function setMenuEvent() {
+    eventBinding(condition.uploadInput, "change", function(){
+        console.log("is work!");
+        fileUpload();
+    });
+
     // change language event
     eventBinding(condition.btnChangeLang, "click", function () {
         let lang = this.dataset["value"];
@@ -256,6 +261,51 @@ function setMenuEvent() {
             condition.btnLinkbox.dispatchEvent(event);
         }
     });
+
+    // media event
+    eventBinding(condition.listMedia, "click", function (e) {
+        let $item = findParentByClass(e.target, "djs-media");
+        let type = $item.dataset["type"];
+        let idx = $item.dataset["idx"]; // to-do : set article idx
+
+        if (type == "image") {
+            switch (true) {
+                case findParentByClass(e.target, "djs-add-media") !== null:
+                    let $area = findParentByClass(e.target, "djs-add-media");
+                    let data = {
+                        src: $area.dataset["src"],
+                        alt: $area.dataset["alt"],
+                        hasWebp: $area.dataset["webp"],
+                        defaultFormat: $area.dataset["defaultFormat"],
+                        webp: $area.dataset["webp"],
+                        width: parseInt($area.dataset["width"]),
+                        height: parseInt($area.dataset["height"]),
+                    };
+                    let setWidth = 700;
+                    let block;
+
+                    if (isMobile() == true) {
+                        setWidth = 300;
+                    } else {
+                        if (data.width < data.height) {
+                            setWidth = 400;
+                        }
+                    }
+                    block = getImageBlockHTML(data, setWidth);
+
+                    addBlockToContent(block);
+                    break;
+                case findParentByClass(e.target, "djs-del-media") !== null:
+                    // to-do delete media
+                    console.log("del");
+                    break;
+                case findParentByClass(e.target, "djs-name") !== null:
+                    // to-do update media
+                    console.log("edit");
+                    break;
+            }
+        }
+    });
 }
 
 export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
@@ -304,52 +354,6 @@ export function setEmoticonBtnEvent() {
         let block = getEmoticonBlockHTML(code);
 
         addBlockToContent(block);
-    });
-}
-
-export function setMediaEvent() {
-    eventBinding(condition.listMedia, "click", function (e) {
-        let $item = findParentByClass(e.target, "djs-media");
-        let type = $item.dataset["type"];
-        let idx = $item.dataset["idx"]; // to-do : set article idx
-
-        if (type == "image") {
-            switch (true) {
-                case findParentByClass(e.target, "djs-add-media") !== null:
-                    let $area = findParentByClass(e.target, "djs-add-media");
-                    let data = {
-                        src: $area.dataset["src"],
-                        alt: $area.dataset["alt"],
-                        hasWebp: $area.dataset["webp"],
-                        defaultFormat: $area.dataset["defaultFormat"],
-                        webp: $area.dataset["webp"],
-                        width: parseInt($area.dataset["width"]),
-                        height: parseInt($area.dataset["height"]),
-                    };
-                    let setWidth = 700;
-                    let block;
-
-                    if (isMobile() == true) {
-                        setWidth = 300;
-                    } else {
-                        if (data.width < data.height) {
-                            setWidth = 400;
-                        }
-                    }
-                    block = getImageBlockHTML(data, setWidth);
-
-                    addBlockToContent(block);
-                    break;
-                case findParentByClass(e.target, "djs-del-media") !== null:
-                    // to-do delete media
-                    console.log("del");
-                    break;
-                case findParentByClass(e.target, "djs-name") !== null:
-                    // to-do update media
-                    console.log("edit");
-                    break;
-            }
-        }
     });
 }
 

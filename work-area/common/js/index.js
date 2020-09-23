@@ -2,7 +2,7 @@ const { typeCheckThrow } = require("./module/default");
 const { storage } = require("./module/condition");
 const { makeView, setEmoticonList, setMediaList, getContentData, addBlockToContent } = require("./module/layout");
 const { refreshScroll } = require("./module/scroll");
-const { setEvent, setEmoticonBtnEvent, setMediaEvent } = require("./module/event");
+const { setEvent, setEmoticonBtnEvent } = require("./module/event");
 const { jsonToHtml } = require("./module/convertor");
 
 module.exports = class {
@@ -25,7 +25,6 @@ module.exports = class {
     setMedia(data, _0 = typeCheckThrow(data, Array)) {
         setMediaList(data);
         refreshScroll();
-        setMediaEvent();
     }
 
     setContentData(data, _0 = typeCheckThrow(data, Object)) {

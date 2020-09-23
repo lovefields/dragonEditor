@@ -1,3 +1,5 @@
+const { message } = require("./message");
+
 export function typeCheckThrow(target, type) {
     if (typeof type == "string") {
         if (typeof target != type) {
@@ -106,6 +108,10 @@ export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(ur
 
     return fetch(url, option)
         .then((res) => {
+            if (res.ok == false) {
+                throw new Error(message.serverNotWorking);
+            }
+
             return res.json();
         })
         .catch((error) => {

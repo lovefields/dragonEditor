@@ -177,9 +177,9 @@ function makeUploadForm() {
     let html = `<form enctype="multipart/form-data" method="post" class="editor-uploader djs-uploader">`;
 
     if (condition.multiUpload == true) {
-        html += `<input type="file" multiple class="djs-file">`;
+        html += `<input type="file" name="file" multiple class="djs-file">`;
     } else {
-        html += `<input type="file" class="djs-file">`;
+        html += `<input type="file" name="file" class="djs-file">`;
     }
     html += `</form>`;
 
