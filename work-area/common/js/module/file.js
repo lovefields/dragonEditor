@@ -58,10 +58,6 @@ export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, Node)) {
     let text = $field.textContent;
     let preText = $field.dataset["preText"];
     let idx = $item.dataset["idx"];
-    let data = {
-        imageName: text,
-        imageIdx: idx,
-    };
 
     $field.scrollTo(0, 0);
     $field.removeAttribute("contenteditable");
@@ -71,7 +67,10 @@ export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, Node)) {
         condition.uploadURL,
         {
             method: "PUT",
-            body: JSON.stringify(data),
+            body: {
+                imageName: text,
+                imageIdx: idx,
+            },
         },
         "json",
     );
