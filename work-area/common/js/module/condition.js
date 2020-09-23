@@ -45,6 +45,8 @@ export class storage {
             codepenURL: new RegExp("codepen.io", "g"),
             codepenCode: new RegExp("(https:\\/\\/codepen\\.io\\/)(\\w*)\\/(pen|embed)\\/([A-Za-z]*)(.*)", "i"),
         };
+        this.articleIdx = typeCheckBoolean(options.articleIdx, "number") ? options.articleIdx : 0;
+        this.articleTempIdx = typeCheckBoolean(options.articleTempIdx, "number") ? options.articleTempIdx : 0;
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.defaultColor = typeCheckBoolean(options.defaultColor, "string") ? options.defaultColor : "#333";
