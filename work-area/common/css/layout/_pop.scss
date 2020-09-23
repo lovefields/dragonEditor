@@ -127,7 +127,12 @@
             color: #999;
             font-size: 12px;
             text-align: center;
+            outline: 0;
             @include ellipsis;
+
+            &[contenteditable="true"] {
+                text-overflow: unset;
+            }
         }
 
         .editor-btn-del {

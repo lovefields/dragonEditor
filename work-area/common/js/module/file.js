@@ -1,5 +1,6 @@
 const { typeCheckThrow, fetchURL, isMobile } = require("./default");
 const { setMediaList, getImageBlockHTML, addBlockToContent } = require("./layout");
+const { findParentByClass, getChild } = require("./selector");
 
 export function openFile(type, _0 = typeCheckThrow(type, "string")) {
     switch (type) {
@@ -26,7 +27,6 @@ export async function fileUpload() {
     let request = await fetchURL(condition.uploadURL, {
         method: "POST",
         body: formData,
-        mode: "no-cors",
     });
 
     if (request.respon == true) {
@@ -46,6 +46,41 @@ export async function fileUpload() {
             block = getImageBlockHTML(item, setWidth);
 
             addBlockToContent(block);
+        });
+    } else {
+        alert(request.error.message);
+    }
+}
+
+export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, Node)) {
+    let $field = findParentByClass($node, "djs-name");
+    let $item = findParentByClass($node, "djs-media");
+    let text = $field.textContent;
+    let preText = $field.dataset["preText"];
+    let idx = $item.dataset["idx"];
+    let data = {
+        imageName: text,
+        imageIdx: idx,
+    };
+
+    $field.scrollTo(0, 0);
+    $field.removeAttribute("contenteditable");
+    $field.removeAttribute("data-pre-text");
+
+    let request = await fetchURL(
+        condition.uploadURL,
+        {
+            method: "PUT",
+            body: JSON.stringify(data),
+        },
+        "json",
+    );
+
+    if (request.respon == true) {
+        let $childs = getChild(condition.areaContent, `img[alt="${preText}"]`);
+
+        $childs.forEach(($child) => {
+            $child.setAttribute("alt", text);
         });
     } else {
         alert(request.error.message);
