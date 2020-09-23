@@ -26,6 +26,7 @@ We never ever support IE.
 
 ## Using
 
+# editor
 ```html
 <!-- 
 * Load Google font(Inconsolata) if you using code block.
@@ -59,6 +60,11 @@ We never ever support IE.
         key: "value",
     });
 </script>
+```
+
+# viewer
+```html
+<link rel="stylesheet" href="[yourdir]/dragonEditorViewer.css">
 ```
 
 ## Document
