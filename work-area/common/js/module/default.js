@@ -98,7 +98,7 @@ export function hasClass($node, className, _0 = typeCheckThrow($node, Node), _1 
 export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(url, "string"), _1 = typeCheckThrow(option, "object"), _2 = typeCheckThrow(type, "string")) {
     let formData = new FormData();
 
-    if (type === "json") {
+    if (type == "json") {
         for (let key in option.body) {
             formData.append(key, option.body[key]);
         }

@@ -201,8 +201,20 @@ function setMenuEvent() {
                         alert(message.apiNotWorking);
                     }
                 } else {
-                    // to-do : make self post
-                    console.log("self!");
+                    let request = await fetchURL(condition.linkBoxApi, {
+                        method: "POST",
+                        body: {
+                            url: value,
+                        },
+                    });
+
+                    if (request.respon == true) {
+                        request.data.url = value;
+                        html = getLinkboxBlock(request.data);
+                        boolean = true;
+                    } else {
+                        alert(request.error.message);
+                    }
                 }
 
                 classControl(this, "remove", "--ing");
