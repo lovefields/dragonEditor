@@ -6,7 +6,7 @@ const { htmlToJson } = require("./convertor");
 export function makeView() {
     let view = "";
 
-    view += makeContentArea(condition.lang);
+    view += makeContentArea();
 
     view += `<div class="editor-menu-block">`;
     view += makeBlockMenu(condition.defaultMenu);
@@ -31,8 +31,8 @@ export function makeView() {
     condition.wrap.insertAdjacentHTML("beforeend", view);
 }
 
-function makeContentArea(lang) {
-    return `<div class="editor-content djs-content" data-lang="${lang}"><p class="editor-item djs-item" contenteditable="true" data-type="text"></p></div>`;
+function makeContentArea() {
+    return `<div class="editor-content djs-content"><p class="editor-item djs-item" contenteditable="true" data-type="text"></p></div>`;
 }
 
 function makeBlockMenu(data) {
