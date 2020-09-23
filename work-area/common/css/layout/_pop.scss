@@ -1,0 +1,509 @@
+.editor-pop-lang {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    width: 100px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate(-50%, 0);
+    transition: all 0.3s ease;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -10px);
+    }
+
+    @for $i from 3 through 10 {
+        &[data-length="#{$i}"] {
+            width: (50px * $i);
+        }
+    }
+
+    .editor-btn-lang {
+        width: 50px;
+        height: 30px;
+        color: #333;
+        border-right: 1px solid #e8e9ea;
+        text-align: center;
+        line-height: 30px;
+        box-sizing: border-box;
+
+        &:last-child {
+            border-right: 0;
+        }
+
+        &.--act {
+            color: #3f80e9;
+            font-weight: bold;
+        }
+    }
+}
+
+.editor-list-pop {
+    position: absolute;
+    width: 240px;
+    height: 200px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    overflow: hidden;
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+}
+
+.editor-pop-emoticon {
+    position: fixed;
+}
+
+.editor-pop-folder {
+    bottom: 100%;
+    right: 100%;
+    margin-right: -30px;
+}
+
+.editor-list-emoticon {
+    width: 240px;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    .editor-emoticon {
+        float: left;
+        width: 56px;
+        height: 56px;
+        padding: 5px;
+        box-sizing: border-box;
+
+        .img,
+        svg {
+            width: 100%;
+        }
+    }
+}
+
+.editor-list-media {
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    .editor-media {
+        position: relative;
+        float: left;
+        width: 115px;
+        padding: 5px;
+        box-sizing: border-box;
+
+        .eidtor-img-area {
+            position: relative;
+            width: 100%;
+            height: 70px;
+            overflow: hidden;
+        }
+
+        .editor-img {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+
+        .editor-name {
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+            outline: 0;
+            @include ellipsis;
+
+            &[contenteditable="true"] {
+                text-overflow: unset;
+            }
+        }
+
+        .editor-btn-del {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: transparent;
+            font-size: 0;
+
+            .path {
+                fill: #fff;
+            }
+        }
+    }
+}
+
+.editor-pop-linkbox {
+    position: fixed;
+    width: 220px;
+    height: 32px;
+    padding: 5px 10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 20;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    &.--wrong {
+        border-color: #ff0000;
+    }
+
+    &[data-type="new"] {
+        .--del {
+            display: none;
+        }
+    }
+
+    &[data-type="del"] {
+        .--new {
+            display: none;
+        }
+    }
+
+    .editor-input {
+        float: left;
+        width: 176px;
+        height: 100%;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid #ccc;
+
+        &::placeholder {
+            color: #ddd;
+        }
+    }
+
+    .editor-link {
+        float: left;
+        width: 176px;
+        height: 20px;
+        color: #3f80e9;
+        line-height: 20px;
+        @include ellipsis;
+    }
+
+    .editor-btn {
+        float: right;
+        width: 12px;
+        margin-top: 4px;
+
+        &.--ing {
+            position: relative;
+            height: 12px;
+            animation: loding 2s infinite ease;
+
+            &::before {
+                display: block;
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 4px;
+                height: 4px;
+                background: #333;
+                border-radius: 50%;
+                z-index: 10;
+            }
+
+            &::after {
+                display: block;
+                content: "";
+                position: absolute;
+                bottom: 0;
+                right: 0;
+                width: 4px;
+                height: 4px;
+                background: #333;
+                border-radius: 50%;
+                z-index: 10;
+            }
+
+            .icon {
+                display: none;
+            }
+        }
+    }
+}
+
+@keyframes loding {
+    0% {
+        transform: rotate(0);
+    }
+
+    25% {
+        transform: rotate(90deg);
+    }
+
+    50% {
+        transform: rotate(180deg);
+    }
+
+    75% {
+        transform: rotate(270deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.editor-pop-option {
+    position: fixed;
+    height: 46px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 100;
+
+    &.--act {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .editor-col {
+        display: none;
+        position: relative;
+        float: left;
+        height: 46px;
+        vertical-align: top;
+
+        &.--act {
+            display: block;
+        }
+    }
+
+    .editor-select {
+        position: relative;
+        height: 46px;
+        padding-right: 27px;
+        border-right: 1px solid #ccc;
+        text-align: left;
+        line-height: 46px;
+        box-sizing: border-box;
+
+        .editor-text {
+            display: block;
+            padding-left: 17px;
+        }
+
+        .icon {
+            position: absolute;
+            top: 18px;
+            right: 10px;
+            width: 12px;
+            vertical-align: middle;
+        }
+    }
+
+    .editor-list-fontsize {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 57px;
+        height: 200px;
+        background: #fff;
+        border: 1px solid #ccc;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+
+        &.--act {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .editor-scroll-content {
+            overflow-x: hidden;
+        }
+
+        .editor-btn {
+            width: 54px;
+            padding: 5px 0;
+
+            &:first-child {
+                padding-top: 10px;
+            }
+
+            &:last-child {
+                padding-bottom: 10px;
+            }
+        }
+    }
+
+    .editor-color {
+        position: relative;
+        width: 48px;
+        height: 46px;
+        background: #fff;
+        border-right: 1px solid #ccc;
+
+        &::before {
+            display: block;
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 18px;
+            height: 18px;
+            background: #333;
+            border-radius: 50%;
+            box-sizing: border-box;
+            transform: translate(-50%, -50%);
+        }
+
+        @each $color in $color-list {
+            &[data-value="#{'' + $color}"]::before {
+                background-color: $color;
+            }
+        }
+
+        &[data-value="#fff"]::before {
+            border: 1px solid #ccc;
+        }
+    }
+
+    .editor-list-color {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 160px;
+        padding: 15px 10px 15px 15px;
+        background: #fff;
+        border: 1px solid #ccc;
+        font-size: 0;
+        box-sizing: border-box;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+
+        &.--act {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .editor-btn {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            margin: 0 5px 5px 0;
+            color: transparent;
+            border-radius: 50%;
+            font-size: 0;
+
+            @each $color in $color-list {
+                &[data-value="#{'' + $color}"] {
+                    background-color: $color;
+                }
+            }
+
+            &[data-value="#fff"] {
+                border: 1px solid #ccc;
+            }
+        }
+    }
+
+    .editor-btn-area {
+        padding: 0 10px;
+        border-right: 1px solid #ccc;
+        line-height: 46px;
+
+        &.--noline {
+            border-right: 0;
+        }
+
+        .editor-btn {
+            margin: 0 5px;
+            color: transparent;
+            font-size: 0;
+
+            &.--act .path {
+                fill: #3f80e9;
+            }
+        }
+
+        .icon {
+            width: 18px;
+        }
+
+        .path {
+            fill: #333;
+
+            &.--red {
+                fill: #ff6a6a;
+            }
+        }
+    }
+
+    .editor-list-select {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 170px;
+        padding: 5px 20px;
+        background: #fff;
+        border: 1px solid #ccc;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+
+        &.--act {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .editor-btn {
+            display: block;
+            width: 100%;
+            padding: 5px 0;
+            color: #333;
+            font-size: 12px;
+            text-align: left;
+        }
+    }
+}
+
+@mixin mobile-pop {
+    .editor-pop-folder {
+        right: 50%;
+        margin-right: -120px;
+    }
+}
