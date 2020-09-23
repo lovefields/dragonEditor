@@ -313,8 +313,6 @@ export class storage {
         this.btnToggleTarget = getElement(".djs-toggle-target");
         this.btnAddBlock = getElement(".djs-add-block");
         this.areaContent = getElement(".djs-content", false);
-        this.uploadForm = getElement(".djs-uploader", false);
-        this.uploadInput = getElement(".djs-uploader .djs-file", false);
         this.popEmoticon = getElement(".djs-emoticon-pop", false);
         this.popFolder = getElement(".djs-folder-pop", false);
         this.popLinkbox = getElement(".djs-linkbox-pop", false);
@@ -341,5 +339,10 @@ export class storage {
         this.btnWordBlock = getElement(".djs-word-block", false);
         this.btnWordLink = getElement(".djs-open-linkbox", false);
         this.btnItemDelete = getElement(".djs-delete-block", false);
+
+        if (condition.uploadURL !== "") {
+            this.uploadForm = getElement(".djs-uploader", false);
+            this.uploadInput = getElement(".djs-uploader .djs-file", false);
+        }
     }
 }
