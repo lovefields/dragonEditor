@@ -612,7 +612,13 @@ function setOptionEvent() {
         let isAct = this.classList.contains("--act");
 
         if (isTextSelect() == true) {
-            nodeEffect("bold");
+            if(isAct == true){
+                // to-do : remove style
+                console.log("remove");
+                // removeNodeEffect();
+            }else{
+                nodeEffect("bold");
+            }
         } else {
             textStylingNode("bold", "B", isAct);
         }
@@ -769,8 +775,10 @@ function setOptionEvent() {
     eventBinding(condition.btnItemDelete, "click", function () {
         let $item = findParentByClass(condition.baseNode, "djs-item");
         $item.remove();
+        condition.activeItem = condition.wrap;
         let hasItem = getChild(condition.areaContent, ".djs-item").length > 0 ? true : false;
 
+        classControl(condition.popOption, "remove", "--act");
         if (hasItem == false) {
             condition.areaContent.insertAdjacentHTML("beforeend", getDefaultBlockHTML("textBlock"));
             condition.areaContent.childNodes[0].focus();
