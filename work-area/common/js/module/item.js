@@ -26,58 +26,61 @@ export function getItemType($item, $editableItem) {
 
     if ($editableItem !== null) {
         let selection = window.getSelection();
-        let $node;
 
-        condition.focusNode = selection.focusNode;
-        condition.baseNode = selection.baseNode;
-        condition.focusOffset = selection.focusOffset;
-        condition.baseOffset = selection.baseOffset;
+        if (selection.baseNode != null || selection.anchorNode != null) {
+            let $node;
 
-        if (condition.baseNode.constructor.name == "Text") {
-            $node = condition.baseNode.parentNode;
-        } else {
-            $node = condition.baseNode;
-        }
+            condition.focusNode = selection.focusNode;
+            condition.focusOffset = selection.focusOffset;
+            condition.baseNode = selection.baseNode == undefined ? selection.anchorNode : selection.baseNode;
+            condition.baseOffset = selection.baseOffset == undefined ? selection.anchorOffset : selection.baseOffset;
 
-        switch ($editableItem.constructor.name) {
-            case "HTMLLIElement":
-                typeArr.push("li");
-                break;
+            if (condition.baseNode.constructor.name == "Text") {
+                $node = condition.baseNode.parentNode;
+            } else {
+                $node = condition.baseNode;
+            }
 
-            case "HTMLTableCellElement":
-                if ($editableItem.tagName == "TD") {
-                    typeArr.push("td");
-                } else if ($editableItem.tagName == "TH") {
-                    typeArr.push("th");
-                }
-                break;
-        }
+            switch ($editableItem.constructor.name) {
+                case "HTMLLIElement":
+                    typeArr.push("li");
+                    break;
 
-        classControl(condition.btnWordLink, "remove", "--act");
-        classControl(condition.btnWordBlock, "remove", "--act");
+                case "HTMLTableCellElement":
+                    if ($editableItem.tagName == "TD") {
+                        typeArr.push("td");
+                    } else if ($editableItem.tagName == "TH") {
+                        typeArr.push("th");
+                    }
+                    break;
+            }
 
-        switch ($node.tagName) {
-            case "A":
-                typeArr.push("link");
-                classControl(condition.btnWordLink, "add", "--act");
-                break;
-            case "CODE":
-                if (itemType != "codeblock") {
-                    typeArr.push("wordblock");
-                    classControl(condition.btnWordBlock, "add", "--act");
-                }
-                break;
-        }
+            classControl(condition.btnWordLink, "remove", "--act");
+            classControl(condition.btnWordBlock, "remove", "--act");
 
-        if (isTextSelect() == true) {
-            let nodeName = condition.baseNode.constructor.name;
-
-            if (itemType != "codeblock") {
-                if ((nodeName = "HTMLAnchorElement")) {
+            switch ($node.tagName) {
+                case "A":
                     typeArr.push("link");
-                }
+                    classControl(condition.btnWordLink, "add", "--act");
+                    break;
+                case "CODE":
+                    if (itemType != "codeblock") {
+                        typeArr.push("wordblock");
+                        classControl(condition.btnWordBlock, "add", "--act");
+                    }
+                    break;
+            }
 
-                typeArr.push("word");
+            if (isTextSelect() == true) {
+                let nodeName = condition.baseNode.constructor.name;
+
+                if (itemType != "codeblock") {
+                    if ((nodeName = "HTMLAnchorElement")) {
+                        typeArr.push("link");
+                    }
+
+                    typeArr.push("word");
+                }
             }
         }
     }
