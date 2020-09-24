@@ -20,7 +20,7 @@ export function getTextItemOption($node, _0 = typeCheckThrow($node, Node)) {
     }
 
     if ($node.dataset != undefined) {
-        for(const [key] of Object.entries(attr)){
+        for (const [key] of Object.entries(attr)) {
             attr[key] = $node.dataset[key] == undefined ? "" : $node.dataset[key];
         }
     }
@@ -54,4 +54,8 @@ export function setTextItemOption($node, option, _0 = typeCheckThrow($node, Node
             $node.dataset[key] = value;
         }
     }
+}
+
+export function setOptionToKeyValue($node, type, value, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(type, "string")) {
+    console.log($node, type, value);
 }

@@ -1,7 +1,7 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
 const { contentEnterKeyEvent } = require("./keyboard");
-const { getTextItemOption, setTextItemOption } = require("./option");
+const { getTextItemOption, setTextItemOption, setOptionToKeyValue } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild } = require("./selector");
 const { message } = require("./message");
@@ -259,7 +259,11 @@ export function margeNode(type, value, _0 = typeCheckThrow(type, "string"), _1 =
     });
 
     $editableItem.innerHTML = html;
-    setCursor($editableItem.childNodes[baseIndex + 1], 1);
+    if ($editableItem.childNodes[baseIndex + 1] == undefined) {
+        setCursor($editableItem.childNodes[0], 1);
+    } else {
+        setCursor($editableItem.childNodes[baseIndex + 1], 1);
+    }
 }
 
 function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string"), _2 = typeCheckThrow(text, "string")) {
@@ -301,7 +305,11 @@ export function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string")
         let $parentNode = condition.baseNode.parentNode;
 
         if ($editable == $parentNode) {
-            wrappingNode(type, value);
+            if (condition.baseOffset == 0 && $parentNode.textContent.length == condition.focusOffset) {
+                setOptionToKeyValue($parentNode, type, value);
+            } else {
+                wrappingNode(type, value);
+            }
         } else {
             let $parentParentNode = $parentNode.parentNode;
 
