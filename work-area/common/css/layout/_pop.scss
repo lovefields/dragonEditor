@@ -506,4 +506,23 @@
         right: 50%;
         margin-right: -120px;
     }
+
+    .editor-pop-option {
+        position: fixed;
+        top: 40px;
+        left: 0;
+        width: 100%;
+        border-width: 1px 0;
+        border-radius: 0;
+
+        .editor-scroll-wrap {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .editor-col {
+            position: static;
+        }
+    }
 }
