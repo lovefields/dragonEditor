@@ -18,7 +18,10 @@
         { "type": "quote", "style": "default", "text": "", "author": "" },
         {
             "type": "table",
-            "caption": "",
+            "caption": {
+                "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+                "textContent": "" 
+            },
             "colgroup": ["100", "100", "100", "100"],
             "body": [
                 [
@@ -55,7 +58,10 @@
         { "type": "linkbox", "url": "https://dico.me", "imgSrc": "https://dico.me/img/dico.png", "title": "정보처리기사 2020 필기 1,2회 61~80번 문제 - Dico", "description": "정보처리기사 필기 1,2회 61~80", "domain": "dico.me" },
         {
             "type": "table",
-            "caption": "",
+            "caption": {
+                "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+                "textContent": "" 
+            },
             "colgroup": ["100", "100", "100", "100"],
             "body": [
                 [

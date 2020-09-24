@@ -64,6 +64,11 @@ We never ever support IE.
 
 # viewer
 ```html
+<!-- 
+* Load Google font(Inconsolata) if you using code block.
+* Load DragonEditorViewer CSS
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditorViewer.css">
 ```
 

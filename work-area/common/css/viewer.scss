@@ -1,5 +1,11 @@
 @import "include/mixin";
 
+.editor-clearfix::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
 .editor-item {
     margin-bottom: 10px;
     font-size: 16px;
@@ -135,7 +141,7 @@
             outline: 0;
         }
 
-        .text {
+        .editor-text {
             font-weight: bold;
 
             &:empty {
@@ -162,7 +168,7 @@
             }
         }
 
-        .author {
+        .editor-author {
             color: #666;
             font-size: 12px;
 
@@ -213,7 +219,6 @@
 
             caption {
                 outline: 0;
-                text-align: left;
             }
 
             tr {

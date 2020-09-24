@@ -284,7 +284,7 @@ export function getListChildHTML(content = "", _0 = typeCheckThrow(content, "str
 }
 
 function getQuotaionBlock() {
-    return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote" data-style="default"><p class="text djs-text" contenteditable="true"></p><p class="author djs-author" contenteditable="true"></p></blockquote>`;
+    return `<blockquote class="editor-item djs-item --djs-selected" data-type="quote" data-style="default"><p class="editor-text djs-text" contenteditable="true"></p><p class="editor-author djs-author" contenteditable="true"></p></blockquote>`;
 }
 
 function getTableBlock() {

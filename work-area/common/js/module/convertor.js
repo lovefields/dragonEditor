@@ -85,17 +85,25 @@ export function jsonToHtml(json) {
                 html += `<ol class="editor-item djs-item" data-style="${item.style}" data-type="${item.type}">${$olChild}</ol>`;
                 break;
             case "quote":
-                html += `<blockquote class="editor-item djs-item" data-type="${item.type}" data-style="${item.style}"><p class="text djs-text" contenteditable="true">${item.text}</p><p class="author djs-author" contenteditable="true">${item.author}</p></blockquote>`;
+                html += `<blockquote class="editor-item djs-item" data-type="${item.type}" data-style="${item.style}"><p class="editor-text djs-text" contenteditable="true">${item.text}</p><p class="editor-author djs-author" contenteditable="true">${item.author}</p></blockquote>`;
                 break;
             case "table":
                 let rowNum = 0;
+
+                for (const [key, value] of Object.entries(item.caption.option)) {
+                    if (value != "") {
+                        option += ` data-${key}="${value}"`;
+                    }
+                }
 
                 html += `
                     <div class="editor-item djs-item" data-type="${item.type}">
                         <div class="editor-scroll">
                             <table class="editor-table">
-                                <caption class="djs-caption" contenteditable="true">${item.caption}</caption>
+                                <caption ${option} class="djs-caption" contenteditable="true">${item.caption.textContent}</caption>
                                 <colgroup>`;
+
+                option = "";
 
                 item.colgroup.forEach(function (col) {
                     html += `<col data-size="${col}">`;
@@ -256,6 +264,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) 
                 let tableBody = [];
                 let $colList = getChild($item, "col");
                 let $trList = getChild($item, "tbody tr");
+                let $tableCaption = getChild($item, ".djs-caption", false);
 
                 $colList.forEach(($col) => {
                     tableCol.push($col.dataset["size"]);
@@ -278,7 +287,10 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) 
 
                 arr.push({
                     type: "table",
-                    caption: getChild($item, ".djs-caption", false).textContent,
+                    caption: {
+                        option: getTextItemOption($tableCaption),
+                        textContent: $tableCaption.textContent,
+                    },
                     colgroup: tableCol,
                     body: tableBody,
                 });
@@ -328,7 +340,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) 
                 break;
             default:
                 arr.push({
-                    type: "other",
+                    type: type,
                     other: $item.innerHTML,
                 });
         }

@@ -186,7 +186,7 @@
             outline: 0;
         }
 
-        .text {
+        .editor-text {
             font-weight: bold;
 
             &:empty {
@@ -213,7 +213,7 @@
             }
         }
 
-        .author {
+        .editor-author {
             color: #666;
             font-size: 12px;
 
@@ -221,6 +221,7 @@
                 &::before {
                     display: inline;
                     content: "- Author -";
+                    font-size: 12px;
                     color: #ccc;
                     cursor: text;
                 }
@@ -264,7 +265,6 @@
 
             caption {
                 outline: 0;
-                text-align: left;
 
                 &:empty::before {
                     display: inline;
