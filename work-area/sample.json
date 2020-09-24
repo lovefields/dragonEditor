@@ -1,125 +1,98 @@
 {
-    "ko": [
-        { "type": "title", "class": ["title"], "textContent": "" },
-        { "type": "text", "class": ["item", "lastset"], "textContent": "" },
-        {
-            "type": "btn",
-            "value": "image",
-            "textContent": "Add on image",
-            "icon": {
-                "type": "svg",
-                "viewBox": "0 0 50 50",
-                "class": ["icon"],
-                "url": "#icon_image"
-            }
-        },
-        {
-            "type": "sticker",
-            "code": "<svg viewBox=\"0 0 58 90\" class=\"sticker\"><path fill=\"#4a1e12\" d=\"M8,32.17c.12,1.15,2.67,11.08,1.81,18.35A139.53,139.53,0,0,1,7.26,64.8c16,3.33,26,1.43,41.52-1,0,0,1-4.74-.88-13.73s2.41-19.27,2.41-19.27Z\"></path><path fill=\"#4a1e12\" d=\"M38.61,7.62C69.34,2.37,40.25,50.19,56.48,62.5,58.8,64.25,45.93,72,41.13,64c-3-5,6.83-14.1,7.46-26.93S44.71,19.85,42,15A31.34,31.34,0,0,1,38.61,7.62Z\"></path><path fill=\"#4a1e12\" d=\"M42.83,9.53c.83,7.27-1.11,8.16-7,12s-8.39,3.88-7.44,3.4,5.46-8.31,5.46-8.31A56.08,56.08,0,0,1,21.61,24c-6.17,2.46-8.39,1.51-8.39,1.51S18.68,18.4,18,19s-5.94,4-6.65,5.55S9.08,33.2,10,41s9.1,22.75,4.42,25.84C8.09,71,.07,63.36,1.38,63c9.77-2.48,4.54-40.24,4.87-42.49A20,20,0,0,1,14,7.67C21.76,1.46,41.94,1.64,42.83,9.53Z\"></path><path fill=\"#df2e26\" d=\"M38.21,74c.47-.34,10.48-7.91,10.48-7.91,4.59,1.51,5.92,14.53,6.39,20.61h-11Z\"></path><path fill=\"#f5b67e\" d=\"M28.81,57.52H24v3.06c0,1.9-.31,1.5-2.09,2.49a15.17,15.17,0,0,1-2.23,1.57c2.15,6.92,3.71,15.83,7.91,22.08h2.5c4.21-6.25,5.76-15.16,7.91-22.08a15.17,15.17,0,0,1-2.23-1.57c-1.77-1-2.09-.59-2.09-2.49V57.52Z\"></path><path fill=\"#df2e26\" d=\"M19.67,74,9.19,66.11C4.6,67.62,3.28,80.64,2.81,86.72h11Z\"></path><path fill=\"#e53825\" d=\"M21.88,63.09C19.3,64.27,10.4,65.31,9.35,66.22c.85,1.87,6.2,10.84,2.76,20.5H45.78a35.93,35.93,0,0,1,3.35-20.37c-1.05-.92-10.6-1.94-13.18-3.11,3.13,2.43-2.51,9.9-7.14,10.22C24.17,73.13,18.8,65.49,21.88,63.09Z\"></path><path fill=\"#f6c085\" d=\"M14.58,33.66c.81,3.6-.79,6.61-3.52,7.26S5.5,39.61,4.7,36s.76-7.06,3.49-7.7S13.78,30.05,14.58,33.66Z\"></path><path fill=\"#f6c085\" d=\"M44.11,33.66c-.81,3.6.79,6.61,3.52,7.26S53.19,39.61,54,36s-.76-7.06-3.49-7.7S44.91,30.05,44.11,33.66Z\"></path><path fill=\"#f8c997\" d=\"M29.35,4.31h-.07L26.44,4.2v.23h-.3a19.52,19.52,0,0,0-14.7,8.08c-3.5,4.74-4,10.72-3.69,16.44.71,14.71,9,31.22,21.6,31.34C42,60.18,50.23,43.67,50.94,29c.27-5.72-.19-11.7-3.69-16.44a19.5,19.5,0,0,0-14.7-8.08h-.3V4.2l-2.84.11Z\"></path><path fill=\"#4a1e12\" d=\"M19.06,5.45c.17-.59,8.21-1.71,9-1.76,4.49-.28,10.35.65,13.16,2.19s6.69,5.54,7.27,7,.46,1.62-6.69,6.58-17.89,7.24-15.12,6.35,5-5.46,5-5.46S29.76,22.62,20.3,26s-12,2.3-12,2.3A12.5,12.5,0,0,1,7,18.37c1.65-5.44,3-5.86,6.17-9A14.6,14.6,0,0,1,19.06,5.45Z\"></path><path fill=\"#4a1e12\" d=\"M38.33,10c-.17.81,0,5.13,5,11.77S48.66,29,48.66,29s.15,12.15.21,11.63S51.54,28,51.54,28A31.43,31.43,0,0,0,51,17.68c-1.27-5.19-2.87-7.15-5.07-8S38.33,10,38.33,10Z\"></path><path fill=\"#4a1e12\" d=\"M10.58,24c-.87,1-3.52,3.24-3.52,3.24L9.92,40.71Z\"></path><path fill=\"#e53825\" d=\"M11.48,65.57a7.35,7.35,0,0,0-2.32.78c5.24,10-2.5,13.94.35,20.37H49.18c2.85-6.43-4.89-10.42.35-20.37a7.24,7.24,0,0,0-2.32-.78c-1.29,6.61-8.79,11.68-17.86,11.68S12.77,72.18,11.48,65.57Z\"></path><path fill=\"#efefef\" d=\"M28.81,73.46c-3.17-.22-6.69-3.87-7.61-6.91-.42-1.42-.29-2.7.68-3.46l-.06,0a6.13,6.13,0,0,1-.7.26c-1.23.54-3.59,1.68-4.37,2.88a1.25,1.25,0,0,0-.24.94c.37,2,3.4,2,3.4,2A7,7,0,0,0,20,71.5c.43,2.77,1.53,4.25,2.94,4.67C24.63,76.68,26.8,75.63,28.81,73.46Z\"></path><path fill=\"#efefef\" d=\"M28.81,73.46c3.18-.22,6.69-3.87,7.61-6.91.43-1.42.3-2.72-.68-3.48a7.28,7.28,0,0,0,.77.31c1.23.54,3.59,1.68,4.37,2.88a1.29,1.29,0,0,1,.24.94c-.38,2-3.41,2-3.41,2a6.77,6.77,0,0,1-.05,2.28c-.44,2.77-1.54,4.25-2.95,4.67C33,76.68,30.82,75.63,28.81,73.46Z\"></path><path fill=\"#3e3b3a\" d=\"M28.2,34.91a3,3,0,0,1,1.15-.16,3,3,0,0,1,1.14.16,1.31,1.31,0,0,1,.83,1c.16.59.31,1.19.48,1.78a14.29,14.29,0,0,0,1.4,3.4c1,1.68,2.68,1.9,4.18,2.1a21,21,0,0,0,8.28-.3,4.89,4.89,0,0,0,1.18-.46,3.05,3.05,0,0,0,1.31-1.52A21.72,21.72,0,0,0,49,38.62l.51-1.71a3.09,3.09,0,0,1,.48-1,8.29,8.29,0,0,0,.5-.83,1.47,1.47,0,0,0,.16-.63c0-.79.08-1.61.09-2.4,0-2.11-9.69-1.75-10.82-1.7l-1.54.1a25.62,25.62,0,0,0-5.36.94,13.39,13.39,0,0,1-3.63.84,13.46,13.46,0,0,1-3.64-.84,25.62,25.62,0,0,0-5.36-.94l-1.54-.1C17.68,30.32,8,30,8,32.07c0,.79,0,1.61.09,2.4a1.47,1.47,0,0,0,.16.63,8.29,8.29,0,0,0,.5.83,3.09,3.09,0,0,1,.48,1l.51,1.71a21.72,21.72,0,0,0,.81,2.31,3.05,3.05,0,0,0,1.31,1.52,4.89,4.89,0,0,0,1.18.46,21,21,0,0,0,8.28.3c1.5-.2,3.16-.42,4.18-2.1a13.89,13.89,0,0,0,1.4-3.4c.17-.59.32-1.19.48-1.78a1.33,1.33,0,0,1,.83-1Zm4.23-1.4h0a1.68,1.68,0,0,1,.85-1A14.16,14.16,0,0,1,38,31.32a39.8,39.8,0,0,1,7.87-.05A5.8,5.8,0,0,1,48.3,32a1.83,1.83,0,0,1,.54,1.35,20.4,20.4,0,0,1-.46,4.48,11.14,11.14,0,0,1-1.13,3.29,2.72,2.72,0,0,1-1.37,1.06,8.94,8.94,0,0,1-.88.27,17.94,17.94,0,0,1-7.44.15c-.57-.09-1.14-.22-1.7-.35a3,3,0,0,1-2.09-1.55,12.94,12.94,0,0,1-1.33-4.26,11.33,11.33,0,0,1-.15-1.93,3.72,3.72,0,0,1,.14-1Zm-6.17,0h0a3.72,3.72,0,0,1,.14,1,10.4,10.4,0,0,1-.15,1.93,12.94,12.94,0,0,1-1.33,4.26,3,3,0,0,1-2.09,1.55c-.56.13-1.13.26-1.7.35a17.94,17.94,0,0,1-7.44-.15,8.94,8.94,0,0,1-.88-.27,2.72,2.72,0,0,1-1.37-1.06,11.14,11.14,0,0,1-1.13-3.29,20.4,20.4,0,0,1-.46-4.48A1.83,1.83,0,0,1,10.39,32a5.8,5.8,0,0,1,2.44-.73,39.8,39.8,0,0,1,7.87.05,14.28,14.28,0,0,1,4.72,1.16A1.7,1.7,0,0,1,26.26,33.51Z\"></path><path fill=\"#4a1e12\" d=\"M12.58,29.91c-1,.41.66-2.27,5.53-2.38,5.68-.12,7.41,2.61,5.17,1.82A15,15,0,0,0,12.58,29.91Z\"></path><path fill=\"#3e3b3a\" d=\"M18.34,37a1.67,1.67,0,1,0-1.67-1.67A1.67,1.67,0,0,0,18.34,37Z\"></path><path fill=\"#3e3b3a\" d=\"M40.35,37a1.67,1.67,0,1,0-1.67-1.67A1.67,1.67,0,0,0,40.35,37Z\"></path><path fill=\"#4a1e12\" d=\"M47.09,29.91c1,.41-.66-2.27-5.53-2.38-5.68-.12-7.41,2.61-5.17,1.82A15,15,0,0,1,47.09,29.91Z\"></path><path fill=\"#d6825b\" d=\"M34,49.92a4.53,4.53,0,0,1,.11,1,4.34,4.34,0,1,1-8.67,0,4.53,4.53,0,0,1,.11-1Z\"></path><path fill=\"#e5b17d\" d=\"M26.2,45.72s0,0,0,0a.33.33,0,0,1,.13-.25A35.56,35.56,0,0,0,29,36c.68,0-.67,7.23-1.25,8.94a12.57,12.57,0,0,1,2.08-.16c2,0,3.62.4,3.62.9s-1.62.89-3.62.89S26.31,46.19,26.2,45.72Z\"></path></svg>\n",
-            "class": ["item", "item_sticker"]
-        },
-        {
-            "type": "link_box",
-            "class": ["item"],
-            "url": "https://dico.me",
-            "imgSrc": "https://dico.me/img/dico.png",
-            "title": "Visual Studio Code + PHP Xdebug - Dico",
-            "description": "Window 환경에서 Visual Studio Code 로 PHP 디버깅하기",
-            "domain": "dico.me"
-        },
+    "en": [
+        { "type": "text", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
         {
             "type": "image",
-            "class": ["item", "item_image"],
-            "hasWebp": true,
-            "size": "400",
-            "alt": "sample",
-            "src": "http://via.placeholder.com/400/?text=sample%20upload%20image",
-            "defaultFormat": "jpg"
+            "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+            "hasWebp": false,
+            "itemWidth": "700",
+            "width": "640",
+            "height": "427",
+            "alt": "act",
+            "src": "https://uploads-ssl.webflow.com/5ac1a6490c89183d0ba47138/5e9a489bcef7520f5c86ac49_hairball_catlickleg_640",
+            "defaultFormat": "jpg",
+            "caption": { "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "act" }
         },
-        {
-            "type": "btn",
-            "value": "youtube",
-            "textContent": "Add Youtube",
-            "icon": {
-                "type": "svg",
-                "viewBox": "0 0 50 50",
-                "class": ["icon"],
-                "url": "#icon_youtube"
-            }
-        },
-        {
-            "type": "youtube",
-            "class": ["item", "item_video"],
-            "src": "https://www.youtube.com/embed/fDch4tuBcL0",
-            "allow": "accelerometer; encrypted-media; gyroscope; picture-in-picture"
-        },
-        {
-            "type": "btn",
-            "value": "codepen",
-            "textContent": "Add Codepen",
-            "icon": {
-                "type": "svg",
-                "viewBox": "0 0 50 50",
-                "class": ["icon"],
-                "url": "#icon_codepen"
-            }
-        },
-        {
-            "type": "codepen",
-            "class": ["item", "item_codepen"],
-            "src": "https://codepen.io/lovefield/embed/NdGVMG?height=300&theme-id=dark&default-tab=result",
-            "height": "300",
-            "title": ""
-        },
-        {
-            "type": "list",
-            "class": ["item", "item_list"],
-            "tag": "ul",
-            "listType": null,
-            "child": [{ "class": [], "textContent": "1" }]
-        },
-        {
-            "type": "list",
-            "class": ["item", "item_list"],
-            "tag": "ol",
-            "listType": "1",
-            "child": [{ "class": [], "textContent": "1" }]
-        },
-        {
-            "type": "quote",
-            "class": ["item", "item_quote"],
-            "text": "22",
-            "author": "2"
-        },
+        { "type": "ul", "child": [{ "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }] },
+        { "type": "ol", "style": "number", "child": [{ "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }] },
+        { "type": "quote", "style": "default", "text": "", "author": "" },
         {
             "type": "table",
-            "class": ["item", "item_table_area"],
-            "caption": "",
-            "colgroup": ["size_100", "size_100", "size_100", "size_100"],
-            "child": [
+            "caption": {
+                "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+                "textContent": "" 
+            },
+            "colgroup": ["100", "100", "100", "100"],
+            "body": [
                 [
-                    { "tag": "th", "class": [], "textContent": "" },
-                    { "tag": "th", "class": [], "textContent": "" },
-                    { "tag": "th", "class": [], "textContent": "" },
-                    { "tag": "th", "class": [], "textContent": "" }
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }
                 ],
                 [
-                    { "tag": "td", "class": [], "textContent": "" },
-                    { "tag": "td", "class": [], "textContent": "" },
-                    { "tag": "td", "class": [], "textContent": "" },
-                    { "tag": "td", "class": [], "textContent": "" }
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }
                 ]
             ]
         },
+        { "type": "linkbox", "url": "https://dico.me", "imgSrc": "https://dico.me/img/dico.png", "title": "정보처리기사 2020 필기 1,2회 61~80번 문제 - Dico", "description": "정보처리기사 필기 1,2회 61~80", "domain": "dico.me" },
         {
-            "type": "codeblock",
-            "class": ["item", "item_codeblock"],
-            "theme": "default",
-            "lang": "text",
-            "code": { "class": ["nohighlight"], "innerHTML": "" }
+            "type": "emoticon",
+            "code": "<svg viewBox=\"0 0 45 45\"><defs id=\"defs6\"><clipPath id=\"clipPath16\" clipPathUnits=\"userSpaceOnUse\"><path id=\"path18\" d=\"M 0,36 36,36 36,0 0,0 0,36 Z\"></path></clipPath></defs><g transform=\"matrix(1.25,0,0,-1.25,0,45)\" id=\"g10\"><g id=\"g12\"><g clip-path=\"url(#clipPath16)\" id=\"g14\"><g transform=\"translate(2,20)\" id=\"g20\"><path id=\"path22\" style=\"fill:#ffcc4d;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-8.837 7.164,-16 16,-16 8.837,0 16,7.163 16,16 C 32,8.836 24.837,16 16,16 7.164,16 0,8.836 0,0\"></path></g><g transform=\"translate(15.4063,25.5)\" id=\"g24\"><path id=\"path26\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-1.381 -0.896,-2.5 -2,-2.5 -1.104,0 -2,1.119 -2,2.5 0,1.38 0.896,2.5 2,2.5 1.104,0 2,-1.12 2,-2.5\"></path></g><g transform=\"translate(26,24.5)\" id=\"g28\"><path id=\"path30\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-1.381 -0.895,-2.5 -2,-2.5 -1.104,0 -2,1.119 -2,2.5 0,1.38 0.896,2.5 2,2.5 1.105,0 2,-1.12 2,-2.5\"></path></g><g transform=\"translate(9.6709,29.667)\" id=\"g32\"><path id=\"path34\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.164,0.087 -0.303,0.223 -0.391,0.398 -0.607,0.827 -0.431,1.325 0.002,1.511 4.268,3.341 7.701,1.554 7.845,1.477 8.278,1.246 8.453,0.729 8.236,0.323 8.02,-0.082 7.496,-0.223 7.063,0.005 6.94,0.069 4.231,1.437 0.785,-0.042 0.528,-0.151 0.238,-0.127 0,0\"></path></g><g transform=\"translate(14.7427,16.4277)\" id=\"g36\"><path id=\"path38\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.136,0.127 -0.236,0.293 -0.276,0.486 -0.375,0.955 -0.078,1.392 0.389,1.46 4.981,2.138 7.841,-0.469 7.962,-0.58 8.322,-0.914 8.357,-1.457 8.044,-1.795 7.732,-2.131 7.189,-2.133 6.83,-1.801 6.726,-1.709 4.458,0.307 0.748,-0.24 0.471,-0.281 0.197,-0.184 0,0\"></path></g><g transform=\"translate(20.4307,25.917)\" id=\"g40\"><path id=\"path42\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.156,0.098 -0.286,0.243 -0.362,0.424 -0.549,0.866 -0.339,1.352 0.105,1.508 4.486,3.044 7.79,1.028 7.929,0.941 8.344,0.681 8.483,0.154 8.24,-0.237 7.998,-0.627 7.464,-0.732 7.049,-0.475 6.929,-0.402 4.321,1.146 0.782,-0.095 0.518,-0.187 0.23,-0.143 0,0\"></path></g><g transform=\"translate(17.2764,0.8682)\" id=\"g44\"><path id=\"path46\" style=\"fill:#f4900c;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,0 1.265,0.411 1.429,1.352 0.173,0.971 -0.624,1.167 -0.624,1.167 0,0 1.041,0.208 1.172,1.376 0.123,1.1 -0.862,1.363 -0.862,1.363 0,0 0.97,0.4 1.016,1.539 0.038,0.959 -0.995,1.428 -0.995,1.428 0,0 5.038,1.22 5.555,1.34 0.516,0.121 1.321,0.616 1.07,1.695 -0.249,1.08 -1.204,1.118 -1.698,1.003 -0.494,-0.116 -6.744,-1.567 -8.9,-2.069 -0.23,-0.053 -1.308,-0.302 -1.439,-0.334 -0.54,-0.127 -0.785,0.111 -0.405,0.512 0.509,0.536 0.833,1.129 0.947,2.113 0.119,1.036 -0.232,2.314 -0.433,2.809 -0.374,0.921 -1.005,1.649 -1.734,1.899 -1.138,0.39 -1.946,-0.321 -1.542,-1.561 0.604,-1.855 0.209,-3.375 -0.833,-4.293 -2.449,-2.157 -3.589,-3.695 -2.83,-6.973 0.827,-3.575 4.377,-5.876 7.952,-5.048 C -2.965,-0.64 0,0 0,0\"></path></g></g></g></g></svg>"
         },
-        { "type": "text", "class": ["item", "item_text"], "textContent": "" }
+        { "type": "youtube", "code": "zbZwmtZ0YyM" },
+        { "type": "codepen", "nickname": "lovefield", "code": "NdGVMG", "height": "300" },
+        { "type": "codeblock", "theme": "monokai", "lang": "html", "code": { "class": ["html", "editor-code", "djs-code", "hljs", "xml"], "textContent": "<span class=\"hljs-meta\">&lt;!doctype html&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">html</span> <span class=\"hljs-attr\">lang</span>=<span class=\"hljs-string\">\"ko\"</span>&gt;</span>" } }
     ],
-    "en": [],
-    "es": []
+    "ko": [
+        { "type": "codeblock", "theme": "monokai", "lang": "html", "code": { "class": ["html", "editor-code", "djs-code", "hljs", "xml"], "textContent": "<span class=\"hljs-meta\">&lt;!doctype html&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">html</span> <span class=\"hljs-attr\">lang</span>=<span class=\"hljs-string\">\"ko\"</span>&gt;</span>" } },
+        { "type": "codepen", "nickname": "lovefield", "code": "NdGVMG", "height": "300" },
+        { "type": "youtube", "code": "zbZwmtZ0YyM" },
+        {
+            "type": "emoticon",
+            "code": "<svg viewBox=\"0 0 45 45\"><defs id=\"defs6\"><clipPath id=\"clipPath16\" clipPathUnits=\"userSpaceOnUse\"><path id=\"path18\" d=\"M 0,36 36,36 36,0 0,0 0,36 Z\"></path></clipPath></defs><g transform=\"matrix(1.25,0,0,-1.25,0,45)\" id=\"g10\"><g id=\"g12\"><g clip-path=\"url(#clipPath16)\" id=\"g14\"><g transform=\"translate(2,20)\" id=\"g20\"><path id=\"path22\" style=\"fill:#ffcc4d;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-8.837 7.164,-16 16,-16 8.837,0 16,7.163 16,16 C 32,8.836 24.837,16 16,16 7.164,16 0,8.836 0,0\"></path></g><g transform=\"translate(15.4063,25.5)\" id=\"g24\"><path id=\"path26\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-1.381 -0.896,-2.5 -2,-2.5 -1.104,0 -2,1.119 -2,2.5 0,1.38 0.896,2.5 2,2.5 1.104,0 2,-1.12 2,-2.5\"></path></g><g transform=\"translate(26,24.5)\" id=\"g28\"><path id=\"path30\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-1.381 -0.895,-2.5 -2,-2.5 -1.104,0 -2,1.119 -2,2.5 0,1.38 0.896,2.5 2,2.5 1.105,0 2,-1.12 2,-2.5\"></path></g><g transform=\"translate(9.6709,29.667)\" id=\"g32\"><path id=\"path34\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.164,0.087 -0.303,0.223 -0.391,0.398 -0.607,0.827 -0.431,1.325 0.002,1.511 4.268,3.341 7.701,1.554 7.845,1.477 8.278,1.246 8.453,0.729 8.236,0.323 8.02,-0.082 7.496,-0.223 7.063,0.005 6.94,0.069 4.231,1.437 0.785,-0.042 0.528,-0.151 0.238,-0.127 0,0\"></path></g><g transform=\"translate(14.7427,16.4277)\" id=\"g36\"><path id=\"path38\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.136,0.127 -0.236,0.293 -0.276,0.486 -0.375,0.955 -0.078,1.392 0.389,1.46 4.981,2.138 7.841,-0.469 7.962,-0.58 8.322,-0.914 8.357,-1.457 8.044,-1.795 7.732,-2.131 7.189,-2.133 6.83,-1.801 6.726,-1.709 4.458,0.307 0.748,-0.24 0.471,-0.281 0.197,-0.184 0,0\"></path></g><g transform=\"translate(20.4307,25.917)\" id=\"g40\"><path id=\"path42\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.156,0.098 -0.286,0.243 -0.362,0.424 -0.549,0.866 -0.339,1.352 0.105,1.508 4.486,3.044 7.79,1.028 7.929,0.941 8.344,0.681 8.483,0.154 8.24,-0.237 7.998,-0.627 7.464,-0.732 7.049,-0.475 6.929,-0.402 4.321,1.146 0.782,-0.095 0.518,-0.187 0.23,-0.143 0,0\"></path></g><g transform=\"translate(17.2764,0.8682)\" id=\"g44\"><path id=\"path46\" style=\"fill:#f4900c;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,0 1.265,0.411 1.429,1.352 0.173,0.971 -0.624,1.167 -0.624,1.167 0,0 1.041,0.208 1.172,1.376 0.123,1.1 -0.862,1.363 -0.862,1.363 0,0 0.97,0.4 1.016,1.539 0.038,0.959 -0.995,1.428 -0.995,1.428 0,0 5.038,1.22 5.555,1.34 0.516,0.121 1.321,0.616 1.07,1.695 -0.249,1.08 -1.204,1.118 -1.698,1.003 -0.494,-0.116 -6.744,-1.567 -8.9,-2.069 -0.23,-0.053 -1.308,-0.302 -1.439,-0.334 -0.54,-0.127 -0.785,0.111 -0.405,0.512 0.509,0.536 0.833,1.129 0.947,2.113 0.119,1.036 -0.232,2.314 -0.433,2.809 -0.374,0.921 -1.005,1.649 -1.734,1.899 -1.138,0.39 -1.946,-0.321 -1.542,-1.561 0.604,-1.855 0.209,-3.375 -0.833,-4.293 -2.449,-2.157 -3.589,-3.695 -2.83,-6.973 0.827,-3.575 4.377,-5.876 7.952,-5.048 C -2.965,-0.64 0,0 0,0\"></path></g></g></g></g></svg>"
+        },
+        { "type": "linkbox", "url": "https://dico.me", "imgSrc": "https://dico.me/img/dico.png", "title": "정보처리기사 2020 필기 1,2회 61~80번 문제 - Dico", "description": "정보처리기사 필기 1,2회 61~80", "domain": "dico.me" },
+        {
+            "type": "table",
+            "caption": {
+                "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+                "textContent": "" 
+            },
+            "colgroup": ["100", "100", "100", "100"],
+            "body": [
+                [
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }
+                ],
+                [
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }
+                ]
+            ]
+        },
+        { "type": "quote", "style": "default", "text": "", "author": "" },
+        { "type": "ol", "style": "number", "child": [{ "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }] },
+        { "type": "ul", "child": [{ "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }] },
+        {
+            "type": "image",
+            "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+            "hasWebp": false,
+            "itemWidth": "700",
+            "width": "640",
+            "height": "427",
+            "alt": "act",
+            "src": "https://uploads-ssl.webflow.com/5ac1a6490c89183d0ba47138/5e9a489bcef7520f5c86ac49_hairball_catlickleg_640",
+            "defaultFormat": "jpg",
+            "caption": { "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "act" }
+        },
+        { "type": "text", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }
+    ]
 }

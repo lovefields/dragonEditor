@@ -1,5 +1,15 @@
+@import "include/mixin";
+
+.editor-clearfix::after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
 .editor-item {
     margin-bottom: 10px;
+    font-size: 16px;
+    line-height: 1.7;
     outline: 0;
 
     .editor-edit {
@@ -17,13 +27,6 @@
     &[data-type="text"] {
         &:empty {
             min-height: 1.7em;
-
-            &::after {
-                display: inline;
-                content: "Add text";
-                color: #ccc;
-                cursor: text;
-            }
         }
     }
 
@@ -47,44 +50,10 @@
             color: #999;
             font-size: 12px;
             outline: 0;
-
-            &:empty {
-                &::after {
-                    display: inline;
-                    content: "Add caption";
-                    color: #ccc;
-                    font-size: 12px;
-                    cursor: text;
-                }
-            }
         }
 
         .editor-img {
             width: 100%;
-        }
-
-        .editor-btn-resize {
-            position: absolute;
-            top: 50%;
-            width: 5px;
-            height: 30%;
-            background: rgba(0, 0, 0, 0.5);
-            color: transparent;
-            border: 1px solid #fff;
-            border-radius: 10px;
-            font-size: 0;
-            transform: translateY(-50%);
-            cursor: col-resize;
-            box-sizing: border-box;
-            z-index: 10;
-
-            &.--left {
-                left: 5px;
-            }
-
-            &.--right {
-                right: 5px;
-            }
         }
     }
 
@@ -124,13 +93,6 @@
 
             &:empty {
                 min-height: 1.7em;
-
-                &::after {
-                    display: inline;
-                    content: "Add text";
-                    color: #ccc;
-                    cursor: text;
-                }
             }
         }
     }
@@ -168,13 +130,6 @@
 
             &:empty {
                 min-height: 1.7em;
-
-                &::after {
-                    display: inline;
-                    content: "Add text";
-                    color: #ccc;
-                    cursor: text;
-                }
             }
         }
     }
@@ -192,7 +147,7 @@
             &:empty {
                 &::before {
                     display: inline;
-                    content: "“Quote”";
+                    content: "“”";
                     color: #ccc;
                     cursor: text;
                 }
@@ -220,8 +175,7 @@
             &:empty {
                 &::before {
                     display: inline;
-                    content: "- Author -";
-                    font-size: 12px;
+                    content: "-  -";
                     color: #ccc;
                     cursor: text;
                 }
@@ -265,12 +219,6 @@
 
             caption {
                 outline: 0;
-
-                &:empty::before {
-                    display: inline;
-                    content: "Table name";
-                    color: #ccc;
-                }
             }
 
             tr {
@@ -351,12 +299,6 @@
             word-break: keep-all;
             white-space: pre-wrap;
             outline: 0;
-
-            &:empty::after {
-                display: inline;
-                content: "Write Code";
-                color: #ccc;
-            }
         }
 
         /* codeblock theme */
@@ -690,40 +632,12 @@
     &[data-type="codepen"] {
         position: relative;
 
-        &.--act::before {
-            display: block;
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 20;
-        }
-
         .editor-iframe {
             display: block;
             position: relative;
             width: 100%;
             border: 0;
             z-index: 10;
-        }
-
-        .editor-btn-resize {
-            position: absolute;
-            left: 50%;
-            bottom: 10px;
-            width: 100px;
-            height: 6px;
-            background: rgba(0, 0, 0, 0.5);
-            color: transparent;
-            border: 1px solid #fff;
-            border-radius: 10px;
-            font-size: 0;
-            transform: translateX(-50%);
-            cursor: row-resize;
-            box-sizing: border-box;
-            z-index: 30;
         }
     }
 
@@ -780,7 +694,7 @@
     }
 }
 
-@mixin mobile-item {
+@media all and (max-width: 800px) {
     .editor-item {
         &[data-type="linkbox"] {
             .editor-linkbox {

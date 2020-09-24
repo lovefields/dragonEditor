@@ -67,10 +67,11 @@ function setGlobalEvent() {
 }
 
 function setMenuEvent() {
-    eventBinding(condition.uploadInput, "change", function () {
-        console.log("is work!");
-        fileUpload();
-    });
+    if (condition.uploadURL !== "") {
+        eventBinding(condition.uploadInput, "change", function () {
+            fileUpload();
+        });
+    }
 
     // change language event
     eventBinding(condition.btnChangeLang, "click", function () {
@@ -515,18 +516,6 @@ function setContentEvent() {
     eventBinding(condition.areaContent, "keyup", function (e) {
         itemClickEvent(e);
     });
-
-    // bug event - why?!
-    // eventBinding(condition.areaContent, "mouseenter", function (e) {
-    //     console.log("in!");
-    //     status.resize = false;
-
-    //     if (status.type == "codepen") {
-    //         classControl(status.item, "remove", "--act");
-    //     }
-    // });
-
-    console.log("set content event");
 }
 
 function setOptionEvent() {
