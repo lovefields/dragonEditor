@@ -11,3 +11,7 @@ img{border:0;vertical-align:top}
 .wrap{padding-top:100px}
 .editor-dragon,
 .editor-dragon-viewer{max-width:800px;margin:0 auto}
+
+@media all and (max-width: 800px) {
+    .wrap{padding-top:0}
+}
