@@ -136,6 +136,19 @@ export function openOptionPop() {
 
     setOptionPopValue();
     classControl(condition.popOption, "add", "--act");
+    if (isMobile() == true) {
+        let $scroll = getChild(condition.popOption, ".djs-scroll-depth", false);
+        let $childs = getChild(condition.popOption, ".--act");
+        let width = 0;
+
+        $childs.forEach(($child) => {
+            let childOffset = $child.getBoundingClientRect();
+
+            width += childOffset.width;
+        });
+
+        $scroll.style.width = `${Math.ceil(width)}px`;
+    }
     itemStructureValidation();
 }
 

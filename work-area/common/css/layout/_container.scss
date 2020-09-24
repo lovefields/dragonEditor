@@ -94,6 +94,16 @@
 }
 
 @mixin mobile-container {
+    .editor-dragon {
+        position: relative;
+
+        &[data-layout="container"] {
+            .editor-pop-option {
+                position: absolute;
+            }
+        }
+    }
+
     .editor-content {
         padding: 100px 20px 50px;
         // font-size: 16px;
