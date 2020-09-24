@@ -1,22 +1,22 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1">
-<meta name="format-detection" content="telephone=no">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1">
+    <meta name="format-detection" content="telephone=no">
 
-<link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../assets/css/base.css">
-<link rel="stylesheet" href="../assets/css/dragonEditorViewer.css">
-<title>Dragon Editor - viewer</title>
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/dragonEditorViewer.css">
+    <title>Dragon Editor - viewer</title>
 </head>
 <body>
 <div class="wrap">
     <div class="editor-dragon-viewer">
-        <p class="editor-item" data-type="text">Text</p>
+        <!-- <p class="editor-item" data-type="text">Text</p>
         <div class="editor-item" data-type="image" data-webp="false">
             <div class="editor-size" data-width="700">
                 <picture>
@@ -32,8 +32,8 @@
             <li>Numbered list</li>
         </ol>
         <blockquote class="editor-item" data-type="quote" data-style="default">
-            <p class="text">Text</p>
-            <p class="author">Author</p>
+            <p class="editor-text">Text</p>
+            <p class="editor-author">Author</p>
         </blockquote>
         <div class="editor-item" data-type="table">
             <div class="editor-scroll">
@@ -108,8 +108,61 @@
         <div class="editor-item" data-type="codepen">
             <iframe height="300" title="" src="https://codepen.io/lovefield/embed/NdGVMG?height=300&amp;theme-id=dark&amp;default-tab=result" allowfullscreen="" class="editor-iframe" data-code="NdGVMG" data-nickname="lovefield"></iframe>
         </div>
-        <pre class="editor-item" data-type="codeblock" data-theme="monokai" data-lang="html"><code class="html editor-code hljs xml"><span class="hljs-meta">&lt;!doctype html&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"ko"</span>&gt;</span></code></pre>
+        <pre class="editor-item" data-type="codeblock" data-theme="monokai" data-lang="html"><code class="html editor-code hljs xml"><span class="hljs-meta">&lt;!doctype html&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">html</span> <span class="hljs-attr">lang</span>=<span class="hljs-string">"ko"</span>&gt;</span></code></pre> -->
     </div>
 </div>
+<script src="../assets/view-convertor/convertor.js"></script>
+<script>
+    let data = [
+        { "type": "text", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+        {
+            "type": "image",
+            "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+            "hasWebp": false,
+            "itemWidth": "700",
+            "width": "640",
+            "height": "427",
+            "alt": "act",
+            "src": "https://uploads-ssl.webflow.com/5ac1a6490c89183d0ba47138/5e9a489bcef7520f5c86ac49_hairball_catlickleg_640",
+            "defaultFormat": "jpg",
+            "caption": { "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "act" }
+        },
+        { "type": "ul", "child": [{ "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }] },
+        { "type": "ol", "style": "number", "child": [{ "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }] },
+        { "type": "quote", "style": "default", "text": "", "author": "" },
+        {
+            "type": "table",
+            "caption": {
+                "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" },
+                "textContent": "" 
+            },
+            "colgroup": ["100", "100", "100", "100"],
+            "body": [
+                [
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "th", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }
+                ],
+                [
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" },
+                    { "tag": "td", "option": { "color": "", "fontSize": "", "align": "", "bold": "", "italic": "", "underline": "", "strikethrough": "", "wordblock": "" }, "textContent": "" }
+                ]
+            ]
+        },
+        { "type": "linkbox", "url": "https://dico.me", "imgSrc": "https://dico.me/img/dico.png", "title": "정보처리기사 2020 필기 1,2회 61~80번 문제 - Dico", "description": "정보처리기사 필기 1,2회 61~80", "domain": "dico.me" },
+        {
+            "type": "emoticon",
+            "code": "<svg viewBox=\"0 0 45 45\"><defs id=\"defs6\"><clipPath id=\"clipPath16\" clipPathUnits=\"userSpaceOnUse\"><path id=\"path18\" d=\"M 0,36 36,36 36,0 0,0 0,36 Z\"></path></clipPath></defs><g transform=\"matrix(1.25,0,0,-1.25,0,45)\" id=\"g10\"><g id=\"g12\"><g clip-path=\"url(#clipPath16)\" id=\"g14\"><g transform=\"translate(2,20)\" id=\"g20\"><path id=\"path22\" style=\"fill:#ffcc4d;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-8.837 7.164,-16 16,-16 8.837,0 16,7.163 16,16 C 32,8.836 24.837,16 16,16 7.164,16 0,8.836 0,0\"></path></g><g transform=\"translate(15.4063,25.5)\" id=\"g24\"><path id=\"path26\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-1.381 -0.896,-2.5 -2,-2.5 -1.104,0 -2,1.119 -2,2.5 0,1.38 0.896,2.5 2,2.5 1.104,0 2,-1.12 2,-2.5\"></path></g><g transform=\"translate(26,24.5)\" id=\"g28\"><path id=\"path30\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,-1.381 -0.895,-2.5 -2,-2.5 -1.104,0 -2,1.119 -2,2.5 0,1.38 0.896,2.5 2,2.5 1.105,0 2,-1.12 2,-2.5\"></path></g><g transform=\"translate(9.6709,29.667)\" id=\"g32\"><path id=\"path34\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.164,0.087 -0.303,0.223 -0.391,0.398 -0.607,0.827 -0.431,1.325 0.002,1.511 4.268,3.341 7.701,1.554 7.845,1.477 8.278,1.246 8.453,0.729 8.236,0.323 8.02,-0.082 7.496,-0.223 7.063,0.005 6.94,0.069 4.231,1.437 0.785,-0.042 0.528,-0.151 0.238,-0.127 0,0\"></path></g><g transform=\"translate(14.7427,16.4277)\" id=\"g36\"><path id=\"path38\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.136,0.127 -0.236,0.293 -0.276,0.486 -0.375,0.955 -0.078,1.392 0.389,1.46 4.981,2.138 7.841,-0.469 7.962,-0.58 8.322,-0.914 8.357,-1.457 8.044,-1.795 7.732,-2.131 7.189,-2.133 6.83,-1.801 6.726,-1.709 4.458,0.307 0.748,-0.24 0.471,-0.281 0.197,-0.184 0,0\"></path></g><g transform=\"translate(20.4307,25.917)\" id=\"g40\"><path id=\"path42\" style=\"fill:#664500;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"M 0,0 C -0.156,0.098 -0.286,0.243 -0.362,0.424 -0.549,0.866 -0.339,1.352 0.105,1.508 4.486,3.044 7.79,1.028 7.929,0.941 8.344,0.681 8.483,0.154 8.24,-0.237 7.998,-0.627 7.464,-0.732 7.049,-0.475 6.929,-0.402 4.321,1.146 0.782,-0.095 0.518,-0.187 0.23,-0.143 0,0\"></path></g><g transform=\"translate(17.2764,0.8682)\" id=\"g44\"><path id=\"path46\" style=\"fill:#f4900c;fill-opacity:1;fill-rule:nonzero;stroke:none\" d=\"m 0,0 c 0,0 1.265,0.411 1.429,1.352 0.173,0.971 -0.624,1.167 -0.624,1.167 0,0 1.041,0.208 1.172,1.376 0.123,1.1 -0.862,1.363 -0.862,1.363 0,0 0.97,0.4 1.016,1.539 0.038,0.959 -0.995,1.428 -0.995,1.428 0,0 5.038,1.22 5.555,1.34 0.516,0.121 1.321,0.616 1.07,1.695 -0.249,1.08 -1.204,1.118 -1.698,1.003 -0.494,-0.116 -6.744,-1.567 -8.9,-2.069 -0.23,-0.053 -1.308,-0.302 -1.439,-0.334 -0.54,-0.127 -0.785,0.111 -0.405,0.512 0.509,0.536 0.833,1.129 0.947,2.113 0.119,1.036 -0.232,2.314 -0.433,2.809 -0.374,0.921 -1.005,1.649 -1.734,1.899 -1.138,0.39 -1.946,-0.321 -1.542,-1.561 0.604,-1.855 0.209,-3.375 -0.833,-4.293 -2.449,-2.157 -3.589,-3.695 -2.83,-6.973 0.827,-3.575 4.377,-5.876 7.952,-5.048 C -2.965,-0.64 0,0 0,0\"></path></g></g></g></g></svg>"
+        },
+        { "type": "youtube", "code": "zbZwmtZ0YyM" },
+        { "type": "codepen", "nickname": "lovefield", "code": "NdGVMG", "height": "300" },
+        { "type": "codeblock", "theme": "monokai", "lang": "html", "code": { "class": ["html", "editor-code", "djs-code", "hljs", "xml"], "textContent": "<span class=\"hljs-meta\">&lt;!doctype html&gt;</span>\n<span class=\"hljs-tag\">&lt;<span class=\"hljs-name\">html</span> <span class=\"hljs-attr\">lang</span>=<span class=\"hljs-string\">\"ko\"</span>&gt;</span>" } }
+    ];
+
+    document.querySelector(".editor-dragon-viewer").innerHTML = dragonEditorViewConvertor(data);
+</script>
 </body>
 </html>
