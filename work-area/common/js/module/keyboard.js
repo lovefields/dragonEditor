@@ -1,8 +1,7 @@
-const { typeCheckThrow } = require("./default");
+const { typeCheckThrow, classControl } = require("./default");
 const { isTextSelect, setCursor } = require("./cursor");
 const { getChild } = require("./selector");
 const { getTextBlockHTML, getListChildHTML, addBlockToContent } = require("./layout");
-const { parseText } = require("./convertor");
 
 export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
     if (shiftKey == false && condition.enterCount == 0) {
@@ -13,6 +12,7 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
         condition.enterCount += 1;
 
         if (isTextSelect() == true) {
+            // to-do : select enter
         } else {
             let childNodes = $editableItem.childNodes;
             let childNodesCount = childNodes.length;
@@ -177,6 +177,52 @@ export function contentTabKeyEvent($item, $editableItem, shiftKey, e, _0 = typeC
                     setCursor($target, 0);
                 }
             }
+        }
+    }
+}
+
+export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node)) {
+    let type = $item.dataset["type"];
+    let itemCount = condition.areaContent.childElementCount;
+    let hasPrevEl = $item.previousElementSibling == null ? false : true;
+    let hasText = $editableItem.textContent.length > 0 ? true : false;
+    let $preEl = $item.previousElementSibling;
+
+    if (isTextSelect() == true) {
+        // to-do : select backspace
+    } else {
+        if (type == "text") {
+            if (condition.baseOffset == 0) {
+                if (hasPrevEl == true) {
+                    if (hasText == true) {
+                    } else {
+                        let preElType = $preEl.dataset["type"];
+
+                        $item.remove();
+
+                        // to-do : backspace event
+
+                        if (preElType == "text") {
+                            setCursor($preEl, 1);
+                        } else {
+                            let preEditableChild = getChild($preEl, `*[contenteditable="true"]`);
+                            let count = preEditableChild.length;
+                        }
+                    }
+                } else {
+                    if (hasText == false) {
+                        $item.remove();
+                        classControl(condition.popOption, "remove", "--act");
+                        condition.activeItem = condition.wrap;
+
+                        if (itemCount == 1) {
+                            condition.areaContent.insertAdjacentHTML("beforeend", getTextBlockHTML());
+                        }
+                    }
+                }
+            }
+        } else if (type == "ol" || type == "ul") {
+            console.log("ul,ol");
         }
     }
 }
