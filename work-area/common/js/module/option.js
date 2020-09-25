@@ -55,7 +55,3 @@ export function setTextItemOption($node, option, _0 = typeCheckThrow($node, Node
         }
     }
 }
-
-export function setOptionToKeyValue($node, type, value, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(type, "string")) {
-    console.log($node, type, value);
-}
