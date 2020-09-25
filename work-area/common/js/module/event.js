@@ -789,14 +789,13 @@ function setOptionEvent() {
     // item delete event
     eventBinding(condition.btnItemDelete, "click", function () {
         let $item = findParentByClass(condition.baseNode, "djs-item");
+        let itemCount = condition.areaContent.childElementCount;
         $item.remove();
         condition.activeItem = condition.wrap;
-        let hasItem = getChild(condition.areaContent, ".djs-item").length > 0 ? true : false;
 
         classControl(condition.popOption, "remove", "--act");
-        if (hasItem == false) {
+        if (itemCount == 1) {
             condition.areaContent.insertAdjacentHTML("beforeend", getDefaultBlockHTML("textBlock"));
-            condition.areaContent.childNodes[0].focus();
         }
     });
 }

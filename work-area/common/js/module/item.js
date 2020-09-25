@@ -1,9 +1,9 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
-const { contentEnterKeyEvent, contentTabKeyEvent } = require("./keyboard");
+const { contentEnterKeyEvent, contentTabKeyEvent, contentBackspaceKeyEvent } = require("./keyboard");
 const { getTextItemOption, setTextItemOption } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
-const { findParentByClass, findContenteditable, getChild } = require("./selector");
+const { findParentByClass, findContenteditable, getChild, getElement } = require("./selector");
 const { message } = require("./message");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
@@ -12,6 +12,13 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $editableItem = findContenteditable($target);
 
     if ($item !== null || $editableItem !== null) {
+        let $selectedItem = getElement(".--djs-selected");
+
+        if ($selectedItem.length > 0) {
+            classControl($selectedItem, "remove", "--djs-selected");
+        }
+        classControl($item, "add", "--djs-selected");
+
         condition.activeItem = $item;
         condition.activeElement = $editableItem;
         condition.baseNode = $target;
@@ -107,10 +114,9 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
             break;
         case "Tab":
             contentTabKeyEvent($item, $editableItem, e.shiftKey, e);
-            // to-do Tab key event
             break;
         case "Backspace":
-            // to-do Backspage key event
+            contentBackspaceKeyEvent($item, $editableItem, e);
             break;
     }
 }
@@ -151,7 +157,12 @@ export function wrappingNode(type, value, _0 = typeCheckThrow(type, "string"), _
     });
 
     $editableItem.innerHTML = html;
-    setCursor($editableItem.childNodes[targetIndex + 1], 1);
+
+    if ($editableItem.childNodes[targetIndex + 1] == undefined) {
+        setCursor($editableItem.childNodes[0], 1);
+    } else {
+        setCursor($editableItem.childNodes[targetIndex + 1], 1);
+    }
 }
 
 export function brokenNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {

@@ -19,8 +19,10 @@ export function contentPasteEvent(e, _0 = typeCheckThrow(e, Event)) {
         selection.deleteFromDocument();
         selection.getRangeAt(0).insertNode(document.createTextNode(data));
     } else {
-        // to-do : paste image
-        // console.log(data);
+        if (condition.uploadURL !== "") {
+            // to-do : paste image
+            // console.log(data);
+        }
     }
 }
 
