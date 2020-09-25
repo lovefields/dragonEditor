@@ -1,6 +1,6 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
-const { contentEnterKeyEvent } = require("./keyboard");
+const { contentEnterKeyEvent, contentTabKeyEvent } = require("./keyboard");
 const { getTextItemOption, setTextItemOption } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild } = require("./selector");
@@ -101,16 +101,18 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     condition.focusOffset = selection.focusOffset;
     condition.baseOffset = selection.baseOffset;
 
-    // to-do key event
     switch (code) {
         case "Enter":
             contentEnterKeyEvent($item, $editableItem, e.shiftKey, e);
             break;
-        case "":
+        case "Tab":
+            contentTabKeyEvent($item, $editableItem, e.shiftKey, e);
+            // to-do Tab key event
+            break;
+        case "Backspace":
+            // to-do Backspage key event
             break;
     }
-
-    // console.log(e);
 }
 
 export function wrappingNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
