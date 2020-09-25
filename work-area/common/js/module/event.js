@@ -2,9 +2,10 @@ const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
-const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove } = require("./item");
+const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove, removeNodeEffect } = require("./item");
 const { openFile, fileUpload, mediaNameUpdate } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
+const { contentPasteEvent } = require("./clipboard");
 const { isTextSelect } = require("./cursor");
 const { jsonToHtml } = require("./convertor");
 const { message } = require("./message");
@@ -421,6 +422,10 @@ function setContentEvent() {
         position: "",
     };
 
+    eventBinding(condition.areaContent, "paste", function (e) {
+        contentPasteEvent(e);
+    });
+
     eventBinding(condition.areaContent, "mousedown,touchstart", function (e) {
         let $target = e.target;
         let hasClass = $target.classList.contains("djs-resize");
@@ -612,11 +617,9 @@ function setOptionEvent() {
         let isAct = this.classList.contains("--act");
 
         if (isTextSelect() == true) {
-            if(isAct == true){
-                // to-do : remove style
-                console.log("remove");
-                // removeNodeEffect();
-            }else{
+            if (isAct == true) {
+                removeNodeEffect("bold", "B");
+            } else {
                 nodeEffect("bold");
             }
         } else {
@@ -631,7 +634,11 @@ function setOptionEvent() {
         let isAct = this.classList.contains("--act");
 
         if (isTextSelect() == true) {
-            nodeEffect("italic");
+            if (isAct == true) {
+                removeNodeEffect("italic", "I");
+            } else {
+                nodeEffect("italic");
+            }
         } else {
             textStylingNode("italic", "I", isAct);
         }
@@ -644,7 +651,11 @@ function setOptionEvent() {
         let isAct = this.classList.contains("--act");
 
         if (isTextSelect() == true) {
-            nodeEffect("underline");
+            if (isAct == true) {
+                removeNodeEffect("underline", "U");
+            } else {
+                nodeEffect("underline");
+            }
         } else {
             textStylingNode("underline", "U", isAct);
         }
@@ -657,7 +668,11 @@ function setOptionEvent() {
         let isAct = this.classList.contains("--act");
 
         if (isTextSelect() == true) {
-            nodeEffect("strikethrough");
+            if (isAct == true) {
+                removeNodeEffect("strikethrough", "DEL");
+            } else {
+                nodeEffect("strikethrough");
+            }
         } else {
             textStylingNode("strikethrough", "DEL", isAct);
         }

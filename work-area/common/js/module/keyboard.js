@@ -2,6 +2,7 @@ const { typeCheckThrow } = require("./default");
 const { isTextSelect, setCursor } = require("./cursor");
 const { getChild } = require("./selector");
 const { getTextBlockHTML, getListChildHTML, addBlockToContent } = require("./layout");
+const { parseText } = require("./convertor");
 
 export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
     if (shiftKey == false && condition.enterCount == 0) {
@@ -32,7 +33,6 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         } else {
                             let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
 
-                            $item.innerHTML = value.beforeHTML;
                             $item.childNodes[value.childNumber].textContent = value.beforeText;
                             $item.insertAdjacentHTML("afterend", getTextBlockHTML(value.afterHTML));
                             $item.nextElementSibling.childNodes[0].textContent = value.afterText;

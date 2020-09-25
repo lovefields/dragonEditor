@@ -1,7 +1,7 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
 const { contentEnterKeyEvent } = require("./keyboard");
-const { getTextItemOption, setTextItemOption, setOptionToKeyValue } = require("./option");
+const { getTextItemOption, setTextItemOption } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild } = require("./selector");
 const { message } = require("./message");
@@ -299,14 +299,14 @@ function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"),
     return html;
 }
 
-export function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+export function nodeEffect(type, value = "true", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
     if (condition.baseNode == condition.focusNode) {
         let $editable = findContenteditable(condition.baseNode);
         let $parentNode = condition.baseNode.parentNode;
 
         if ($editable == $parentNode) {
             if (condition.baseOffset == 0 && $parentNode.textContent.length == condition.focusOffset) {
-                setOptionToKeyValue($parentNode, type, value);
+                $parentNode.dataset[type] = value;
             } else {
                 wrappingNode(type, value);
             }
@@ -323,6 +323,18 @@ export function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string")
     } else {
         margeNode(type, value);
     }
+}
+
+export function removeNodeEffect(type, tagName, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(tagName, "string")) {
+    let $editable = findContenteditable(condition.baseNode);
+    let $parentNode = condition.baseNode.parentNode;
+
+    if ($editable == $parentNode) {
+        $editable.dataset[type] = "";
+    } else {
+        textStylingNode(type, tagName, true);
+    }
+    console.log(condition.baseNode);
 }
 
 export function textStylingNode(type, tagName, isAct, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(tagName, "string"), _2 = typeCheckThrow(isAct, "boolean")) {
@@ -354,7 +366,7 @@ export function textStylingNode(type, tagName, isAct, _0 = typeCheckThrow(type, 
         }
     } else {
         if (isAct == true) {
-            $target.removeAttribute(`data-${type}`, "true");
+            $target.removeAttribute(`data-${type}`);
         } else {
             $target.setAttribute(`data-${type}`, "true");
         }
