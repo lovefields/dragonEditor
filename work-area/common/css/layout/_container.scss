@@ -60,6 +60,12 @@
         }
     }
 
+    @for $i from 1 through 3 {
+        *[data-depth="#{'' + $i}"] {
+            margin-left: (20px * $i);
+        }
+    }
+
     *[data-align="left"] {
         text-align: left;
     }

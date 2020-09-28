@@ -1,9 +1,9 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
-const { contentEnterKeyEvent } = require("./keyboard");
+const { contentEnterKeyEvent, contentTabKeyEvent, contentBackspaceKeyEvent } = require("./keyboard");
 const { getTextItemOption, setTextItemOption } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
-const { findParentByClass, findContenteditable, getChild } = require("./selector");
+const { findParentByClass, findContenteditable, getChild, getElement } = require("./selector");
 const { message } = require("./message");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
@@ -12,6 +12,13 @@ export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $editableItem = findContenteditable($target);
 
     if ($item !== null || $editableItem !== null) {
+        let $selectedItem = getElement(".--djs-selected");
+
+        if ($selectedItem.length > 0) {
+            classControl($selectedItem, "remove", "--djs-selected");
+        }
+        classControl($item, "add", "--djs-selected");
+
         condition.activeItem = $item;
         condition.activeElement = $editableItem;
         condition.baseNode = $target;
@@ -101,16 +108,17 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     condition.focusOffset = selection.focusOffset;
     condition.baseOffset = selection.baseOffset;
 
-    // to-do key event
     switch (code) {
         case "Enter":
             contentEnterKeyEvent($item, $editableItem, e.shiftKey, e);
             break;
-        case "":
+        case "Tab":
+            contentTabKeyEvent($item, $editableItem, e.shiftKey, e);
+            break;
+        case "Backspace":
+            contentBackspaceKeyEvent($item, $editableItem, e);
             break;
     }
-
-    // console.log(e);
 }
 
 export function wrappingNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
@@ -149,7 +157,12 @@ export function wrappingNode(type, value, _0 = typeCheckThrow(type, "string"), _
     });
 
     $editableItem.innerHTML = html;
-    setCursor($editableItem.childNodes[targetIndex + 1], 1);
+
+    if ($editableItem.childNodes[targetIndex + 1] == undefined) {
+        setCursor($editableItem.childNodes[0], 1);
+    } else {
+        setCursor($editableItem.childNodes[targetIndex + 1], 1);
+    }
 }
 
 export function brokenNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
@@ -259,7 +272,11 @@ export function margeNode(type, value, _0 = typeCheckThrow(type, "string"), _1 =
     });
 
     $editableItem.innerHTML = html;
-    setCursor($editableItem.childNodes[baseIndex + 1], 1);
+    if ($editableItem.childNodes[baseIndex + 1] == undefined) {
+        setCursor($editableItem.childNodes[0], 1);
+    } else {
+        setCursor($editableItem.childNodes[baseIndex + 1], 1);
+    }
 }
 
 function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string"), _2 = typeCheckThrow(text, "string")) {
@@ -295,13 +312,17 @@ function getWrappingNode(type, value, text, _0 = typeCheckThrow(type, "string"),
     return html;
 }
 
-export function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+export function nodeEffect(type, value = "true", _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
     if (condition.baseNode == condition.focusNode) {
         let $editable = findContenteditable(condition.baseNode);
         let $parentNode = condition.baseNode.parentNode;
 
         if ($editable == $parentNode) {
-            wrappingNode(type, value);
+            if (condition.baseOffset == 0 && $parentNode.textContent.length == condition.focusOffset) {
+                $parentNode.dataset[type] = value;
+            } else {
+                wrappingNode(type, value);
+            }
         } else {
             let $parentParentNode = $parentNode.parentNode;
 
@@ -315,6 +336,18 @@ export function nodeEffect(type, value = "", _0 = typeCheckThrow(type, "string")
     } else {
         margeNode(type, value);
     }
+}
+
+export function removeNodeEffect(type, tagName, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(tagName, "string")) {
+    let $editable = findContenteditable(condition.baseNode);
+    let $parentNode = condition.baseNode.parentNode;
+
+    if ($editable == $parentNode) {
+        $editable.dataset[type] = "";
+    } else {
+        textStylingNode(type, tagName, true);
+    }
+    console.log(condition.baseNode);
 }
 
 export function textStylingNode(type, tagName, isAct, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(tagName, "string"), _2 = typeCheckThrow(isAct, "boolean")) {
@@ -346,7 +379,7 @@ export function textStylingNode(type, tagName, isAct, _0 = typeCheckThrow(type, 
         }
     } else {
         if (isAct == true) {
-            $target.removeAttribute(`data-${type}`, "true");
+            $target.removeAttribute(`data-${type}`);
         } else {
             $target.setAttribute(`data-${type}`, "true");
         }

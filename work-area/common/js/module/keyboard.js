@@ -1,4 +1,4 @@
-const { typeCheckThrow } = require("./default");
+const { typeCheckThrow, classControl } = require("./default");
 const { isTextSelect, setCursor } = require("./cursor");
 const { getChild } = require("./selector");
 const { getTextBlockHTML, getListChildHTML, addBlockToContent } = require("./layout");
@@ -12,6 +12,7 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
         condition.enterCount += 1;
 
         if (isTextSelect() == true) {
+            // to-do : select enter
         } else {
             let childNodes = $editableItem.childNodes;
             let childNodesCount = childNodes.length;
@@ -32,7 +33,6 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         } else {
                             let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
 
-                            $item.innerHTML = value.beforeHTML;
                             $item.childNodes[value.childNumber].textContent = value.beforeText;
                             $item.insertAdjacentHTML("afterend", getTextBlockHTML(value.afterHTML));
                             $item.nextElementSibling.childNodes[0].textContent = value.afterText;
@@ -128,6 +128,155 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
         }, 150);
     } else if (condition.enterCount != 0) {
         e.preventDefault();
+    }
+}
+
+export function contentTabKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
+    e.preventDefault();
+
+    let type = $item.dataset["type"];
+    let depth = parseInt($editableItem.dataset["depth"] == undefined ? 0 : $editableItem.dataset["depth"]);
+
+    if (shiftKey == true) {
+        if (depth > 0) {
+            depth -= 1;
+        }
+    } else {
+        if (depth < 3) {
+            depth += 1;
+        }
+    }
+
+    if (type == "text" || type == "ol" || type == "ul") {
+        if (depth == 0) {
+            $editableItem.removeAttribute("data-depth");
+        } else {
+            $editableItem.dataset["depth"] = depth;
+        }
+    } else if (type == "table") {
+        let editableItemName = $editableItem.constructor.name;
+
+        if (editableItemName == "HTMLTableCellElement") {
+            let x = parseInt($editableItem.dataset["x"]);
+            let y = parseInt($editableItem.dataset["y"]);
+
+            if (shiftKey == true) {
+                x -= 1;
+            } else {
+                x += 1;
+            }
+
+            let $target = getChild($item, `*[data-x="${x}"][data-y="${y}"]`, false);
+
+            if ($target != null) {
+                let hasChildNode = $target.childNodes.length > 0 ? true : false;
+
+                if (hasChildNode == true) {
+                    setCursor($target.childNodes[0], 0);
+                } else {
+                    setCursor($target, 0);
+                }
+            }
+        }
+    }
+}
+
+export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node)) {
+    let type = $item.dataset["type"];
+    let itemCount = condition.areaContent.childElementCount;
+    let hasPrevEl = $item.previousElementSibling == null ? false : true;
+    let hasText = $editableItem.textContent.length > 0 ? true : false;
+    let $preEl = $item.previousElementSibling;
+
+    if (isTextSelect() == true) {
+        // to-do : select backspace
+    } else {
+        if (condition.baseOffset == 0) {
+            e.preventDefault();
+
+            if (hasPrevEl == true) {
+                let preElType = $preEl.dataset["type"];
+                let preElHasText = $preEl.textContent.length > 0 ? true : false;
+                let position = preElHasText == true ? 1 : 0;
+
+                if (type == "text") {
+                    if (hasText == true) {
+                        if (preElType == "text") {
+                            if (preElHasText == true) {
+                                let $preChilds = $preEl.childNodes;
+                                let preChildCount = $preChilds.length;
+                                let text = $preEl.innerHTML + $item.innerHTML;
+                                position = $preChilds[preChildCount - 1].textContent.length;
+
+                                $preEl.innerHTML = text;
+                                $item.remove();
+                                setCursor($preEl.childNodes[preChildCount - 1], position);
+                            } else {
+                                $preEl.remove();
+                            }
+                        } else {
+                            $preEl.remove();
+                        }
+                    } else {
+                        $item.remove();
+
+                        if (preElType == "text") {
+                            setCursor($preEl, position);
+                        } else {
+                            let $preEditableChild = getChild($preEl, `*[contenteditable="true"]`);
+                            let count = $preEditableChild.length;
+                            let preEditableHasText = $preEditableChild[count - 1].textContent.length > 0 ? true : false;
+
+                            position = preEditableHasText == true ? 1 : 0;
+
+                            setCursor($preEditableChild[count - 1], position);
+                        }
+                    }
+                } else if (type == "ol" || type == "ul") {
+                    let text = $editableItem.innerHTML;
+                    let childCount = getChild($item, `*[contenteditable="true"]`).length;
+                    let $preEditable = $editableItem.previousElementSibling;
+                    let hasPreEditable = $preEditable == null ? false : true;
+
+                    if (childCount > 1) {
+                        if (hasPreEditable == true) {
+                            let $preChilds = $preEditable.childNodes;
+                            let preChildCount = $preChilds.length;
+                            let text = $preEditable.innerHTML + $editableItem.innerHTML;
+                            position = $preChilds[preChildCount - 1].textContent.length;
+
+                            $preEditable.innerHTML = text;
+                            $editableItem.remove();
+                            setCursor($preEditable.childNodes[preChildCount - 1], position);
+                        } else {
+                            $item.insertAdjacentHTML("beforebegin", getTextBlockHTML(text));
+                            setCursor($item.previousElementSibling, 0);
+                            $editableItem.remove();
+                        }
+                    } else {
+                        if (hasText == true) {
+                            $item.insertAdjacentHTML("afterend", getTextBlockHTML(text));
+                            setCursor($item.nextElementSibling, 0);
+                            $item.remove();
+                        } else {
+                            $item.remove();
+                            classControl(condition.popOption, "remove", "--act");
+                            condition.activeItem = condition.wrap;
+                        }
+                    }
+                }
+            } else {
+                if (hasText == false) {
+                    $item.remove();
+                    classControl(condition.popOption, "remove", "--act");
+                    condition.activeItem = condition.wrap;
+
+                    if (itemCount == 1) {
+                        condition.areaContent.insertAdjacentHTML("beforeend", getTextBlockHTML());
+                    }
+                }
+            }
+        }
     }
 }
 
