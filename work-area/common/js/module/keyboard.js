@@ -191,38 +191,91 @@ export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheck
     if (isTextSelect() == true) {
         // to-do : select backspace
     } else {
-        if (type == "text") {
-            if (condition.baseOffset == 0) {
-                if (hasPrevEl == true) {
+        if (condition.baseOffset == 0) {
+            e.preventDefault();
+
+            if (hasPrevEl == true) {
+                let preElType = $preEl.dataset["type"];
+                let preElHasText = $preEl.textContent.length > 0 ? true : false;
+                let position = preElHasText == true ? 1 : 0;
+
+                if (type == "text") {
                     if (hasText == true) {
+                        if (preElType == "text") {
+                            if (preElHasText == true) {
+                                let $preChilds = $preEl.childNodes;
+                                let preChildCount = $preChilds.length;
+                                let text = $preEl.innerHTML + $item.innerHTML;
+                                position = $preChilds[preChildCount - 1].textContent.length;
+
+                                $preEl.innerHTML = text;
+                                $item.remove();
+                                setCursor($preEl.childNodes[preChildCount - 1], position);
+                            } else {
+                                $preEl.remove();
+                            }
+                        } else {
+                            $preEl.remove();
+                        }
                     } else {
-                        let preElType = $preEl.dataset["type"];
-
                         $item.remove();
-
-                        // to-do : backspace event
 
                         if (preElType == "text") {
-                            setCursor($preEl, 1);
+                            setCursor($preEl, position);
                         } else {
-                            let preEditableChild = getChild($preEl, `*[contenteditable="true"]`);
-                            let count = preEditableChild.length;
+                            let $preEditableChild = getChild($preEl, `*[contenteditable="true"]`);
+                            let count = $preEditableChild.length;
+                            let preEditableHasText = $preEditableChild[count - 1].textContent.length > 0 ? true : false;
+
+                            position = preEditableHasText == true ? 1 : 0;
+
+                            setCursor($preEditableChild[count - 1], position);
                         }
                     }
-                } else {
-                    if (hasText == false) {
-                        $item.remove();
-                        classControl(condition.popOption, "remove", "--act");
-                        condition.activeItem = condition.wrap;
+                } else if (type == "ol" || type == "ul") {
+                    let text = $editableItem.innerHTML;
+                    let childCount = getChild($item, `*[contenteditable="true"]`).length;
+                    let $preEditable = $editableItem.previousElementSibling;
+                    let hasPreEditable = $preEditable == null ? false : true;
 
-                        if (itemCount == 1) {
-                            condition.areaContent.insertAdjacentHTML("beforeend", getTextBlockHTML());
+                    if (childCount > 1) {
+                        if (hasPreEditable == true) {
+                            let $preChilds = $preEditable.childNodes;
+                            let preChildCount = $preChilds.length;
+                            let text = $preEditable.innerHTML + $editableItem.innerHTML;
+                            position = $preChilds[preChildCount - 1].textContent.length;
+
+                            $preEditable.innerHTML = text;
+                            $editableItem.remove();
+                            setCursor($preEditable.childNodes[preChildCount - 1], position);
+                        } else {
+                            $item.insertAdjacentHTML("beforebegin", getTextBlockHTML(text));
+                            setCursor($item.previousElementSibling, 0);
+                            $editableItem.remove();
+                        }
+                    } else {
+                        if (hasText == true) {
+                            $item.insertAdjacentHTML("afterend", getTextBlockHTML(text));
+                            setCursor($item.nextElementSibling, 0);
+                            $item.remove();
+                        } else {
+                            $item.remove();
+                            classControl(condition.popOption, "remove", "--act");
+                            condition.activeItem = condition.wrap;
                         }
                     }
                 }
+            } else {
+                if (hasText == false) {
+                    $item.remove();
+                    classControl(condition.popOption, "remove", "--act");
+                    condition.activeItem = condition.wrap;
+
+                    if (itemCount == 1) {
+                        condition.areaContent.insertAdjacentHTML("beforeend", getTextBlockHTML());
+                    }
+                }
             }
-        } else if (type == "ol" || type == "ul") {
-            console.log("ul,ol");
         }
     }
 }
