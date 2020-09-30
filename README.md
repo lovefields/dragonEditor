@@ -36,7 +36,6 @@ We never ever support IE.
 <link rel="stylesheet" href="[yourdir]/dragonEditor.css">
 
 <!-- 
-* html
 * You must set svg icon pack. Default pack is in assets.
 -->
 <svg class="icon-pack">

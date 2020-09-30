@@ -51,7 +51,7 @@ export class storage {
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.defaultColor = typeCheckBoolean(options.defaultColor, "string") ? options.defaultColor : "#333";
         this.defaultFontSize = typeCheckBoolean(options.defaultFontSize, "number") ? options.defaultFontSize : 16;
-        this.changePint = typeCheckBoolean(options.changePint, "number") ? options.changePint : 800;
+        this.changePoint = typeCheckBoolean(options.changePoint, "number") ? options.changePoint : 800;
         this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 700;
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;
         this.useWebp = typeCheckBoolean(options.useWebp, "boolean") ? options.useWebp : true;
@@ -144,7 +144,7 @@ export class storage {
               ];
         this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
-        this.emoticonData = typeCheckBoolean(options.emoticonData, Array) ? options.emoticonData : [];
+        // this.emoticonData = typeCheckBoolean(options.emoticonData, Array) ? options.emoticonData : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
         this.multiUpload = typeCheckBoolean(options.multiUpload, "boolean") ? options.multiUpload : false;
         this.defaultLinkBoxImage = typeCheckBoolean(options.defaultLinkBoxImage, "string") ? options.defaultLinkBoxImage : "https://via.placeholder.com/600x300.png";
@@ -321,7 +321,9 @@ export class storage {
         this.listMedia = getElement(".djs-list-media", false);
         this.popOption = getElement(".djs-option-pop", false);
         this.btnSwitchDevice = checkElement(data.btnSwitchDevice, ".djs-switch-device", false);
-        this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
+        if (condition.multiLang == true) {
+            this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
+        }
         this.btnFontSize = getElement(".djs-change-fontsize");
         this.btnColor = getElement(".djs-change-color");
         this.btnAlign = getElement(".djs-change-align");
