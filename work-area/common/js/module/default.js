@@ -127,7 +127,7 @@ export function upperFirstChar(text, _0 = typeCheckThrow(text, "string")) {
 }
 
 export function isMobile() {
-    if (condition.windowWidth < condition.changePint) {
+    if (condition.windowWidth < condition.changePoint) {
         return true;
     } else {
         return false;
