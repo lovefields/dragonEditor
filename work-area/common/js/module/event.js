@@ -74,35 +74,37 @@ function setMenuEvent() {
         });
     }
 
-    // change language event
-    eventBinding(condition.btnChangeLang, "click", function () {
-        let lang = this.dataset["value"];
-        let data = getContentData();
-        let html;
+    if (condition.multiLang == true) {
+        // change language event
+        eventBinding(condition.btnChangeLang, "click", function () {
+            let lang = this.dataset["value"];
+            let data = getContentData();
+            let html;
 
-        classControl(condition.btnChangeLang, "remove", "--act");
-        classControl(this, "add", "--act");
+            classControl(condition.btnChangeLang, "remove", "--act");
+            classControl(this, "add", "--act");
 
-        condition.contentData[condition.lang] = data;
+            condition.contentData[condition.lang] = data;
 
-        if (condition.contentData[lang].length == 0) {
-            let duplicate = confirm(message.noContentData(lang));
+            if (condition.contentData[lang].length == 0) {
+                let duplicate = confirm(message.noContentData(lang));
 
-            if (duplicate == true) {
-                condition.contentData[lang] = data;
-            } else {
-                condition.contentData[lang] = condition.defaultContentData;
+                if (duplicate == true) {
+                    condition.contentData[lang] = data;
+                } else {
+                    condition.contentData[lang] = condition.defaultContentData;
+                }
             }
-        }
 
-        html = jsonToHtml(condition.contentData[lang]);
+            html = jsonToHtml(condition.contentData[lang]);
 
-        condition.activeItem = condition.wrap;
-        condition.activeElement = condition.wrap;
-        condition.lang = lang;
-        condition.areaContent.innerHTML = html;
-        condition.triggerLangChange(lang);
-    });
+            condition.activeItem = condition.wrap;
+            condition.activeElement = condition.wrap;
+            condition.lang = lang;
+            condition.areaContent.innerHTML = html;
+            condition.triggerLangChange(lang);
+        });
+    }
 
     // device switch event
     eventBinding(condition.btnSwitchDevice, "click", function () {
