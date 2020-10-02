@@ -1,9 +1,65 @@
+@import "include/variables";
 @import "include/mixin";
 
 .editor-clearfix::after {
     display: block;
     content: "";
     clear: both;
+}
+
+.editor-dragon-viewer {
+    *[contenteditable="true"] code {
+        padding: 2px 5px;
+        margin: 0 5px;
+        background: #cdcdcd;
+        border-radius: 2px;
+    }
+
+    @each $size in $font-size-list {
+        *[data-font-size="#{'' + $size}"] {
+            font-size: #{$size + "px"};
+        }
+    }
+
+    @each $color in $color-list {
+        *[data-color="#{'' + $color}"] {
+            color: $color;
+        }
+    }
+
+    @for $i from 1 through 3 {
+        *[data-depth="#{'' + $i}"] {
+            margin-left: (20px * $i);
+        }
+    }
+
+    *[data-align="left"] {
+        text-align: left;
+    }
+
+    *[data-align="center"] {
+        text-align: center;
+    }
+
+    *[data-align="right"] {
+        text-align: right;
+    }
+
+    *[data-bold="true"] {
+        font-weight: bold;
+    }
+
+    *[data-italic="true"] {
+        font-style: italic;
+    }
+
+    *[data-underline="true"] {
+        text-decoration: underline;
+    }
+
+    *[data-strikethrough="true"] {
+        text-decoration: line-through;
+    }
 }
 
 .editor-item {
