@@ -111,7 +111,7 @@ function makeBottomMenu() {
 
     html += `
         <button class="editor-btn editor-switch-device djs-switch-device">
-            <svg class="icon" viewbox="0 0 64 64">
+            <svg class="editor-icon" viewbox="0 0 64 64">
                 <use class="path editor-pc" xlink:href="#icon-pc" href="#icon-pc"></use>
                 <use class="path editor-mobile" xlink:href="#icon_mobile" href="#icon-mobile"></use>
             </svg>
@@ -164,7 +164,7 @@ function makeLinkboxPop() {
             <input type="url" class="editor-input djs-input --new" placeholder="https://dico.me">
             <a href="" class="editor-link --del djs-link"></a>
             <button class="editor-btn djs-btn" data-value="">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path --del" xlink:href="#icon-delete-link" href="#icon-delete-link"></use>
                     <use class="path --new" xlink:href="#icon-btn-accept" href="#icon-btn-accept"></use>
                 </svg>
@@ -373,7 +373,7 @@ function makeOptionPop() {
                 <button class="editor-select djs-fontsize djs-toggle-target djs-btn-ignore" data-target=".editor-list-fontsize">
                     <span class="editor-text djs-text">16</span>
 
-                    <svg class="icon" viewbox="0 0 64 64">
+                    <svg class="editor-icon" viewbox="0 0 64 64">
                         <use class="path" xlink:href="#icon-arrow-bottom" href="#icon-arrow-bottom"></use>
                     </svg>
                 </button>
@@ -410,7 +410,7 @@ function makeOptionPop() {
     html += `
         <div class="editor-col --act editor-btn-area" data-group="text,li,table,image,sticker">
             <button class="editor-btn djs-change-align" data-value="left">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-align-left" href="#icon-align-left"></use>
                 </svg>
 
@@ -418,7 +418,7 @@ function makeOptionPop() {
             </button>
 
             <button class="editor-btn djs-change-align" data-value="center">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-align-center" href="#icon-align-center"></use>
                 </svg>
 
@@ -426,7 +426,7 @@ function makeOptionPop() {
             </button>
 
             <button class="editor-btn djs-change-align" data-value="right">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-align-right" href="#icon-align-right"></use>
                 </svg>
 
@@ -436,7 +436,7 @@ function makeOptionPop() {
 
         <div class="editor-col --act editor-btn-area" data-group="text,li,table,word,link">
             <button class="editor-btn djs-toggle-bold">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-bold" href="#icon-bold"></use>
                 </svg>
 
@@ -444,7 +444,7 @@ function makeOptionPop() {
             </button>
 
             <button class="editor-btn djs-toggle-italic">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-italic" href="#icon-italic"></use>
                 </svg>
 
@@ -452,7 +452,7 @@ function makeOptionPop() {
             </button>
 
             <button class="editor-btn djs-toggle-underline">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-underline" href="#icon-underline"></use>
                 </svg>
 
@@ -460,7 +460,7 @@ function makeOptionPop() {
             </button>
 
             <button class="editor-btn djs-toggle-strikethrough">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-strikethrough" href="#icon-strikethrough"></use>
                 </svg>
 
@@ -470,7 +470,7 @@ function makeOptionPop() {
 
         <div class="editor-col --act editor-btn-area" data-group="td">
             <button class="editor-btn djs-table-header">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-table-header" href="#icon-table-header"></use>
                 </svg>
 
@@ -480,7 +480,7 @@ function makeOptionPop() {
 
         <div class="editor-col --act editor-btn-area" data-group="th">
             <button class="editor-btn djs-table-body">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-table-body" href="#icon-table-body"></use>
                 </svg>
 
@@ -490,7 +490,7 @@ function makeOptionPop() {
 
         <div class="editor-col --act editor-btn-area" data-group="word,link">
             <button class="editor-btn djs-open-linkbox">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-link" href="#icon-link"></use>
                 </svg>
 
@@ -500,7 +500,7 @@ function makeOptionPop() {
 
         <div class="editor-col --act editor-btn-area" data-group="codeblock">
             <button class="editor-btn djs-code-theme djs-toggle-target djs-btn-ignore" data-target=".editor-list-theme">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-theme" href="#icon-theme"></use>
                 </svg>
 
@@ -524,7 +524,7 @@ function makeOptionPop() {
             <button class="editor-select djs-code-lang djs-toggle-target djs-btn-ignore" data-target=".editor-list-lang">
                 <span class="editor-text djs-text">Text</span>
 
-                <svg class="icon" viewbox="0 0 64 64">
+                <svg class="editor-icon" viewbox="0 0 64 64">
                     <use class="path" xlink:href="#icon-arrow-bottom" href="#icon-arrow-bottom"></use>
                 </svg>
             </button>
@@ -546,7 +546,7 @@ function makeOptionPop() {
             <button class="editor-select djs-list-style djs-toggle-target djs-btn-ignore" data-target=".editor-list-type">
                 <span class="editor-text djs-text">Numbered - 1</span>
 
-                <svg class="icon" viewbox="0 0 64 64">
+                <svg class="editor-icon" viewbox="0 0 64 64">
                     <use class="path" xlink:href="#icon-arrow-bottom" href="#icon-arrow-bottom"></use>
                 </svg>
             </button>
@@ -564,7 +564,7 @@ function makeOptionPop() {
     html += `
         <div class="editor-col --act editor-btn-area" data-group="all">
             <button class="editor-btn djs-move-up">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-arrow-up" href="#icon-arrow-up"></use>
                 </svg>
 
@@ -576,7 +576,7 @@ function makeOptionPop() {
     html += `
         <div class="editor-col --act editor-btn-area" data-group="all">
             <button class="editor-btn djs-move-down">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-arrow-down" href="#icon-arrow-down"></use>
                 </svg>
 
@@ -588,7 +588,7 @@ function makeOptionPop() {
     html += `
         <div class="editor-col --act editor-btn-area" data-group="word,wordblock">
             <button class="editor-btn djs-word-block">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-word-block" href="#icon-word-block"></use>
                 </svg>
 
@@ -600,7 +600,7 @@ function makeOptionPop() {
     html += `
         <div class="editor-col --act editor-btn-area --noline" data-group="all">
             <button class="editor-btn djs-delete-block">
-                <svg viewBox="0 0 64 64" class="icon">
+                <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path --red" xlink:href="#icon-delete-block" href="#icon-delete-block"></use>
                 </svg>
 
@@ -651,7 +651,7 @@ export function setMediaList(data) {
 
                     <p class="editor-name djs-name">${row.alt}</p>
                     <button class="editor-btn-del djs-del-media" data-idx="${row.idx}">
-                        <svg viewBox="0 0 64 64" class="icon">
+                        <svg viewBox="0 0 64 64" class="editor-icon">
                             <use class="path" xlink:href="#icon-delete-block" href="#icon-delete-block"></use>
                         </svg>
 
