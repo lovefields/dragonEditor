@@ -69,6 +69,8 @@ We never ever support IE.
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditorViewer.css">
+
+<div class="editor-dragon-viewer">[code]</div>
 ```
 
 ## Document
