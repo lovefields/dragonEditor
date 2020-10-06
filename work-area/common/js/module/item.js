@@ -122,6 +122,14 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
 }
 
 export function wrappingNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+    if (condition.baseOffset > condition.focusOffset) {
+        let baseOffset = condition.baseOffset;
+        let focusOffset = condition.focusOffset;
+
+        condition.baseOffset = focusOffset;
+        condition.focusOffset = baseOffset;
+    }
+
     let $target = condition.baseNode;
     let $editableItem = findContenteditable($target);
     let childNodes = $editableItem.childNodes;
@@ -166,6 +174,14 @@ export function wrappingNode(type, value, _0 = typeCheckThrow(type, "string"), _
 }
 
 export function brokenNode(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "string")) {
+    if (condition.baseOffset > condition.focusOffset) {
+        let baseOffset = condition.baseOffset;
+        let focusOffset = condition.focusOffset;
+
+        condition.baseOffset = focusOffset;
+        condition.focusOffset = baseOffset;
+    }
+
     let $target = condition.baseNode;
     let text = $target.textContent;
     let beforeText = text.substring(0, condition.baseOffset);
@@ -222,6 +238,11 @@ export function margeNode(type, value, _0 = typeCheckThrow(type, "string"), _1 =
             focusIndex = index;
         }
     });
+
+    if(baseIndex > focusIndex){
+
+    }
+    console.log(baseIndex, focusIndex);
 
     middleText += baseText.substring(condition.baseOffset, baseText.length);
     $childNode.forEach(($child, index) => {
