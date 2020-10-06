@@ -221,7 +221,12 @@ export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheck
                         $item.remove();
 
                         if (preElType == "text") {
-                            setCursor($preEl, position);
+                            let $preElChild = $preEl.childNodes;
+                            let preElChildLength = $preElChild.length;
+                            let $target = $preElChild[preElChildLength - 1];
+                            position = $target.length;
+
+                            setCursor($target, position);
                         } else {
                             let $preEditableChild = getChild($preEl, `*[contenteditable="true"]`);
                             let count = $preEditableChild.length;
