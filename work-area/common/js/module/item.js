@@ -318,7 +318,7 @@ export function nodeEffect(type, value = "true", _0 = typeCheckThrow(type, "stri
         let $parentNode = condition.baseNode.parentNode;
 
         if ($editable == $parentNode) {
-            if (condition.baseOffset == 0 && $parentNode.textContent.length == condition.focusOffset) {
+            if ((condition.baseOffset == 0 && $parentNode.textContent.length == condition.focusOffset) || (condition.focusOffset == 0 && $parentNode.textContent.length == condition.baseOffset)) {
                 $parentNode.dataset[type] = value;
             } else {
                 wrappingNode(type, value);
