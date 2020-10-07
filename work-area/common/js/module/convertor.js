@@ -348,4 +348,3 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) 
 
     return arr;
 }
-

@@ -4,6 +4,7 @@ const { contentEnterKeyEvent, contentTabKeyEvent, contentBackspaceKeyEvent } = r
 const { getTextItemOption, setTextItemOption } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild, getElement } = require("./selector");
+const { hasBaseNode, setSelection } = require("./selection");
 const { message } = require("./message");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
@@ -32,15 +33,10 @@ export function getItemType($item, $editableItem) {
     let itemType = $item.dataset["type"];
 
     if ($editableItem !== null) {
-        let selection = window.getSelection();
-
-        if (selection.baseNode != null || selection.anchorNode != null) {
+        if (hasBaseNode() == true) {
             let $node;
 
-            condition.focusNode = selection.focusNode;
-            condition.focusOffset = selection.focusOffset;
-            condition.baseNode = selection.baseNode == undefined ? selection.anchorNode : selection.baseNode;
-            condition.baseOffset = selection.baseOffset == undefined ? selection.anchorOffset : selection.baseOffset;
+            setSelection();
 
             if (condition.baseNode.constructor.name == "Text") {
                 $node = condition.baseNode.parentNode;
@@ -100,13 +96,9 @@ export function getItemType($item, $editableItem) {
 export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $item = findParentByClass(e.target, "djs-item");
     let $editableItem = findContenteditable(e.target);
-    let selection = window.getSelection();
     let code = e.code;
 
-    condition.focusNode = selection.focusNode;
-    condition.baseNode = selection.baseNode;
-    condition.focusOffset = selection.focusOffset;
-    condition.baseOffset = selection.baseOffset;
+    setSelection();
 
     switch (code) {
         case "Enter":
@@ -228,9 +220,6 @@ export function margeNode(type, value, _0 = typeCheckThrow(type, "string"), _1 =
         focusNode = focusNode.parentNode;
     }
 
-    baseText = baseNode.textContent;
-    focusText = focusNode.textContent;
-
     $childNode.forEach(($child, index) => {
         if ($child == baseNode) {
             baseIndex = index;
@@ -239,10 +228,20 @@ export function margeNode(type, value, _0 = typeCheckThrow(type, "string"), _1 =
         }
     });
 
-    if(baseIndex > focusIndex){
+    if (baseIndex > focusIndex) {
+        let beforBaseIndex = baseIndex;
+        let beforFocusIndex = focusIndex;
+        let beforFocusNode = focusNode;
+        let beforBaseNode = baseNode;
 
+        baseIndex = beforFocusIndex;
+        focusIndex = beforBaseIndex;
+        baseNode = beforFocusNode;
+        focusNode = beforBaseNode;
     }
-    console.log(baseIndex, focusIndex);
+
+    baseText = baseNode.textContent;
+    focusText = focusNode.textContent;
 
     middleText += baseText.substring(condition.baseOffset, baseText.length);
     $childNode.forEach(($child, index) => {
@@ -368,7 +367,6 @@ export function removeNodeEffect(type, tagName, _0 = typeCheckThrow(type, "strin
     } else {
         textStylingNode(type, tagName, true);
     }
-    console.log(condition.baseNode);
 }
 
 export function textStylingNode(type, tagName, isAct, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(tagName, "string"), _2 = typeCheckThrow(isAct, "boolean")) {

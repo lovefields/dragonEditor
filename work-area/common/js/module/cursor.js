@@ -1,4 +1,5 @@
 const { typeCheckThrow } = require("./default");
+const { setSelection } = require("./selection");
 
 export function setCursor($node, position, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(position, "number")) {
     let select = window.getSelection();
@@ -8,12 +9,14 @@ export function setCursor($node, position, _0 = typeCheckThrow($node, Node), _1 
     range.collapse(true);
     select.removeAllRanges();
     select.addRange(range);
+
+    setSelection();
 }
 
-export function isTextSelect(){
-    if((condition.focusNode == condition.baseNode) && (condition.focusOffset == condition.baseOffset)){
+export function isTextSelect() {
+    if (condition.focusNode == condition.baseNode && condition.focusOffset == condition.baseOffset) {
         return false;
-    }else{
+    } else {
         return true;
     }
 }

@@ -45,11 +45,11 @@ module.exports = class {
         return condition.contentData;
     }
 
-    addItem(html, _0 = typeCheckThrow(html, "string")){
+    addItem(html, _0 = typeCheckThrow(html, "string")) {
         addBlockToContent(`<div class="editor-item djs-item" data-type="other">${html}</div>`);
     }
 
-    getStatus(){
+    getStatus() {
         return condition;
     }
 };
@@ -72,4 +72,3 @@ module.exports = class {
 //         return storage[name];
 //     }
 // }
-
