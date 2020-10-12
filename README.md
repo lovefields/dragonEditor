@@ -76,7 +76,7 @@ We never ever support IE.
 [(http://lovefields.github.io/dragonEditor)](http://lovefields.github.io/dragonEditor)
 
 ### Deploy demo
-install node module 'gh-pages' and run 'npm build demo-deploy'.
+install node module 'gh-pages' and run 'npx build demo-deploy'.
 
 ## Document
 

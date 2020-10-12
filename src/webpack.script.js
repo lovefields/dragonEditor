@@ -11,7 +11,7 @@ module.exports = {
     target: "web",
     output: {
         filename: `js/${name}.js`,
-        path: path.resolve(__dirname, "../assets"),
+        path: path.resolve(__dirname, "../dist"),
         library: name,
         libraryTarget: "umd",
     },
