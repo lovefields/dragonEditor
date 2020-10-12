@@ -72,6 +72,12 @@ We never ever support IE.
 <div class="editor-dragon-viewer">[code]</div>
 ```
 
+## Demo
+[(http://lovefields.github.io/dragonEditor)](http://lovefields.github.io/dragonEditor)
+
+### Deploy demo
+install node module 'gh-pages' and run 'npm build demo-deploy'.
+
 ## Document
 
 -   [DragonEditor Document](https://lovefields.github.io/dragonEditor-doc/)
