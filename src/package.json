@@ -1,7 +1,7 @@
 {
   "name": "dragon-editor",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.4",
+  "description": "DragonEditor is Javascript WYSIWYG editor.",
   "private": true,
   "dependencies": {
     "css-loader": "^4.0.0",
@@ -24,7 +24,7 @@
     "editor"
   ],
   "author": "Lovefield",
-  "license": "MIT",
+  "license": "LGPLv3",
   "bugs": {
     "url": "https://github.com/lovefields/dragonEditor/issues"
   },

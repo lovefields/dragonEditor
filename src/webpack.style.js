@@ -2,15 +2,15 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 const path = require("path");
 const commonPath = path.resolve(__dirname, "common");
-const name = "dragonEditorViewer";
+const name = "dragonEditor";
 
 module.exports = {
     mode: "production", // ['development', 'production']
     entry: {
-        styles: [`${commonPath}/css/viewer.scss`],
+        styles: [`${commonPath}/css/index.scss`],
     },
     output: {
-        path: path.resolve(__dirname, "../assets/css"),
+        path: path.resolve(__dirname, "../dist/css"),
     },
     module: {
         rules: [

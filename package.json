@@ -1,21 +1,22 @@
 {
-  "name": "dragoneditor",
+  "name": "dragon-editor",
   "version": "1.0.4",
   "description": "DragonEditor is Javascript WYSIWYG editor.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd src && npm start",
     "demo-deploy": "gh-pages -d demo"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sople1/dragonEditor.git"
+    "url": "git+https://github.com/lovefield/dragonEditor.git"
   },
-  "author": "",
+  "author": "Lovefield",
   "license": "LGPLv3",
   "bugs": {
-    "url": "https://github.com/sople1/dragonEditor/issues"
+    "url": "https://github.com/lovefield/dragonEditor/issues"
   },
-  "homepage": "https://github.com/sople1/dragonEditor#readme",
+  "homepage": "https://github.com/lovefield/dragonEditor#readme",
   "dependencies": {
     "gh-pages": "^3.1.0"
   }
