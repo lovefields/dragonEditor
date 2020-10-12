@@ -73,7 +73,7 @@ We never ever support IE.
 ```
 
 ## Demo
-[(http://lovefields.github.io/dragonEditor)](http://lovefields.github.io/dragonEditor)
+[(https://lovefields.github.io/dragonEditor/demo/editor.html)](https://lovefields.github.io/dragonEditor/demo/editor.html)
 
 ### Deploy demo
 install node module 'gh-pages' and run 'npx build demo-deploy'.
