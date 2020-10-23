@@ -1,7 +1,15 @@
 .editor-dragon {
     position: relative;
+    margin-bottom: 50px;
 
     &[data-layout="container"] {
+        height: 600px;
+
+        .editor-content {
+            height: 100%;
+            overflow-y: auto;
+        }
+
         .editor-menu-block {
             position: absolute;
             top: 0;
@@ -16,23 +24,22 @@
 
     *::after,
     *::before {
-        font: normal 16px/1.2 "Open Sans", "Noto Sans", sans-serif;
+        font: normal inherit/1.2 "Open Sans", "Noto Sans", sans-serif;
     }
 }
 
 .editor-content {
     max-width: 700px;
     min-height: 300px;
-    padding-bottom: 50px;
     margin: 0 auto;
-    font-size: 16px;
+    font-size: inherit;
     line-height: 1.7;
     word-break: keep-all;
     transition: max-width 0.3s ease;
 
     &.--mobile {
         max-width: 320px;
-        font-size: 16px;
+        font-size: inherit;
 
         @include mobile-item;
     }
@@ -112,6 +119,5 @@
 
     .editor-content {
         padding: 100px 20px 50px;
-        // font-size: 16px;
     }
 }

@@ -67,7 +67,7 @@ function makeBlockMenu(data) {
                     ${value.text}
                 </button>
             `;
-        } else{
+        } else {
             html += `
                 <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="custom">
                     <svg viewbox="0 0 64 64" class="editor-icon">
@@ -176,6 +176,9 @@ function makeLinkboxPop() {
 function makeUploadForm() {
     let html = `<form enctype="multipart/form-data" method="post" class="editor-uploader djs-uploader">`;
 
+    if (condition.csrfData.value != "") {
+        html += `<input type="hidden" name="${condition.csrfData.name}" value="${condition.csrfData.value}">`;
+    }
     if (condition.multiUpload == true) {
         html += `<input type="file" name="file" multiple class="djs-file">`;
     } else {

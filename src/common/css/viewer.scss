@@ -64,7 +64,7 @@
 
 .editor-item {
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: inherit;
     line-height: 1.7;
     outline: 0;
 
@@ -130,6 +130,7 @@
             position: relative;
             padding-left: 15px;
             margin-bottom: 5px;
+            font-size: inherit;
             outline: 0;
 
             &::before {
@@ -177,6 +178,7 @@
 
         li {
             margin-bottom: 5px;
+            font-size: inherit;
             outline: 0;
             list-style-type: inherit;
 

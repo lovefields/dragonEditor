@@ -114,7 +114,8 @@ export function closeOptionPop($target, _0 = typeCheckThrow($target, Node)) {
 }
 
 export function openOptionPop() {
-    let offset = condition.activeItem.getBoundingClientRect();
+    let $target = condition.activeElement == null ? condition.activeItem : condition.activeElement;
+    let offset = $target.getBoundingClientRect();
     let type = getItemType(condition.activeItem, condition.activeElement);
     let $colList = getChild(condition.popOption, ".editor-col");
     let popOffset = condition.popOption.getBoundingClientRect();

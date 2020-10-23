@@ -469,7 +469,9 @@ export function itemStructureValidation() {
                     $node.removeAttribute("style");
 
                     if (hasText == false) {
-                        $node.remove();
+                        if (tagName != "br") {
+                            $node.remove();
+                        }
                     } else {
                         if (hasData == false) {
                             if (wrongTagList.indexOf(tagName) > -1) {
