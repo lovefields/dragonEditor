@@ -38,7 +38,7 @@ export class storage {
         this.focusOffset;
         this.baseOffset;
         this.regList = {
-            srcURL: new RegExp("(.*)\\.(jpg|png|gif|webp|bmp)", "i"),
+            srcURL: new RegExp("(.*)\\.(jpg|png|gif|webp|bmp|jpeg)", "i"),
             defaultURL: new RegExp("https?:\\/\\/(\\w*:\\w*@)?[-\\w.]+(:\\d+)?(\\/([\\w\\/_.]*(\\?\\S+)?)?)?", "i"),
             youtubeURL: new RegExp("(https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)?", "i"),
             youtubeCode: new RegExp("((https:\\/\\/)?(www\\.)?youtu(be)?\\.(be|com)\\/(embed\\/|watch\\?v=)?)([^=\\/& :]*)(.*)", "i"),
@@ -47,6 +47,7 @@ export class storage {
         };
         this.articleIdx = typeCheckBoolean(options.articleIdx, "number") ? options.articleIdx : 0;
         this.articleTempIdx = typeCheckBoolean(options.articleTempIdx, "number") ? options.articleTempIdx : 0;
+        this.csrfData = typeCheckBoolean(options.csrfData, "object") ? options.csrfData : { name: "", value: "" };
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.defaultColor = typeCheckBoolean(options.defaultColor, "string") ? options.defaultColor : "#333";

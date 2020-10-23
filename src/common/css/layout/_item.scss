@@ -1,6 +1,8 @@
 .editor-item {
     margin-bottom: 10px;
     outline: 0;
+    font-size: inherit;
+    line-height: 1.7;
 
     .editor-edit {
         position: absolute;
@@ -105,6 +107,8 @@
             position: relative;
             padding-left: 15px;
             margin-bottom: 5px;
+            font-size: inherit;
+            line-height: 1.7;
             outline: 0;
 
             &::before {
@@ -160,6 +164,8 @@
         li {
             margin-bottom: 5px;
             outline: 0;
+            font-size: inherit;
+            line-height: 1.7;
             list-style-type: inherit;
 
             &:last-child {
