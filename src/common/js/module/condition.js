@@ -59,7 +59,7 @@ export class storage {
         this.codepenTheme = typeCheckBoolean(options.codepenTheme, "string") ? options.codepenTheme : "dark";
         this.blockName = typeCheckBoolean(options.blockName, Object) ? options.blockName : {};
         this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
-        this.frontSize = typeCheckBoolean(options.frontSize, Array) ? options.frontSize : [12, 14, 16, 18, 20, 24, 28, 30, 34, 38];
+        this.frontSize = typeCheckBoolean(options.frontSize, Array) ? options.frontSize : [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 1.9, 2, 2.15, 2.25];
         this.codeTheme = typeCheckBoolean(options.codeTheme, Array) ? options.codeTheme : ["default", "vs2015", "androidstudio", "monokai"];
         this.codeLang = typeCheckBoolean(options.codeLang, Array) ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift"];
         this.colorList = typeCheckBoolean(options.colorList, Array)

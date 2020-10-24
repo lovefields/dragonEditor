@@ -172,7 +172,7 @@ function setOptionPopValue() {
         let editableStyle = getTextItemOption($editableItem);
 
         if (textStyle.fontSize != "") {
-            fontSizeText.textContent = textStyle.fontSize;
+            fontSizeText.textContent = Math.floor(textStyle.fontSize * condition.defaultFontSize);
         } else {
             fontSizeText.textContent = condition.defaultFontSize;
         }
