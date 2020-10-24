@@ -57,7 +57,7 @@
 
     @each $size in $font-size-list {
         *[data-font-size="#{'' + $size}"] {
-            font-size: #{$size + "px"};
+            font-size: #{$size + "em"};
         }
     }
 

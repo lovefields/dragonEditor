@@ -386,7 +386,9 @@ function makeOptionPop() {
     `;
 
     condition.frontSize.forEach((size) => {
-        html += `<button class="editor-btn djs-change-fontsize" data-value="${size}">${size}</button>`;
+        let text = Math.floor(condition.defaultFontSize * size);
+
+        html += `<button class="editor-btn djs-change-fontsize" data-value="${size}">${text}</button>`;
     });
 
     html += `
