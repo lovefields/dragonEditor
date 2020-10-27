@@ -133,52 +133,55 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
 
 export function contentTabKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
     e.preventDefault();
+    setCursor(condition.baseNode, condition.baseOffset);
 
-    let type = $item.dataset["type"];
-    let depth = parseInt($editableItem.dataset["depth"] == undefined ? 0 : $editableItem.dataset["depth"]);
+    setTimeout(() => {
+        let type = $item.dataset["type"];
+        let depth = parseInt($editableItem.dataset["depth"] == undefined ? 0 : $editableItem.dataset["depth"]);
 
-    if (shiftKey == true) {
-        if (depth > 0) {
-            depth -= 1;
-        }
-    } else {
-        if (depth < 3) {
-            depth += 1;
-        }
-    }
-
-    if (type == "text" || type == "ol" || type == "ul") {
-        if (depth == 0) {
-            $editableItem.removeAttribute("data-depth");
-        } else {
-            $editableItem.dataset["depth"] = depth;
-        }
-    } else if (type == "table") {
-        let editableItemName = $editableItem.constructor.name;
-
-        if (editableItemName == "HTMLTableCellElement") {
-            let x = parseInt($editableItem.dataset["x"]);
-            let y = parseInt($editableItem.dataset["y"]);
-
-            if (shiftKey == true) {
-                x -= 1;
-            } else {
-                x += 1;
+        if (shiftKey == true) {
+            if (depth > 0) {
+                depth -= 1;
             }
+        } else {
+            if (depth < 3) {
+                depth += 1;
+            }
+        }
 
-            let $target = getChild($item, `*[data-x="${x}"][data-y="${y}"]`, false);
+        if (type == "text" || type == "ol" || type == "ul") {
+            if (depth == 0) {
+                $editableItem.removeAttribute("data-depth");
+            } else {
+                $editableItem.dataset["depth"] = depth;
+            }
+        } else if (type == "table") {
+            let editableItemName = $editableItem.constructor.name;
 
-            if ($target != null) {
-                let hasChildNode = $target.childNodes.length > 0 ? true : false;
+            if (editableItemName == "HTMLTableCellElement") {
+                let x = parseInt($editableItem.dataset["x"]);
+                let y = parseInt($editableItem.dataset["y"]);
 
-                if (hasChildNode == true) {
-                    setCursor($target.childNodes[0], 0);
+                if (shiftKey == true) {
+                    x -= 1;
                 } else {
-                    setCursor($target, 0);
+                    x += 1;
+                }
+
+                let $target = getChild($item, `*[data-x="${x}"][data-y="${y}"]`, false);
+
+                if ($target != null) {
+                    let hasChildNode = $target.childNodes.length > 0 ? true : false;
+
+                    if (hasChildNode == true) {
+                        setCursor($target.childNodes[0], 0);
+                    } else {
+                        setCursor($target, 0);
+                    }
                 }
             }
         }
-    }
+    }, 150);
 }
 
 export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node)) {

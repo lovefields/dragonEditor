@@ -97,6 +97,7 @@ export function hasClass($node, className, _0 = typeCheckThrow($node, Node), _1 
 
 export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(url, "string"), _1 = typeCheckThrow(option, "object"), _2 = typeCheckThrow(type, "string")) {
     let formData = new FormData();
+    let csrfHeader = Object.entries(condition.csrfHeader);
 
     if (type == "json") {
         for (let key in option.body) {
@@ -104,6 +105,10 @@ export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(ur
         }
 
         option.body = formData;
+    }
+
+    if(csrfHeader.length > 0){
+        option.headers = new Headers(condition.csrfHeader);
     }
 
     return fetch(url, option)

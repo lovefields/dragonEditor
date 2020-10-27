@@ -326,7 +326,14 @@ function setMenuEvent() {
                     addBlockToContent(block);
                     break;
                 case findParentByClass(e.target, "djs-del-media") !== null:
-                    let request = await fetchURL(`${condition.uploadURL}/${idx}`, {
+                    let url = condition.uploadURL;
+                    let lastStrIsSlat = url.substr(url.length - 1, url.length) == "/" ? true : false;
+
+                    if (lastStrIsSlat == false) {
+                        url += "/";
+                    }
+
+                    let request = await fetchURL(`${url}${idx}`, {
                         method: "DELETE",
                     });
 
