@@ -93,6 +93,7 @@ export function getItemType($item, $editableItem) {
     return typeArr;
 }
 
+// content area keyboard event
 export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $item = findParentByClass(e.target, "djs-item");
     let $editableItem = findContenteditable(e.target);
@@ -494,3 +495,15 @@ export function itemStructureValidation() {
         }
     });
 }
+
+// export function codeBlockHighlight(e, _0 = typeCheckThrow(e, Event)) {
+//     let $item = findParentByClass(e.target, "djs-item");
+//     let $editableItem = findContenteditable(e.target);
+//     let itemType = $item.dataset["type"];
+
+//     if (itemType == "codeblock") {
+//         console.log(condition.baseNode);
+//         hljs.highlightBlock($editableItem);
+//         setCursor($editableItem, condition.baseOffset);
+//     }
+// }
