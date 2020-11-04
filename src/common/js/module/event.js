@@ -523,12 +523,18 @@ function setContentEvent() {
         itemClickEvent(e);
     });
 
+    // 키보드 이벤트
     eventBinding(condition.areaContent, "keydown", function (e) {
         itemKeyboardEvent(e);
     });
 
+    // let contentKeyupFn;
     eventBinding(condition.areaContent, "keyup", function (e) {
         itemClickEvent(e);
+        // clearTimeout(contentKeyupFn);
+        // contentKeyupFn = setTimeout(() => {
+        //     codeBlockHighlight(e);
+        // }, 250);
     });
 }
 
@@ -624,70 +630,22 @@ function setOptionEvent() {
 
     // bold event
     eventBinding(condition.btnToggleBold, "click", function () {
-        let isAct = this.classList.contains("--act");
-
-        if (isTextSelect() == true) {
-            if (isAct == true) {
-                removeNodeEffect("bold", "B");
-            } else {
-                nodeEffect("bold");
-            }
-        } else {
-            textStylingNode("bold", "B", isAct);
-        }
-
-        classControl(this, "toggle", "--act");
+        textDecorationEvent(this, "bold", "B");
     });
 
     // italic event
     eventBinding(condition.btnToggleItalic, "click", function () {
-        let isAct = this.classList.contains("--act");
-
-        if (isTextSelect() == true) {
-            if (isAct == true) {
-                removeNodeEffect("italic", "I");
-            } else {
-                nodeEffect("italic");
-            }
-        } else {
-            textStylingNode("italic", "I", isAct);
-        }
-
-        classControl(this, "toggle", "--act");
+        textDecorationEvent(this, "italic", "I");
     });
 
     // underline event
     eventBinding(condition.btnToggleUnderline, "click", function () {
-        let isAct = this.classList.contains("--act");
-
-        if (isTextSelect() == true) {
-            if (isAct == true) {
-                removeNodeEffect("underline", "U");
-            } else {
-                nodeEffect("underline");
-            }
-        } else {
-            textStylingNode("underline", "U", isAct);
-        }
-
-        classControl(this, "toggle", "--act");
+        textDecorationEvent(this, "underline", "U");
     });
 
     // strikethrough event
     eventBinding(condition.btnToggleStrikethrough, "click", function () {
-        let isAct = this.classList.contains("--act");
-
-        if (isTextSelect() == true) {
-            if (isAct == true) {
-                removeNodeEffect("strikethrough", "DEL");
-            } else {
-                nodeEffect("strikethrough");
-            }
-        } else {
-            textStylingNode("strikethrough", "DEL", isAct);
-        }
-
-        classControl(this, "toggle", "--act");
+        textDecorationEvent(this, "strikethrough", "DEL");
     });
 
     // list style event
@@ -738,8 +696,9 @@ function setOptionEvent() {
         $editableItem.textContent = $editableItem.textContent;
         hljs.highlightBlock($editableItem);
 
-        if (value == "text") {
+        if (value == "nohighlight") {
             text.textContent = "text";
+            $item.dataset["lang"] = "text";
         } else {
             text.textContent = value;
         }
@@ -808,4 +767,23 @@ function setOptionEvent() {
             condition.areaContent.insertAdjacentHTML("beforeend", getDefaultBlockHTML("textBlock"));
         }
     });
+}
+
+function textDecorationEvent($btn, type, tagName, _0 = typeCheckThrow($btn, Node), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(tagName, "string")) {
+    let isAct = $btn.classList.contains("--act");
+    let $editable = findContenteditable(condition.baseNode);
+
+    if ($editable.textContent != "") {
+        if (isTextSelect() == true) {
+            if (isAct == true) {
+                removeNodeEffect(type, tagName);
+            } else {
+                nodeEffect(type);
+            }
+        } else {
+            textStylingNode(type, tagName, isAct);
+        }
+
+        classControl($btn, "toggle", "--act");
+    }
 }
