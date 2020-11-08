@@ -20,15 +20,15 @@ export function makeView() {
     view += makeFolderPop();
     view += `</div>`;
 
-    if (condition.uploadURL !== "") {
-        view += makeUploadForm();
-    }
-
     view += makeLinkboxPop();
     view += makeOptionPop();
     view += makeEmoticonPop();
 
     condition.wrap.insertAdjacentHTML("beforeend", view);
+
+    if (condition.uploadURL !== "") {
+        document.body.insertAdjacentHTML("beforeend", makeUploadForm());
+    }
 }
 
 function makeContentArea() {
