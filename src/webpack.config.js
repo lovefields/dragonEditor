@@ -3,135 +3,148 @@ const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 const path = require("path");
 const commonPath = path.resolve(__dirname, "common");
 const name = "dragonEditor";
+const webpackMode = "production"; // ['development', 'production']
 const viewerName = "dragonEditorViewer";
-const mode = "production"; // ['development', 'production']
-
-// script config
 const scriptFile = [`${commonPath}/js/index.js`];
-const scriptConfig = {
-    mode: mode,
-    entry: {
-        common: scriptFile,
-    },
-    target: "web",
-    watch: true,
-    watchOptions: {
-        poll: 500,
-    },
-};
-
-// editor css config
 const styleFile = [`${commonPath}/css/index.scss`];
-const styleConfig = {
-    mode: mode,
-    entry: {
-        styles: styleFile,
-    },
-    module: {
-        rules: [
-            {
-                test: /\.scss$/i,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    {
-                        loader: "css-loader",
-                        options: {
-                            url: false,
-                        },
-                    },
-                    "sass-loader",
-                ],
-            },
-        ],
-    },
-    plugins: [
-        new FixStyleOnlyEntriesPlugin(),
-        new MiniCssExtractPlugin({
-            filename: `${name}.css`,
-        }),
-    ],
-    watch: true,
-    watchOptions: {
-        poll: 500,
-    },
-};
-
-// viewer css config
 const viewerStyleFile = [`${commonPath}/css/viewer.scss`];
-const viewerStyleConfig = {
-    mode: mode,
-    entry: {
-        styles: viewerStyleFile,
+
+let options = [
+    {
+        type: "js",
+        name: name,
+        output: "dist",
+        file: scriptFile,
     },
-    module: {
-        rules: [
-            {
-                test: /\.scss$/i,
-                use: [
-                    MiniCssExtractPlugin.loader,
+    {
+        type: "js",
+        name: name,
+        output: "demo",
+        file: scriptFile,
+    },
+    {
+        type: "css",
+        name: name,
+        output: "dist",
+        file: styleFile,
+    },
+    {
+        type: "css",
+        name: name,
+        output: "demo",
+        file: styleFile,
+    },
+    {
+        type: "css",
+        name: viewerName,
+        output: "dist",
+        file: viewerStyleFile,
+    },
+    {
+        type: "css",
+        name: viewerName,
+        output: "demo",
+        file: viewerStyleFile,
+    },
+];
+
+function getConfig(type, file, name) {
+    let config;
+
+    if (type == "js") {
+        config = {
+            mode: webpackMode,
+            entry: {
+                common: file,
+            },
+            target: "web",
+            watch: true,
+            watchOptions: {
+                poll: 500,
+            },
+        };
+    } else {
+        config = {
+            mode: webpackMode,
+            entry: {
+                styles: file,
+            },
+            module: {
+                rules: [
                     {
-                        loader: "css-loader",
-                        options: {
-                            url: false,
-                        },
+                        test: /\.scss$/i,
+                        use: [
+                            MiniCssExtractPlugin.loader,
+                            {
+                                loader: "css-loader",
+                                options: {
+                                    url: false,
+                                },
+                            },
+                            "sass-loader",
+                        ],
                     },
-                    "sass-loader",
                 ],
             },
-        ],
-    },
-    plugins: [
-        new FixStyleOnlyEntriesPlugin(),
-        new MiniCssExtractPlugin({
-            filename: `${viewerName}.css`,
-        }),
-    ],
-    watch: true,
-    watchOptions: {
-        poll: 500,
-    },
-};
+            plugins: [
+                new FixStyleOnlyEntriesPlugin(),
+                new MiniCssExtractPlugin({
+                    filename: `${name}.css`,
+                }),
+            ],
+            watch: true,
+            watchOptions: {
+                poll: 500,
+            },
+        };
+    }
 
-let distScript = Object.assign({}, scriptConfig, {
-    output: {
-        filename: `js/${name}.js`,
-        path: path.resolve(__dirname, "../dist"),
-        library: name,
-        libraryTarget: "umd",
-    },
-});
+    return config;
+}
 
-let demoScript = Object.assign({}, scriptConfig, {
-    output: {
-        filename: `js/${name}.js`,
-        path: path.resolve(__dirname, "../demo/assets"),
-        library: name,
-        libraryTarget: "umd",
-    },
-});
+function getModuleList() {
+    let arr = [];
 
-let distStyle = Object.assign({}, styleConfig, {
-    output: {
-        path: path.resolve(__dirname, "../dist/css"),
-    },
-});
+    options.forEach((item) => {
+        let config = getConfig(item.type, item.file, item.name);
+        let folder;
 
-let demoStyle = Object.assign({}, styleConfig, {
-    output: {
-        path: path.resolve(__dirname, "../demo/assets/css"),
-    },
-});
+        if (item.output == "demo") {
+            if (item.type == "js") {
+                folder = "../demo/assets";
+            } else {
+                folder = "../demo/assets/css";
+            }
+        } else {
+            if (item.type == "js") {
+                folder = "../dist";
+            } else {
+                folder = "../dist/css";
+            }
+        }
 
-let distViewerStyle = Object.assign({}, viewerStyleConfig, {
-    output: {
-        path: path.resolve(__dirname, "../dist/css"),
-    },
-});
+        if (item.type == "js") {
+            arr.push(
+                Object.assign({}, config, {
+                    output: {
+                        filename: `js/${item.name}.js`,
+                        path: path.resolve(__dirname, folder),
+                        library: item.name,
+                        libraryTarget: "umd",
+                    },
+                }),
+            );
+        } else {
+            arr.push(
+                Object.assign({}, config, {
+                    output: {
+                        path: path.resolve(__dirname, folder),
+                    },
+                }),
+            );
+        }
+    });
+    return arr;
+}
 
-let demoViewerStyle = Object.assign({}, viewerStyleConfig, {
-    output: {
-        path: path.resolve(__dirname, "../demo/assets/css"),
-    },
-});
-
-module.exports = [distScript, demoScript, distStyle, demoStyle, distViewerStyle, demoViewerStyle];
+module.exports = getModuleList();
