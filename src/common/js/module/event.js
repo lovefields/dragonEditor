@@ -26,6 +26,8 @@ function setGlobalEvent() {
         resizeFn = setTimeout(() => {
             condition.windowWidth = window.innerWidth;
             condition.windowHeight = window.innerHeight;
+            condition.popOption.removeAttribute("style");
+            classControl(condition.popOption, "remove", "--act");
         }, 250);
     });
 
