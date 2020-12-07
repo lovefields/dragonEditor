@@ -2,24 +2,72 @@ const { message } = require("./message");
 
 export function typeCheckThrow(target, type) {
     if (typeof type == "string") {
-        if (typeof target != type) {
+        let targetType = typeof target;
+        let typeArr = type.split(",");
+
+        if (typeArr.indexOf(targetType) == -1) {
+            throw `DRAGON EDITOR - invalid type ${target} : ${typeArr.join(",")}`;
+        }
+    } else {
+        let typeArr;
+        let value = true;
+
+        if (type instanceof Function) {
+            typeArr = [type];
+        } else if (type instanceof Array) {
+            typeArr = type;
+        } else {
+            throw `DRAGON EDITOR - Wrong type check augment ${type}`;
+        }
+
+        typeArr.forEach((item) => {
+            if (!(target instanceof item)) {
+                value = false;
+            }
+        });
+
+        if (value == false) {
             throw `DRAGON EDITOR - invalid type ${target} : ${type}`;
         }
-    } else if (!(target instanceof type)) {
-        throw `DRAGON EDITOR - invalid type ${target} : ${type}`;
     }
+
     return target;
 }
 
 export function typeCheckBoolean(target, type) {
+    let status = true;
+
     if (typeof type == "string") {
-        if (typeof target != type) {
-            return false;
+        let targetType = typeof target;
+        let typeArr = type.split(",");
+
+        if (typeArr.indexOf(targetType) == -1) {
+            status = false;
         }
-    } else if (!(target instanceof type)) {
-        return false;
+    } else {
+        let typeArr;
+        let value = true;
+
+        if (type instanceof Function) {
+            typeArr = [type];
+        } else if (type instanceof Array) {
+            typeArr = type;
+        } else {
+            status = false;
+        }
+
+        typeArr.forEach((item) => {
+            if (!(target instanceof item)) {
+                value = false;
+            }
+        });
+
+        if (value == false) {
+            status = false;
+        }
     }
-    return true;
+
+    return status;
 }
 
 export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function"), _3 = typeCheckThrow(useCapture, "boolean")) {
@@ -97,6 +145,7 @@ export function hasClass($node, className, _0 = typeCheckThrow($node, Node), _1 
 
 export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(url, "string"), _1 = typeCheckThrow(option, "object"), _2 = typeCheckThrow(type, "string")) {
     let formData = new FormData();
+    let csrfHeader = Object.entries(condition.csrfHeader);
 
     if (type == "json") {
         for (let key in option.body) {
@@ -104,6 +153,10 @@ export function fetchURL(url, option = {}, type = "form", _0 = typeCheckThrow(ur
         }
 
         option.body = formData;
+    }
+
+    if (csrfHeader.length > 0) {
+        option.headers = new Headers(condition.csrfHeader);
     }
 
     return fetch(url, option)

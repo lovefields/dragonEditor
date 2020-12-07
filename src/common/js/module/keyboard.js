@@ -1,6 +1,6 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { isTextSelect, setCursor } = require("./cursor");
-const { getChild } = require("./selector");
+const { getChild, findContenteditable } = require("./selector");
 const { getTextBlockHTML, getListChildHTML, addBlockToContent } = require("./layout");
 
 export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
@@ -50,7 +50,7 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         if (condition.baseNode == lastChildNode && condition.baseOffset == lastChildNodeText) {
                             $editableItem.insertAdjacentHTML("afterend", getListChildHTML());
                             setCursor($editableItem.nextElementSibling, 0);
-                        } else if (condition.baseNode == childNodes[0] && condition.baseOffset == 0) {
+                        } else if (condition.baseNode == findContenteditable(childNodes[0]) && condition.baseOffset == 0) {
                             $editableItem.insertAdjacentHTML("beforebegin", getListChildHTML());
                         } else {
                             let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
@@ -133,52 +133,55 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
 
 export function contentTabKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
     e.preventDefault();
+    setCursor(condition.baseNode, condition.baseOffset);
 
-    let type = $item.dataset["type"];
-    let depth = parseInt($editableItem.dataset["depth"] == undefined ? 0 : $editableItem.dataset["depth"]);
+    setTimeout(() => {
+        let type = $item.dataset["type"];
+        let depth = parseInt($editableItem.dataset["depth"] == undefined ? 0 : $editableItem.dataset["depth"]);
 
-    if (shiftKey == true) {
-        if (depth > 0) {
-            depth -= 1;
-        }
-    } else {
-        if (depth < 3) {
-            depth += 1;
-        }
-    }
-
-    if (type == "text" || type == "ol" || type == "ul") {
-        if (depth == 0) {
-            $editableItem.removeAttribute("data-depth");
-        } else {
-            $editableItem.dataset["depth"] = depth;
-        }
-    } else if (type == "table") {
-        let editableItemName = $editableItem.constructor.name;
-
-        if (editableItemName == "HTMLTableCellElement") {
-            let x = parseInt($editableItem.dataset["x"]);
-            let y = parseInt($editableItem.dataset["y"]);
-
-            if (shiftKey == true) {
-                x -= 1;
-            } else {
-                x += 1;
+        if (shiftKey == true) {
+            if (depth > 0) {
+                depth -= 1;
             }
+        } else {
+            if (depth < 3) {
+                depth += 1;
+            }
+        }
 
-            let $target = getChild($item, `*[data-x="${x}"][data-y="${y}"]`, false);
+        if (type == "text" || type == "ol" || type == "ul") {
+            if (depth == 0) {
+                $editableItem.removeAttribute("data-depth");
+            } else {
+                $editableItem.dataset["depth"] = depth;
+            }
+        } else if (type == "table") {
+            let editableItemName = $editableItem.constructor.name;
 
-            if ($target != null) {
-                let hasChildNode = $target.childNodes.length > 0 ? true : false;
+            if (editableItemName == "HTMLTableCellElement") {
+                let x = parseInt($editableItem.dataset["x"]);
+                let y = parseInt($editableItem.dataset["y"]);
 
-                if (hasChildNode == true) {
-                    setCursor($target.childNodes[0], 0);
+                if (shiftKey == true) {
+                    x -= 1;
                 } else {
-                    setCursor($target, 0);
+                    x += 1;
+                }
+
+                let $target = getChild($item, `*[data-x="${x}"][data-y="${y}"]`, false);
+
+                if ($target != null) {
+                    let hasChildNode = $target.childNodes.length > 0 ? true : false;
+
+                    if (hasChildNode == true) {
+                        setCursor($target.childNodes[0], 0);
+                    } else {
+                        setCursor($target, 0);
+                    }
                 }
             }
         }
-    }
+    }, 150);
 }
 
 export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node)) {
@@ -223,8 +226,16 @@ export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheck
                         if (preElType == "text") {
                             let $preElChild = $preEl.childNodes;
                             let preElChildLength = $preElChild.length;
-                            let $target = $preElChild[preElChildLength - 1];
-                            position = $target.length;
+                            let $target;
+
+                            if (preElChildLength > 0) {
+                                // 이전 아이템에 자식이 있을경우
+                                $target = $preElChild[preElChildLength - 1];
+                                position = $target.length;
+                            } else {
+                                $target = $preEl;
+                                position = 0;
+                            }
 
                             setCursor($target, position);
                         } else {
@@ -244,30 +255,47 @@ export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheck
                     let hasPreEditable = $preEditable == null ? false : true;
 
                     if (childCount > 1) {
+                        // 리스트가 여러개일 경우
                         if (hasPreEditable == true) {
+                            // 이전 에디팅 요소가 있을경우
                             let $preChilds = $preEditable.childNodes;
                             let preChildCount = $preChilds.length;
-                            let text = $preEditable.innerHTML + $editableItem.innerHTML;
-                            position = $preChilds[preChildCount - 1].textContent.length;
+                            let $target;
 
-                            $preEditable.innerHTML = text;
+                            if (hasText == false) {
+                                if (preChildCount > 0) {
+                                    $target = $preChilds[preChildCount - 1];
+                                    position = $target.length;
+                                } else {
+                                    $target = $preEditable;
+                                    position = 0;
+                                }
+                            } else {
+                                if (preChildCount > 0) {
+                                    let html = $preEditable.innerHTML + text;
+                                    position = $preChilds[preChildCount - 1].textContent.length;
+                                    $preEditable.innerHTML = html;
+                                    $target = $preEditable.childNodes[preChildCount - 1];
+                                } else {
+                                    $preEditable.innerHTML = text;
+                                    $target = $preEditable;
+                                    position = 0;
+                                }
+                            }
+
                             $editableItem.remove();
-                            setCursor($preEditable.childNodes[preChildCount - 1], position);
+                            setCursor($target, position);
+                            condition.activeItem = $preEditable;
+                            condition.baseNode = $target;
                         } else {
                             $item.insertAdjacentHTML("beforebegin", getTextBlockHTML(text));
                             setCursor($item.previousElementSibling, 0);
-                            $editableItem.remove();
+                            $item.remove();
                         }
                     } else {
-                        if (hasText == true) {
-                            $item.insertAdjacentHTML("afterend", getTextBlockHTML(text));
-                            setCursor($item.nextElementSibling, 0);
-                            $item.remove();
-                        } else {
-                            $item.remove();
-                            classControl(condition.popOption, "remove", "--act");
-                            condition.activeItem = condition.wrap;
-                        }
+                        $item.insertAdjacentHTML("afterend", getTextBlockHTML(text));
+                        setCursor($item.nextElementSibling, 0);
+                        $item.remove();
                     }
                 }
             } else {

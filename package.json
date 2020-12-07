@@ -4,7 +4,7 @@
   "description": "DragonEditor is Javascript WYSIWYG editor.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd src && npm start",
+    "start": "cd src && npx webpack",
     "demo-deploy": "gh-pages -d demo"
   },
   "repository": {

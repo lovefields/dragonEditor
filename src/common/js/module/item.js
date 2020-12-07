@@ -93,21 +93,22 @@ export function getItemType($item, $editableItem) {
     return typeArr;
 }
 
+// content area keyboard event
 export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $item = findParentByClass(e.target, "djs-item");
     let $editableItem = findContenteditable(e.target);
-    let code = e.code;
+    let code = e.keyCode;
 
     setSelection();
 
     switch (code) {
-        case "Enter":
+        case 13:
             contentEnterKeyEvent($item, $editableItem, e.shiftKey, e);
             break;
-        case "Tab":
+        case 9:
             contentTabKeyEvent($item, $editableItem, e.shiftKey, e);
             break;
-        case "Backspace":
+        case 8:
             contentBackspaceKeyEvent($item, $editableItem, e);
             break;
     }
@@ -494,3 +495,15 @@ export function itemStructureValidation() {
         }
     });
 }
+
+// export function codeBlockHighlight(e, _0 = typeCheckThrow(e, Event)) {
+//     let $item = findParentByClass(e.target, "djs-item");
+//     let $editableItem = findContenteditable(e.target);
+//     let itemType = $item.dataset["type"];
+
+//     if (itemType == "codeblock") {
+//         console.log(condition.baseNode);
+//         hljs.highlightBlock($editableItem);
+//         setCursor($editableItem, condition.baseOffset);
+//     }
+// }

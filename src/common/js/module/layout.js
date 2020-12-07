@@ -20,15 +20,15 @@ export function makeView() {
     view += makeFolderPop();
     view += `</div>`;
 
-    if (condition.uploadURL !== "") {
-        view += makeUploadForm();
-    }
-
     view += makeLinkboxPop();
     view += makeOptionPop();
     view += makeEmoticonPop();
 
     condition.wrap.insertAdjacentHTML("beforeend", view);
+
+    if (condition.uploadURL !== "") {
+        document.body.insertAdjacentHTML("beforeend", makeUploadForm());
+    }
 }
 
 function makeContentArea() {
@@ -42,7 +42,7 @@ function makeBlockMenu(data) {
     for (const [key, value] of arr) {
         if (value.type === "block") {
             html += `
-                <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
+                <button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
                     <svg viewbox="0 0 64 64" class="editor-icon">
                         <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
                     </svg>
@@ -51,7 +51,7 @@ function makeBlockMenu(data) {
             `;
         } else if (value.type === "pop") {
             html += `
-                <button class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
+                <button type="button" class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
                     <svg viewbox="0 0 64 64" class="editor-icon">
                         <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
                     </svg>
@@ -60,7 +60,7 @@ function makeBlockMenu(data) {
             `;
         } else if (value.type === "file") {
             html += `
-                <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
+                <button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
                     <svg viewbox="0 0 64 64" class="editor-icon">
                         <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
                     </svg>
@@ -69,7 +69,7 @@ function makeBlockMenu(data) {
             `;
         } else {
             html += `
-                <button class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="custom">
+                <button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="custom">
                     <svg viewbox="0 0 64 64" class="editor-icon">
                         <use class="path" xlink:href="${value.icon}" href="${value.icon}"></use>
                     </svg>
@@ -89,7 +89,7 @@ function makeBottomMenu() {
 
     if (condition.uploadURL !== "") {
         html += `
-            <button class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-folder">
+            <button type="button" class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-folder">
                 <svg viewbox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-folder" href="#icon-folder"></use>
                 </svg>
@@ -100,7 +100,7 @@ function makeBottomMenu() {
 
     if (condition.multiLang == true) {
         html += `
-            <button class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-lang">
+            <button type="button" class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-lang">
                 <svg viewbox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-lang" href="#icon-lang"></use>
                 </svg>
@@ -110,7 +110,7 @@ function makeBottomMenu() {
     }
 
     html += `
-        <button class="editor-btn editor-switch-device djs-switch-device">
+        <button type="button" class="editor-btn editor-switch-device djs-switch-device">
             <svg class="editor-icon" viewbox="0 0 64 64">
                 <use class="path editor-pc" xlink:href="#icon-pc" href="#icon-pc"></use>
                 <use class="path editor-mobile" xlink:href="#icon_mobile" href="#icon-mobile"></use>
@@ -127,9 +127,9 @@ function makeLanguagePop() {
 
     condition.langCategory.forEach((lang) => {
         if (lang == condition.lang) {
-            html += `<button class="editor-btn-lang djs-change-lang --act" data-value="${lang}">${lang.toUpperCase()}</button>`;
+            html += `<button type="button" class="editor-btn-lang djs-change-lang --act" data-value="${lang}">${lang.toUpperCase()}</button>`;
         } else {
-            html += `<button class="editor-btn-lang djs-change-lang" data-value="${lang}">${lang.toUpperCase()}</button>`;
+            html += `<button type="button" class="editor-btn-lang djs-change-lang" data-value="${lang}">${lang.toUpperCase()}</button>`;
         }
     });
 
@@ -163,7 +163,7 @@ function makeLinkboxPop() {
         <div class="editor-pop-linkbox djs-linkbox-pop editor-clearfix djs-trigger" data-type="new">
             <input type="url" class="editor-input djs-input --new" placeholder="https://dico.me">
             <a href="" class="editor-link --del djs-link"></a>
-            <button class="editor-btn djs-btn" data-value="">
+            <button type="button" class="editor-btn djs-btn" data-value="">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path --del" xlink:href="#icon-delete-link" href="#icon-delete-link"></use>
                     <use class="path --new" xlink:href="#icon-btn-accept" href="#icon-btn-accept"></use>
@@ -190,7 +190,7 @@ function makeUploadForm() {
 }
 
 export function scrollButtonHTML() {
-    return `<button class="scroll-bar djs-scroll-bar" style="transform:translateY(0)"></button>`;
+    return `<button type="button" class="scroll-bar djs-scroll-bar" style="transform:translateY(0)"></button>`;
 }
 
 export function getDefaultBlockHTML(type, _0 = typeCheckThrow(type, "string")) {
@@ -245,8 +245,8 @@ export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "
         html += `<img src="${attr.src}.${attr.defaultFormat}" width="${attr.width}" alt="${attr.alt}" data-height="${attr.height}" class="editor-img djs-img" draggable="false">`;
     }
 
-    html += `<button class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button>`;
-    html += `<button class="editor-btn-resize --right djs-resize" data-value="width" data-position="right">resize</button>`;
+    html += `<button type="button" class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button>`;
+    html += `<button type="button" class="editor-btn-resize --right djs-resize" data-value="width" data-position="right">resize</button>`;
     html += `</div>`;
     html += `<p class="editor-caption djs-caption" contenteditable="true" data-type="caption">${attr.alt}</p>`;
     html += `</div>`;
@@ -332,7 +332,7 @@ export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {
     return `
         <div class="editor-item djs-item --djs-selected" data-type="youtube" data-code="${code}">
             <iframe src="https://www.youtube.com/embed/${code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe djs-iframe"></iframe>
-            <button class="editor-edit">edit</button>
+            <button type="button" class="editor-edit">edit</button>
         </div>
     `;
 }
@@ -341,8 +341,8 @@ export function getCodepenBlock(nickname, code, height = 300, _0 = typeCheckThro
     return `
         <div class="editor-item djs-item --djs-selected" data-type="codepen">
             <iframe height="${height}" title="" src="https://codepen.io/${nickname}/embed/${code}?height=${height}&theme-id=${condition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe djs-iframe" data-code="${code}" data-nickname="${nickname}"></iframe>
-            <button class="editor-btn-resize djs-resize" data-value="height">Resize height</button>
-            <button class="editor-edit">edit</button>
+            <button type="button" class="editor-btn-resize djs-resize" data-value="height">Resize height</button>
+            <button type="button" class="editor-edit">edit</button>
         </div>
     `;
 }
@@ -373,7 +373,7 @@ function makeOptionPop() {
 
     html += `
             <div class="editor-col --act" data-group="text,li,table,codeblock,word">
-                <button class="editor-select djs-fontsize djs-toggle-target djs-btn-ignore" data-target=".editor-list-fontsize">
+                <button type="button" class="editor-select djs-fontsize djs-toggle-target djs-btn-ignore" data-target=".editor-list-fontsize">
                     <span class="editor-text djs-text">16</span>
 
                     <svg class="editor-icon" viewbox="0 0 64 64">
@@ -388,7 +388,7 @@ function makeOptionPop() {
     condition.frontSize.forEach((size) => {
         let text = Math.floor(condition.defaultFontSize * size);
 
-        html += `<button class="editor-btn djs-change-fontsize" data-value="${size}">${text}</button>`;
+        html += `<button type="button" class="editor-btn djs-change-fontsize" data-value="${size}">${text}</button>`;
     });
 
     html += `
@@ -399,12 +399,12 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act" data-group="text,li,table,word">
-            <button class="editor-color djs-color djs-toggle-target djs-btn-ignore" data-target=".editor-list-color" data-value="#333"></button>
+            <button type="button" class="editor-color djs-color djs-toggle-target djs-btn-ignore" data-target=".editor-list-color" data-value="#333"></button>
             <div class="editor-list-color djs-trigger">
     `;
 
     condition.colorList.forEach((color) => {
-        html += `<button class="editor-btn djs-change-color" data-value="${color}">${color}</button>`;
+        html += `<button type="button" class="editor-btn djs-change-color" data-value="${color}">${color}</button>`;
     });
 
     html += `
@@ -414,7 +414,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act editor-btn-area" data-group="text,li,table,image,sticker">
-            <button class="editor-btn djs-change-align" data-value="left">
+            <button type="button" class="editor-btn djs-change-align" data-value="left">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-align-left" href="#icon-align-left"></use>
                 </svg>
@@ -422,7 +422,7 @@ function makeOptionPop() {
                 align left
             </button>
 
-            <button class="editor-btn djs-change-align" data-value="center">
+            <button type="button" class="editor-btn djs-change-align" data-value="center">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-align-center" href="#icon-align-center"></use>
                 </svg>
@@ -430,7 +430,7 @@ function makeOptionPop() {
                 align center
             </button>
 
-            <button class="editor-btn djs-change-align" data-value="right">
+            <button type="button" class="editor-btn djs-change-align" data-value="right">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-align-right" href="#icon-align-right"></use>
                 </svg>
@@ -440,7 +440,7 @@ function makeOptionPop() {
         </div>
 
         <div class="editor-col --act editor-btn-area" data-group="text,li,table,word,link">
-            <button class="editor-btn djs-toggle-bold">
+            <button type="button" class="editor-btn djs-toggle-bold">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-bold" href="#icon-bold"></use>
                 </svg>
@@ -448,7 +448,7 @@ function makeOptionPop() {
                 bold
             </button>
 
-            <button class="editor-btn djs-toggle-italic">
+            <button type="button" class="editor-btn djs-toggle-italic">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-italic" href="#icon-italic"></use>
                 </svg>
@@ -456,7 +456,7 @@ function makeOptionPop() {
                 italic
             </button>
 
-            <button class="editor-btn djs-toggle-underline">
+            <button type="button" class="editor-btn djs-toggle-underline">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-underline" href="#icon-underline"></use>
                 </svg>
@@ -464,7 +464,7 @@ function makeOptionPop() {
                 underline
             </button>
 
-            <button class="editor-btn djs-toggle-strikethrough">
+            <button type="button" class="editor-btn djs-toggle-strikethrough">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-strikethrough" href="#icon-strikethrough"></use>
                 </svg>
@@ -474,7 +474,7 @@ function makeOptionPop() {
         </div>
 
         <div class="editor-col --act editor-btn-area" data-group="td">
-            <button class="editor-btn djs-table-header">
+            <button type="button" class="editor-btn djs-table-header">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-table-header" href="#icon-table-header"></use>
                 </svg>
@@ -484,7 +484,7 @@ function makeOptionPop() {
         </div>
 
         <div class="editor-col --act editor-btn-area" data-group="th">
-            <button class="editor-btn djs-table-body">
+            <button type="button" class="editor-btn djs-table-body">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-table-body" href="#icon-table-body"></use>
                 </svg>
@@ -494,7 +494,7 @@ function makeOptionPop() {
         </div>
 
         <div class="editor-col --act editor-btn-area" data-group="word,link">
-            <button class="editor-btn djs-open-linkbox">
+            <button type="button" class="editor-btn djs-open-linkbox">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-link" href="#icon-link"></use>
                 </svg>
@@ -504,7 +504,7 @@ function makeOptionPop() {
         </div>
 
         <div class="editor-col --act editor-btn-area" data-group="codeblock">
-            <button class="editor-btn djs-code-theme djs-toggle-target djs-btn-ignore" data-target=".editor-list-theme">
+            <button type="button" class="editor-btn djs-code-theme djs-toggle-target djs-btn-ignore" data-target=".editor-list-theme">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-theme" href="#icon-theme"></use>
                 </svg>
@@ -516,7 +516,7 @@ function makeOptionPop() {
     `;
 
     condition.codeTheme.forEach((theme) => {
-        html += `<button class="editor-btn djs-set-theme" data-value="${theme}">${upperFirstChar(theme)}</button>`;
+        html += `<button type="button" class="editor-btn djs-set-theme" data-value="${theme}">${upperFirstChar(theme)}</button>`;
     });
 
     html += `
@@ -526,7 +526,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act" data-group="codeblock">
-            <button class="editor-select djs-code-lang djs-toggle-target djs-btn-ignore" data-target=".editor-list-lang">
+            <button type="button" class="editor-select djs-code-lang djs-toggle-target djs-btn-ignore" data-target=".editor-list-lang">
                 <span class="editor-text djs-text">Text</span>
 
                 <svg class="editor-icon" viewbox="0 0 64 64">
@@ -538,7 +538,7 @@ function makeOptionPop() {
     `;
 
     condition.codeLang.forEach((lang) => {
-        html += `<button class="editor-btn djs-set-lang" data-value="${lang}">${upperFirstChar(lang)}</button>`;
+        html += `<button type="button" class="editor-btn djs-set-lang" data-value="${lang}">${upperFirstChar(lang)}</button>`;
     });
 
     html += `
@@ -548,7 +548,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act" data-group="ol">
-            <button class="editor-select djs-list-style djs-toggle-target djs-btn-ignore" data-target=".editor-list-type">
+            <button type="button" class="editor-select djs-list-style djs-toggle-target djs-btn-ignore" data-target=".editor-list-type">
                 <span class="editor-text djs-text">Numbered - 1</span>
 
                 <svg class="editor-icon" viewbox="0 0 64 64">
@@ -557,18 +557,18 @@ function makeOptionPop() {
             </button>
 
             <div class="editor-list-select editor-list-type djs-trigger">
-                <button class="editor-btn djs-set-list-type" data-value="number">Numbered - 1</button>
-                <button class="editor-btn djs-set-list-type" data-value="upper-roman">Upper-roman - I</button>
-                <button class="editor-btn djs-set-list-type" data-value="lower-roman">Lower-roman - i</button>
-                <button class="editor-btn djs-set-list-type" data-value="upper-alpha">Upper-alpha - A</button>
-                <button class="editor-btn djs-set-list-type" data-value="lower-alpha">Lower-alpha - a</button>
+                <button type="button" class="editor-btn djs-set-list-type" data-value="number">Numbered - 1</button>
+                <button type="button" class="editor-btn djs-set-list-type" data-value="upper-roman">Upper-roman - I</button>
+                <button type="button" class="editor-btn djs-set-list-type" data-value="lower-roman">Lower-roman - i</button>
+                <button type="button" class="editor-btn djs-set-list-type" data-value="upper-alpha">Upper-alpha - A</button>
+                <button type="button" class="editor-btn djs-set-list-type" data-value="lower-alpha">Lower-alpha - a</button>
             </div>
         </div>
     `;
 
     html += `
         <div class="editor-col --act editor-btn-area" data-group="all">
-            <button class="editor-btn djs-move-up">
+            <button type="button" class="editor-btn djs-move-up">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-arrow-up" href="#icon-arrow-up"></use>
                 </svg>
@@ -580,7 +580,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act editor-btn-area" data-group="all">
-            <button class="editor-btn djs-move-down">
+            <button type="button" class="editor-btn djs-move-down">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-arrow-down" href="#icon-arrow-down"></use>
                 </svg>
@@ -592,7 +592,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act editor-btn-area" data-group="word,wordblock">
-            <button class="editor-btn djs-word-block">
+            <button type="button" class="editor-btn djs-word-block">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path" xlink:href="#icon-word-block" href="#icon-word-block"></use>
                 </svg>
@@ -604,7 +604,7 @@ function makeOptionPop() {
 
     html += `
         <div class="editor-col --act editor-btn-area --noline" data-group="all">
-            <button class="editor-btn djs-delete-block">
+            <button type="button" class="editor-btn djs-delete-block">
                 <svg viewBox="0 0 64 64" class="editor-icon">
                     <use class="path --red" xlink:href="#icon-delete-block" href="#icon-delete-block"></use>
                 </svg>
@@ -627,13 +627,13 @@ export function setEmoticonList(data) {
     data.forEach((row) => {
         if (row.type == "image") {
             html += `
-                <button class="editor-emoticon djs-add-emoticon">
+                <button type="button" class="editor-emoticon djs-add-emoticon">
                     <img src="${row.value}" alt="${row.caption}" class="img">
                 </button>
             `;
         } else if (row.type == "svg") {
             html += `
-                <button class="editor-emoticon djs-add-emoticon">
+                <button type="button" class="editor-emoticon djs-add-emoticon">
                     ${row.value}
                 </button>
             `;
@@ -655,7 +655,7 @@ export function setMediaList(data) {
                     </div>
 
                     <p class="editor-name djs-name">${row.alt}</p>
-                    <button class="editor-btn-del djs-del-media" data-idx="${row.idx}">
+                    <button type="button" class="editor-btn-del djs-del-media" data-idx="${row.idx}">
                         <svg viewBox="0 0 64 64" class="editor-icon">
                             <use class="path" xlink:href="#icon-delete-block" href="#icon-delete-block"></use>
                         </svg>

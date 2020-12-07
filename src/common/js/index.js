@@ -8,6 +8,7 @@ const { jsonToHtml } = require("./module/convertor");
 module.exports = class {
     constructor(wrap = "", options = {}, _0 = typeCheckThrow(wrap, "string"), _1 = typeCheckThrow(options, "object")) {
         global.condition = new storage(wrap, options);
+        condition.wrap.dataset["layout"] = condition.layout;
 
         makeView();
         condition.setElement(options);
