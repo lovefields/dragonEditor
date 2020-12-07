@@ -1,6 +1,6 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { isTextSelect, setCursor } = require("./cursor");
-const { getChild } = require("./selector");
+const { getChild, findContenteditable } = require("./selector");
 const { getTextBlockHTML, getListChildHTML, addBlockToContent } = require("./layout");
 
 export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
@@ -50,7 +50,7 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         if (condition.baseNode == lastChildNode && condition.baseOffset == lastChildNodeText) {
                             $editableItem.insertAdjacentHTML("afterend", getListChildHTML());
                             setCursor($editableItem.nextElementSibling, 0);
-                        } else if (condition.baseNode == childNodes[0] && condition.baseOffset == 0) {
+                        } else if (condition.baseNode == findContenteditable(childNodes[0]) && condition.baseOffset == 0) {
                             $editableItem.insertAdjacentHTML("beforebegin", getListChildHTML());
                         } else {
                             let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
@@ -226,8 +226,16 @@ export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheck
                         if (preElType == "text") {
                             let $preElChild = $preEl.childNodes;
                             let preElChildLength = $preElChild.length;
-                            let $target = $preElChild[preElChildLength - 1];
-                            position = $target.length;
+                            let $target;
+
+                            if (preElChildLength > 0) {
+                                // 이전 아이템에 자식이 있을경우
+                                $target = $preElChild[preElChildLength - 1];
+                                position = $target.length;
+                            } else {
+                                $target = $preEl;
+                                position = 0;
+                            }
 
                             setCursor($target, position);
                         } else {
@@ -247,30 +255,47 @@ export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheck
                     let hasPreEditable = $preEditable == null ? false : true;
 
                     if (childCount > 1) {
+                        // 리스트가 여러개일 경우
                         if (hasPreEditable == true) {
+                            // 이전 에디팅 요소가 있을경우
                             let $preChilds = $preEditable.childNodes;
                             let preChildCount = $preChilds.length;
-                            let text = $preEditable.innerHTML + $editableItem.innerHTML;
-                            position = $preChilds[preChildCount - 1].textContent.length;
+                            let $target;
 
-                            $preEditable.innerHTML = text;
+                            if (hasText == false) {
+                                if (preChildCount > 0) {
+                                    $target = $preChilds[preChildCount - 1];
+                                    position = $target.length;
+                                } else {
+                                    $target = $preEditable;
+                                    position = 0;
+                                }
+                            } else {
+                                if (preChildCount > 0) {
+                                    let html = $preEditable.innerHTML + text;
+                                    position = $preChilds[preChildCount - 1].textContent.length;
+                                    $preEditable.innerHTML = html;
+                                    $target = $preEditable.childNodes[preChildCount - 1];
+                                } else {
+                                    $preEditable.innerHTML = text;
+                                    $target = $preEditable;
+                                    position = 0;
+                                }
+                            }
+
                             $editableItem.remove();
-                            setCursor($preEditable.childNodes[preChildCount - 1], position);
+                            setCursor($target, position);
+                            condition.activeItem = $preEditable;
+                            condition.baseNode = $target;
                         } else {
                             $item.insertAdjacentHTML("beforebegin", getTextBlockHTML(text));
                             setCursor($item.previousElementSibling, 0);
-                            $editableItem.remove();
+                            $item.remove();
                         }
                     } else {
-                        if (hasText == true) {
-                            $item.insertAdjacentHTML("afterend", getTextBlockHTML(text));
-                            setCursor($item.nextElementSibling, 0);
-                            $item.remove();
-                        } else {
-                            $item.remove();
-                            classControl(condition.popOption, "remove", "--act");
-                            condition.activeItem = condition.wrap;
-                        }
+                        $item.insertAdjacentHTML("afterend", getTextBlockHTML(text));
+                        setCursor($item.nextElementSibling, 0);
+                        $item.remove();
                     }
                 }
             } else {
