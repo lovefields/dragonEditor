@@ -97,18 +97,18 @@ export function getItemType($item, $editableItem) {
 export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
     let $item = findParentByClass(e.target, "djs-item");
     let $editableItem = findContenteditable(e.target);
-    let code = e.code;
+    let code = e.keyCode;
 
     setSelection();
 
     switch (code) {
-        case "Enter":
+        case 13:
             contentEnterKeyEvent($item, $editableItem, e.shiftKey, e);
             break;
-        case "Tab":
+        case 9:
             contentTabKeyEvent($item, $editableItem, e.shiftKey, e);
             break;
-        case "Backspace":
+        case 8:
             contentBackspaceKeyEvent($item, $editableItem, e);
             break;
     }
