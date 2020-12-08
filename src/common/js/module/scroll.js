@@ -11,7 +11,7 @@ export function setScroll() {
     });
 }
 
-function setScrollHeight($wrap, _0 = typeCheckThrow($wrap, Node)) {
+function setScrollHeight($wrap, _0 = typeCheckThrow($wrap, "node")) {
     let $bar = getChild($wrap, ".djs-scroll-bar", false);
     let value = getScrollInfo($wrap);
 
@@ -25,7 +25,7 @@ export function refreshScroll() {
     });
 }
 
-export function getScrollInfo($wrap, _0 = typeCheckThrow($wrap, Node)) {
+export function getScrollInfo($wrap, _0 = typeCheckThrow($wrap, "node")) {
     let $content = getChild($wrap, ".djs-scroll-content", false);
     let wrapOffset = $wrap.getBoundingClientRect();
     let contentOffset = $content.getBoundingClientRect();

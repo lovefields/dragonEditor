@@ -2,7 +2,7 @@
 [![Github issues](https://img.shields.io/github/issues/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/issues)
 [![Github forks](https://img.shields.io/github/forks/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/network/members)
 [![Github top language](https://img.shields.io/github/languages/top/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/)
-[![HitCount](http://hits.dwyl.com/lovefields/dragonEditor.svg)](http://hits.dwyl.com/lovefields/dragonEditor)
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Flovefields%2FdragonEditor&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 # DragonEditor
 I made DragonEditor because I needed an WYSIWYG editor to use in my blog. And I wanted to make every design acceptable.
@@ -54,7 +54,7 @@ We never ever support IE.
 <script>
     const editor = new dragonEditor();
     // OR
-    const editor = new dragonEditor("selector", {
+    const editor = new dragonEditor({
         key: "value",
     });
 </script>
@@ -73,10 +73,7 @@ We never ever support IE.
 ```
 
 ## Demo
-[(https://lovefields.github.io/dragonEditor/demo/editor.html)](https://lovefields.github.io/dragonEditor/demo/editor.html)
-
-### Deploy demo
-install node module 'gh-pages' and run 'npx build demo-deploy'.
+[Demo page](https://lovefields.github.io/dragonEditor/demo/editor.html)
 
 ## Document
 

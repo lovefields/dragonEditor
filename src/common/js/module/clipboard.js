@@ -3,7 +3,7 @@ const { findParentByClass } = require("./selector");
 const { setCursor } = require("./cursor");
 const { setSelection } = require("./selection");
 
-export function contentPasteEvent(e, _0 = typeCheckThrow(e, Event)) {
+export function contentPasteEvent(e, _0 = typeCheckThrow(e, "event")) {
     e.preventDefault();
 
     let selection = window.getSelection();
@@ -32,7 +32,7 @@ export function contentPasteEvent(e, _0 = typeCheckThrow(e, Event)) {
     }
 }
 
-function getDataAndKind(data, _0 = typeCheckThrow(data, DataTransfer)) {
+function getDataAndKind(data, _0 = typeCheckThrow(data, "datatransfer")) {
     if (data === false) {
         return undefined;
     }

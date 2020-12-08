@@ -182,7 +182,7 @@ export function jsonToHtml(json) {
     return html;
 }
 
-export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, NodeList)) {
+export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")) {
     let arr = [];
 
     $nodeList.forEach(($item) => {

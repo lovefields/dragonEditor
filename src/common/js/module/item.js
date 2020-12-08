@@ -7,7 +7,7 @@ const { findParentByClass, findContenteditable, getChild, getElement } = require
 const { hasBaseNode, setSelection } = require("./selection");
 const { message } = require("./message");
 
-export function itemClickEvent(e, _0 = typeCheckThrow(e, Event)) {
+export function itemClickEvent(e, _0 = typeCheckThrow(e, "event")) {
     let $target = e.target;
     let $item = findParentByClass($target, "djs-item");
     let $editableItem = findContenteditable($target);
@@ -94,7 +94,7 @@ export function getItemType($item, $editableItem) {
 }
 
 // content area keyboard event
-export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, Event)) {
+export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, "event")) {
     let $item = findParentByClass(e.target, "djs-item");
     let $editableItem = findContenteditable(e.target);
     let code = e.keyCode;

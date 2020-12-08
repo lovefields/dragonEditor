@@ -21,7 +21,7 @@ export function setEvent() {
 function setGlobalEvent() {
     // window size update
     let resizeFn;
-    eventBinding(window, "resize", function (e) {
+    eventBinding(window, "resize", function () {
         clearTimeout(resizeFn);
         resizeFn = setTimeout(() => {
             condition.windowWidth = window.innerWidth;
@@ -372,7 +372,7 @@ function setMenuEvent() {
     });
 }
 
-export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
+export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, "node")) {
     let $content = getChild($wrap, ".djs-scroll-content", false);
     let $bar = getChild($wrap, ".djs-scroll-bar", false);
     let value = getScrollInfo($wrap);
@@ -771,7 +771,7 @@ function setOptionEvent() {
     });
 }
 
-function textDecorationEvent($btn, type, tagName, _0 = typeCheckThrow($btn, Node), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(tagName, "string")) {
+function textDecorationEvent($btn, type, tagName, _0 = typeCheckThrow($btn, "node"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(tagName, "string")) {
     let isAct = $btn.classList.contains("--act");
     let $editable = findContenteditable(condition.baseNode);
 

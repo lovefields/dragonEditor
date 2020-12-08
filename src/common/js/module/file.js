@@ -43,16 +43,19 @@ export async function fileUpload() {
                     setWidth = 400;
                 }
             }
+
             block = getImageBlockHTML(item, setWidth);
 
             addBlockToContent(block);
         });
+
+        condition.uploadInput.value = "";
     } else {
         alert(request.error.message);
     }
 }
 
-export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, Node)) {
+export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, "node")) {
     let $field = findParentByClass($node, "djs-name");
     let $item = findParentByClass($node, "djs-media");
     let text = $field.textContent;
