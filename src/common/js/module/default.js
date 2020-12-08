@@ -1,85 +1,145 @@
 const { message } = require("./message");
 
 export function typeCheckThrow(target, type) {
-    if (typeof type == "string") {
-        let targetType = typeof target;
-        let typeArr = type.split(",");
+    if (type !== "*") {
+        if (typeof type === "string") {
+            let typeofValue = typeof target;
+            let typeArr = type.split(",");
+            let instanseName;
 
-        if (typeArr.indexOf(targetType) == -1) {
-            throw `DRAGON EDITOR - invalid type ${target} : ${typeArr.join(",")}`;
-        }
-    } else {
-        let typeArr;
-        let value = true;
-
-        if (type instanceof Function) {
-            typeArr = [type];
-        } else if (type instanceof Array) {
-            typeArr = type;
-        } else {
-            throw `DRAGON EDITOR - Wrong type check augment ${type}`;
-        }
-
-        typeArr.forEach((item) => {
-            if (!(target instanceof item)) {
-                value = false;
+            if (typeofValue !== "object") {
+                instanseName = typeofValue;
+            } else {
+                if (target.addEventListener !== undefined) {
+                    instanseName = "node";
+                } else {
+                    if (target instanceof Event) {
+                        instanseName = "event";
+                    } else {
+                        instanseName = target.constructor.name.toLowerCase();
+                    }
+                }
             }
-        });
 
-        if (value == false) {
-            throw `DRAGON EDITOR - invalid type ${target} : ${type}`;
+            if (typeArr.indexOf(instanseName) == -1) {
+                throw `DRAGON EDITOR - invalid type ${target} : ${typeArr.join(",")}`;
+            }
+        } else {
+            throw `DRAGON EDITOR - type augment is must be String : ${type}`;
         }
     }
 
     return target;
+
+    // if (typeof type == "string") {
+    //     let targetType = typeof target;
+    //     let typeArr = type.split(",");
+
+    //     if (typeArr.indexOf(targetType) == -1) {
+    //         throw `DRAGON EDITOR - invalid type ${target} : ${typeArr.join(",")}`;
+    //     }
+    // } else {
+    //     let typeArr;
+    //     let value = true;
+
+    //     if (type instanceof Function) {
+    //         typeArr = [type];
+    //     } else if (type instanceof Array) {
+    //         typeArr = type;
+    //     } else {
+    //         throw `DRAGON EDITOR - Wrong type check augment ${type}`;
+    //     }
+
+    //     typeArr.forEach((item) => {
+    //         if (!(target instanceof item)) {
+    //             value = false;
+    //         }
+    //     });
+
+    //     if (value == false) {
+    //         throw `DRAGON EDITOR - invalid type ${target} : ${type}`;
+    //     }
+    // }
+
+    // return target;
 }
 
 export function typeCheckBoolean(target, type) {
     let status = true;
 
-    if (typeof type == "string") {
-        let targetType = typeof target;
-        let typeArr = type.split(",");
+    if (type !== "*") {
+        if (typeof type === "string") {
+            let typeofValue = typeof target;
+            let typeArr = type.split(",");
+            let instanseName;
 
-        if (typeArr.indexOf(targetType) == -1) {
-            status = false;
-        }
-    } else {
-        let typeArr;
-        let value = true;
-
-        if (type instanceof Function) {
-            typeArr = [type];
-        } else if (type instanceof Array) {
-            typeArr = type;
-        } else {
-            status = false;
-        }
-
-        typeArr.forEach((item) => {
-            if (!(target instanceof item)) {
-                value = false;
+            if (typeofValue !== "object") {
+                instanseName = typeofValue;
+            } else {
+                if (target.addEventListener !== undefined) {
+                    instanseName = "node";
+                } else {
+                    if (target instanceof Event) {
+                        instanseName = "event";
+                    } else {
+                        instanseName = target.constructor.name.toLowerCase();
+                    }
+                }
             }
-        });
 
-        if (value == false) {
+            if (typeArr.indexOf(instanseName) == -1) {
+                status = false;
+            }
+        } else {
             status = false;
         }
     }
 
     return status;
+
+    // if (typeof type == "string") {
+    //     let targetType = typeof target;
+    //     let typeArr = type.split(",");
+
+    //     if (typeArr.indexOf(targetType) == -1) {
+    //         status = false;
+    //     }
+    // } else {
+    //     let typeArr;
+    //     let value = true;
+
+    //     if (type instanceof Function) {
+    //         typeArr = [type];
+    //     } else if (type instanceof Array) {
+    //         typeArr = type;
+    //     } else {
+    //         status = false;
+    //     }
+
+    //     typeArr.forEach((item) => {
+    //         if (!(target instanceof item)) {
+    //             value = false;
+    //         }
+    //     });
+
+    //     if (value == false) {
+    //         status = false;
+    //     }
+    // }
+
+    // return status;
 }
 
-export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function"), _3 = typeCheckThrow(useCapture, "boolean")) {
+export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheckThrow($node, "*"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function"), _3 = typeCheckThrow(useCapture, "boolean")) {
     let typeList = type.split(",");
 
-    if ($node.length > 0) {
+    if ($node.forEach != undefined) {
         $node.forEach(($item) => {
             typeList.forEach((eventName) => {
                 $item.addEventListener(eventName, fn, true);
             });
         });
-    } else {
+    } else if ($node.addEventListener != undefined) {
         typeList.forEach((eventName) => {
             $node.addEventListener(eventName, fn, true);
         });
@@ -89,7 +149,7 @@ export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheck
 export function removeEvent($node, type, fn, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function")) {
     let typeList = type.split(",");
 
-    if ($node.length > 0) {
+    if ($node.forEach != undefined) {
         $node.forEach(($item) => {
             typeList.forEach((eventName) => {
                 $item.removeEventListener(eventName, fn, true);
@@ -102,8 +162,8 @@ export function removeEvent($node, type, fn, _0 = typeCheckThrow($node, "object"
     }
 }
 
-export function classControl($node, action, className, _0 = typeCheckThrow($node, "object"), _1 = typeCheckThrow(action, "string"), _2 = typeCheckThrow(className, "string")) {
-    if ($node.length > 0) {
+export function classControl($node, action, className, _0 = typeCheckThrow($node, "*"), _1 = typeCheckThrow(action, "string"), _2 = typeCheckThrow(className, "string")) {
+    if ($node.forEach != undefined) {
         $node.forEach(($item) => {
             if (action == "add") {
                 $item.classList.add(className);
@@ -113,7 +173,7 @@ export function classControl($node, action, className, _0 = typeCheckThrow($node
                 $item.classList.toggle(className);
             }
         });
-    } else {
+    } else if ($node.addEventListener != undefined) {
         if (action == "add") {
             $node.classList.add(className);
         } else if (action == "remove") {
@@ -124,7 +184,7 @@ export function classControl($node, action, className, _0 = typeCheckThrow($node
     }
 }
 
-export function hasClass($node, className, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(className, "string")) {
+export function hasClass($node, className, _0 = typeCheckThrow($node, "node"), _1 = typeCheckThrow(className, "string")) {
     let value = false;
     let nameList = className.split(".");
 
@@ -187,7 +247,7 @@ export function isMobile() {
     }
 }
 
-export function hasValueArrToArr(baseArr, inputArr, _0 = typeCheckThrow(baseArr, Array), _1 = typeCheckThrow(inputArr, Array)) {
+export function hasValueArrToArr(baseArr, inputArr, _0 = typeCheckThrow(baseArr, "array"), _1 = typeCheckThrow(inputArr, "array")) {
     let boolean = false;
 
     inputArr.forEach((item) => {

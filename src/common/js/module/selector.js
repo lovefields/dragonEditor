@@ -8,7 +8,7 @@ export function getElement(className, multiple = true, _0 = typeCheckThrow(class
     }
 }
 
-export function getChild(parent, className, multiple = true, _0 = typeCheckThrow(parent, Node), _1 = typeCheckThrow(className, "string"), _2 = typeCheckThrow(multiple, "boolean")) {
+export function getChild(parent, className, multiple = true, _0 = typeCheckThrow(parent, "node"), _1 = typeCheckThrow(className, "string"), _2 = typeCheckThrow(multiple, "boolean")) {
     if (multiple == true) {
         return parent.querySelectorAll(className);
     } else {
@@ -27,7 +27,7 @@ export function checkElement(className = "", defaultName, multiple = true, _0 = 
     return $dumy == false ? getElement(defaultName, multiple) : getElement(className, multiple);
 }
 
-export function findParentByClass($node, className, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(className, "string")) {
+export function findParentByClass($node, className, _0 = typeCheckThrow($node, "node"), _1 = typeCheckThrow(className, "string")) {
     if ($node.constructor.name !== "HTMLBodyElement" && $node.constructor.name !== "HTMLHtmlElement") {
         if ($node.constructor.name == "Text") {
             $node = $node.parentNode;
@@ -60,7 +60,7 @@ export function getActiveElement() {
     }
 }
 
-export function findContenteditable($node, _0 = typeCheckThrow($node, Node)) {
+export function findContenteditable($node, _0 = typeCheckThrow($node, "node")) {
     let constructorName = $node.constructor.name;
     let $target;
 

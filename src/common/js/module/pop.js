@@ -3,7 +3,7 @@ const { getElement, getChild, findParentByClass, findContenteditable } = require
 const { getTextItemOption } = require("./option");
 const { getItemType, itemStructureValidation } = require("./item");
 
-export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, Node)) {
+export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, "node")) {
     let offset = $node.getBoundingClientRect();
 
     switch (type) {
@@ -22,7 +22,7 @@ export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = t
     }
 }
 
-function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "object")) {
+function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "domrect")) {
     let popOffset = condition.popEmoticon.getBoundingClientRect();
     let right = condition.windowWidth - offset.right + (offset.width + 10);
     let top = offset.top;
@@ -43,7 +43,7 @@ function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "object")) {
     classControl(condition.popEmoticon, "toggle", "--act");
 }
 
-export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "object")) {
+export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "domrect")) {
     let popOffset = condition.popLinkbox.getBoundingClientRect();
     let $input = getChild(condition.popLinkbox, ".djs-input", false);
     let $btn = getChild(condition.popLinkbox, ".djs-btn", false);
@@ -82,7 +82,7 @@ export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string
     }
 }
 
-function closePopIgnore(node, _0 = typeCheckThrow(node, Node)) {
+function closePopIgnore(node, _0 = typeCheckThrow(node, "node")) {
     let $popList = getElement(".djs-trigger.--act");
 
     if ($popList.length > 0) {
@@ -94,7 +94,7 @@ function closePopIgnore(node, _0 = typeCheckThrow(node, Node)) {
     }
 }
 
-export function closeOptionPop($target, _0 = typeCheckThrow($target, Node)) {
+export function closeOptionPop($target, _0 = typeCheckThrow($target, "node")) {
     let isOptionPop = findParentByClass($target, "djs-option-pop") !== null ? true : false;
     let isItem = findParentByClass($target, "djs-item") !== null ? true : false;
     let $btn = findParentByClass($target, "djs-add-block");
