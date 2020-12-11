@@ -22,7 +22,7 @@ export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = t
     }
 }
 
-function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "domrect")) {
+function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "domrect,object")) {
     let popOffset = condition.popEmoticon.getBoundingClientRect();
     let right = condition.windowWidth - offset.right + (offset.width + 10);
     let top = offset.top;
@@ -43,7 +43,7 @@ function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "domrect")) {
     classControl(condition.popEmoticon, "toggle", "--act");
 }
 
-export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "domrect")) {
+export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "domrect,object")) {
     let popOffset = condition.popLinkbox.getBoundingClientRect();
     let $input = getChild(condition.popLinkbox, ".djs-input", false);
     let $btn = getChild(condition.popLinkbox, ".djs-btn", false);

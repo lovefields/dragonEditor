@@ -19,7 +19,7 @@ export function setEvent() {
 }
 
 function setGlobalEvent() {
-    // window size update
+    // window size update & option pop close
     let resizeFn;
     eventBinding(window, "resize", function () {
         clearTimeout(resizeFn);

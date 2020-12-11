@@ -5,6 +5,7 @@ const { getTextItemOption, setTextItemOption } = require("./option");
 const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild, getElement } = require("./selector");
 const { hasBaseNode, setSelection } = require("./selection");
+const { getTextBlockHTML } = require("./layout");
 const { message } = require("./message");
 
 export function itemClickEvent(e, _0 = typeCheckThrow(e, "event")) {
@@ -494,6 +495,10 @@ export function itemStructureValidation() {
             });
         }
     });
+
+    if($itemList.length == 0){
+        condition.areaContent.insertAdjacentHTML("beforeend", getTextBlockHTML());
+    }
 }
 
 // export function codeBlockHighlight(e, _0 = typeCheckThrow(e, Event)) {
