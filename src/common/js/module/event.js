@@ -150,7 +150,7 @@ function setMenuEvent() {
                 if (condition.linkBoxApi === "") {
                     let request = await fetchURL(`https://api.allorigins.win/get?url=${value}`);
 
-                    if (request.respon !== false) {
+                    if (request.response !== false) {
                         let text = request.contents;
                         let regTitleCheck = new RegExp('property=\\"og:title\\"', "g");
                         let regTitle01 = new RegExp('([^])*\\<title>([^"]*)<\\/title>([^]*)', "g");
@@ -214,7 +214,7 @@ function setMenuEvent() {
                         },
                     });
 
-                    if (request.respon == true) {
+                    if (request.response == true) {
                         request.data.url = value;
                         html = getLinkboxBlock(request.data);
                         boolean = true;
@@ -339,7 +339,7 @@ function setMenuEvent() {
                         method: "DELETE",
                     });
 
-                    if (request.respon == true) {
+                    if (request.response == true) {
                         let $blockList = getChild(condition.areaContent, `img[src="${data.src}.${data.defaultFormat}"]`);
 
                         $blockList.forEach(($img) => {
