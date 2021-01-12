@@ -33,21 +33,25 @@ function dragonEditorViewConvertor($data, $useWebp = false, $amp = false, $codep
 
                 if ($amp == true){
                     if ($useWebp == true){
-                        $html .= '<amp-img src="' . $item['src'] . '.webp" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive">';
-                        $html .= '<amp-img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
-                        $html .= '</amp-img>';
+                        if ($item['hasWebp'] == true) {
+                            $html .= '<amp-img src="' . IMG_URL . $item['src'] . '.webp" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive">';
+                            $html .= '<amp-img fallback src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
+                            $html .= '</amp-img>';
+                        } else {
+                            $html .= '<amp-img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
+                        }
                     } else {
-                        $html .= '<amp-img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
+                        $html .= '<amp-img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
                     }
                 } else {
                     if ($useWebp == true) {
                         $html .= '<picture>';
                         if ($item['hasWebp'] == true) {
-                            $html .= '<source srcset="' . $item['src'] . '.webp" type="image/webp">';
+                            $html .= '<source srcset="' . IMG_URL . $item['src'] . '.webp" type="image/webp">';
                         }
-                        $html .= '<img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false"></picture>';
+                        $html .= '<img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false"></picture>';
                     } else {
-                        $html .= '<img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false">';
+                        $html .= '<img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false">';
                     }
                 }
 
@@ -88,7 +92,7 @@ function dragonEditorViewConvertor($data, $useWebp = false, $amp = false, $codep
                         }
                     }
 
-                    $ulChild .= '<li ' . $option . '>' . $child['textContent'] . '</li>';
+                    $olChild .= '<li ' . $option . '>' . $child['textContent'] . '</li>';
                     $option = "";
                 }
 

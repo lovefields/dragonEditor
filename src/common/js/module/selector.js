@@ -60,7 +60,7 @@ export function getActiveElement() {
     }
 }
 
-export function findContenteditable($node, _0 = typeCheckThrow($node, "node")) {
+export function findContenteditable($node, _0 = typeCheckThrow($node, "*")) {
     let constructorName = $node.constructor.name;
     let $target;
 
