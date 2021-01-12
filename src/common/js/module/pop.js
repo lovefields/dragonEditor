@@ -2,6 +2,7 @@ const { typeCheckThrow, classControl, isMobile, hasValueArrToArr } = require("./
 const { getElement, getChild, findParentByClass, findContenteditable } = require("./selector");
 const { getTextItemOption } = require("./option");
 const { getItemType, itemStructureValidation } = require("./item");
+const { getTextNodeStyle } = require("./textNode");
 
 export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, "node")) {
     let offset = $node.getBoundingClientRect();
@@ -160,7 +161,7 @@ function setOptionPopValue() {
     if ($item != null) {
         let itemType = $item.dataset["type"];
         let $editableItem = findContenteditable(condition.baseNode);
-        let textStyle = getTextItemOption(condition.baseNode);
+        let textStyle = getTextNodeStyle(condition.baseNode);
         let fontSizeText = getElement(".djs-fontsize .djs-text", false);
         let btnColor = getElement(".djs-color", false);
         let btnListStyleText = getElement(".djs-list-style .djs-text", false);
@@ -170,7 +171,7 @@ function setOptionPopValue() {
             $editableItem = $item;
         }
 
-        let editableStyle = getTextItemOption($editableItem);
+        let editableStyle = getTextNodeStyle($editableItem);
 
         if (textStyle.fontSize != "") {
             fontSizeText.textContent = Math.floor(textStyle.fontSize * condition.defaultFontSize);

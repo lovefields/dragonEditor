@@ -26,11 +26,15 @@ function dragonEditorViewConvertor(data, useWebp = false, amp = false, codepenTh
 
                 option = "";
 
-                if ($amp == true) {
-                    if ($useWebp == true) {
-                        html += `<amp-img src="${item.src}.webp" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive">`;
-                        html += `<amp-img src="${item.src}.' . item.defaultFormat . '" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive"></amp-img>`;
-                        html += `</amp-img>`;
+                if (amp == true) {
+                    if (useWebp == true) {
+                        if (item.hasWebp == true) {
+                            html += `<amp-img src="${item.src}.webp" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive">`;
+                            html += `<amp-img fallback src="${item.src}.${item.defaultFormat}" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive"></amp-img>`;
+                            html += `</amp-img>`;
+                        } else {
+                            html += `<amp-img src="${item.src}.${item.defaultFormat}" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive"></amp-img>`;
+                        }
                     } else {
                         html += `<amp-img src="${item.src}.${item.defaultFormat}" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive"></amp-img>`;
                     }
