@@ -38,7 +38,11 @@ export function findParentByClass($node, className, _0 = typeCheckThrow($node, "
         if (check === true) {
             return $node;
         } else {
-            return findParentByClass($node.parentElement, className);
+            if ($node.parentElement == null) {
+                return null;
+            } else {
+                return findParentByClass($node.parentElement, className);
+            }
         }
     } else {
         return null;

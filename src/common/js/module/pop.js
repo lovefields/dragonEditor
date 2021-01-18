@@ -155,7 +155,7 @@ export function openOptionPop() {
     itemStructureValidation();
 }
 
-function setOptionPopValue() {
+export function setOptionPopValue() {
     let $item = findParentByClass(condition.baseNode, "djs-item");
 
     if ($item != null) {
@@ -215,6 +215,12 @@ function setOptionPopValue() {
             classControl(condition.btnToggleUnderline, "add", "--act");
         } else {
             classControl(condition.btnToggleUnderline, "remove", "--act");
+        }
+
+        if (textStyle.strikethrough != "") {
+            classControl(condition.btnToggleStrikethrough, "add", "--act");
+        } else {
+            classControl(condition.btnToggleStrikethrough, "remove", "--act");
         }
 
         if (itemType == "ol") {
