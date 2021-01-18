@@ -330,6 +330,8 @@ export class storage {
         if (condition.multiLang == true) {
             this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
         }
+        // this.btnTextStyle = getElement(".djs-text-style");
+
         this.btnFontSize = getElement(".djs-change-fontsize");
         this.btnColor = getElement(".djs-change-color");
         this.btnAlign = getElement(".djs-change-align");
@@ -337,6 +339,7 @@ export class storage {
         this.btnToggleItalic = getElement(".djs-toggle-italic", false);
         this.btnToggleUnderline = getElement(".djs-toggle-underline", false);
         this.btnToggleStrikethrough = getElement(".djs-toggle-strikethrough", false);
+
         this.btnListType = getElement(".djs-set-list-type");
         this.btnTableHeader = getElement(".djs-table-header", false);
         this.btnTableBody = getElement(".djs-table-body", false);

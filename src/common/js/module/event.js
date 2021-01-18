@@ -8,6 +8,7 @@ const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop")
 const { contentPasteEvent } = require("./clipboard");
 const { isTextSelect } = require("./cursor");
 const { jsonToHtml } = require("./convertor");
+const { textNodeStyleing } = require("./textNode");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -549,30 +550,8 @@ function setOptionEvent() {
         let event = document.createEvent("HTMLEvents");
         event.initEvent("click", true, false);
 
-        if (isTextSelect() == true) {
-            nodeEffect("fontSize", value);
-
-            getChild($btn, ".djs-text", false).textContent = text;
-        } else {
-            let constructorName = condition.baseNode.constructor.name;
-            let $target;
-
-            if (constructorName == "Text") {
-                $target = condition.baseNode.parentNode;
-            } else {
-                $target = condition.baseNode;
-            }
-
-            if (condition.defaultFontSize == parseInt(value)) {
-                $target.removeAttribute("data-font-size");
-                itemStructureValidation();
-            } else {
-                $target.setAttribute("data-font-size", value);
-            }
-            getChild($btn, ".djs-text", false).textContent = text;
-            $target.focus();
-        }
-
+        textNodeStyleing("fontSize", value, this);
+        getChild($btn, ".djs-text", false).textContent = text;
         $btn.dispatchEvent(event);
     });
 
@@ -583,30 +562,8 @@ function setOptionEvent() {
         let event = document.createEvent("HTMLEvents");
         event.initEvent("click", true, false);
 
-        if (isTextSelect() == true) {
-            nodeEffect("color", value);
-
-            $btn.dataset["value"] = value;
-        } else {
-            let constructorName = condition.baseNode.constructor.name;
-            let $target;
-
-            if (constructorName == "Text") {
-                $target = condition.baseNode.parentNode;
-            } else {
-                $target = condition.baseNode;
-            }
-
-            if (condition.defaultColor == value) {
-                $target.removeAttribute("data-color");
-                itemStructureValidation();
-            } else {
-                $target.setAttribute("data-color", value);
-            }
-            $btn.dataset["value"] = value;
-            $target.focus();
-        }
-
+        textNodeStyleing("color", value, this);
+        $btn.dataset["value"] = value;
         $btn.dispatchEvent(event);
     });
 
@@ -624,7 +581,7 @@ function setOptionEvent() {
             $target.removeAttribute("data-align");
             classControl(this, "remove", "--act");
         } else {
-            $target.setAttribute("data-align", value);
+            $target.dataset["align"] = value;
             classControl(condition.btnAlign, "remove", "--act");
             classControl(this, "add", "--act");
         }
@@ -632,22 +589,30 @@ function setOptionEvent() {
 
     // bold event
     eventBinding(condition.btnToggleBold, "click", function () {
-        textDecorationEvent(this, "bold", "B");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("bold", !isAct, this);
     });
 
     // italic event
     eventBinding(condition.btnToggleItalic, "click", function () {
-        textDecorationEvent(this, "italic", "I");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("italic", !isAct, this);
     });
 
     // underline event
     eventBinding(condition.btnToggleUnderline, "click", function () {
-        textDecorationEvent(this, "underline", "U");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("underline", !isAct, this);
     });
 
     // strikethrough event
     eventBinding(condition.btnToggleStrikethrough, "click", function () {
-        textDecorationEvent(this, "strikethrough", "DEL");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("strikethrough", !isAct, this);
     });
 
     // list style event

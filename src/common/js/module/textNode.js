@@ -1,6 +1,9 @@
-const { findParentByClass } = require("./selector");
+const { typeCheckThrow } = require("./default");
+const { getElement, getChild, findParentByClass, findContenteditable } = require("./selector");
+const { setOptionPopValue } = require("./pop");
+const { setCursor } = require("./cursor");
 
-export function getTextNodeStyle($node){
+export function getTextNodeStyle($node, _0 = typeCheckThrow($node, "*")) {
     let $item = findParentByClass($node, "djs-item");
     let itemType = $item.dataset["type"];
     let attr = {
@@ -45,4 +48,172 @@ export function getTextNodeStyle($node){
     }
 
     return attr;
+}
+
+// 텍스트 스타일 컨트롤
+export function textNodeStyleing(type, value, $btn, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "*"), _2 = typeCheckThrow($btn, "node")) {
+    const $item = findParentByClass(condition.baseNode, "djs-item");
+    const $editableElement = findContenteditable(condition.baseNode);
+    let isDifferentNode = false;
+    let isSelection = false;
+    let constructorName = condition.baseNode.constructor.name;
+    let $target;
+
+    if (constructorName == "Text") {
+        $target = condition.baseNode.parentNode;
+    } else {
+        $target = condition.baseNode;
+    }
+
+    if (condition.baseNode !== condition.focusNode) {
+        isDifferentNode = true;
+    }
+
+    if (condition.baseOffset !== condition.focusOffset) {
+        isSelection = true;
+    }
+
+    if ($target == $editableElement) {
+        if (isDifferentNode == false) {
+            if (isSelection == false) {
+                styleControlByEditableElement($target, type, value);
+            } else {
+                styleControlByWrapping($target, type, value);
+            }
+        } else {
+            console.log("merge node");
+        }
+    } else {
+        console.log($target);
+    }
+
+    setOptionPopValue();
+}
+
+// 에디터블 아이템 스타일
+function styleControlByEditableElement($target, type, value) {
+    let isRemove = false;
+
+    if (type == "fontSize" && value == "1") {
+        isRemove = true;
+    } else if (type == "color" && condition.defaultColor == value) {
+        isRemove = true;
+    } else if (value == false) {
+        isRemove = true;
+    }
+
+    if (isRemove == false) {
+        $target.dataset[type] = value;
+    } else {
+        $target.dataset[type] = "";
+    }
+}
+
+// 텍스트 스타일 랩핑
+function styleControlByWrapping($target, type, value) {
+    let childCount = $target.childNodes.length;
+    let text = condition.baseNode.textContent;
+
+    soltOffset();
+
+    if (childCount == 1) {
+        if (text.length == condition.focusOffset && condition.baseOffset == 0) {
+            styleControlByEditableElement($target, type, value);
+        } else {
+            let firstText = text.substring(0, condition.baseOffset);
+            let middleText = text.substring(condition.baseOffset, condition.focusOffset);
+            let lastText = text.substring(condition.focusOffset, text.length);
+            let wrppingText = getWrappingNode(type, middleText, value);
+
+            $target.innerHTML = `${firstText}${wrppingText}${lastText}`;
+
+            if (condition.baseOffset == 0) {
+                condition.baseNode = $target.childNodes[0];
+                setCursor($target.childNodes[0], 1);
+            } else {
+                condition.baseNode = $target.childNodes[1];
+                setCursor($target.childNodes[1], 1);
+            }
+        }
+    } else if (childCount > 1) {
+        let firstText = text.substring(0, condition.baseOffset);
+        let middleText = text.substring(condition.baseOffset, condition.focusOffset);
+        let lastText = text.substring(condition.focusOffset, text.length);
+        let wrppingText = getWrappingNode(type, middleText, value);
+        let childNodes = $target.childNodes;
+        let html = "";
+        let childIdx;
+
+        for (let i = 0; i < childCount; i += 1) {
+            if (childNodes[i] == condition.baseNode) {
+                childIdx = i;
+                break;
+            }
+        }
+
+        for (let i = 0; i < childCount; i += 1) {
+            if (childIdx == i) {
+                html += `${firstText}${wrppingText}${lastText}`;
+            } else {
+                if (childNodes[i].constructor.name == "Text") {
+                    html += childNodes[i].textContent;
+                } else {
+                    html += childNodes[i].outerHTML;
+                }
+            }
+        }
+
+        $target.innerHTML = html;
+
+        if (condition.baseOffset == 0) {
+            condition.baseNode = $target.childNodes[childIdx];
+            setCursor($target.childNodes[childIdx], 1);
+        } else {
+            condition.baseNode = $target.childNodes[childIdx + 1];
+            setCursor($target.childNodes[childIdx + 1], 1);
+        }
+    }
+}
+
+function soltOffset() {
+    if (condition.baseOffset > condition.focusOffset) {
+        let baseOffset = condition.baseOffset;
+        let focusOffset = condition.focusOffset;
+
+        condition.baseOffset = focusOffset;
+        condition.focusOffset = baseOffset;
+    }
+}
+
+function getWrappingNode(type, text, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(text, "string"), _2 = typeCheckThrow(value, "*")) {
+    let html;
+
+    switch (type) {
+        case "fontSize":
+            html = `<span data-font-size="${value}">${text}</span>`;
+            break;
+        case "color":
+            html = `<span data-color="${value}">${text}</span>`;
+            break;
+        case "bold":
+            html = `<b>${text}</b>`;
+            break;
+        case "italic":
+            html = `<i>${text}</i>`;
+            break;
+        case "underline":
+            html = `<u>${text}</u>`;
+            break;
+        case "strikethrough":
+            html = `<del>${text}</del>`;
+            break;
+        case "wordblock":
+            html = `<code>${text}</code>`;
+            break;
+        case "link":
+            html = `<a href="${value}" rel="nofollow">${text}</a>`;
+            break;
+    }
+
+    return html;
 }
