@@ -1,5 +1,6 @@
 const { typeCheckThrow } = require("./default");
 const { getElement, getChild, findParentByClass, findContenteditable } = require("./selector");
+const { itemStructureValidation } = require("./item");
 const { setOptionPopValue } = require("./pop");
 const { setCursor } = require("./cursor");
 
@@ -81,10 +82,18 @@ export function textNodeStyleing(type, value, $btn, _0 = typeCheckThrow(type, "s
                 styleControlByWrapping($target, type, value);
             }
         } else {
-            console.log("merge node");
+            console.log("merge node01");
         }
     } else {
-        console.log($target);
+        if (isDifferentNode == false) {
+            if (isSelection == false) {
+                styleControllByStyleNode($target, type, value);
+            } else {
+                console.log("style node beak");
+            }
+        } else {
+            console.log("merge node02");
+        }
     }
 
     setOptionPopValue();
@@ -173,6 +182,71 @@ function styleControlByWrapping($target, type, value) {
             setCursor($target.childNodes[childIdx + 1], 1);
         }
     }
+}
+
+// 스타일 노드 컨트롤
+function styleControllByStyleNode($target, type, value) {
+    const $editableElement = findContenteditable($target);
+    let styleValue = getTextNodeStyle($target);
+    let typeTag = getTagNameByType(type);
+    let tagName = $target.tagName;
+    let dataCount = $target.attributes.length;
+    let text = $target.textContent;
+
+    if (value == false) {
+        if (dataCount == 0) {
+            $target.insertAdjacentText("afterend", text);
+            $target.remove();
+            $editableElement.innerHTML = $editableElement.innerHTML;
+            setCursor($editableElement, 1);
+        } else {
+            if (tagName == typeTag) {
+                $target.insertAdjacentHTML("afterend", `<span>${text}</span>`);
+                styleValue[type] = "";
+
+                for (let [key, value] of Object.entries(styleValue)) {
+                    if (value !== "") {
+                        $target.nextElementSibling.dataset[key] = value;
+                    }
+                }
+
+                setCursor($target.nextElementSibling, 1);
+                $target.remove();
+            } else {
+                delete $target.dataset[type];
+                $editableElement.focus();
+            }
+        }
+    } else {
+        $target.dataset[type] = value;
+        $target.focus();
+    }
+
+    itemStructureValidation();
+}
+
+function getTagNameByType(type) {
+    let name;
+
+    switch (type) {
+        case "bold":
+            name = "B";
+            break;
+        case "italic":
+            name = "I";
+            break;
+        case "underline":
+            name = "U";
+            break;
+        case "strikethrough":
+            name = "DEL";
+            break;
+        case "wordblock":
+            name = "CODE";
+            break;
+    }
+
+    return name;
 }
 
 function soltOffset() {
