@@ -615,6 +615,15 @@ function setOptionEvent() {
         textNodeStyleing("strikethrough", !isAct, this);
     });
 
+    // word block event
+    eventBinding(condition.btnWordBlock, "click", function () {
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("wordblock", !isAct, this);
+
+        classControl(this, "toggle", "--act");
+    });
+
     // list style event
     eventBinding(condition.btnListType, "click", function () {
         let $item = findParentByClass(condition.baseNode, "djs-item");
@@ -682,19 +691,6 @@ function setOptionEvent() {
 
     eventBinding(condition.btnItemMobeDown, "click", function () {
         itemMove("down");
-    });
-
-    // word block event
-    eventBinding(condition.btnWordBlock, "click", function () {
-        let isAct = this.classList.contains("--act");
-
-        if (isTextSelect() == true) {
-            nodeEffect("wordblock");
-        } else {
-            textStylingNode("wordblock", "CODE", isAct);
-        }
-
-        classControl(this, "toggle", "--act");
     });
 
     // open word link pop
