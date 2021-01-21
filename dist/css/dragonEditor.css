@@ -1817,37 +1817,37 @@
   background: #cdcdcd;
   border-radius: 2px;
 }
-.editor-content *[data-font-size="0.75"] {
+.editor-content *[data-fontsize="0.75"] {
   font-size: 0.75em;
 }
-.editor-content *[data-font-size="0.9"] {
+.editor-content *[data-fontsize="0.9"] {
   font-size: 0.9em;
 }
-.editor-content *[data-font-size="1"] {
+.editor-content *[data-fontsize="1"] {
   font-size: 1em;
 }
-.editor-content *[data-font-size="1.15"] {
+.editor-content *[data-fontsize="1.15"] {
   font-size: 1.15em;
 }
-.editor-content *[data-font-size="1.25"] {
+.editor-content *[data-fontsize="1.25"] {
   font-size: 1.25em;
 }
-.editor-content *[data-font-size="1.5"] {
+.editor-content *[data-fontsize="1.5"] {
   font-size: 1.5em;
 }
-.editor-content *[data-font-size="1.75"] {
+.editor-content *[data-fontsize="1.75"] {
   font-size: 1.75em;
 }
-.editor-content *[data-font-size="1.9"] {
+.editor-content *[data-fontsize="1.9"] {
   font-size: 1.9em;
 }
-.editor-content *[data-font-size="2"] {
+.editor-content *[data-fontsize="2"] {
   font-size: 2em;
 }
-.editor-content *[data-font-size="2.15"] {
+.editor-content *[data-fontsize="2.15"] {
   font-size: 2.15em;
 }
-.editor-content *[data-font-size="2.25"] {
+.editor-content *[data-fontsize="2.25"] {
   font-size: 2.25em;
 }
 .editor-content *[data-color="#fff"] {
