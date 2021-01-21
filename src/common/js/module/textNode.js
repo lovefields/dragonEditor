@@ -9,7 +9,7 @@ export function getTextNodeStyle($node, _0 = typeCheckThrow($node, "*")) {
     let itemType = $item.dataset["type"];
     let attr = {
         color: "",
-        fontSize: "",
+        fontsize: "",
         align: "",
         bold: "",
         italic: "",
@@ -52,8 +52,7 @@ export function getTextNodeStyle($node, _0 = typeCheckThrow($node, "*")) {
 }
 
 // 텍스트 스타일 컨트롤
-export function textNodeStyleing(type, value, $btn, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "*"), _2 = typeCheckThrow($btn, "node")) {
-    const $item = findParentByClass(condition.baseNode, "djs-item");
+export function textNodeStyleing(type, value, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(value, "*")) {
     const $editableElement = findContenteditable(condition.baseNode);
     let isDifferentNode = false;
     let isSelection = false;
@@ -82,17 +81,17 @@ export function textNodeStyleing(type, value, $btn, _0 = typeCheckThrow(type, "s
                 styleControlByWrapping($target, type, value);
             }
         } else {
-            console.log("merge node01");
+            styleControlByMerge(type, value);
         }
     } else {
         if (isDifferentNode == false) {
             if (isSelection == false) {
-                styleControllByStyleNode($target, type, value);
+                styleControlByStyleNode($target, type, value);
             } else {
-                console.log("style node beak");
+                styleControlByInnerStyleNode($target, type, value);
             }
         } else {
-            console.log("merge node02");
+            styleControlByMerge(type, value);
         }
     }
 
@@ -103,7 +102,7 @@ export function textNodeStyleing(type, value, $btn, _0 = typeCheckThrow(type, "s
 function styleControlByEditableElement($target, type, value) {
     let isRemove = false;
 
-    if (type == "fontSize" && value == "1") {
+    if (type == "fontsize" && value == "1") {
         isRemove = true;
     } else if (type == "color" && condition.defaultColor == value) {
         isRemove = true;
@@ -114,7 +113,7 @@ function styleControlByEditableElement($target, type, value) {
     if (isRemove == false) {
         $target.dataset[type] = value;
     } else {
-        $target.dataset[type] = "";
+        delete $target.dataset[type];
     }
 }
 
@@ -185,7 +184,7 @@ function styleControlByWrapping($target, type, value) {
 }
 
 // 스타일 노드 컨트롤
-function styleControllByStyleNode($target, type, value) {
+function styleControlByStyleNode($target, type, value) {
     const $editableElement = findContenteditable($target);
     let styleValue = getTextNodeStyle($target);
     let typeTag = getTagNameByType(type);
@@ -218,11 +217,83 @@ function styleControllByStyleNode($target, type, value) {
             }
         }
     } else {
-        $target.dataset[type] = value;
-        $target.focus();
+        if (type == "fontsize" && value == "1") {
+            delete $target.dataset[type];
+            $editableElement.focus();
+        } else if (type == "color" && condition.defaultColor == value) {
+            delete $target.dataset[type];
+            $editableElement.focus();
+        } else {
+            $target.dataset[type] = value;
+            $target.focus();
+        }
     }
 
     itemStructureValidation();
+}
+
+// 스타일 노드 내부 스타일 부여 (분리)
+function styleControlByInnerStyleNode($target, type, value) {
+    const $editableElement = findContenteditable($target);
+    let styleValue = getTextNodeStyle($target);
+    let typeTag = getTagNameByType(type);
+    let tagName = $target.tagName;
+    let dataCount = $target.attributes.length;
+    let text = $target.textContent;
+    let childIdx;
+
+    soltOffset();
+
+    $editableElement.childNodes.forEach((child, index) => {
+        if (child == $target) {
+            childIdx = index;
+        }
+    });
+
+    if (condition.baseOffset == 0 && condition.focusOffset == text.length) {
+        styleControlByStyleNode($target, type, value);
+    } else {
+        if (value == false) {
+            let firstText = text.substring(0, condition.baseOffset);
+            let middleText = text.substring(condition.baseOffset, condition.focusOffset);
+            let lastText = text.substring(condition.focusOffset, text.length);
+
+            if (dataCount == 0) {
+                firstText = getWrappingNode(type, firstText, value);
+                lastText = getWrappingNode(type, lastText, value);
+
+                $target.insertAdjacentHTML("afterend", `${firstText}${middleText}${lastText}`);
+                $target.remove();
+                setCursor($editableElement.childNodes[childIdx + 1], $editableElement.childNodes[childIdx + 1].textContent.length);
+            } else {
+                let tag = tagName.toLowerCase();
+                let option = "";
+                let html = "";
+                styleValue[type] = "";
+
+                for (let [key, value] of Object.entries(styleValue)) {
+                    if (value !== "") {
+                        option += ` data-${key}="${value}"`;
+                    }
+                }
+
+                if (tagName == typeTag) {
+                    html += `<${tag}${option}>${firstText}</${tag}><span${option}>${middleText}</span><${tag}${option}>${lastText}</${tag}>`;
+                } else {
+                    html += `<${tag}${option}>${firstText}</${tag}><${tag}${option}>${middleText}</${tag}><${tag}${option}>${lastText}</${tag}>`;
+                }
+
+                $target.insertAdjacentHTML("afterend", html);
+                $target.remove();
+                setCursor($editableElement.childNodes[childIdx + 1], 1);
+            }
+        }
+    }
+}
+
+// 서로 다른 노드 상태에서 스타일 부여
+function styleControlByMerge(type, value) {
+    console.log(type, value);
 }
 
 function getTagNameByType(type) {
