@@ -2,11 +2,10 @@ const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
-const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove, removeNodeEffect } = require("./item");
+const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, changeTableCell, itemMove } = require("./item");
 const { openFile, fileUpload, mediaNameUpdate } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
 const { contentPasteEvent } = require("./clipboard");
-const { isTextSelect } = require("./cursor");
 const { jsonToHtml } = require("./convertor");
 const { textNodeStyleing } = require("./textNode");
 const { message } = require("./message");
