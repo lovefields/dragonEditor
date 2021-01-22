@@ -321,7 +321,7 @@ function styleControlByInnerStyleNode($target, type, value) {
     }
 }
 
-// 서로 다른 노드 상태에서 스타일 부여 (이전 속성 삭제하고 신규 생성)
+// 서로 다른 노드 상태에서 스타일 부여 (합병)
 function styleControlByMerge(type, value) {
     const $editableElement = findContenteditable(condition.baseNode);
     let baseIdx, focusIdx;
@@ -332,11 +332,11 @@ function styleControlByMerge(type, value) {
     let text = "";
     let junk = [];
 
-    if (baseNode.constructor.name == "Text") {
+    if (baseNode.parentNode !== $editableElement) {
         baseNode = baseNode.parentNode;
     }
 
-    if (focusNode.constructor.name == "Text") {
+    if (focusNode.parentNode !== $editableElement) {
         focusNode = focusNode.parentNode;
     }
 
@@ -373,14 +373,54 @@ function styleControlByMerge(type, value) {
     });
     text += focusText.substring(0, condition.focusOffset);
 
-    junk.forEach((item) => {
-        item.remove();
-    });
+    if (focusNode.constructor.name !== "Text") {
+        junk.forEach((item) => {
+            item.remove();
+        });
 
-    baseNode.textContent = baseText.substring(0, condition.baseOffset);
-    focusNode.textContent = focusText.substring(condition.focusOffset, focusText.length);
-    baseNode.insertAdjacentHTML("afterend", getWrappingNode(type, text, value));
-    setCursor(baseNode.nextElementSibling, 1);
+        baseNode.textContent = baseText.substring(0, condition.baseOffset);
+        focusNode.textContent = focusText.substring(condition.focusOffset, focusText.length);
+    }
+
+    if (baseNode.constructor.name == "Text") {
+        if (focusNode.constructor.name == "Text") {
+            let html = "";
+
+            $editableElement.childNodes.forEach((child, index) => {
+                if (index < baseIdx) {
+                    if (child.constructor.name == "Text") {
+                        html += child.textContent;
+                    } else {
+                        html += child.outerHTML;
+                    }
+                } else if (index == baseIdx) {
+                    html += baseText.substring(0, condition.baseOffset);
+                    html += getWrappingNode(type, text, value);
+                } else if (index == focusIdx) {
+                    html += focusText.substring(condition.focusOffset, focusText.length);
+                } else if (index > focusIdx) {
+                    if (child.constructor.name == "Text") {
+                        html += child.textContent;
+                    } else {
+                        html += child.outerHTML;
+                    }
+                }
+            });
+
+            junk.forEach((item) => {
+                item.remove();
+            });
+
+            $editableElement.innerHTML = html;
+            setCursor($editableElement.childNodes[baseIdx + 1], 1);
+        } else {
+            focusNode.insertAdjacentHTML("beforebegin", getWrappingNode(type, text, value));
+            setCursor(baseNode.nextElementSibling, 1);
+        }
+    } else {
+        baseNode.insertAdjacentHTML("afterend", getWrappingNode(type, text, value));
+        setCursor(baseNode.nextElementSibling, 1);
+    }
 }
 
 function getTagNameByType(type) {
