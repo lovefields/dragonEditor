@@ -1,6 +1,5 @@
 const { typeCheckThrow, classControl, isMobile, hasValueArrToArr } = require("./default");
 const { getElement, getChild, findParentByClass, findContenteditable } = require("./selector");
-const { getTextItemOption } = require("./option");
 const { getItemType, itemStructureValidation } = require("./item");
 const { getTextNodeStyle } = require("./textNode");
 

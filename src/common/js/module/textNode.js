@@ -1,5 +1,5 @@
 const { typeCheckThrow } = require("./default");
-const { getElement, getChild, findParentByClass, findContenteditable } = require("./selector");
+const { findParentByClass, findContenteditable } = require("./selector");
 const { itemStructureValidation } = require("./item");
 const { setOptionPopValue } = require("./pop");
 const { setCursor } = require("./cursor");
