@@ -253,11 +253,12 @@ function styleControlByInnerStyleNode($target, type, value) {
     if (condition.baseOffset == 0 && condition.focusOffset == text.length) {
         styleControlByStyleNode($target, type, value);
     } else {
-        if (value == false) {
-            let firstText = text.substring(0, condition.baseOffset);
-            let middleText = text.substring(condition.baseOffset, condition.focusOffset);
-            let lastText = text.substring(condition.focusOffset, text.length);
+        let firstText = text.substring(0, condition.baseOffset);
+        let middleText = text.substring(condition.baseOffset, condition.focusOffset);
+        let lastText = text.substring(condition.focusOffset, text.length);
+        let tag = tagName.toLowerCase();
 
+        if (value == false) {
             if (dataCount == 0) {
                 firstText = getWrappingNode(type, firstText, value);
                 lastText = getWrappingNode(type, lastText, value);
@@ -266,7 +267,6 @@ function styleControlByInnerStyleNode($target, type, value) {
                 $target.remove();
                 setCursor($editableElement.childNodes[childIdx + 1], $editableElement.childNodes[childIdx + 1].textContent.length);
             } else {
-                let tag = tagName.toLowerCase();
                 let option = "";
                 let html = "";
                 styleValue[type] = "";
@@ -287,13 +287,100 @@ function styleControlByInnerStyleNode($target, type, value) {
                 $target.remove();
                 setCursor($editableElement.childNodes[childIdx + 1], 1);
             }
+        } else {
+            if (dataCount == 0) {
+                $target.insertAdjacentHTML("afterend", `<${tag}>${firstText}</${tag}><${tag}>${middleText}</${tag}><${tag}>${lastText}</${tag}>`);
+                $target.remove();
+                $editableElement.childNodes[childIdx + 1].dataset[type] = value;
+                setCursor($editableElement.childNodes[childIdx + 1], 1);
+            } else {
+                let preOption = "";
+                let nextOption = "";
+                let html = "";
+
+                for (let [key, value] of Object.entries(styleValue)) {
+                    if (value !== "") {
+                        preOption += ` data-${key}="${value}"`;
+                    }
+                }
+
+                styleValue[type] = value;
+
+                for (let [key, value] of Object.entries(styleValue)) {
+                    if (value !== "") {
+                        nextOption += ` data-${key}="${value}"`;
+                    }
+                }
+
+                html += `<${tag}${preOption}>${firstText}</${tag}><${tag}${nextOption}>${middleText}</${tag}><${tag}${preOption}>${lastText}</${tag}>`;
+                $target.insertAdjacentHTML("afterend", html);
+                $target.remove();
+                setCursor($editableElement.childNodes[childIdx + 1], 1);
+            }
         }
     }
 }
 
-// 서로 다른 노드 상태에서 스타일 부여
+// 서로 다른 노드 상태에서 스타일 부여 (이전 속성 삭제하고 신규 생성)
 function styleControlByMerge(type, value) {
-    console.log(type, value);
+    const $editableElement = findContenteditable(condition.baseNode);
+    let baseIdx, focusIdx;
+    let baseNode = condition.baseNode;
+    let focusNode = condition.focusNode;
+    let baseText = baseNode.textContent;
+    let focusText = focusNode.textContent;
+    let text = "";
+    let junk = [];
+
+    if (baseNode.constructor.name == "Text") {
+        baseNode = baseNode.parentNode;
+    }
+
+    if (focusNode.constructor.name == "Text") {
+        focusNode = focusNode.parentNode;
+    }
+
+    $editableElement.childNodes.forEach((child, index) => {
+        if (child == baseNode) {
+            baseIdx = index;
+        } else if (focusNode == child) {
+            focusIdx = index;
+        }
+    });
+
+    if (baseIdx > focusIdx) {
+        let node01 = baseNode;
+        let node02 = focusNode;
+        let idx01 = baseIdx;
+        let idx02 = focusIdx;
+        let offset01 = condition.baseOffset;
+        let offset02 = condition.focusOffset;
+
+        baseNode = node02;
+        focusNode = node01;
+        baseIdx = idx02;
+        focusIdx = idx01;
+        condition.baseOffset = offset02;
+        condition.focusOffset = offset01;
+    }
+
+    text += baseText.substring(condition.baseOffset, baseText.length);
+    $editableElement.childNodes.forEach((child, index) => {
+        if (index > baseIdx && index < focusIdx) {
+            junk.push(child);
+            text += child.textContent;
+        }
+    });
+    text += focusText.substring(0, condition.focusOffset);
+
+    junk.forEach((item) => {
+        item.remove();
+    });
+
+    baseNode.textContent = baseText.substring(0, condition.baseOffset);
+    focusNode.textContent = focusText.substring(condition.focusOffset, focusText.length);
+    baseNode.insertAdjacentHTML("afterend", getWrappingNode(type, text, value));
+    setCursor(baseNode.nextElementSibling, 1);
 }
 
 function getTagNameByType(type) {
