@@ -3,7 +3,7 @@ const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 const path = require("path");
 const commonPath = path.resolve(__dirname, "common");
 const name = "dragonEditor";
-const webpackMode = "development"; // ['development', 'production']
+const webpackMode = "production"; // ['development', 'production']
 const viewerName = "dragonEditorViewer";
 const scriptFile = [`${commonPath}/js/index.js`];
 const styleFile = [`${commonPath}/css/index.scss`];
@@ -17,12 +17,6 @@ let options = [
         file: scriptFile,
     },
     {
-        type: "js",
-        name: name,
-        output: "demo",
-        file: scriptFile,
-    },
-    {
         type: "css",
         name: name,
         output: "dist",
@@ -30,20 +24,8 @@ let options = [
     },
     {
         type: "css",
-        name: name,
-        output: "demo",
-        file: styleFile,
-    },
-    {
-        type: "css",
         name: viewerName,
         output: "dist",
-        file: viewerStyleFile,
-    },
-    {
-        type: "css",
-        name: viewerName,
-        output: "demo",
         file: viewerStyleFile,
     },
 ];
@@ -109,18 +91,10 @@ function getModuleList() {
         let config = getConfig(item.type, item.file, item.name);
         let folder;
 
-        if (item.output == "demo") {
-            if (item.type == "js") {
-                folder = "../demo/assets";
-            } else {
-                folder = "../demo/assets/css";
-            }
+        if (item.type == "js") {
+            folder = "../dist";
         } else {
-            if (item.type == "js") {
-                folder = "../dist";
-            } else {
-                folder = "../dist/css";
-            }
+            folder = "../dist/css";
         }
 
         if (item.type == "js") {

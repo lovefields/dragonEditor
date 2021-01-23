@@ -6,8 +6,8 @@ const { setEvent, setEmoticonBtnEvent } = require("./module/event");
 const { jsonToHtml } = require("./module/convertor");
 
 module.exports = class {
-    constructor(wrap = "", options = {}, _0 = typeCheckThrow(wrap, "string"), _1 = typeCheckThrow(options, "object")) {
-        global.condition = new storage(wrap, options);
+    constructor(options = {}, _0 = typeCheckThrow(options, "object")) {
+        global.condition = new storage(options);
         condition.wrap.dataset["layout"] = condition.layout;
 
         makeView();
@@ -17,18 +17,18 @@ module.exports = class {
         return this;
     }
 
-    setEmoticon(data, _0 = typeCheckThrow(data, Array)) {
+    setEmoticon(data, _0 = typeCheckThrow(data, "array")) {
         setEmoticonList(data);
         refreshScroll();
         setEmoticonBtnEvent();
     }
 
-    setMedia(data, _0 = typeCheckThrow(data, Array)) {
+    setMedia(data, _0 = typeCheckThrow(data, "array")) {
         setMediaList(data);
         refreshScroll();
     }
 
-    setContentData(data, _0 = typeCheckThrow(data, Object)) {
+    setContentData(data, _0 = typeCheckThrow(data, "object")) {
         let object = {};
 
         for (const [key, value] of Object.entries(data)) {

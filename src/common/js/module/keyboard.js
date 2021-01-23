@@ -3,7 +3,7 @@ const { isTextSelect, setCursor } = require("./cursor");
 const { getChild, findContenteditable } = require("./selector");
 const { getTextBlockHTML, getListChildHTML, addBlockToContent } = require("./layout");
 
-export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
+export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, "node"), _1 = typeCheckThrow($editableItem, "node"), _2 = typeCheckThrow(shiftKey, "boolean")) {
     if (shiftKey == false && condition.enterCount == 0) {
         e.preventDefault();
 
@@ -131,7 +131,7 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
     }
 }
 
-export function contentTabKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node), _2 = typeCheckThrow(shiftKey, "boolean")) {
+export function contentTabKeyEvent($item, $editableItem, shiftKey, e, _0 = typeCheckThrow($item, "node"), _1 = typeCheckThrow($editableItem, "node"), _2 = typeCheckThrow(shiftKey, "boolean")) {
     e.preventDefault();
     setCursor(condition.baseNode, condition.baseOffset);
 
@@ -184,7 +184,7 @@ export function contentTabKeyEvent($item, $editableItem, shiftKey, e, _0 = typeC
     }, 150);
 }
 
-export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheckThrow($item, Node), _1 = typeCheckThrow($editableItem, Node)) {
+export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheckThrow($item, "node"), _1 = typeCheckThrow($editableItem, "node")) {
     let type = $item.dataset["type"];
     let itemCount = condition.areaContent.childElementCount;
     let hasPrevEl = $item.previousElementSibling == null ? false : true;

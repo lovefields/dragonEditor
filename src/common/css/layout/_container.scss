@@ -54,7 +54,7 @@
     margin: 0 auto;
     font-size: inherit;
     line-height: 1.7;
-    word-break: keep-all;
+    word-break: break-word;
     transition: max-width 0.3s ease;
 
     &.--mobile {
@@ -76,7 +76,7 @@
     }
 
     @each $size in $font-size-list {
-        *[data-font-size="#{'' + $size}"] {
+        *[data-fontsize="#{'' + $size}"] {
             font-size: #{$size + "em"};
         }
     }

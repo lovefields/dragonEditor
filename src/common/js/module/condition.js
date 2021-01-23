@@ -3,14 +3,18 @@ const { getElement, checkElement } = require("./selector");
 const { message } = require("./message");
 
 export class storage {
-    constructor(wrap, options) {
-        this.wrap = checkElement(wrap, ".editor-dragon", false);
+    constructor(options) {
+        this.wrap = getElement(".editor-dragon", false);
+
+        if(this.wrap == null){
+            throw `DRAGON EDITOR - You must be set element has "editor-dragon" class.`;
+        }
 
         this.setMessage(options.message);
         this.setStatus(options);
     }
 
-    setMessage(data = {}, _0 = typeCheckThrow(data, Object)) {
+    setMessage(data = {}, _0 = typeCheckThrow(data, "object")) {
         let check = ["apiNotWorking", "wrongItemStructure", "missingSelect", "noContentData"];
 
         for (const [key, value] of Object.entries(data)) {
@@ -47,8 +51,8 @@ export class storage {
         };
         this.articleIdx = typeCheckBoolean(options.articleIdx, "number") ? options.articleIdx : 0;
         this.articleTempIdx = typeCheckBoolean(options.articleTempIdx, "number") ? options.articleTempIdx : 0;
-        this.csrfData = typeCheckBoolean(options.csrfData, Object) ? options.csrfData : { name: "", value: "" };
-        this.csrfHeader = typeCheckBoolean(options.csrfHeader, Object) ? options.csrfHeader : {};
+        this.csrfData = typeCheckBoolean(options.csrfData, "object") ? options.csrfData : { name: "", value: "" };
+        this.csrfHeader = typeCheckBoolean(options.csrfHeader, "object") ? options.csrfHeader : {};
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.layout = typeCheckBoolean(options.layout, "string") ? options.layout : "full";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
@@ -59,7 +63,7 @@ export class storage {
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;
         this.useWebp = typeCheckBoolean(options.useWebp, "boolean") ? options.useWebp : true;
         this.codepenTheme = typeCheckBoolean(options.codepenTheme, "string") ? options.codepenTheme : "dark";
-        this.blockName = typeCheckBoolean(options.blockName, Object) ? options.blockName : {};
+        this.blockName = typeCheckBoolean(options.blockName, "object") ? options.blockName : {};
         this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
         this.frontSize = typeCheckBoolean(options.frontSize, Array) ? options.frontSize : [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 1.9, 2, 2.15, 2.25];
         this.codeTheme = typeCheckBoolean(options.codeTheme, Array) ? options.codeTheme : ["default", "vs2015", "androidstudio", "monokai"];
@@ -145,9 +149,8 @@ export class storage {
                   "#741b47",
                   "#4c1130",
               ];
-        this.addMenu = typeCheckBoolean(options.addMenu, Object) ? options.addMenu : {};
+        this.addMenu = typeCheckBoolean(options.addMenu, "object") ? options.addMenu : {};
         this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
-        // this.emoticonData = typeCheckBoolean(options.emoticonData, Array) ? options.emoticonData : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
         this.multiUpload = typeCheckBoolean(options.multiUpload, "boolean") ? options.multiUpload : false;
         this.defaultLinkBoxImage = typeCheckBoolean(options.defaultLinkBoxImage, "string") ? options.defaultLinkBoxImage : "https://via.placeholder.com/600x300.png";
@@ -327,6 +330,8 @@ export class storage {
         if (condition.multiLang == true) {
             this.btnChangeLang = checkElement(data.btnChangeLang, ".djs-change-lang");
         }
+        // this.btnTextStyle = getElement(".djs-text-style");
+
         this.btnFontSize = getElement(".djs-change-fontsize");
         this.btnColor = getElement(".djs-change-color");
         this.btnAlign = getElement(".djs-change-align");
@@ -334,6 +339,7 @@ export class storage {
         this.btnToggleItalic = getElement(".djs-toggle-italic", false);
         this.btnToggleUnderline = getElement(".djs-toggle-underline", false);
         this.btnToggleStrikethrough = getElement(".djs-toggle-strikethrough", false);
+
         this.btnListType = getElement(".djs-set-list-type");
         this.btnTableHeader = getElement(".djs-table-header", false);
         this.btnTableBody = getElement(".djs-table-body", false);

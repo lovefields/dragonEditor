@@ -258,7 +258,7 @@ export function getEmoticonBlockHTML(code, _0 = typeCheckThrow(code, "string")) 
     return `<div class="editor-item djs-item --djs-selected" data-type="emoticon">${code}</div>`;
 }
 
-function getUlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
+function getUlBlockHTML(child = [""], _0 = typeCheckThrow(child, "array")) {
     let html = `<ul class="editor-item djs-item --djs-selected" data-type="ul">`;
 
     child.forEach((row) => {
@@ -270,7 +270,7 @@ function getUlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
     return html;
 }
 
-function getOlBlockHTML(child = [""], _0 = typeCheckThrow(child, Array)) {
+function getOlBlockHTML(child = [""], _0 = typeCheckThrow(child, "array")) {
     let html = `<ol class="editor-item djs-item --djs-selected" data-style="number" data-type="ol">`;
 
     child.forEach((row) => {

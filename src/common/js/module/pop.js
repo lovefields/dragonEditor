@@ -1,9 +1,9 @@
 const { typeCheckThrow, classControl, isMobile, hasValueArrToArr } = require("./default");
 const { getElement, getChild, findParentByClass, findContenteditable } = require("./selector");
-const { getTextItemOption } = require("./option");
 const { getItemType, itemStructureValidation } = require("./item");
+const { getTextNodeStyle } = require("./textNode");
 
-export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, Node)) {
+export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow($node, "node")) {
     let offset = $node.getBoundingClientRect();
 
     switch (type) {
@@ -22,7 +22,7 @@ export function openPop(type, $node, _0 = typeCheckThrow(type, "string"), _1 = t
     }
 }
 
-function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "object")) {
+function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "domrect,object")) {
     let popOffset = condition.popEmoticon.getBoundingClientRect();
     let right = condition.windowWidth - offset.right + (offset.width + 10);
     let top = offset.top;
@@ -43,7 +43,7 @@ function openEmoticonPop(offset, _0 = typeCheckThrow(offset, "object")) {
     classControl(condition.popEmoticon, "toggle", "--act");
 }
 
-export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "object")) {
+export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string"), _1 = typeCheckThrow(offset, "domrect,object")) {
     let popOffset = condition.popLinkbox.getBoundingClientRect();
     let $input = getChild(condition.popLinkbox, ".djs-input", false);
     let $btn = getChild(condition.popLinkbox, ".djs-btn", false);
@@ -82,7 +82,7 @@ export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string
     }
 }
 
-function closePopIgnore(node, _0 = typeCheckThrow(node, Node)) {
+function closePopIgnore(node, _0 = typeCheckThrow(node, "node")) {
     let $popList = getElement(".djs-trigger.--act");
 
     if ($popList.length > 0) {
@@ -94,7 +94,7 @@ function closePopIgnore(node, _0 = typeCheckThrow(node, Node)) {
     }
 }
 
-export function closeOptionPop($target, _0 = typeCheckThrow($target, Node)) {
+export function closeOptionPop($target, _0 = typeCheckThrow($target, "node")) {
     let isOptionPop = findParentByClass($target, "djs-option-pop") !== null ? true : false;
     let isItem = findParentByClass($target, "djs-item") !== null ? true : false;
     let $btn = findParentByClass($target, "djs-add-block");
@@ -154,13 +154,13 @@ export function openOptionPop() {
     itemStructureValidation();
 }
 
-function setOptionPopValue() {
+export function setOptionPopValue() {
     let $item = findParentByClass(condition.baseNode, "djs-item");
 
     if ($item != null) {
         let itemType = $item.dataset["type"];
         let $editableItem = findContenteditable(condition.baseNode);
-        let textStyle = getTextItemOption(condition.baseNode);
+        let textStyle = getTextNodeStyle(condition.baseNode);
         let fontSizeText = getElement(".djs-fontsize .djs-text", false);
         let btnColor = getElement(".djs-color", false);
         let btnListStyleText = getElement(".djs-list-style .djs-text", false);
@@ -170,10 +170,10 @@ function setOptionPopValue() {
             $editableItem = $item;
         }
 
-        let editableStyle = getTextItemOption($editableItem);
+        let editableStyle = getTextNodeStyle($editableItem);
 
-        if (textStyle.fontSize != "") {
-            fontSizeText.textContent = Math.floor(textStyle.fontSize * condition.defaultFontSize);
+        if (textStyle.fontsize != "") {
+            fontSizeText.textContent = Math.floor(textStyle.fontsize * condition.defaultFontSize);
         } else {
             fontSizeText.textContent = condition.defaultFontSize;
         }
@@ -214,6 +214,12 @@ function setOptionPopValue() {
             classControl(condition.btnToggleUnderline, "add", "--act");
         } else {
             classControl(condition.btnToggleUnderline, "remove", "--act");
+        }
+
+        if (textStyle.strikethrough != "") {
+            classControl(condition.btnToggleStrikethrough, "add", "--act");
+        } else {
+            classControl(condition.btnToggleStrikethrough, "remove", "--act");
         }
 
         if (itemType == "ol") {

@@ -2,12 +2,12 @@ const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
-const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, nodeEffect, textStylingNode, changeTableCell, itemMove, removeNodeEffect } = require("./item");
+const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, changeTableCell, itemMove } = require("./item");
 const { openFile, fileUpload, mediaNameUpdate } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
 const { contentPasteEvent } = require("./clipboard");
-const { isTextSelect } = require("./cursor");
 const { jsonToHtml } = require("./convertor");
+const { textNodeStyleing } = require("./textNode");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -19,9 +19,9 @@ export function setEvent() {
 }
 
 function setGlobalEvent() {
-    // window size update
+    // window size update & option pop close
     let resizeFn;
-    eventBinding(window, "resize", function (e) {
+    eventBinding(window, "resize", function () {
         clearTimeout(resizeFn);
         resizeFn = setTimeout(() => {
             condition.windowWidth = window.innerWidth;
@@ -150,7 +150,7 @@ function setMenuEvent() {
                 if (condition.linkBoxApi === "") {
                     let request = await fetchURL(`https://api.allorigins.win/get?url=${value}`);
 
-                    if (request.respon !== false) {
+                    if (request.response !== false) {
                         let text = request.contents;
                         let regTitleCheck = new RegExp('property=\\"og:title\\"', "g");
                         let regTitle01 = new RegExp('([^])*\\<title>([^"]*)<\\/title>([^]*)', "g");
@@ -214,7 +214,7 @@ function setMenuEvent() {
                         },
                     });
 
-                    if (request.respon == true) {
+                    if (request.response == true) {
                         request.data.url = value;
                         html = getLinkboxBlock(request.data);
                         boolean = true;
@@ -250,7 +250,7 @@ function setMenuEvent() {
             classControl(condition.popLinkbox, "remove", "--act");
         } else if (type == "link") {
             if (condition.regList["defaultURL"].test(value)) {
-                nodeEffect("link", value);
+                textNodeStyleing("link", value);
                 boolean = true;
             }
         }
@@ -339,7 +339,7 @@ function setMenuEvent() {
                         method: "DELETE",
                     });
 
-                    if (request.respon == true) {
+                    if (request.response == true) {
                         let $blockList = getChild(condition.areaContent, `img[src="${data.src}.${data.defaultFormat}"]`);
 
                         $blockList.forEach(($img) => {
@@ -372,7 +372,7 @@ function setMenuEvent() {
     });
 }
 
-export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, Node)) {
+export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, "node")) {
     let $content = getChild($wrap, ".djs-scroll-content", false);
     let $bar = getChild($wrap, ".djs-scroll-bar", false);
     let value = getScrollInfo($wrap);
@@ -549,30 +549,8 @@ function setOptionEvent() {
         let event = document.createEvent("HTMLEvents");
         event.initEvent("click", true, false);
 
-        if (isTextSelect() == true) {
-            nodeEffect("fontSize", value);
-
-            getChild($btn, ".djs-text", false).textContent = text;
-        } else {
-            let constructorName = condition.baseNode.constructor.name;
-            let $target;
-
-            if (constructorName == "Text") {
-                $target = condition.baseNode.parentNode;
-            } else {
-                $target = condition.baseNode;
-            }
-
-            if (condition.defaultFontSize == parseInt(value)) {
-                $target.removeAttribute("data-font-size");
-                itemStructureValidation();
-            } else {
-                $target.setAttribute("data-font-size", value);
-            }
-            getChild($btn, ".djs-text", false).textContent = text;
-            $target.focus();
-        }
-
+        textNodeStyleing("fontsize", value);
+        getChild($btn, ".djs-text", false).textContent = text;
         $btn.dispatchEvent(event);
     });
 
@@ -583,30 +561,8 @@ function setOptionEvent() {
         let event = document.createEvent("HTMLEvents");
         event.initEvent("click", true, false);
 
-        if (isTextSelect() == true) {
-            nodeEffect("color", value);
-
-            $btn.dataset["value"] = value;
-        } else {
-            let constructorName = condition.baseNode.constructor.name;
-            let $target;
-
-            if (constructorName == "Text") {
-                $target = condition.baseNode.parentNode;
-            } else {
-                $target = condition.baseNode;
-            }
-
-            if (condition.defaultColor == value) {
-                $target.removeAttribute("data-color");
-                itemStructureValidation();
-            } else {
-                $target.setAttribute("data-color", value);
-            }
-            $btn.dataset["value"] = value;
-            $target.focus();
-        }
-
+        textNodeStyleing("color", value);
+        $btn.dataset["value"] = value;
         $btn.dispatchEvent(event);
     });
 
@@ -624,7 +580,7 @@ function setOptionEvent() {
             $target.removeAttribute("data-align");
             classControl(this, "remove", "--act");
         } else {
-            $target.setAttribute("data-align", value);
+            $target.dataset["align"] = value;
             classControl(condition.btnAlign, "remove", "--act");
             classControl(this, "add", "--act");
         }
@@ -632,22 +588,39 @@ function setOptionEvent() {
 
     // bold event
     eventBinding(condition.btnToggleBold, "click", function () {
-        textDecorationEvent(this, "bold", "B");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("bold", !isAct);
     });
 
     // italic event
     eventBinding(condition.btnToggleItalic, "click", function () {
-        textDecorationEvent(this, "italic", "I");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("italic", !isAct);
     });
 
     // underline event
     eventBinding(condition.btnToggleUnderline, "click", function () {
-        textDecorationEvent(this, "underline", "U");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("underline", !isAct);
     });
 
     // strikethrough event
     eventBinding(condition.btnToggleStrikethrough, "click", function () {
-        textDecorationEvent(this, "strikethrough", "DEL");
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("strikethrough", !isAct);
+    });
+
+    // word block event
+    eventBinding(condition.btnWordBlock, "click", function () {
+        let isAct = this.classList.contains("--act");
+
+        textNodeStyleing("wordblock", !isAct);
+
+        classControl(this, "toggle", "--act");
     });
 
     // list style event
@@ -719,19 +692,6 @@ function setOptionEvent() {
         itemMove("down");
     });
 
-    // word block event
-    eventBinding(condition.btnWordBlock, "click", function () {
-        let isAct = this.classList.contains("--act");
-
-        if (isTextSelect() == true) {
-            nodeEffect("wordblock");
-        } else {
-            textStylingNode("wordblock", "CODE", isAct);
-        }
-
-        classControl(this, "toggle", "--act");
-    });
-
     // open word link pop
     eventBinding(condition.btnWordLink, "click", function () {
         let isAct = this.classList.contains("--act");
@@ -771,21 +731,21 @@ function setOptionEvent() {
     });
 }
 
-function textDecorationEvent($btn, type, tagName, _0 = typeCheckThrow($btn, Node), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(tagName, "string")) {
-    let isAct = $btn.classList.contains("--act");
-    let $editable = findContenteditable(condition.baseNode);
+// function textDecorationEvent($btn, type, tagName, _0 = typeCheckThrow($btn, "node"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(tagName, "string")) {
+//     let isAct = $btn.classList.contains("--act");
+//     let $editable = findContenteditable(condition.baseNode);
 
-    if ($editable.textContent != "") {
-        if (isTextSelect() == true) {
-            if (isAct == true) {
-                removeNodeEffect(type, tagName);
-            } else {
-                nodeEffect(type);
-            }
-        } else {
-            textStylingNode(type, tagName, isAct);
-        }
+//     if ($editable.textContent != "") {
+//         if (isTextSelect() == true) {
+//             if (isAct == true) {
+//                 removeNodeEffect(type, tagName);
+//             } else {
+//                 nodeEffect(type);
+//             }
+//         } else {
+//             textStylingNode(type, tagName, isAct);
+//         }
 
-        classControl($btn, "toggle", "--act");
-    }
-}
+//         classControl($btn, "toggle", "--act");
+//     }
+// }

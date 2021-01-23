@@ -29,7 +29,7 @@ export async function fileUpload() {
         body: formData,
     });
 
-    if (request.respon == true) {
+    if (request.response == true) {
         setMediaList(request.list);
 
         request.list.forEach((item) => {
@@ -43,16 +43,19 @@ export async function fileUpload() {
                     setWidth = 400;
                 }
             }
+
             block = getImageBlockHTML(item, setWidth);
 
             addBlockToContent(block);
         });
+
+        condition.uploadInput.value = "";
     } else {
         alert(request.error.message);
     }
 }
 
-export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, Node)) {
+export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, "node")) {
     let $field = findParentByClass($node, "djs-name");
     let $item = findParentByClass($node, "djs-media");
     let text = $field.textContent;
@@ -75,7 +78,7 @@ export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, Node)) {
         "json",
     );
 
-    if (request.respon == true) {
+    if (request.response == true) {
         let $childs = getChild(condition.areaContent, `img[alt="${preText}"]`);
 
         $childs.forEach(($child) => {

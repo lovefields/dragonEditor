@@ -1,4 +1,4 @@
-function dragonEditorViewConvertor(data, useWebp = false, codepenTheme = "dark") {
+function dragonEditorViewConvertor(data, useWebp = false, amp = false, codepenTheme = "dark") {
     let html = "";
     let option = "";
 
@@ -26,14 +26,28 @@ function dragonEditorViewConvertor(data, useWebp = false, codepenTheme = "dark")
 
                 option = "";
 
-                if (useWebp == true) {
-                    html += `<picture>`;
-                    if (item.hasWebp == true) {
-                        html += `<source srcset="${item.src}.webp" type="image/webp">`;
+                if (amp == true) {
+                    if (useWebp == true) {
+                        if (item.hasWebp == true) {
+                            html += `<amp-img src="${item.src}.webp" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive">`;
+                            html += `<amp-img fallback src="${item.src}.${item.defaultFormat}" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive"></amp-img>`;
+                            html += `</amp-img>`;
+                        } else {
+                            html += `<amp-img src="${item.src}.${item.defaultFormat}" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive"></amp-img>`;
+                        }
+                    } else {
+                        html += `<amp-img src="${item.src}.${item.defaultFormat}" width="${item.width}" height="${item.height}" alt="${item.alt}" layout="responsive"></amp-img>`;
                     }
-                    html += `<img src="${item.src}.${item.defaultFormat}" width="${item.width}" data-height="${item.height}" alt="${item.alt}" class="editor-img" draggable="false"></picture>`;
                 } else {
-                    html += `<img src="${item.src}.${item.defaultFormat}" width="${item.width}" data-height="${item.height}" alt="${item.alt}" class="editor-img" draggable="false">`;
+                    if (useWebp == true) {
+                        html += `<picture>`;
+                        if (item.hasWebp == true) {
+                            html += `<source srcset="${item.src}.webp" type="image/webp">`;
+                        }
+                        html += `<img src="${item.src}.${item.defaultFormat}" width="${item.width}" data-height="${item.height}" alt="${item.alt}" class="editor-img" draggable="false"></picture>`;
+                    } else {
+                        html += `<img src="${item.src}.${item.defaultFormat}" width="${item.width}" data-height="${item.height}" alt="${item.alt}" class="editor-img" draggable="false">`;
+                    }
                 }
 
                 for (const [key, value] of Object.entries(item.caption.option)) {

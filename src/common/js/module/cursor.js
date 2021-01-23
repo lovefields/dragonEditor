@@ -1,7 +1,7 @@
 const { typeCheckThrow } = require("./default");
 const { setSelection } = require("./selection");
 
-export function setCursor($node, position, _0 = typeCheckThrow($node, Node), _1 = typeCheckThrow(position, "number")) {
+export function setCursor($node, position, _0 = typeCheckThrow($node, "node"), _1 = typeCheckThrow(position, "number")) {
     let select = window.getSelection();
     let range = document.createRange();
 
