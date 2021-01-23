@@ -327,8 +327,8 @@ function styleControlByMerge(type, value) {
     let baseIdx, focusIdx;
     let baseNode = condition.baseNode;
     let focusNode = condition.focusNode;
-    let baseText = baseNode.textContent;
-    let focusText = focusNode.textContent;
+    let baseText;
+    let focusText;
     let text = "";
     let junk = [];
 
@@ -363,6 +363,9 @@ function styleControlByMerge(type, value) {
         condition.baseOffset = offset02;
         condition.focusOffset = offset01;
     }
+
+    baseText = baseNode.textContent;
+    focusText = focusNode.textContent;
 
     text += baseText.substring(condition.baseOffset, baseText.length);
     $editableElement.childNodes.forEach((child, index) => {
@@ -418,8 +421,15 @@ function styleControlByMerge(type, value) {
             setCursor(baseNode.nextElementSibling, 1);
         }
     } else {
-        baseNode.insertAdjacentHTML("afterend", getWrappingNode(type, text, value));
-        setCursor(baseNode.nextElementSibling, 1);
+        if (focusNode.constructor.name == "Text") {
+            baseNode.textContent = baseText.substring(0, condition.baseOffset);
+            baseNode.insertAdjacentHTML("afterend", getWrappingNode(type, text, value));
+            focusNode.textContent = focusText.substring(condition.focusOffset, focusText.length);
+            setCursor(baseNode.nextElementSibling, 1);
+        } else {
+            baseNode.insertAdjacentHTML("afterend", getWrappingNode(type, text, value));
+            setCursor(baseNode.nextElementSibling, 1);
+        }
     }
 }
 
