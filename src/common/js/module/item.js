@@ -1,6 +1,6 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
-const { contentEnterKeyEvent, contentTabKeyEvent, contentBackspaceKeyEvent } = require("./keyboard");
+const { contentEnterKeyEvent, contentTabKeyEvent, contentBackspaceKeyEvent, blockHotKey } = require("./keyboard");
 const { setCursor, isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild, getElement } = require("./selector");
 const { hasBaseNode, setSelection } = require("./selection");
@@ -111,6 +111,8 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, "event")) {
         case 8:
             contentBackspaceKeyEvent($item, $editableItem, e);
             break;
+        default:
+            blockHotKey(e);
     }
 }
 
