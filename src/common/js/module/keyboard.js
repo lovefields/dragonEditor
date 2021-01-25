@@ -313,6 +313,31 @@ export function contentBackspaceKeyEvent($item, $editableItem, e, _0 = typeCheck
     }
 }
 
+// 브라우저 단축키 내부 로직으로 변경
+export function blockHotKey(e) {
+    let $target = null;
+    let isCtrlKey = e.ctrlKey || e.metaKey;
+    let event = document.createEvent("HTMLEvents");
+    event.initEvent("click", true, false);
+
+    if (isCtrlKey == true) {
+        switch (e.keyCode) {
+            case 73:
+                e.preventDefault();
+                $target = condition.btnToggleItalic;
+                break;
+            case 66:
+                e.preventDefault();
+                $target = condition.btnToggleBold;
+                break;
+        }
+
+        if ($target !== null) {
+            $target.dispatchEvent(event);
+        }
+    }
+}
+
 function splitEditableNodeByNoSelect(childNodes, childNodesCount, _0 = typeCheckThrow(childNodes, NodeList), _1 = typeCheckThrow(childNodesCount, "number")) {
     let childNumber = -1;
     let beforeHTML = "";
