@@ -1,5 +1,5 @@
 const { typeCheckThrow } = require("./default");
-const { getTextItemOption } = require("./option");
+const { getTextNodeStyle } = require("./textNode");
 const { getChild } = require("./selector");
 
 export function jsonToHtml(json) {
@@ -192,7 +192,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
             case "text":
                 arr.push({
                     type: "text",
-                    option: getTextItemOption($item),
+                    option: getTextNodeStyle($item),
                     textContent: $item.innerHTML,
                 });
                 break;
@@ -204,7 +204,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
 
                 arr.push({
                     type: "image",
-                    option: getTextItemOption($item),
+                    option: getTextNodeStyle($item),
                     hasWebp: hasWebp,
                     itemWidth: getChild($item, ".djs-size", false).dataset["width"],
                     width: $img.getAttribute("width"),
@@ -213,7 +213,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
                     src: link.replace(condition.regList.srcURL, "$1"),
                     defaultFormat: link.replace(condition.regList.srcURL, "$2"),
                     caption: {
-                        option: getTextItemOption($imgCaption),
+                        option: getTextNodeStyle($imgCaption),
                         textContent: $imgCaption.textContent,
                     },
                 });
@@ -224,7 +224,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
 
                 $ulChilds.forEach(($child) => {
                     ulChildList.push({
-                        option: getTextItemOption($child),
+                        option: getTextNodeStyle($child),
                         textContent: $child.innerHTML,
                     });
                 });
@@ -240,7 +240,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
 
                 $olChilds.forEach(($child) => {
                     olChildList.push({
-                        option: getTextItemOption($child),
+                        option: getTextNodeStyle($child),
                         textContent: $child.innerHTML,
                     });
                 });
@@ -277,7 +277,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
                     $child.forEach(($node) => {
                         childArr.push({
                             tag: $node.tagName.toLowerCase(),
-                            option: getTextItemOption($node),
+                            option: getTextNodeStyle($node),
                             textContent: $node.innerHTML,
                         });
                     });
@@ -288,7 +288,7 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
                 arr.push({
                     type: "table",
                     caption: {
-                        option: getTextItemOption($tableCaption),
+                        option: getTextNodeStyle($tableCaption),
                         textContent: $tableCaption.textContent,
                     },
                     colgroup: tableCol,
