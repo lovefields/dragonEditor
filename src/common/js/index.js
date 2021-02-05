@@ -55,21 +55,3 @@ module.exports = class {
     }
 };
 
-// export function getOptionValue(name) {
-//     if (storage[name] === undefined) {
-//         console.error(`Optins name "${name}" is didn't have.`);
-//         return false;
-//     } else {
-//         return storage[name];
-//     }
-// }
-
-// export function setOptionValue(name, value) {
-//     if (storage[name] === undefined) {
-//         console.error("Can not set other option name.");
-//         return false;
-//     } else {
-//         storage[name] = value;
-//         return storage[name];
-//     }
-// }
