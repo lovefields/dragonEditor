@@ -34,24 +34,24 @@ function dragonEditorViewConvertor($data, $useWebp = false, $amp = false, $codep
                 if ($amp == true){
                     if ($useWebp == true){
                         if ($item['hasWebp'] == true) {
-                            $html .= '<amp-img src="' . IMG_URL . $item['src'] . '.webp" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive">';
-                            $html .= '<amp-img fallback src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
+                            $html .= '<amp-img src="' . $item['src'] . '.webp" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive">';
+                            $html .= '<amp-img fallback src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
                             $html .= '</amp-img>';
                         } else {
-                            $html .= '<amp-img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
+                            $html .= '<amp-img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
                         }
                     } else {
-                        $html .= '<amp-img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
+                        $html .= '<amp-img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" height="' . $item['height'] . '" alt="' . $item['alt'] . '" layout="responsive"></amp-img>';
                     }
                 } else {
                     if ($useWebp == true) {
                         $html .= '<picture>';
                         if ($item['hasWebp'] == true) {
-                            $html .= '<source srcset="' . IMG_URL . $item['src'] . '.webp" type="image/webp">';
+                            $html .= '<source srcset="' . $item['src'] . '.webp" type="image/webp">';
                         }
-                        $html .= '<img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false"></picture>';
+                        $html .= '<img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false" loading="lazy"></picture>';
                     } else {
-                        $html .= '<img src="' . IMG_URL . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false">';
+                        $html .= '<img src="' . $item['src'] . '.' . $item['defaultFormat'] . '" width="' . $item['width'] . '" data-height="' . $item['height'] . '" alt="' . $item['alt'] . '" class="editor-img" draggable="false" loading="lazy">';
                     }
                 }
 
@@ -142,39 +142,73 @@ function dragonEditorViewConvertor($data, $useWebp = false, $amp = false, $codep
                 $html .= "</tbody></table></div></div>";
             break;
             case "linkbox":
-                $html .= '
-                    <div class="editor-item" data-type="' . $item['type'] . '">
-                        <a href="' . $item['url'] . '" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix" draggable="false">
-                            <div class="editor-linkbox-img">
-                                <img src="' . $item['imgSrc'] . '" alt="preview image" class="editor-img" draggable="false">
-                            </div>
-
-                            <div class="editor-linkbox-text">
-                                <p class="editor-title">' . $item['title'] . '</p>
-                                <p class="editor-description">' . $item['description'] . '</p>
-                                <p class="editor-domain">' . $item['domain'] . '</p>
-                            </div>
-                        </a>
-                    </div>
-                ';
+                if ($amp == true){
+                    $html .= '
+                        <div class="editor-item" data-type="' . $item['type'] . '">
+                            <a href="' . $item['url'] . '" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix" draggable="false">
+                                <div class="editor-linkbox-img">
+                                    <amp-img src="' . $item['imgSrc'] . '" alt="preview image" class="editor-img" width="600" height="300" layout="responsive"></amp-img>
+                                </div>
+    
+                                <div class="editor-linkbox-text">
+                                    <p class="editor-title">' . $item['title'] . '</p>
+                                    <p class="editor-description">' . $item['description'] . '</p>
+                                    <p class="editor-domain">' . $item['domain'] . '</p>
+                                </div>
+                            </a>
+                        </div>
+                    ';
+                }else{
+                    $html .= '
+                        <div class="editor-item" data-type="' . $item['type'] . '">
+                            <a href="' . $item['url'] . '" target="_blank" rel="nofollow" class="editor-linkbox editor-clearfix" draggable="false">
+                                <div class="editor-linkbox-img">
+                                    <img src="' . $item['imgSrc'] . '" alt="preview image" class="editor-img" draggable="false" loading="lazy">
+                                </div>
+    
+                                <div class="editor-linkbox-text">
+                                    <p class="editor-title">' . $item['title'] . '</p>
+                                    <p class="editor-description">' . $item['description'] . '</p>
+                                    <p class="editor-domain">' . $item['domain'] . '</p>
+                                </div>
+                            </a>
+                        </div>
+                    ';
+                }
             break;
             case "emoticon":
                 $html .= '<div class="editor-item" data-type="' . $item['type'] . '">' . $item['code'] . '</div>';
             break;
 
             case "youtube":
-                $html .= '
-                    <div class="editor-item" data-type="' . $item['type'] . '">
-                        <iframe src="https://www.youtube.com/embed/' . $item['code'] . '" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe"></iframe>
-                    </div>
-                ';
+                if ($amp == true){
+                    $html .= '
+                        <div class="editor-item" data-type="' . $item['type'] . '">
+                            <amp-iframe src="https://www.youtube.com/embed/' . $item['code'] . '" width="800" height="450" sandbox="allow-scripts allow-same-origin" layout="responsive" frameborder="0" class="editor-iframe"></amp-iframe>
+                        </div>
+                    ';
+                }else{
+                    $html .= '
+                        <div class="editor-item" data-type="' . $item['type'] . '">
+                            <iframe src="https://www.youtube.com/embed/' . $item['code'] . '" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe"></iframe>
+                        </div>
+                    ';
+                }
             break;
             case "codepen":
-                $html .= '
-                    <div class="editor-item" data-type="' . $item['type'] . '">
-                        <iframe height="' . $item['height'] . '" title="" src="https://codepen.io/' . $item['nickname'] . '/embed/' . $item['code'] . '?height=' . $item['height'] . '&theme-id=' . $codepenTheme . '&default-tab=result" allowfullscreen class="editor-iframe"></iframe>
-                    </div>
-                ';
+                if ($amp == true){
+                    $html .= '
+                        <div class="editor-item" data-type="' . $item['type'] . '">
+                            <amp-iframe height="' . $item['height'] . '" title="" src="https://codepen.io/' . $item['nickname'] . '/embed/' . $item['code'] . '?height=' . $item['height'] . '&theme-id=' . $codepenTheme . '&default-tab=result" width="800" height="' . $item['height'] . '" sandbox="allow-scripts allow-same-origin" layout="responsive" frameborder="0" class="editor-iframe"></amp-iframe>
+                        </div>
+                    ';
+                }else{
+                    $html .= '
+                        <div class="editor-item" data-type="' . $item['type'] . '">
+                            <iframe height="' . $item['height'] . '" title="" src="https://codepen.io/' . $item['nickname'] . '/embed/' . $item['code'] . '?height=' . $item['height'] . '&theme-id=' . $codepenTheme . '&default-tab=result" allowfullscreen class="editor-iframe"></iframe>
+                        </div>
+                    ';
+                }
                 break;
             case "codeblock":
                 $html .= '<pre class="editor-item" data-type="' . $item['type'] . '" data-theme="' . $item['theme'] . '" data-lang="' . $item['lang'] . '"><code>' . $item['code']['textContent'] . '</code></pre>';
