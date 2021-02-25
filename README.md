@@ -68,6 +68,7 @@ IE 따위는 지원하지 않습니다.
 <!-- 
 * 코드 블럭을 사용한다면 구글 폰트(Inconsolata)를 불러옵니다.
 * 뷰페이지용 CSS를 로드합니다.
+* [code] 값은 convertor를 사용한 결과값입니다.(view-convertor 폴더 참조)
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditorViewer.css">
@@ -76,7 +77,7 @@ IE 따위는 지원하지 않습니다.
 ```
 
 ## 데모 페이지
-[Demo page](https://lovefields.github.io/dragonEditor/demo/editor.html)
+[Demo page](https://lovefields.github.io/dragonEditor/demo)
 
 ## 문서
 

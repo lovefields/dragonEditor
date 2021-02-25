@@ -66,6 +66,7 @@ We never ever support IE.
 <!-- 
 * Load Google font(Inconsolata) if you using code block.
 * Load DragonEditorViewer CSS
+* The [code] value is the result with converter (see view-convertor folder).
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditorViewer.css">
@@ -74,7 +75,7 @@ We never ever support IE.
 ```
 
 ## Demo
-[Demo page](https://lovefields.github.io/dragonEditor/demo/editor.html)
+[Demo page](https://lovefields.github.io/dragonEditor/demo)
 
 ## Document
 
