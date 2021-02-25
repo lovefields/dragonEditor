@@ -57,7 +57,7 @@ export class storage {
         this.layout = typeCheckBoolean(options.layout, "string") ? options.layout : "full";
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.defaultColor = typeCheckBoolean(options.defaultColor, "string") ? options.defaultColor : "#333";
-        this.defaultFontSize = typeCheckBoolean(options.defaultFontSize, "number") ? options.defaultFontSize : 16;
+        this.defaultFontSize = typeCheckBoolean(options.defaultFontSize, "number") ? options.defaultFontSize : 14;
         this.changePoint = typeCheckBoolean(options.changePoint, "number") ? options.changePoint : 800;
         this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 700;
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;

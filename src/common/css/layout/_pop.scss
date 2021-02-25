@@ -278,7 +278,7 @@
 
 .editor-pop-option {
     position: fixed;
-    height: 46px;
+    height: 38px;
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 2px;
@@ -297,7 +297,6 @@
         display: none;
         position: relative;
         float: left;
-        height: 46px;
         vertical-align: top;
 
         &.--act {
@@ -307,11 +306,11 @@
 
     .editor-select {
         position: relative;
-        height: 46px;
+        height: 38px;
         padding-right: 27px;
         border-right: 1px solid #ccc;
         text-align: left;
-        line-height: 46px;
+        line-height: 38px;
         box-sizing: border-box;
 
         .editor-text {
@@ -321,7 +320,7 @@
 
         .editor-icon {
             position: absolute;
-            top: 18px;
+            top: 13px;
             right: 10px;
             width: 12px;
             vertical-align: middle;
@@ -332,7 +331,7 @@
         position: absolute;
         top: 100%;
         left: -1px;
-        width: 57px;
+        width: 58px;
         height: 200px;
         background: #fff;
         border: 1px solid #ccc;
@@ -367,8 +366,8 @@
 
     .editor-color {
         position: relative;
-        width: 48px;
-        height: 46px;
+        width: 34px;
+        height: 38px;
         background: #fff;
         border-right: 1px solid #ccc;
 
@@ -378,8 +377,8 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 18px;
-            height: 18px;
+            width: 14px;
+            height: 14px;
             background: #333;
             border-radius: 50%;
             box-sizing: border-box;
@@ -440,9 +439,9 @@
     }
 
     .editor-btn-area {
-        padding: 0 10px;
+        padding: 0 5px;
         border-right: 1px solid #ccc;
-        line-height: 46px;
+        line-height: 38px;
 
         &.--noline {
             border-right: 0;
@@ -475,7 +474,7 @@
         position: absolute;
         top: 100%;
         left: -1px;
-        width: 170px;
+        width: 80px;
         padding: 5px 20px;
         background: #fff;
         border: 1px solid #ccc;

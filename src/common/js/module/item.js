@@ -157,6 +157,7 @@ export function itemMove(type, _0 = typeCheckThrow(type, "string")) {
     }
 }
 
+// 에디터 내부 구조 교정
 export function itemStructureValidation() {
     let wrongTagList = ["font", "center", "div"];
     let $itemList = getChild(condition.areaContent, `[contenteditable="true"]`);
