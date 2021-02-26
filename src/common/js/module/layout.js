@@ -473,6 +473,40 @@ function makeOptionPop() {
             </button>
         </div>
 
+        <div class="editor-col editor-btn-area" data-group="td,th">
+            <button type="button" class="editor-btn djs-cell-control" data-type="row" data-action="add">
+                <svg viewBox="0 0 64 64" class="editor-icon">
+                    <use class="path" xlink:href="#icon-add-row" href="#icon-add-row"></use>
+                </svg>
+
+                add row
+            </button>
+
+            <button type="button" class="editor-btn djs-cell-control" data-type="row" data-action="delete">
+                <svg viewBox="0 0 64 64" class="editor-icon">
+                    <use class="path" xlink:href="#icon-del-row" href="#icon-del-row"></use>
+                </svg>
+
+                del row
+            </button>
+
+            <button type="button" class="editor-btn djs-cell-control" data-type="col" data-action="add">
+                <svg viewBox="0 0 64 64" class="editor-icon">
+                    <use class="path" xlink:href="#icon-add-col" href="#icon-add-col"></use>
+                </svg>
+
+                add col
+            </button>
+
+            <button type="button" class="editor-btn djs-cell-control" data-type="col" data-action="delete">
+                <svg viewBox="0 0 64 64" class="editor-icon">
+                    <use class="path" xlink:href="#icon-del-col" href="#icon-del-col"></use>
+                </svg>
+
+                del col
+            </button>
+        </div>
+
         <div class="editor-col editor-btn-area" data-group="td">
             <button type="button" class="editor-btn djs-table-header">
                 <svg viewBox="0 0 64 64" class="editor-icon">

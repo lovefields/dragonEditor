@@ -46,6 +46,9 @@ IE 따위는 지원하지 않습니다.
         ...
     </defs>
 </svg>
+<!--
+* editor-dragon 클레스를 지정합니다.
+-->
 <div class="editor-dragon"></div>
 
 <!-- 
