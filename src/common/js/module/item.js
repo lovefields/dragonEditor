@@ -1,7 +1,7 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
 const { contentEnterKeyEvent, contentTabKeyEvent, contentBackspaceKeyEvent, blockHotKey } = require("./keyboard");
-const { setCursor, isTextSelect } = require("./cursor");
+const { isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild, getElement } = require("./selector");
 const { hasBaseNode, setSelection } = require("./selection");
 const { getTextBlockHTML } = require("./layout");
@@ -114,17 +114,6 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, "event")) {
         default:
             blockHotKey(e);
     }
-}
-
-export function changeTableCell(type, _0 = typeCheckThrow(type, "string")) {
-    let $editableItem = findContenteditable(condition.baseNode);
-    let html = $editableItem.innerHTML;
-
-    $editableItem.insertAdjacentHTML("afterend", `<${type} contenteditable="true">${html}</${type}>`);
-    setCursor($editableItem.nextElementSibling, 0);
-    condition.activeElement = $editableItem.nextElementSibling;
-    $editableItem.remove();
-    openOptionPop();
 }
 
 export function itemMove(type, _0 = typeCheckThrow(type, "string")) {

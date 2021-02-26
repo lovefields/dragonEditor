@@ -339,6 +339,7 @@ export class storage {
         this.btnToggleItalic = getElement(".djs-toggle-italic", false);
         this.btnToggleUnderline = getElement(".djs-toggle-underline", false);
         this.btnToggleStrikethrough = getElement(".djs-toggle-strikethrough", false);
+        this.btnCellControl = getElement(".djs-cell-control");
 
         this.btnListType = getElement(".djs-set-list-type");
         this.btnTableHeader = getElement(".djs-table-header", false);

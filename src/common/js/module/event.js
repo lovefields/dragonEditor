@@ -2,12 +2,13 @@ const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
 const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
-const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, changeTableCell, itemMove } = require("./item");
+const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, itemMove } = require("./item");
 const { openFile, fileUpload, mediaNameUpdate } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
 const { contentPasteEvent } = require("./clipboard");
 const { jsonToHtml } = require("./convertor");
 const { textNodeStyleing } = require("./textNode");
+const { changeTableCell, tableCellControl } = require("./table");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -638,6 +639,17 @@ function setOptionEvent() {
 
     eventBinding(condition.btnTableBody, "click", function () {
         changeTableCell("td");
+    });
+
+    // 표 컨트롤 이벤트
+    eventBinding(condition.btnCellControl, "click", function () {
+        let type = this.dataset["type"];
+        let action = this.dataset["action"];
+        let $cell = findContenteditable(condition.baseNode);
+        let x = $cell.dataset["x"];
+        let y = $cell.dataset["y"];
+
+        tableCellControl(type, action, x, y);
     });
 
     // code theme event
