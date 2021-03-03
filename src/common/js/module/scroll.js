@@ -15,7 +15,6 @@ function setScrollHeight($wrap, _0 = typeCheckThrow($wrap, "node")) {
     let $bar = getChild($wrap, ".djs-scroll-bar", false);
     let value = getScrollInfo($wrap);
 
-    console.log($bar, value.scrollHeight);
     $bar.style.height = `${value.scrollHeight}px`;
 }
 
@@ -38,8 +37,6 @@ export function getScrollInfo($wrap, _0 = typeCheckThrow($wrap, "node")) {
     contentChild.forEach((node) => {
         contentHeight += node.getBoundingClientRect().height;
     });
-
-    console.log(wrapOffset, contentHeight, maxHeight);
 
     if (contentHeight < maxHeight) {
         contentHeight = maxHeight;
