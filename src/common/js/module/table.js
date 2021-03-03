@@ -103,3 +103,12 @@ export function tableCellControl(type, action, x, y, _0 = typeCheckThrow(type, "
         setCursor($targetCell, 0);
     }
 }
+
+export function setTableColSize(value, _0 = typeCheckThrow(value, "string")) {
+    let $item = findParentByClass(condition.baseNode, "djs-item");
+    let cell = findContenteditable(condition.baseNode);
+    let x = parseInt(cell.dataset["x"]);
+    let col = getChild($item, "col")[x];
+
+    col.dataset["size"] = value;
+}

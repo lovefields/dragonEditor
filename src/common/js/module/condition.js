@@ -333,6 +333,7 @@ export class storage {
         // this.btnTextStyle = getElement(".djs-text-style");
 
         this.btnFontSize = getElement(".djs-change-fontsize");
+        this.btnColSize = getElement(".djs-change-colsize");
         this.btnColor = getElement(".djs-change-color");
         this.btnAlign = getElement(".djs-change-align");
         this.btnToggleBold = getElement(".djs-toggle-bold", false);
