@@ -8,7 +8,7 @@ const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop")
 const { contentPasteEvent } = require("./clipboard");
 const { jsonToHtml } = require("./convertor");
 const { textNodeStyleing } = require("./textNode");
-const { changeTableCell, tableCellControl } = require("./table");
+const { changeTableCell, tableCellControl, setTableColSize } = require("./table");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -551,6 +551,19 @@ function setOptionEvent() {
         event.initEvent("click", true, false);
 
         textNodeStyleing("fontsize", value);
+        getChild($btn, ".djs-text", false).textContent = text;
+        $btn.dispatchEvent(event);
+    });
+
+    // table col size
+    eventBinding(condition.btnColSize, "click", function () {
+        let $btn = getElement(".djs-colsize", false);
+        let value = this.dataset["value"];
+        let text = this.textContent;
+        let event = document.createEvent("HTMLEvents");
+        event.initEvent("click", true, false);
+
+        setTableColSize(value);
         getChild($btn, ".djs-text", false).textContent = text;
         $btn.dispatchEvent(event);
     });

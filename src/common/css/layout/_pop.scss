@@ -364,6 +364,43 @@
         }
     }
 
+    .editor-list-colsize {
+        position: absolute;
+        top: 100%;
+        left: -1px;
+        width: 78px;
+        height: 200px;
+        background: #fff;
+        border: 1px solid #ccc;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+
+        &.--act {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .editor-scroll-content {
+            overflow-x: hidden;
+        }
+
+        .editor-btn {
+            width: 74px;
+            padding: 5px 0;
+
+            &:first-child {
+                padding-top: 10px;
+            }
+
+            &:last-child {
+                padding-bottom: 10px;
+            }
+        }
+    }
+
     .editor-color {
         position: relative;
         width: 34px;
