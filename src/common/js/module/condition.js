@@ -6,7 +6,7 @@ export class storage {
     constructor(options) {
         this.wrap = getElement(".editor-dragon", false);
 
-        if(this.wrap == null){
+        if (this.wrap == null) {
             throw `DRAGON EDITOR - You must be set element has "editor-dragon" class.`;
         }
 
@@ -62,13 +62,15 @@ export class storage {
         this.maxImageWidth = typeCheckBoolean(options.maxImageWidth, "number") ? options.maxImageWidth : 700;
         this.maxCodepenHeight = typeCheckBoolean(options.maxCodepenHeight, "number") ? options.maxCodepenHeight : 1000;
         this.useWebp = typeCheckBoolean(options.useWebp, "boolean") ? options.useWebp : true;
+        this.useEmoticon = typeCheckBoolean(options.useEmoticon, "boolean") ? options.useEmoticon : false;
+        this.emoticonData = typeCheckBoolean(options.emoticonData, "object") ? options.emoticonData : {};
         this.codepenTheme = typeCheckBoolean(options.codepenTheme, "string") ? options.codepenTheme : "dark";
         this.blockName = typeCheckBoolean(options.blockName, "object") ? options.blockName : {};
-        this.removeMenu = typeCheckBoolean(options.removeMenu, Array) ? options.removeMenu : [];
-        this.frontSize = typeCheckBoolean(options.frontSize, Array) ? options.frontSize : [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 1.9, 2, 2.15, 2.25];
-        this.codeTheme = typeCheckBoolean(options.codeTheme, Array) ? options.codeTheme : ["default", "vs2015", "androidstudio", "monokai"];
-        this.codeLang = typeCheckBoolean(options.codeLang, Array) ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift"];
-        this.colorList = typeCheckBoolean(options.colorList, Array)
+        this.removeMenu = typeCheckBoolean(options.removeMenu, "array") ? options.removeMenu : [];
+        this.frontSize = typeCheckBoolean(options.frontSize, "array") ? options.frontSize : [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 1.9, 2, 2.15, 2.25];
+        this.codeTheme = typeCheckBoolean(options.codeTheme, "array") ? options.codeTheme : ["default", "vs2015", "androidstudio", "monokai"];
+        this.codeLang = typeCheckBoolean(options.codeLang, "array") ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift"];
+        this.colorList = typeCheckBoolean(options.colorList, "array")
             ? options.colorList
             : [
                   "#fff",
@@ -150,7 +152,7 @@ export class storage {
                   "#4c1130",
               ];
         this.addMenu = typeCheckBoolean(options.addMenu, "object") ? options.addMenu : {};
-        this.addLang = typeCheckBoolean(options.addLang, Array) ? options.addLang : [];
+        this.addLang = typeCheckBoolean(options.addLang, "array") ? options.addLang : [];
         this.triggerLangChange = typeCheckBoolean(options.triggerLangChange, "function") ? options.triggerLangChange : () => {};
         this.multiUpload = typeCheckBoolean(options.multiUpload, "boolean") ? options.multiUpload : false;
         this.defaultLinkBoxImage = typeCheckBoolean(options.defaultLinkBoxImage, "string") ? options.defaultLinkBoxImage : "https://via.placeholder.com/600x300.png";
@@ -281,6 +283,10 @@ export class storage {
             delete defaultMenu.imageBlock;
         }
 
+        if (this.useEmoticon == false) {
+            delete defaultMenu.emoticonBlock;
+        }
+
         this.removeMenu.forEach((item) => {
             delete defaultMenu[item];
         });
@@ -332,6 +338,7 @@ export class storage {
         }
         // this.btnTextStyle = getElement(".djs-text-style");
 
+        this.btnEmoticonTapArea = getElement(".djs-emoticon-pop .djs-btn-area", false);
         this.btnFontSize = getElement(".djs-change-fontsize");
         this.btnColSize = getElement(".djs-change-colsize");
         this.btnColor = getElement(".djs-change-color");

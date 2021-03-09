@@ -67,32 +67,56 @@
 
 .editor-pop-emoticon {
     position: fixed;
+    height: auto;
+
+    .editor-scroll {
+        height: 200px;
+    }
+
+    .editor-btn-area {
+        font-size: 0;
+        border-bottom: 1px solid #ccc;
+
+        .editor-emoticon-tap {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            padding: 5px;
+            box-sizing: border-box;
+
+            img,
+            svg {
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    .editor-list-emoticon {
+        width: 240px;
+        padding: 5px;
+        box-sizing: border-box;
+        overflow: hidden;
+
+        .editor-emoticon {
+            float: left;
+            width: 56px;
+            height: 56px;
+            padding: 5px;
+            box-sizing: border-box;
+
+            .img,
+            svg {
+                width: 100%;
+            }
+        }
+    }
 }
 
 .editor-pop-folder {
     bottom: 100%;
     right: 100%;
     margin-right: -30px;
-}
-
-.editor-list-emoticon {
-    width: 240px;
-    padding: 5px;
-    box-sizing: border-box;
-    overflow: hidden;
-
-    .editor-emoticon {
-        float: left;
-        width: 56px;
-        height: 56px;
-        padding: 5px;
-        box-sizing: border-box;
-
-        .img,
-        svg {
-            width: 100%;
-        }
-    }
 }
 
 .editor-list-media {

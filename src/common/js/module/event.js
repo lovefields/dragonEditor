@@ -1,7 +1,7 @@
 const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile } = require("./default");
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
-const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
+const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, setEmoticonList, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
 const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, itemMove } = require("./item");
 const { openFile, fileUpload, mediaNameUpdate } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
@@ -412,13 +412,30 @@ export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, "node")) {
 }
 
 export function setEmoticonBtnEvent() {
-    condition.btnEmoticon = getChild(condition.listEmoticon, ".djs-add-emoticon");
+    let event = document.createEvent("HTMLEvents");
+    event.initEvent("click", true, false);
+    condition.btnEmoticonTap = getChild(condition.popEmoticon, ".djs-emoticon-tap");
 
-    eventBinding(condition.btnEmoticon, "click", function () {
-        let code = this.innerHTML.trim();
-        let block = getEmoticonBlockHTML(code);
+    eventBinding(condition.btnEmoticonTap, "click", function () {
+        let key = this.dataset["key"];
+        let list = condition.emoticonData[key].list;
 
-        addBlockToContent(block);
+        setEmoticonList(key, list);
+    });
+
+    condition.btnEmoticonTap[0].dispatchEvent(event);
+
+    eventBinding(condition.listEmoticon, "click", function (e) {
+        let $target = e.target;
+        let $btn = findParentByClass($target, "djs-add-emoticon");
+
+        if ($btn !== null) {
+            let key = $btn.dataset["key"];
+            let idx = parseInt($btn.dataset["idx"]);
+            let block = getEmoticonBlockHTML(key, idx);
+
+            addBlockToContent(block);
+        }
     });
 }
 

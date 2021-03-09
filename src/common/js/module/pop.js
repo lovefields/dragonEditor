@@ -246,9 +246,12 @@ export function setOptionPopValue() {
         if (itemType == "table") {
             if ($editableItem.tagName !== "CAPTION") {
                 let x = parseInt($editableItem.dataset["x"]);
-                let col = getChild($item, "col")[x];
 
-                btnColSizeText.textContent = `${col.dataset["size"]}px`;
+                if (isNaN(x) == false) {
+                    let col = getChild($item, "col")[x];
+
+                    btnColSizeText.textContent = `${col.dataset["size"]}px`;
+                }
             }
         }
 
