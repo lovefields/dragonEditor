@@ -177,9 +177,16 @@ function dragonEditorViewConvertor($data, $useWebp = false, $amp = false, $codep
                 }
             break;
             case "emoticon":
-                $html .= '<div class="editor-item" data-type="' . $item['type'] . '">' . $item['code'] . '</div>';
+                if ($item["data"]["type"] == "image") {
+                    if ($amp == true) {
+                        $html .= '<div class="editor-item djs-item" data-type="' . $item["data"]["type"] . '"><amp-img src="' . $item["data"]["src"] . '" alt="' . $item["data"]["caption"] . '" width="' . $item["data"]["width"] . '" height="' . $item["data"]["height"] . '" layout="responsive"></amp-img></div>';
+                    } else {
+                        $html .= '<div class="editor-item djs-item" data-type="' . $item["data"]["type"] . '"><img src="' . $item["data"]["src"] . '" alt="' . $item["data"]["caption"] . '" data-width="' . $item["data"]["width"] . '" data-height="' . $item["data"]["height"] . '"></div>';
+                    }
+                } else if ($item["data"]["type"] == "svg") {
+                    $html .= '<div class="editor-item djs-item" data-type="' . $item["data"]["type"] . '">' . $item["data"]["code"] . '</div>';
+                }
             break;
-
             case "youtube":
                 if ($amp == true){
                     $html .= '
