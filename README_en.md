@@ -22,6 +22,8 @@ We never ever support IE.
 
 ## Plugin
 
+If you using `codeblock`, import this plugin.
+
 -   `highlight.js` [(Link)](https://highlightjs.org/)
 
 ## Using
@@ -36,7 +38,7 @@ We never ever support IE.
 <link rel="stylesheet" href="[yourdir]/dragonEditor.css">
 
 <!-- 
-* You must set svg icon pack. Default pack is in assets.
+* You must include icon pack(template engine) or directly to html page.
 -->
 <svg class="icon-pack">
     <defs>

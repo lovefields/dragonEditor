@@ -16,6 +16,7 @@ export function getTextNodeStyle($node, _0 = typeCheckThrow($node, "*")) {
         underline: "",
         strikethrough: "",
         wordblock: "",
+        depth: "",
     };
 
     if ($node.constructor.name == "Text") {
