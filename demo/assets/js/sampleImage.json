@@ -1,0 +1,13 @@
+{
+    "response": true,
+    "list": [
+        {
+            "hasWebp": false,
+            "src": "https://raw.githubusercontent.com/lovefields/dragonEditor/dev/demo/assets/img/cat",
+            "defaultFormat": "jpeg",
+            "width": 640,
+            "height": 427,
+            "alt": ""
+        }
+    ]
+}
