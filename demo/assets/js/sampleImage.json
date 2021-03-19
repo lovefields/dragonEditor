@@ -3,7 +3,7 @@
     "list": [
         {
             "hasWebp": false,
-            "src": "https://raw.githubusercontent.com/lovefields/dragonEditor/dev/demo/assets/img/cat",
+            "src": "https://lovefields.github.io/dragonEditor/demo/assets/img/cat",
             "defaultFormat": "jpeg",
             "width": 640,
             "height": 427,
