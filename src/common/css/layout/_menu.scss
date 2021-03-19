@@ -1,16 +1,16 @@
 .editor-menu-block {
     position: fixed;
-    top: 50px;
+    top: 100px;
     right: 50%;
-    width: 30px;
+    width: 26px;
     transform: translateX(calc(370px + 100%));
     z-index: 10;
 
     .editor-btn {
         display: block;
-        width: 30px;
-        height: 30px;
-        margin-bottom: 10px;
+        width: 26px;
+        height: 26px;
+        margin-bottom: 5px;
         color: transparent;
         font-size: 0;
 
@@ -34,7 +34,7 @@
 
     .editor-btn {
         display: inline-block;
-        width: 30px;
+        width: 26px;
         margin: 0 5px;
         color: transparent;
         font-size: 0;

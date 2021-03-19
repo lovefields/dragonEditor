@@ -30,38 +30,6 @@ export function typeCheckThrow(target, type) {
     }
 
     return target;
-
-    // if (typeof type == "string") {
-    //     let targetType = typeof target;
-    //     let typeArr = type.split(",");
-
-    //     if (typeArr.indexOf(targetType) == -1) {
-    //         throw `DRAGON EDITOR - invalid type ${target} : ${typeArr.join(",")}`;
-    //     }
-    // } else {
-    //     let typeArr;
-    //     let value = true;
-
-    //     if (type instanceof Function) {
-    //         typeArr = [type];
-    //     } else if (type instanceof Array) {
-    //         typeArr = type;
-    //     } else {
-    //         throw `DRAGON EDITOR - Wrong type check augment ${type}`;
-    //     }
-
-    //     typeArr.forEach((item) => {
-    //         if (!(target instanceof item)) {
-    //             value = false;
-    //         }
-    //     });
-
-    //     if (value == false) {
-    //         throw `DRAGON EDITOR - invalid type ${target} : ${type}`;
-    //     }
-    // }
-
-    // return target;
 }
 
 export function typeCheckBoolean(target, type) {
@@ -96,38 +64,6 @@ export function typeCheckBoolean(target, type) {
     }
 
     return status;
-
-    // if (typeof type == "string") {
-    //     let targetType = typeof target;
-    //     let typeArr = type.split(",");
-
-    //     if (typeArr.indexOf(targetType) == -1) {
-    //         status = false;
-    //     }
-    // } else {
-    //     let typeArr;
-    //     let value = true;
-
-    //     if (type instanceof Function) {
-    //         typeArr = [type];
-    //     } else if (type instanceof Array) {
-    //         typeArr = type;
-    //     } else {
-    //         status = false;
-    //     }
-
-    //     typeArr.forEach((item) => {
-    //         if (!(target instanceof item)) {
-    //             value = false;
-    //         }
-    //     });
-
-    //     if (value == false) {
-    //         status = false;
-    //     }
-    // }
-
-    // return status;
 }
 
 export function eventBinding($node, type, fn, useCapture = false, _0 = typeCheckThrow($node, "*"), _1 = typeCheckThrow(type, "string"), _2 = typeCheckThrow(fn, "function"), _3 = typeCheckThrow(useCapture, "boolean")) {

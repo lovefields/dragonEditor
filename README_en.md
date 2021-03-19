@@ -8,9 +8,9 @@
 
 # DragonEditor
 
-드래곤 에디터는 그냥 블로그에 쓸 이지윅 에디터가 필요해서 만들었습니다.<br>커스터마이징이 가능하며 AMP 페이지를 지원합니다.
+I made WYSIWYG DragonEditor because just i needed an WYSIWYG editor to use in my blog.<br>Well DragonEditor has any customized option and support AMP page.
 
-## 브라우저 지원
+## Support browser
 -   Chrome 55+
 -   Safari 13+
 -   Firefox 63+
@@ -18,28 +18,27 @@
 -   IOS 11+
 -   Android 7+
 
-IE 따위는 지원하지 않습니다.
+We never ever support IE.
 
-## 플러그인
+## Plugin
 
-코드블럭을 사용하는 경우만 사용합니다.<br>
-~~직접 만들려고 했는데 미친 짓인 것 같네요~~
+If you using `codeblock`, import this plugin.
 
 -   `highlight.js` [(Link)](https://highlightjs.org/)
 
-## 사용법
+## Using
 
-### 에디터 페이지
+# editor
 ```html
 <!-- 
-* 코드 블럭을 사용한다면 구글 폰트(Inconsolata)를 불러옵니다.
-* 에디터 CSS를 로드합니다.
+* Load Google font(Inconsolata) if you using code block.
+* Load DragonEditor CSS
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditor.css">
 
 <!-- 
-* SVG아이콘 팩을 불러오거나(템플릿 엔진) 페이지에 직접 삽입하세요.
+* You must include icon pack(template engine) or directly to html page.
 -->
 <svg class="icon-pack">
     <defs>
@@ -48,31 +47,31 @@ IE 따위는 지원하지 않습니다.
     </defs>
 </svg>
 <!--
-* editor-dragon 클레스를 지정합니다.
+* Set editor-dragon class element.
 -->
 <div class="editor-dragon"></div>
 
 <!-- 
-* 코드 블럭을 사용할 경우 플러그인을 불러오세요.
-* 에디터 JS를 로드합니다.
+* Load highlight plugin if you using code block.
+* Load dragonEditor js
 -->
 <script src="[yourdir]/highlight.pack.js"></script>
 <script src="[yourdir]/dragonEditor.js"></script>
 <script>
     const editor = new dragonEditor();
-    // 위나 아래처럼 사용 가능합니다
+    // OR
     const editor = new dragonEditor({
         key: "value",
     });
 </script>
 ```
 
-### 뷰 페이지
+# viewer
 ```html
 <!-- 
-* 코드 블럭을 사용한다면 구글 폰트(Inconsolata)를 불러옵니다.
-* 뷰페이지용 CSS를 로드합니다.
-* [code] 값은 convertor를 사용한 결과값입니다.(view-convertor 폴더 참조)
+* Load Google font(Inconsolata) if you using code block.
+* Load DragonEditorViewer CSS
+* The [code] value is the result with converter (see view-convertor folder).
 -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditorViewer.css">
@@ -80,12 +79,12 @@ IE 따위는 지원하지 않습니다.
 <div class="editor-dragon-viewer">[code]</div>
 ```
 
-## 데모 페이지
+## Demo
 [Demo page](https://lovefields.github.io/dragonEditor/demo)
 
-## 문서
+## Document
 
 -   [DragonEditor Document](https://lovefields.github.io/dragonEditor-doc/)
 
-## 라이선스
+## License
 [LGPL 3.0](https://github.com/lovefields/dragonEditor/blob/main/License.txt)

@@ -165,6 +165,7 @@ export function setOptionPopValue() {
         let btnColor = getElement(".djs-color", false);
         let btnListStyleText = getElement(".djs-list-style .djs-text", false);
         let btnCodeLangText = getElement(".djs-code-lang .djs-text", false);
+        let btnColSizeText = getElement(".djs-colsize .djs-text", false);
 
         if ($editableItem == null) {
             $editableItem = $item;
@@ -240,6 +241,18 @@ export function setOptionPopValue() {
             let lang = $item.dataset["lang"];
 
             btnCodeLangText.textContent = lang;
+        }
+
+        if (itemType == "table") {
+            if ($editableItem.tagName !== "CAPTION") {
+                let x = parseInt($editableItem.dataset["x"]);
+
+                if (isNaN(x) == false) {
+                    let col = getChild($item, "col")[x];
+
+                    btnColSizeText.textContent = `${col.dataset["size"]}px`;
+                }
+            }
         }
 
         if (textStyle.wordblock != "") {

@@ -151,7 +151,12 @@ export function jsonToHtml(json) {
                 `;
                 break;
             case "emoticon":
-                html += `<div class="editor-item djs-item" data-type="${item.type}">${item.code}</div>`;
+                if (item.data.type == "image") {
+                    html += `<div class="editor-item djs-item" data-type="${item.type}"><img src="${item.data.src}" alt="${item.data.caption}" data-width="${item.data.width}" data-height="${item.data.height}"></div>`;
+                } else if (item.data.type == "svg") {
+                    html += `<div class="editor-item djs-item" data-type="${item.type}">${item.data.code}</div>`;
+                }
+
                 break;
 
             case "youtube":
@@ -306,9 +311,24 @@ export function htmlToJson($nodeList, _0 = typeCheckThrow($nodeList, "nodelist")
                 });
                 break;
             case "emoticon":
+                let $child = $item.children[0];
+                let childTag = $child.tagName;
+                let emoticonData = {};
+
+                if (childTag == "IMG") {
+                    emoticonData.type = "image";
+                    emoticonData.src = $child.src;
+                    emoticonData.caption = $child.alt;
+                    emoticonData.width = parseInt($child.dataset["width"]);
+                    emoticonData.height = parseInt($child.dataset["height"]);
+                } else if (childTag == "svg") {
+                    emoticonData.type = "svg";
+                    emoticonData.code = $child.outerHTML;
+                }
+
                 arr.push({
                     type: "emoticon",
-                    code: $item.innerHTML,
+                    data: emoticonData,
                 });
                 break;
             case "youtube":

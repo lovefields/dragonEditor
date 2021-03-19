@@ -27,7 +27,10 @@ export function contentPasteEvent(e, _0 = typeCheckThrow(e, "event")) {
     } else {
         if (condition.uploadURL !== "") {
             // to-do : paste image
-            // console.log(data);
+            console.log(data);
+        }else{
+            console.warn(`DRAGON EDITOR - If you want upload image? set "uploadURL" first.`);
+            return;
         }
     }
 }

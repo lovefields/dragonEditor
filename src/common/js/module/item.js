@@ -1,7 +1,7 @@
 const { typeCheckThrow, classControl } = require("./default");
 const { openOptionPop } = require("./pop");
 const { contentEnterKeyEvent, contentTabKeyEvent, contentBackspaceKeyEvent, blockHotKey } = require("./keyboard");
-const { setCursor, isTextSelect } = require("./cursor");
+const { isTextSelect } = require("./cursor");
 const { findParentByClass, findContenteditable, getChild, getElement } = require("./selector");
 const { hasBaseNode, setSelection } = require("./selection");
 const { getTextBlockHTML } = require("./layout");
@@ -116,17 +116,6 @@ export function itemKeyboardEvent(e, _0 = typeCheckThrow(e, "event")) {
     }
 }
 
-export function changeTableCell(type, _0 = typeCheckThrow(type, "string")) {
-    let $editableItem = findContenteditable(condition.baseNode);
-    let html = $editableItem.innerHTML;
-
-    $editableItem.insertAdjacentHTML("afterend", `<${type} contenteditable="true">${html}</${type}>`);
-    setCursor($editableItem.nextElementSibling, 0);
-    condition.activeElement = $editableItem.nextElementSibling;
-    $editableItem.remove();
-    openOptionPop();
-}
-
 export function itemMove(type, _0 = typeCheckThrow(type, "string")) {
     let $item = findParentByClass(condition.baseNode, "djs-item");
     let $target, html;
@@ -157,6 +146,7 @@ export function itemMove(type, _0 = typeCheckThrow(type, "string")) {
     }
 }
 
+// 에디터 내부 구조 교정
 export function itemStructureValidation() {
     let wrongTagList = ["font", "center", "div"];
     let $itemList = getChild(condition.areaContent, `[contenteditable="true"]`);
