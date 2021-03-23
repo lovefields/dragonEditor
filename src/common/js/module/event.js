@@ -73,7 +73,14 @@ function setGlobalEvent() {
 function setMenuEvent() {
     if (condition.uploadURL !== "") {
         eventBinding(condition.uploadInput, "change", function () {
-            fileUpload();
+            let $form = condition.uploadForm;
+            let formData = new FormData($form);
+
+            formData.append("type", $form.dataset["type"]);
+            formData.append("articleIdx", condition.articleIdx);
+            formData.append("articleTempIdx", condition.articleTempIdx);
+
+            fileUpload(formData);
         });
     }
 

@@ -16,17 +16,10 @@ export function openFile(type, _0 = typeCheckThrow(type, "string")) {
     condition.uploadInput.click();
 }
 
-export async function fileUpload() {
-    let $form = condition.uploadForm;
-    let formData = new FormData($form);
-
-    formData.append("type", $form.dataset["type"]);
-    formData.append("articleIdx", condition.articleIdx);
-    formData.append("articleTempIdx", condition.articleTempIdx);
-
+export async function fileUpload(data, _0 = typeCheckThrow(data, "formdata")) {
     let request = await fetchURL(condition.uploadURL, {
         method: "POST",
-        body: formData,
+        body: data,
     });
 
     if (request.response == true) {

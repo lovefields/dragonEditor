@@ -1,6 +1,7 @@
 const { typeCheckThrow } = require("./default");
 const { findParentByClass } = require("./selector");
 const { setCursor } = require("./cursor");
+const { fileUpload } = require("./file");
 const { setSelection } = require("./selection");
 
 export function contentPasteEvent(e, _0 = typeCheckThrow(e, "event")) {
@@ -26,9 +27,16 @@ export function contentPasteEvent(e, _0 = typeCheckThrow(e, "event")) {
         setCursor(textNode, textNode.length);
     } else {
         if (condition.uploadURL !== "") {
-            // to-do : paste image
-            console.log(data);
-        }else{
+            let $form = condition.uploadForm;
+            let formData = new FormData($form);
+
+            formData.append("type", $form.dataset["type"]);
+            formData.append("file", data.value);
+            formData.append("articleIdx", condition.articleIdx);
+            formData.append("articleTempIdx", condition.articleTempIdx);
+
+            fileUpload(formData);
+        } else {
             console.warn(`DRAGON EDITOR - If you want upload image? set "uploadURL" first.`);
             return;
         }
