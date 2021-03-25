@@ -5,20 +5,26 @@ const { htmlToJson } = require("./convertor");
 
 export function makeView() {
     let view = `${makeContentArea()}<div class="editor-menu-block">${makeBlockMenu(condition.defaultMenu)}</div><div class="editor-menu-bottom">${makeBottomMenu()}`;
+
     if (condition.multiLang == true) {
         view += makeLanguagePop();
     }
-    view += `${makeFolderPop()}</div>`;
+
+    if (condition.mediaURL !== "") {
+        view += `${makeFolderPop()}`;
+        document.body.insertAdjacentHTML("beforeend", makeUploadForm());
+    }
+
+    view += `</div>`;
 
     view += makeLinkboxPop();
     view += makeOptionPop();
-    view += makeEmoticonPop();
+
+    if (condition.useEmoticon == true) {
+        view += makeEmoticonPop();
+    }
 
     condition.wrap.insertAdjacentHTML("beforeend", view);
-
-    if (condition.uploadURL !== "") {
-        document.body.insertAdjacentHTML("beforeend", makeUploadForm());
-    }
 }
 
 function makeContentArea() {
@@ -31,33 +37,13 @@ function makeBlockMenu(data) {
 
     for (const [key, value] of arr) {
         if (value.type === "block") {
-            html += `
-                <button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
-                    <svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>
-                    ${value.text}
-                </button>
-            `;
+            html += `<button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}"><svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>${value.text}</button>`;
         } else if (value.type === "pop") {
-            html += `
-                <button type="button" class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}">
-                    <svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>
-                    ${value.text}
-                </button>
-            `;
+            html += `<button type="button" class="editor-btn djs-add-block djs-btn-ignore" title="${value.text}" data-value="${key}" data-type="${value.type}"><svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>${value.text}</button>`;
         } else if (value.type === "file") {
-            html += `
-                <button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}">
-                    <svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>
-                    ${value.text}
-                </button>
-            `;
+            html += `<button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="${value.type}"><svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>${value.text}</button>`;
         } else {
-            html += `
-                <button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="custom">
-                    <svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>
-                    ${value.text}
-                </button>
-            `;
+            html += `<button type="button" class="editor-btn djs-add-block" title="${value.text}" data-value="${key}" data-type="custom"><svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="${value.icon}" href="${value.icon}"></use></svg>${value.text}</button>`;
         }
     }
 
@@ -69,28 +55,15 @@ function makeBlockMenu(data) {
 function makeBottomMenu() {
     let html = ``;
 
-    if (condition.uploadURL !== "") {
-        html += `
-            <button type="button" class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-folder">
-                <svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="#icon-folder" href="#icon-folder"></use></svg>Media
-            </button>
-        `;
+    if (condition.mediaURL !== "") {
+        html += `<button type="button" class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-folder"><svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="#icon-folder" href="#icon-folder"></use></svg>Media</button>`;
     }
 
     if (condition.multiLang == true) {
-        html += `
-            <button type="button" class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-lang">
-                <svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="#icon-lang" href="#icon-lang"></use></svg>Change language
-            </button>
-        `;
+        html += `<button type="button" class="editor-btn djs-toggle-target djs-btn-ignore" data-target=".editor-pop-lang"><svg viewbox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="#icon-lang" href="#icon-lang"></use></svg>Change language</button>`;
     }
 
-    html += `
-        <button type="button" class="editor-btn editor-switch-device djs-switch-device">
-            <svg class="editor-icon" viewbox="0 0 64 64">
-                <use class="path editor-pc" xlink:href="#icon-pc" href="#icon-pc"></use><use class="path editor-mobile" xlink:href="#icon_mobile" href="#icon-mobile"></use></svg>Change view
-        </button>
-    `;
+    html += `<button type="button" class="editor-btn editor-switch-device djs-switch-device"><svg class="editor-icon" viewbox="0 0 64 64"><use class="path editor-pc" xlink:href="#icon-pc" href="#icon-pc"></use><use class="path editor-mobile" xlink:href="#icon_mobile" href="#icon-mobile"></use></svg>Change view</button>`;
 
     return html;
 }
@@ -156,6 +129,7 @@ function makeFolderPop() {
             <div class="editor-scroll-content djs-scroll-content">
                 <ul class="editor-list-media djs-list-media editor-clearfix"></ul>
             </div>
+            <button type="button" class="editor-add-media djs-add-media">Add Media</button>
         </div>
     `;
 }
@@ -178,11 +152,13 @@ function makeUploadForm() {
     if (condition.csrfData.value != "") {
         html += `<input type="hidden" name="${condition.csrfData.name}" value="${condition.csrfData.value}">`;
     }
+
     if (condition.multiUpload == true) {
         html += `<input type="file" name="file" multiple class="djs-file">`;
     } else {
         html += `<input type="file" name="file" class="djs-file">`;
     }
+
     html += `</form>`;
 
     return html;
@@ -226,10 +202,7 @@ export function getTextBlockHTML(content = "", _0 = typeCheckThrow(content, "str
 }
 
 export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "object"), _1 = typeCheckThrow(width, "number")) {
-    let html = `
-        <div class="editor-item djs-item --djs-selected" data-type="image" data-webp="${attr.hasWebp}">
-            <div class="editor-size djs-size" data-width="${width}">
-    `;
+    let html = `<div class="editor-item djs-item --djs-selected" data-type="image" data-webp="${attr.hasWebp}"><div class="editor-size djs-size" data-width="${width}">`;
 
     if (condition.useWebp == true) {
         html += `<picture>`;
@@ -246,9 +219,7 @@ export function getImageBlockHTML(attr, width = 700, _0 = typeCheckThrow(attr, "
 
     html += `<button type="button" class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button>`;
     html += `<button type="button" class="editor-btn-resize --right djs-resize" data-value="width" data-position="right">resize</button>`;
-    html += `</div>`;
-    html += `<p class="editor-caption djs-caption" contenteditable="true" data-type="caption">${attr.alt}</p>`;
-    html += `</div>`;
+    html += `</div><p class="editor-caption djs-caption" contenteditable="true" data-type="caption">${attr.alt}</p></div>`;
 
     return html;
 }
@@ -333,9 +304,7 @@ function getTableBlock() {
 }
 
 function getCodeBlock() {
-    return `
-        <pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight editor-code djs-code" contenteditable="true"></code></pre>
-    `;
+    return `<pre class="editor-item djs-item --djs-selected" data-type="codeblock" data-theme="default" data-lang="text"><code class="nohighlight editor-code djs-code" contenteditable="true"></code></pre>`;
 }
 
 export function getYoutubeBlock(code, _0 = typeCheckThrow(code, "string")) {

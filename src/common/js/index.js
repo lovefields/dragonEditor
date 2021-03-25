@@ -30,7 +30,7 @@ module.exports = class {
     }
 
     setMedia(data, _0 = typeCheckThrow(data, "array")) {
-        if (condition.uploadURL == "") {
+        if (condition.mediaURL == "") {
             console.warn(`DRAGON EDITOR - If you want using Media? set "uploadURL" first.`);
             return;
         }

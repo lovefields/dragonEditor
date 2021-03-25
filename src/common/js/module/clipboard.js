@@ -26,7 +26,7 @@ export function contentPasteEvent(e, _0 = typeCheckThrow(e, "event")) {
         selection.getRangeAt(0).insertNode(textNode);
         setCursor(textNode, textNode.length);
     } else {
-        if (condition.uploadURL !== "") {
+        if (condition.mediaURL !== "") {
             let $form = condition.uploadForm;
             let formData = new FormData($form);
 

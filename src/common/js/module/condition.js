@@ -158,29 +158,28 @@ export class storage {
         this.defaultLinkBoxImage = typeCheckBoolean(options.defaultLinkBoxImage, "string") ? options.defaultLinkBoxImage : "https://via.placeholder.com/600x300.png";
         this.linkBoxApi = typeCheckBoolean(options.linkBoxApi, "string") ? options.linkBoxApi : "";
 
-        this.setUploadURL(options.uploadURL);
+        this.mediaURL = this.setURL(options.mediaURL, "mediaURL");
         this.setLang(options.lang);
         this.setContentData();
         this.setBlockMenu();
         this.addLanguage();
     }
 
-    setUploadURL(url = "") {
+    setURL(url = "", type) {
         if (url == "") {
-            this.uploadURL = "";
-            return;
+            return "";
         }
 
         if (typeCheckBoolean(url, "string") == true) {
             if (this.regList["defaultURL"].test(url) == true || url.substr(0, 1) == "/") {
-                this.uploadURL = url;
+                return url;
             } else {
-                console.warn(message.wrongURL("uploadURL", url));
-                this.uploadURL = "";
+                console.warn(message.wrongURL(type, url));
+                return "";
             }
         } else {
-            console.warn(message.wrongURL("uploadURL", url));
-            this.uploadURL = "";
+            console.warn(message.wrongURL(type, url));
+            return "";
         }
     }
 
@@ -279,7 +278,7 @@ export class storage {
         }
         delete this.blockName;
 
-        if (this.uploadURL == "") {
+        if (this.mediaURL == "") {
             delete defaultMenu.imageBlock;
         }
 
@@ -359,8 +358,9 @@ export class storage {
         this.btnWordBlock = getElement(".djs-word-block", false);
         this.btnWordLink = getElement(".djs-open-linkbox", false);
         this.btnItemDelete = getElement(".djs-delete-block", false);
+        this.btnAddMedia = getElement(".djs-add-media", false);
 
-        if (condition.uploadURL !== "") {
+        if (condition.mediaURL !== "") {
             this.uploadForm = getElement(".djs-uploader", false);
             this.uploadInput = getElement(".djs-uploader .djs-file", false);
         }

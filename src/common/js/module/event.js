@@ -71,7 +71,7 @@ function setGlobalEvent() {
 }
 
 function setMenuEvent() {
-    if (condition.uploadURL !== "") {
+    if (condition.mediaURL !== "") {
         eventBinding(condition.uploadInput, "change", function () {
             let $form = condition.uploadForm;
             let formData = new FormData($form);
@@ -81,6 +81,12 @@ function setMenuEvent() {
             formData.append("articleTempIdx", condition.articleTempIdx);
 
             fileUpload(formData);
+        });
+
+        eventBinding(condition.btnAddMedia, "click", function () {
+            condition.uploadForm.dataset["type"] = "default";
+            condition.uploadInput.removeAttribute("accept");
+            condition.uploadInput.click();
         });
     }
 
@@ -336,7 +342,7 @@ function setMenuEvent() {
                     addBlockToContent(block);
                     break;
                 case findParentByClass(e.target, "djs-del-media") !== null:
-                    let url = condition.uploadURL;
+                    let url = condition.mediaURL;
                     let lastStrIsSlat = url.substr(url.length - 1, url.length) == "/" ? true : false;
 
                     if (lastStrIsSlat == false) {
