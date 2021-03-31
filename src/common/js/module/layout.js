@@ -587,7 +587,7 @@ export function setMediaList(data) {
     data.forEach((row) => {
         if (row.type == "image") {
             html += `
-                <li class="editor-media djs-media" data-type="image" data-idx="${row.idx}">
+                <li class="editor-media djs-media" data-type="image" data-idx="${row.fileIdx}">
                     <div class="eidtor-img-area djs-add-media" data-src="${row.src}" data-alt="${row.alt}" data-default-format="${row.defaultFormat}" data-webp="${row.webp}" data-width="${row.width}" data-height="${row.height}">
                         <img src="${`${row.src}.${row.defaultFormat}`}" class="editor-img">
                     </div>
