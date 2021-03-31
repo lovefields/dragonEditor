@@ -1,13 +1,14 @@
 const { typeCheckThrow, eventBinding, classControl, hasClass, fetchURL, isMobile } = require("./default");
 const { getElement, findParentByClass, getChild, findContenteditable } = require("./selector");
 const { setScroll, getScrollInfo } = require("./scroll");
-const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
-const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, changeTableCell, itemMove } = require("./item");
+const { getDefaultBlockHTML, getYoutubeBlock, getCodepenBlock, getLinkboxBlock, setEmoticonList, getEmoticonBlockHTML, addBlockToContent, getImageBlockHTML, getContentData } = require("./layout");
+const { itemClickEvent, itemKeyboardEvent, itemStructureValidation, itemMove } = require("./item");
 const { openFile, fileUpload, mediaNameUpdate } = require("./file");
 const { openPop, closeOptionPop, openOptionPop, openLinkPop } = require("./pop");
 const { contentPasteEvent } = require("./clipboard");
 const { jsonToHtml } = require("./convertor");
 const { textNodeStyleing } = require("./textNode");
+const { changeTableCell, tableCellControl, setTableColSize } = require("./table");
 const { message } = require("./message");
 
 export function setEvent() {
@@ -70,9 +71,22 @@ function setGlobalEvent() {
 }
 
 function setMenuEvent() {
-    if (condition.uploadURL !== "") {
+    if (condition.mediaURL !== "") {
         eventBinding(condition.uploadInput, "change", function () {
-            fileUpload();
+            let $form = condition.uploadForm;
+            let formData = new FormData($form);
+
+            formData.append("type", $form.dataset["type"]);
+            formData.append("articleIdx", condition.articleIdx);
+            formData.append("articleTempIdx", condition.articleTempIdx);
+
+            fileUpload(formData);
+        });
+
+        eventBinding(condition.btnAddMedia, "click", function () {
+            condition.uploadForm.dataset["type"] = "default";
+            condition.uploadInput.removeAttribute("accept");
+            condition.uploadInput.click();
         });
     }
 
@@ -307,7 +321,7 @@ function setMenuEvent() {
             };
 
             type = $item.dataset["type"];
-            idx = $item.dataset["idx"];
+            idx = $item.dataset["fileIdx"];
         }
 
         if (type == "image") {
@@ -328,7 +342,7 @@ function setMenuEvent() {
                     addBlockToContent(block);
                     break;
                 case findParentByClass(e.target, "djs-del-media") !== null:
-                    let url = condition.uploadURL;
+                    let url = condition.mediaURL;
                     let lastStrIsSlat = url.substr(url.length - 1, url.length) == "/" ? true : false;
 
                     if (lastStrIsSlat == false) {
@@ -411,13 +425,30 @@ export function bindingScrollEvent($wrap, _0 = typeCheckThrow($wrap, "node")) {
 }
 
 export function setEmoticonBtnEvent() {
-    condition.btnEmoticon = getChild(condition.listEmoticon, ".djs-add-emoticon");
+    let event = document.createEvent("HTMLEvents");
+    event.initEvent("click", true, false);
+    condition.btnEmoticonTap = getChild(condition.popEmoticon, ".djs-emoticon-tap");
 
-    eventBinding(condition.btnEmoticon, "click", function () {
-        let code = this.innerHTML.trim();
-        let block = getEmoticonBlockHTML(code);
+    eventBinding(condition.btnEmoticonTap, "click", function () {
+        let key = this.dataset["key"];
+        let list = condition.emoticonData[key].list;
 
-        addBlockToContent(block);
+        setEmoticonList(key, list);
+    });
+
+    condition.btnEmoticonTap[0].dispatchEvent(event);
+
+    eventBinding(condition.listEmoticon, "click", function (e) {
+        let $target = e.target;
+        let $btn = findParentByClass($target, "djs-add-emoticon");
+
+        if ($btn !== null) {
+            let key = $btn.dataset["key"];
+            let idx = parseInt($btn.dataset["idx"]);
+            let block = getEmoticonBlockHTML(key, idx);
+
+            addBlockToContent(block);
+        }
     });
 }
 
@@ -554,6 +585,19 @@ function setOptionEvent() {
         $btn.dispatchEvent(event);
     });
 
+    // table col size
+    eventBinding(condition.btnColSize, "click", function () {
+        let $btn = getElement(".djs-colsize", false);
+        let value = this.dataset["value"];
+        let text = this.textContent;
+        let event = document.createEvent("HTMLEvents");
+        event.initEvent("click", true, false);
+
+        setTableColSize(value);
+        getChild($btn, ".djs-text", false).textContent = text;
+        $btn.dispatchEvent(event);
+    });
+
     // color event
     eventBinding(condition.btnColor, "click", function () {
         let $btn = getElement(".djs-color", false);
@@ -638,6 +682,17 @@ function setOptionEvent() {
 
     eventBinding(condition.btnTableBody, "click", function () {
         changeTableCell("td");
+    });
+
+    // 표 컨트롤 이벤트
+    eventBinding(condition.btnCellControl, "click", function () {
+        let type = this.dataset["type"];
+        let action = this.dataset["action"];
+        let $cell = findContenteditable(condition.baseNode);
+        let x = $cell.dataset["x"];
+        let y = $cell.dataset["y"];
+
+        tableCellControl(type, action, x, y);
     });
 
     // code theme event

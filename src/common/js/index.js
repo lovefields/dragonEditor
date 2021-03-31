@@ -1,6 +1,6 @@
 const { typeCheckThrow } = require("./module/default");
 const { storage } = require("./module/condition");
-const { makeView, setEmoticonList, setMediaList, getContentData, addBlockToContent } = require("./module/layout");
+const { makeView, setEmoticonLayout, setMediaList, getContentData, addBlockToContent } = require("./module/layout");
 const { refreshScroll } = require("./module/scroll");
 const { setEvent, setEmoticonBtnEvent } = require("./module/event");
 const { jsonToHtml } = require("./module/convertor");
@@ -17,13 +17,24 @@ module.exports = class {
         return this;
     }
 
-    setEmoticon(data, _0 = typeCheckThrow(data, "array")) {
-        setEmoticonList(data);
-        refreshScroll();
+    setEmoticon(data, _0 = typeCheckThrow(data, "object")) {
+        if (condition.useEmoticon == false) {
+            console.warn(`DRAGON EDITOR - If you want using Emoticon? set "useEmoticion" first.`);
+            return;
+        }
+
+        condition.emoticonData = data;
+        setEmoticonLayout();
         setEmoticonBtnEvent();
+        refreshScroll();
     }
 
     setMedia(data, _0 = typeCheckThrow(data, "array")) {
+        if (condition.mediaURL == "") {
+            console.warn(`DRAGON EDITOR - If you want using Media? set "uploadURL" first.`);
+            return;
+        }
+
         setMediaList(data);
         refreshScroll();
     }
@@ -54,22 +65,3 @@ module.exports = class {
         return condition;
     }
 };
-
-// export function getOptionValue(name) {
-//     if (storage[name] === undefined) {
-//         console.error(`Optins name "${name}" is didn't have.`);
-//         return false;
-//     } else {
-//         return storage[name];
-//     }
-// }
-
-// export function setOptionValue(name, value) {
-//     if (storage[name] === undefined) {
-//         console.error("Can not set other option name.");
-//         return false;
-//     } else {
-//         storage[name] = value;
-//         return storage[name];
-//     }
-// }

@@ -10,14 +10,22 @@
     <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="./assets/css/base.css">
-    <link rel="stylesheet" href="../dist/css/dragonEditorViewer.css">
-    <title>Dragon Editor - viewer</title>
+    <style>
+        .wrap{display:flex;width:100vw;height:100vh;padding:0}
+        .wrap .demo-list{margin:auto}
+        .demo-list{margin:auto}
+        .demo-list .item{padding:10px}
+        .demo-list .link{display:block;padding:20px;color:#333;border:1px solid #ccc;font-weight:bold}
+        .demo-list .link:hover{background:#f1f1f1}
+    </style>
+    <title>Dragon Editor Demo</title>
 </head>
 <body>
 <div class="wrap">
     <ul class="demo-list">
-        <li><a href="editor.html">editor</a></li>
-        <li><a href="viewer.html">viewer</a></li>
+        <li class="item"><a href="editor01.html" class="link">Editor(Default)</a></li>
+        <li class="item"><a href="editor02.html" class="link">Editor(Container)</a></li>
+        <li class="item"><a href="viewer.html" class="link">Viewer</a></li>
     </ul>
 </div>
 </body>
