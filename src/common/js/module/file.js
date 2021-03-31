@@ -69,7 +69,7 @@ export async function mediaNameUpdate($node, _0 = typeCheckThrow($node, "node"))
             method: "PUT",
             body: {
                 imageName: text,
-                imageIdx: idx,
+                fileIdx: idx,
             },
         },
         "json",
