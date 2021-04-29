@@ -321,7 +321,7 @@ function setMenuEvent() {
             };
 
             type = $item.dataset["type"];
-            idx = $item.dataset["fileIdx"];
+            idx = $item.dataset["idx"];
         }
 
         if (type == "image") {
