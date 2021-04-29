@@ -588,12 +588,12 @@ export function setMediaList(data) {
         if (row.type == "image") {
             html += `
                 <li class="editor-media djs-media" data-type="image" data-idx="${row.fileIdx}">
-                    <div class="eidtor-img-area djs-add-media" data-src="${row.src}" data-alt="${row.alt}" data-default-format="${row.defaultFormat}" data-webp="${row.webp}" data-width="${row.width}" data-height="${row.height}">
+                    <div class="eidtor-img-area djs-add-media" data-src="${row.src}" data-alt="${row.alt}" data-default-format="${row.defaultFormat}" data-webp="${row.hasWebp}" data-width="${row.width}" data-height="${row.height}">
                         <img src="${`${row.src}.${row.defaultFormat}`}" class="editor-img">
                     </div>
 
                     <p class="editor-name djs-name">${row.alt}</p>
-                    <button type="button" class="editor-btn-del djs-del-media" data-idx="${row.idx}"><svg viewBox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="#icon-delete-block" href="#icon-delete-block"></use></svg>delete media</button>
+                    <button type="button" class="editor-btn-del djs-del-media" data-idx="${row.fileIdx}"><svg viewBox="0 0 64 64" class="editor-icon"><use class="path" xlink:href="#icon-delete-block" href="#icon-delete-block"></use></svg>delete media</button>
                 </li>
             `;
         }
