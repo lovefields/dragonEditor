@@ -116,9 +116,9 @@ function setMenuEvent() {
 
             condition.activeItem = condition.wrap;
             condition.activeElement = condition.wrap;
-            condition.lang = lang;
             condition.areaContent.innerHTML = html;
-            condition.triggerLangChange(lang);
+            condition.triggerLangChange(condition.lang, lang);
+            condition.lang = lang;
         });
     }
 
