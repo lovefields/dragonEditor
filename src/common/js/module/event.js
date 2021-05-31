@@ -102,6 +102,10 @@ function setMenuEvent() {
 
             condition.contentData[condition.lang] = data;
 
+            if (condition.contentData[lang] == undefined) {
+                condition.contentData[lang] = [];
+            }
+
             if (condition.contentData[lang].length == 0) {
                 let duplicate = confirm(message.noContentData(lang));
 
@@ -116,9 +120,9 @@ function setMenuEvent() {
 
             condition.activeItem = condition.wrap;
             condition.activeElement = condition.wrap;
-            condition.lang = lang;
             condition.areaContent.innerHTML = html;
-            condition.triggerLangChange(lang);
+            condition.triggerLangChange(condition.lang, lang);
+            condition.lang = lang;
         });
     }
 
