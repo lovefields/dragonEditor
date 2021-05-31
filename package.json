@@ -1,6 +1,6 @@
 {
   "name": "dragon-editor",
-  "version": "1.0.6",
+  "version": "1.1.2",
   "description": "DragonEditor is Javascript WYSIWYG editor.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/lovefield/dragonEditor.git"
   },
   "author": "Lovefield",
-  "license": "LGPLv3",
+  "license": "MPL 2.0",
   "bugs": {
     "url": "https://github.com/lovefield/dragonEditor/issues"
   },
