@@ -85,6 +85,3 @@ If you using `codeblock`, import this plugin.
 ## Document
 
 -   [DragonEditor Document](https://lovefields.github.io/dragonEditor-doc/)
-
-## License
-[LGPL 3.0](https://github.com/lovefields/dragonEditor/blob/main/License.txt)
