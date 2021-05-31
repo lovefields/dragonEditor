@@ -65,6 +65,8 @@ export function openLinkPop(type, offset = {}, _0 = typeCheckThrow(type, "string
         let $link = condition.baseNode.parentNode;
 
         $aTag.textContent = $link.href;
+        $aTag.href = $link.href;
+        $aTag.target = "_blank";
         $btn.dataset["value"] = type;
         condition.popLinkbox.dataset["type"] = "del";
         $btn.dataset["type"] = type;

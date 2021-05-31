@@ -8,7 +8,7 @@
 }
 
 .editor-dragon-viewer {
-    *[contenteditable="true"] code {
+    .editor-item:not([data-type="codeblock"]) code {
         padding: 2px 5px;
         margin: 0 5px;
         background: #cdcdcd;

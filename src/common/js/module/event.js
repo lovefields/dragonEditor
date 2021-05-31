@@ -102,6 +102,10 @@ function setMenuEvent() {
 
             condition.contentData[condition.lang] = data;
 
+            if (condition.contentData[lang] == undefined) {
+                condition.contentData[lang] = [];
+            }
+
             if (condition.contentData[lang].length == 0) {
                 let duplicate = confirm(message.noContentData(lang));
 
