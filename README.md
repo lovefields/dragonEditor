@@ -86,6 +86,3 @@ IE 따위는 지원하지 않습니다.
 ## 문서
 
 -   [DragonEditor Document](https://lovefields.github.io/dragonEditor-doc/)
-
-## 라이선스
-[LGPL 3.0](https://github.com/lovefields/dragonEditor/blob/main/License.txt)
