@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 const path = require("path");
@@ -8,6 +9,11 @@ const viewerName = "dragonEditorViewer";
 const scriptFile = [`${commonPath}/js/index.js`];
 const styleFile = [`${commonPath}/css/index.scss`];
 const viewerStyleFile = [`${commonPath}/css/viewer.scss`];
+const PACKAGE = require('./package.json');
+const bannerText = `${name} ${PACKAGE.version}
+${PACKAGE.description}
+Author : ${PACKAGE.author}
+License : ${PACKAGE.license}`;
 
 let options = [
     {
@@ -44,6 +50,11 @@ function getConfig(type, file, name) {
             watchOptions: {
                 poll: 500,
             },
+            plugins: [
+                new webpack.BannerPlugin({
+                    banner: bannerText,
+                }),
+            ],
         };
     } else {
         config = {
@@ -72,6 +83,9 @@ function getConfig(type, file, name) {
                 new FixStyleOnlyEntriesPlugin(),
                 new MiniCssExtractPlugin({
                     filename: `${name}.css`,
+                }),
+                new webpack.BannerPlugin({
+                    banner: bannerText,
                 }),
             ],
             watch: true,
