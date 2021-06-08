@@ -77,8 +77,10 @@
     *[contenteditable="true"] code {
         padding: 2px 5px;
         margin: 0 5px;
-        background: #cdcdcd;
+        background: #f1f1f1;
+        color: #c52e2e;
         border-radius: 2px;
+        font-family: Inconsolata, sans-serif;
     }
 
     @each $size in $font-size-list {
