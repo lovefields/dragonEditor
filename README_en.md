@@ -37,15 +37,6 @@ If you using `codeblock`, import this plugin.
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditor.css">
 
-<!-- 
-* You must include icon pack(template engine) or directly to html page.
--->
-<svg class="icon-pack">
-    <defs>
-        <g id="icon-id">...</g>
-        ...
-    </defs>
-</svg>
 <!--
 * Set editor-dragon class element.
 -->

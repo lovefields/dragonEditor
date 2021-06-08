@@ -55,6 +55,7 @@ export class storage {
         this.csrfHeader = typeCheckBoolean(options.csrfHeader, "object") ? options.csrfHeader : {};
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.layout = typeCheckBoolean(options.layout, "string") ? options.layout : "full";
+        this.useDefaultIcon = typeCheckBoolean(options.useDefaultIcon, "boolean") ? options.useDefaultIcon : true;
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.defaultColor = typeCheckBoolean(options.defaultColor, "string") ? options.defaultColor : "#333";
         this.defaultFontSize = typeCheckBoolean(options.defaultFontSize, "number") ? options.defaultFontSize : 14;

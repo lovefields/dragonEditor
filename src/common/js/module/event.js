@@ -88,6 +88,97 @@ function setMenuEvent() {
             condition.uploadInput.removeAttribute("accept");
             condition.uploadInput.click();
         });
+
+        // media event
+        eventBinding(condition.listMedia, "click", async function (e) {
+            let $editableNode = getChild(this, `*[contenteditable="true"]`);
+            let $item = findParentByClass(e.target, "djs-media");
+            let type = "";
+            let idx = "";
+            let data;
+
+            if ($editableNode.length > 0) {
+                $editableNode.forEach((node) => {
+                    mediaNameUpdate(node);
+                });
+            }
+
+            if ($item != null) {
+                let $area = getChild($item, ".djs-add-media", false);
+                data = {
+                    src: $area.dataset["src"],
+                    alt: $area.dataset["alt"],
+                    hasWebp: $area.dataset["webp"],
+                    defaultFormat: $area.dataset["defaultFormat"],
+                    webp: $area.dataset["webp"],
+                    width: parseInt($area.dataset["width"]),
+                    height: parseInt($area.dataset["height"]),
+                };
+
+                type = $item.dataset["type"];
+                idx = $item.dataset["idx"];
+            }
+
+            if (type == "image") {
+                switch (true) {
+                    case findParentByClass(e.target, "djs-add-media") !== null:
+                        let setWidth = 700;
+                        let block;
+
+                        if (isMobile() == true) {
+                            setWidth = 300;
+                        } else {
+                            if (data.width < data.height) {
+                                setWidth = 400;
+                            }
+                        }
+                        block = getImageBlockHTML(data, setWidth);
+
+                        addBlockToContent(block);
+                        break;
+                    case findParentByClass(e.target, "djs-del-media") !== null:
+                        let url = condition.mediaURL;
+                        let lastStrIsSlat = url.substr(url.length - 1, url.length) == "/" ? true : false;
+
+                        if (lastStrIsSlat == false) {
+                            url += "/";
+                        }
+
+                        let request = await fetchURL(`${url}${idx}`, {
+                            method: "DELETE",
+                        });
+
+                        if (request.response == true) {
+                            let $blockList = getChild(condition.areaContent, `img[src="${data.src}.${data.defaultFormat}"]`);
+
+                            $blockList.forEach(($img) => {
+                                let $block = findParentByClass($img, "djs-item");
+                                $block.remove();
+                            });
+                            $item.remove();
+                            condition.activeItem = condition.wrap;
+                        } else {
+                            alert(request.error.message);
+                        }
+                        break;
+                    case findParentByClass(e.target, "djs-name") !== null:
+                        let $textEl = findParentByClass(e.target, "djs-name");
+                        $textEl.setAttribute("contenteditable", "true");
+                        $textEl.focus();
+                        $textEl.dataset["preText"] = $textEl.textContent;
+                        break;
+                }
+            }
+        });
+
+        eventBinding(condition.listMedia, "keydown", function (e) {
+            let isTextField = findParentByClass(e.target, "djs-name") !== null ? true : false;
+
+            if (e.code == "Enter" && isTextField == true) {
+                e.preventDefault();
+                mediaNameUpdate(e.target);
+            }
+        });
     }
 
     if (condition.multiLang == true) {
@@ -295,97 +386,6 @@ function setMenuEvent() {
             let event = document.createEvent("HTMLEvents");
             event.initEvent("click", true, false);
             condition.btnLinkbox.dispatchEvent(event);
-        }
-    });
-
-    // media event
-    eventBinding(condition.listMedia, "click", async function (e) {
-        let $editableNode = getChild(this, `*[contenteditable="true"]`);
-        let $item = findParentByClass(e.target, "djs-media");
-        let type = "";
-        let idx = "";
-        let data;
-
-        if ($editableNode.length > 0) {
-            $editableNode.forEach((node) => {
-                mediaNameUpdate(node);
-            });
-        }
-
-        if ($item != null) {
-            let $area = getChild($item, ".djs-add-media", false);
-            data = {
-                src: $area.dataset["src"],
-                alt: $area.dataset["alt"],
-                hasWebp: $area.dataset["webp"],
-                defaultFormat: $area.dataset["defaultFormat"],
-                webp: $area.dataset["webp"],
-                width: parseInt($area.dataset["width"]),
-                height: parseInt($area.dataset["height"]),
-            };
-
-            type = $item.dataset["type"];
-            idx = $item.dataset["idx"];
-        }
-
-        if (type == "image") {
-            switch (true) {
-                case findParentByClass(e.target, "djs-add-media") !== null:
-                    let setWidth = 700;
-                    let block;
-
-                    if (isMobile() == true) {
-                        setWidth = 300;
-                    } else {
-                        if (data.width < data.height) {
-                            setWidth = 400;
-                        }
-                    }
-                    block = getImageBlockHTML(data, setWidth);
-
-                    addBlockToContent(block);
-                    break;
-                case findParentByClass(e.target, "djs-del-media") !== null:
-                    let url = condition.mediaURL;
-                    let lastStrIsSlat = url.substr(url.length - 1, url.length) == "/" ? true : false;
-
-                    if (lastStrIsSlat == false) {
-                        url += "/";
-                    }
-
-                    let request = await fetchURL(`${url}${idx}`, {
-                        method: "DELETE",
-                    });
-
-                    if (request.response == true) {
-                        let $blockList = getChild(condition.areaContent, `img[src="${data.src}.${data.defaultFormat}"]`);
-
-                        $blockList.forEach(($img) => {
-                            let $block = findParentByClass($img, "djs-item");
-                            $block.remove();
-                        });
-                        $item.remove();
-                        condition.activeItem = condition.wrap;
-                    } else {
-                        alert(request.error.message);
-                    }
-                    break;
-                case findParentByClass(e.target, "djs-name") !== null:
-                    let $textEl = findParentByClass(e.target, "djs-name");
-                    $textEl.setAttribute("contenteditable", "true");
-                    $textEl.focus();
-                    $textEl.dataset["preText"] = $textEl.textContent;
-                    break;
-            }
-        }
-    });
-
-    eventBinding(condition.listMedia, "keydown", function (e) {
-        let isTextField = findParentByClass(e.target, "djs-name") !== null ? true : false;
-
-        if (e.code == "Enter" && isTextField == true) {
-            e.preventDefault();
-            mediaNameUpdate(e.target);
         }
     });
 }
