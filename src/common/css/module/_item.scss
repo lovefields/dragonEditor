@@ -340,15 +340,15 @@
         &::before {
             display: block;
             content: attr(data-lang);
-            padding: 5px;
+            padding: 0 10px;
             color: #7b7b7b;
-            font-size: 12px;
+            font-size: 10px;
             text-align: right;
         }
 
         code {
             display: block;
-            padding: 5px;
+            padding: 5px 10px 10px;
             font-family: Inconsolata, sans-serif;
             word-wrap: break-word;
             word-break: keep-all;
