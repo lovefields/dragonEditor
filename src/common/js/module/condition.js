@@ -70,7 +70,7 @@ export class storage {
         this.removeMenu = typeCheckBoolean(options.removeMenu, "array") ? options.removeMenu : [];
         this.frontSize = typeCheckBoolean(options.frontSize, "array") ? options.frontSize : [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 1.9, 2, 2.15, 2.25];
         this.codeTheme = typeCheckBoolean(options.codeTheme, "array") ? options.codeTheme : ["default", "vs2015", "androidstudio", "monokai"];
-        this.codeLang = typeCheckBoolean(options.codeLang, "array") ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift", "yml"];
+        this.codeLang = typeCheckBoolean(options.codeLang, "array") ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift", "yml", "dockerfile", "Nginx conf"];
         this.colorList = typeCheckBoolean(options.colorList, "array")
             ? options.colorList
             : [
