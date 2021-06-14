@@ -46,7 +46,7 @@ export function jsonToHtml(json) {
                     }
                 }
 
-                html += `<button class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button><button class="editor-btn-resize --right djs-resize" data-value="width" data-position="right">resize</button>`;
+                html += `<button type="button" class="editor-btn-resize --left djs-resize" data-value="width" data-position="left">resize</button><button type="button" class="editor-btn-resize --right djs-resize" data-value="width" data-position="right">resize</button>`;
                 html += `</div>`;
                 html += `<p class="editor-caption djs-caption" contenteditable="true"${option}>${item.caption.textContent}</p>`;
                 html += `</div>`;
@@ -163,7 +163,7 @@ export function jsonToHtml(json) {
                 html += `
                     <div class="editor-item djs-item" data-type="${item.type}" data-code="${item.code}">
                         <iframe src="https://www.youtube.com/embed/${item.code}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="editor-iframe djs-iframe"></iframe>
-                        <button class="editor-edit">edit</button>
+                        <button type="button" class="editor-edit">edit</button>
                     </div>
                 `;
                 break;
@@ -171,8 +171,8 @@ export function jsonToHtml(json) {
                 html += `
                     <div class="editor-item djs-item" data-type="${item.type}">
                         <iframe height="${item.height}" title="" src="https://codepen.io/${item.nickname}/embed/${item.code}?height=${item.height}&theme-id=${condition.codepenTheme}&default-tab=result" allowfullscreen class="editor-iframe djs-iframe" data-code="${item.code}" data-nickname="${item.nickname}"></iframe>
-                        <button class="editor-btn-resize djs-resize" data-value="height">Resize height</button>
-                        <button class="editor-edit">edit</button>
+                        <button type="button" class="editor-btn-resize djs-resize" data-value="height">Resize height</button>
+                        <button type="button" class="editor-edit">edit</button>
                     </div>
                 `;
                 break;
