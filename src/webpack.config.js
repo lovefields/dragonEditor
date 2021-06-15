@@ -12,7 +12,7 @@ const viewerStyleFile = [`${commonPath}/css/viewer.scss`];
 const PACKAGE = require('./package.json');
 const bannerText = `${name} ${PACKAGE.version}
 ${PACKAGE.description}
-Author : ${PACKAGE.author}
+Author : ${PACKAGE.author} (https://github.com/lovefields)
 License : ${PACKAGE.license}`;
 
 let options = [

@@ -31,6 +31,7 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         } else if (condition.baseNode == childNodes[0] && condition.baseOffset == 0) {
                             $item.insertAdjacentHTML("beforebegin", getTextBlockHTML());
                         } else {
+                            console.log(childNodes, childNodesCount);
                             let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
 
                             $item.childNodes[value.childNumber].textContent = value.beforeText;
@@ -338,7 +339,7 @@ export function blockHotKey(e) {
     }
 }
 
-function splitEditableNodeByNoSelect(childNodes, childNodesCount, _0 = typeCheckThrow(childNodes, NodeList), _1 = typeCheckThrow(childNodesCount, "number")) {
+function splitEditableNodeByNoSelect(childNodes, childNodesCount, _0 = typeCheckThrow(childNodes, "nodelist"), _1 = typeCheckThrow(childNodesCount, "number")) {
     let childNumber = -1;
     let beforeHTML = "";
     let afterHTML = "";
