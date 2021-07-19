@@ -49,9 +49,9 @@ If you using `codeblock`, import this plugin.
 <script src="[yourdir]/highlight.pack.js"></script>
 <script src="[yourdir]/dragonEditor.js"></script>
 <script>
-    const editor = new dragonEditor();
+    const editor = new DragonEditor();
     // OR
-    const editor = new dragonEditor({
+    const editor = new DragonEditor({
         key: "value",
     });
 </script>

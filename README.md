@@ -50,9 +50,9 @@ IE 따위는 지원하지 않습니다.
 <script src="[yourdir]/highlight.pack.js"></script>
 <script src="[yourdir]/dragonEditor.js"></script>
 <script>
-    const editor = new dragonEditor();
+    const editor = new DragonEditor();
     // 위나 아래처럼 사용 가능합니다
-    const editor = new dragonEditor({
+    const editor = new DragonEditor({
         key: "value",
     });
 </script>

@@ -6,9 +6,6 @@ const commonPath = path.resolve(__dirname, "common");
 const name = "dragonEditor";
 const webpackMode = "production"; // ['development', 'production']
 const viewerName = "dragonEditorViewer";
-const scriptFile = [`${commonPath}/js/index.js`];
-const styleFile = [`${commonPath}/css/index.scss`];
-const viewerStyleFile = [`${commonPath}/css/viewer.scss`];
 const PACKAGE = require('./package.json');
 const bannerText = `${name} ${PACKAGE.version}
 ${PACKAGE.description}
@@ -20,19 +17,19 @@ let options = [
         type: "js",
         name: name,
         output: "dist",
-        file: scriptFile,
+        file: [`${commonPath}/js/index.js`],
     },
     {
         type: "css",
         name: name,
         output: "dist",
-        file: styleFile,
+        file: [`${commonPath}/css/index.scss`],
     },
     {
         type: "css",
         name: viewerName,
         output: "dist",
-        file: viewerStyleFile,
+        file: [`${commonPath}/css/viewer.scss`],
     },
 ];
 
@@ -117,7 +114,7 @@ function getModuleList() {
                     output: {
                         filename: `js/${item.name}.js`,
                         path: path.resolve(__dirname, folder),
-                        library: item.name,
+                        library: "DragonEditor",
                         libraryTarget: "umd",
                     },
                 }),
