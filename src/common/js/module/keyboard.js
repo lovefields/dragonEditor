@@ -31,7 +31,6 @@ export function contentEnterKeyEvent($item, $editableItem, shiftKey, e, _0 = typ
                         } else if (condition.baseNode == childNodes[0] && condition.baseOffset == 0) {
                             $item.insertAdjacentHTML("beforebegin", getTextBlockHTML());
                         } else {
-                            console.log(childNodes, childNodesCount);
                             let value = splitEditableNodeByNoSelect(childNodes, childNodesCount);
 
                             $item.childNodes[value.childNumber].textContent = value.beforeText;
