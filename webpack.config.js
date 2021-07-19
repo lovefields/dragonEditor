@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 const path = require("path");
-const commonPath = path.resolve(__dirname, "common");
+const commonPath = path.resolve(__dirname, "src/common");
 const name = "dragonEditor";
 const webpackMode = "production"; // ['development', 'production']
 const viewerName = "dragonEditorViewer";
@@ -103,9 +103,9 @@ function getModuleList() {
         let folder;
 
         if (item.type == "js") {
-            folder = "../dist";
+            folder = "dist";
         } else {
-            folder = "../dist/css";
+            folder = "dist/css";
         }
 
         if (item.type == "js") {
