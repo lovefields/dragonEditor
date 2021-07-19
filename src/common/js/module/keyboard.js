@@ -338,7 +338,7 @@ export function blockHotKey(e) {
     }
 }
 
-function splitEditableNodeByNoSelect(childNodes, childNodesCount, _0 = typeCheckThrow(childNodes, NodeList), _1 = typeCheckThrow(childNodesCount, "number")) {
+function splitEditableNodeByNoSelect(childNodes, childNodesCount, _0 = typeCheckThrow(childNodes, "nodelist"), _1 = typeCheckThrow(childNodesCount, "number")) {
     let childNumber = -1;
     let beforeHTML = "";
     let afterHTML = "";

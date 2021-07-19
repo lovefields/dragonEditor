@@ -38,15 +38,6 @@ IE 따위는 지원하지 않습니다.
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&amp;display=swap">
 <link rel="stylesheet" href="[yourdir]/dragonEditor.css">
 
-<!-- 
-* SVG아이콘 팩을 불러오거나(템플릿 엔진) 페이지에 직접 삽입하세요.
--->
-<svg class="icon-pack">
-    <defs>
-        <g id="icon-id">...</g>
-        ...
-    </defs>
-</svg>
 <!--
 * editor-dragon 클레스를 지정합니다.
 -->
@@ -59,9 +50,9 @@ IE 따위는 지원하지 않습니다.
 <script src="[yourdir]/highlight.pack.js"></script>
 <script src="[yourdir]/dragonEditor.js"></script>
 <script>
-    const editor = new dragonEditor();
+    const editor = new DragonEditor();
     // 위나 아래처럼 사용 가능합니다
-    const editor = new dragonEditor({
+    const editor = new DragonEditor({
         key: "value",
     });
 </script>

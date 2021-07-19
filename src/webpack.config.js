@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
 const path = require("path");
@@ -5,28 +6,30 @@ const commonPath = path.resolve(__dirname, "common");
 const name = "dragonEditor";
 const webpackMode = "production"; // ['development', 'production']
 const viewerName = "dragonEditorViewer";
-const scriptFile = [`${commonPath}/js/index.js`];
-const styleFile = [`${commonPath}/css/index.scss`];
-const viewerStyleFile = [`${commonPath}/css/viewer.scss`];
+const PACKAGE = require('./package.json');
+const bannerText = `${name} ${PACKAGE.version}
+${PACKAGE.description}
+Author : ${PACKAGE.author} (https://github.com/lovefields)
+License : ${PACKAGE.license}`;
 
 let options = [
     {
         type: "js",
         name: name,
         output: "dist",
-        file: scriptFile,
+        file: [`${commonPath}/js/index.js`],
     },
     {
         type: "css",
         name: name,
         output: "dist",
-        file: styleFile,
+        file: [`${commonPath}/css/index.scss`],
     },
     {
         type: "css",
         name: viewerName,
         output: "dist",
-        file: viewerStyleFile,
+        file: [`${commonPath}/css/viewer.scss`],
     },
 ];
 
@@ -44,6 +47,11 @@ function getConfig(type, file, name) {
             watchOptions: {
                 poll: 500,
             },
+            plugins: [
+                new webpack.BannerPlugin({
+                    banner: bannerText,
+                }),
+            ],
         };
     } else {
         config = {
@@ -72,6 +80,9 @@ function getConfig(type, file, name) {
                 new FixStyleOnlyEntriesPlugin(),
                 new MiniCssExtractPlugin({
                     filename: `${name}.css`,
+                }),
+                new webpack.BannerPlugin({
+                    banner: bannerText,
                 }),
             ],
             watch: true,
@@ -103,7 +114,7 @@ function getModuleList() {
                     output: {
                         filename: `js/${item.name}.js`,
                         path: path.resolve(__dirname, folder),
-                        library: item.name,
+                        library: "DragonEditor",
                         libraryTarget: "umd",
                     },
                 }),

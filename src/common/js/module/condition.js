@@ -55,6 +55,7 @@ export class storage {
         this.csrfHeader = typeCheckBoolean(options.csrfHeader, "object") ? options.csrfHeader : {};
         this.mode = typeCheckBoolean(options.mode, "string") ? options.mode : "editor";
         this.layout = typeCheckBoolean(options.layout, "string") ? options.layout : "full";
+        this.useDefaultIcon = typeCheckBoolean(options.useDefaultIcon, "boolean") ? options.useDefaultIcon : true;
         this.multiLang = typeCheckBoolean(options.multiLang, "boolean") ? options.multiLang : true;
         this.defaultColor = typeCheckBoolean(options.defaultColor, "string") ? options.defaultColor : "#333";
         this.defaultFontSize = typeCheckBoolean(options.defaultFontSize, "number") ? options.defaultFontSize : 14;
@@ -69,7 +70,7 @@ export class storage {
         this.removeMenu = typeCheckBoolean(options.removeMenu, "array") ? options.removeMenu : [];
         this.frontSize = typeCheckBoolean(options.frontSize, "array") ? options.frontSize : [0.75, 0.9, 1, 1.15, 1.25, 1.5, 1.75, 1.9, 2, 2.15, 2.25];
         this.codeTheme = typeCheckBoolean(options.codeTheme, "array") ? options.codeTheme : ["default", "vs2015", "androidstudio", "monokai"];
-        this.codeLang = typeCheckBoolean(options.codeLang, "array") ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift", "yml"];
+        this.codeLang = typeCheckBoolean(options.codeLang, "array") ? options.codeLang : ["text", "css", "html", "xml", "json", "java", "javascript", "markdown", "objective-c", "php", "python", "sql", "shell", "kotlin", "swift", "yml", "dockerfile", "Nginx conf"];
         this.colorList = typeCheckBoolean(options.colorList, "array")
             ? options.colorList
             : [
