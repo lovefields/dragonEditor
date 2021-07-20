@@ -42,9 +42,15 @@ function getConfig(type, file, name) {
                     banner: bannerText,
                 }),
             ],
+            resolve: {
+                extensions: [".js"],
+            },
         };
     } else {
         config = {
+            resolve: {
+                extensions: [".css", ".scss"],
+            },
             module: {
                 rules: [
                     {
