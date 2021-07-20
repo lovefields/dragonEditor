@@ -350,10 +350,8 @@
             display: block;
             padding: 5px 10px 10px;
             font-family: Inconsolata, sans-serif;
-            word-wrap: break-word;
-            word-break: keep-all;
-            white-space: pre-wrap;
             outline: 0;
+            overflow-x: auto;
 
             &:empty::after {
                 display: inline;
