@@ -1,23 +1,34 @@
 {
   "name": "dragon-editor",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "DragonEditor is Javascript WYSIWYG editor.",
+  "private": true,
+  "dependencies": {
+    "css-loader": "^6.1.0",
+    "mini-css-extract-plugin": "^2.1.0",
+    "sass": "^1.35.2",
+    "sass-loader": "^12.1.0",
+    "webpack": "^5.45.1",
+    "webpack-cli": "^4.7.2",
+    "webpack-fix-style-only-entries": "^0.6.1"
+  },
+  "devDependencies": {
+    "terser-webpack-plugin": "^5.1.4"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd src && npx webpack",
-    "demo-deploy": "gh-pages -d demo"
+    "start": "npx webpack"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lovefield/dragonEditor.git"
+    "url": "git+https://github.com/lovefields/dragonEditor.git"
   },
+  "keywords": [
+    "editor"
+  ],
   "author": "Lovefield",
   "license": "MPL 2.0",
   "bugs": {
-    "url": "https://github.com/lovefield/dragonEditor/issues"
+    "url": "https://github.com/lovefields/dragonEditor/issues"
   },
-  "homepage": "https://github.com/lovefield/dragonEditor#readme",
-  "dependencies": {
-    "gh-pages": "^3.1.0"
-  }
+  "homepage": "https://github.com/lovefields/dragonEditor#readme"
 }

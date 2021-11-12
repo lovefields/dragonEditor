@@ -1,16 +1,14 @@
 const webpack = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const FixStyleOnlyEntriesPlugin = require("webpack-fix-style-only-entries");
+const TerserPlugin = require("terser-webpack-plugin");
 const path = require("path");
-const commonPath = path.resolve(__dirname, "common");
+const commonPath = path.resolve(__dirname, "src");
 const name = "dragonEditor";
 const webpackMode = "production"; // ['development', 'production']
 const viewerName = "dragonEditorViewer";
-const PACKAGE = require('./package.json');
-const bannerText = `${name} ${PACKAGE.version}
-${PACKAGE.description}
-Author : ${PACKAGE.author} (https://github.com/lovefields)
-License : ${PACKAGE.license}`;
+const PACKAGE = require("./package.json");
+const bannerText = `${name} ${PACKAGE.version}\n${PACKAGE.description}\nAuthor : ${PACKAGE.author} (https://github.com/lovefields)\nLicense : ${PACKAGE.license}`;
 
 let options = [
     {
@@ -38,26 +36,20 @@ function getConfig(type, file, name) {
 
     if (type == "js") {
         config = {
-            mode: webpackMode,
-            entry: {
-                common: file,
-            },
             target: "web",
-            watch: true,
-            watchOptions: {
-                poll: 500,
-            },
             plugins: [
                 new webpack.BannerPlugin({
                     banner: bannerText,
                 }),
             ],
+            resolve: {
+                extensions: [".js"],
+            },
         };
     } else {
         config = {
-            mode: webpackMode,
-            entry: {
-                styles: file,
+            resolve: {
+                extensions: [".css", ".scss"],
             },
             module: {
                 rules: [
@@ -85,14 +77,27 @@ function getConfig(type, file, name) {
                     banner: bannerText,
                 }),
             ],
-            watch: true,
-            watchOptions: {
-                poll: 500,
-            },
         };
     }
 
-    return config;
+    return Object.assign({}, config, {
+        mode: webpackMode,
+        entry: {
+            common: file,
+        },
+        optimization: {
+            minimize: true,
+            minimizer: [
+                new TerserPlugin({
+                    extractComments: false,
+                }),
+            ],
+        },
+        watch: true,
+        watchOptions: {
+            poll: 500,
+        },
+    });
 }
 
 function getModuleList() {
@@ -103,9 +108,9 @@ function getModuleList() {
         let folder;
 
         if (item.type == "js") {
-            folder = "../dist";
+            folder = "dist";
         } else {
-            folder = "../dist/css";
+            folder = "dist/css";
         }
 
         if (item.type == "js") {
