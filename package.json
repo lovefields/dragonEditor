@@ -22,9 +22,11 @@
     "url": "git+https://github.com/lovefields/dragonEditor.git"
   },
   "keywords": [
-    "editor"
+    "editor",
+    "wysiwyg-editor",
+    "korean"
   ],
-  "author": "Lovefield",
+  "author": "Lovefields",
   "license": "MPL 2.0",
   "bugs": {
     "url": "https://github.com/lovefields/dragonEditor/issues"
