@@ -1,5 +1,5 @@
 {
-  "name": "@lovefieds/dragon-editor",
+  "name": "dragon-editor",
   "version": "1.1.5",
   "description": "DragonEditor is Javascript WYSIWYG editor.",
   "private": false,
