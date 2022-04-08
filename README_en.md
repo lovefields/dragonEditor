@@ -71,7 +71,7 @@ If you using `codeblock`, import this plugin.
 ```
 
 ## Demo
-[Demo page](https://lovefields.github.io/dragonEditor/demo)
+[Demo page](https://lovefields.github.io/dragonEditor/examples)
 
 ## Document
 
