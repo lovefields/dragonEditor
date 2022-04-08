@@ -1,6 +1,7 @@
 node_modules
 .DS_Store
 highlight.pack.js
+package-lock.json
 
 ### vscode ###
 .vscode/*
