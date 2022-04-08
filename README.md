@@ -72,7 +72,7 @@ IE 따위는 지원하지 않습니다.
 ```
 
 ## 데모 페이지
-[Demo page](https://lovefields.github.io/dragonEditor/demo)
+[Demo page](https://lovefields.github.io/dragonEditor/examples)
 
 ## 문서
 
