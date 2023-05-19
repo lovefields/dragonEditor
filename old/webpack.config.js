@@ -7,7 +7,7 @@ const commonPath = path.resolve(__dirname, "resources");
 const name = "dragonEditor";
 const webpackMode = "production"; // ['development', 'production']
 const viewerName = "dragonEditorViewer";
-const PACKAGE = require("./package.json");
+const PACKAGE = require("../package.json");
 const bannerText = `${name} ${PACKAGE.version}\n${PACKAGE.description}\nAuthor : ${PACKAGE.author} (https://github.com/lovefields)\nLicense : ${PACKAGE.license}`;
 
 let options = [
