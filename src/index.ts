@@ -1,6 +1,18 @@
-const DragonEditor = (name?: string): string => {
-    let test = 'asdfsaf';
-    return `Hello ${name || 'world'}`;
-};
+import { test } from "./converter";
 
-export default DragonEditor();
+console.log(test);
+
+
+const DragonEditor = {
+    component: () => {
+        return "VUE compoenet return";
+    },
+    binding: (areaClassName: string) => {
+        console.log(areaClassName);
+    },
+    getText: (name: string) => {
+        return `Hello ${test || 'world'}`;
+    }
+}
+
+export default DragonEditor;
