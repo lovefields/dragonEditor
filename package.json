@@ -3,7 +3,7 @@
     "version": "2.0.0",
     "description": "DragonEditor is Javascript WYSIWYG editor.",
     "private": false,
-    "main": ".dist/index.js",
+    "main": "./dist/index.js",
     "dependencies": {},
     "devDependencies": {
         "tslint": "^6.1.3",
@@ -30,8 +30,8 @@
         "korean",
         "language"
     ],
-    "author": "Lovefields[lovefield@dico.me](https://dico.me)",
-    "license": "MPL 2.0",
+    "author": "Lovefields <lovefield@dico.me> (https://dico.me)",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/lovefields/dragonEditor/issues"
     },
