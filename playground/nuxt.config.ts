@@ -1,3 +1,4 @@
 export default defineNuxtConfig({
-  modules: ['../src/module'],
+  modules: ['dragon-editor'],
+  myModule: {}
 })
