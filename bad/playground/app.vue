@@ -1,7 +1,6 @@
 <template>
   <div>
     Nuxt module playground!
-    <DragonEditor />
   </div>
 </template>
 
