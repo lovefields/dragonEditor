@@ -1,4 +1,4 @@
-import { defineNuxtModule, addPlugin, addComponent, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, addComponent,addImports, addImportsDir, createResolver } from '@nuxt/kit'
 
 // Module options TypeScript interface definition
 export interface ModuleOptions { }
@@ -14,7 +14,12 @@ export default defineNuxtModule<ModuleOptions>({
     const resolver = createResolver(import.meta.url)
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
-    addPlugin(resolver.resolve('./runtime/plugin'))
+    addImportsDir(resolver.resolve('runtime/composables'));
+    // addImports({
+    //   name:"useKeyboard",
+    //   as:'useKeyboard',
+    //   from: resolver.resolve('runtime/composables/useKeyboard')
+    // });
 
     addComponent({
       name: 'DragonEditor',
