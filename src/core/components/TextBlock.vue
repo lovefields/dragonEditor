@@ -1,10 +1,12 @@
 <template>
-    <p class="d-text-block" contenteditable v-html="data.content" @keydown="textKeyboardEvent" ref="$block"></p>
+    <p class="d-text-block" :class="data.classList" contenteditable v-html="data.content" @keydown="textKeyboardEvent"
+       ref="$block"
+    ></p>
 </template>
 
 <script setup lang="ts">
 import {ref, unref, watch} from "#imports";
-import {keyboardEvent} from "../utils/index";
+import {keyboardEvent, setCursor, pasteText, styleSettings} from "../utils/index";
 import {textBlock, cursorSelection} from "../../types/index";
 
 const $block = ref();
@@ -14,13 +16,6 @@ const data = ref<textBlock>({
     classList: [],
     content: "",
 });
-// const curosr = ref<cursorSelection>({
-//     type: "",
-//     startNode: null,
-//     startOffset: null,
-//     endNode: null,
-//     endOffset: null,
-// })
 const props = defineProps<{ modelValue: textBlock }>();
 const emit = defineEmits<{
     (e: "update:modelValue", modelValue: textBlock): void;
@@ -29,41 +24,49 @@ const emit = defineEmits<{
 
 data.value = unref(props.modelValue) as textBlock;
 
-
-// var timer = null;
-// window.addEventListener('scroll', function() {
-//     if(timer !== null) {
-//         clearTimeout(timer);
-//     }
-//     timer = setTimeout(function() {
-//         // do something
-//     }, 150);
-// }, false);
-// let event: ReturnType<typeof setTimeout>;
-
 function textKeyboardEvent(e: KeyboardEvent) {
     const windowObject = window;
 
     keyboardEvent("text", e, emit);
 }
 
+function blockHasClass(className: string) {
+    const idx = data.value.classList.indexOf(className);
+    return {
+        result: idx > -1,
+        index: idx
+    };
+}
+
+
+// export event
 function updateBlockData() {
     data.value.content = $block.value.innerHTML;
     emit("update:modelValue", data.value);
 }
 
 function focus() {
-    const select = window.getSelection() as Selection;
-    const range = document.createRange();
+    setCursor($block.value, 0);
+}
 
-    range.setStart($block.value, 0);
-    range.collapse(true);
-    select.removeAllRanges();
-    select.addRange(range);
+function getType() {
+    return data.value.type;
+}
+
+function pasteEvent(text: string) {
+    pasteText("text", text);
+}
+
+function setStyles(kind: string) {
+    data.value = styleSettings(kind, data.value, $block.value);
+    updateBlockData();
 }
 
 defineExpose({
     updateBlockData,
-    focus
+    focus,
+    getType,
+    pasteEvent,
+    setStyles
 });
 </script>

@@ -1,8 +1,10 @@
 <template>
-    <div class="dragon-editor" @paste="pasteEvent">
-        <div class="d-left-menu">
+    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent"
+         @keydown="deactiveMenuEvent"
+    >
+        <div class="d-left-menu" :class="{'--active' : activeMenu}" :style="{top:`${leftMenuPosition}px`}">
             <div class="d-add-block">
-                <button class="d-btn-menu-control"></button>
+                <button class="d-btn-menu-pop"></button>
 
                 <div class="d-block-list">
                     <button v-for="(row,count) in blockMenu" :key="count" class="d-btn-block" @click="row.action">
@@ -12,6 +14,34 @@
                     </button>
                 </div>
             </div>
+
+            <div class="d-control-block">
+                <button class="d-btn-block-pop"></button>
+
+                <div class="d-block-list">
+                    <button class="d-btn-block"></button>
+                    <button class="d-btn-block"></button>
+                    <button class="d-btn-block"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-style-menu" :class="{'--active' : activeMenu}" :style="{top:`${styleMenuPosition}px`}">
+            <div class="d-column">1</div>
+            <div class="d-column">
+                <button class="d-btn d-btn-align-left" @click="alignEvent('alignLeft')">
+                    <SvgIcon kind="alignLeft"/>
+                </button>
+                <button class="d-btn d-btn-align-center" @click="alignEvent('alignCenter')">
+                    <SvgIcon kind="alignCenter"/>
+                </button>
+                <button class="d-btn d-btn-align-right" @click="alignEvent('alignRight')">
+                    <SvgIcon kind="alignRight"/>
+                </button>
+            </div>
+            <div class="d-column">1</div>
+            <div class="d-column">1</div>
+            <div class="d-column">1</div>
         </div>
 
         <div
@@ -19,6 +49,7 @@
             v-for="(row,count) in content"
             :key="count"
             @click="activeIdx = count"
+            @mouseenter="activeMenuEvent"
         >
             <component
                 ref="$child"
@@ -53,7 +84,11 @@ const emit = defineEmits<{
 }>();
 
 // Editor data
+const $wrap = ref();
 const $child = ref();
+const activeMenu = ref<boolean>(false);
+const leftMenuPosition = ref<number>(0);
+const styleMenuPosition = ref<number>(0);
 const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlock", "tableBlock"];
 const blockMenu = ref<editorMenu[]>([]);
 const content = ref<editorContentType>([]);
@@ -108,6 +143,15 @@ function setEditorMenu(vanillaData: string[], customData?: userBlockMenu[]) {
 
 
 // event function
+function activeMenuEvent(e: MouseEvent) {
+    setMenuPosition(e.currentTarget as HTMLElement);
+    activeMenu.value = true;
+}
+
+function deactiveMenuEvent() {
+    activeMenu.value = false;
+}
+
 function dataUpdateAction() {
     $child.value.forEach((row: any) => {
         row.updateBlockData();
@@ -119,26 +163,18 @@ function dataUpdateAction() {
 function addBlockLocal(name: string, time: boolean = false) {
     const block = createBlock(name);
 
-    // console.log(activeIdx.value);
-    // if (index) {
     content.value.splice(activeIdx.value + 1, 0, block);
-    // } else {
-    // content.value.push(block);
-    // }
 
     if (time === false) {
         activeIdx.value += 1;
 
-        if (name !== "image") {
-            console.log(activeIdx.value);
-            console.log("child", $child.value);
-            setTimeout(() => { // waiting data set
-                console.log("next-child", $child.value[activeIdx.value]);
+        setTimeout(() => { // waiting data set
+            if (name !== "image") {
                 $child.value[activeIdx.value].focus();
-            }, 100);
-        }
+            }
 
-        dataUpdateAction();
+            dataUpdateAction();
+        }, 100);
     }
 }
 
@@ -146,8 +182,14 @@ function pasteEvent(e: ClipboardEvent) {
     e.preventDefault();
     const data = getClipboardData(e.clipboardData as DataTransfer);
 
-    console.log(`${activeIdx.value}번째 : `, $child.value[activeIdx.value]);
-    console.log(data);
+    if (data.type === "text") {
+        const targetComponent = $child.value[activeIdx.value];
+        const componentType = targetComponent.getType();
+
+        if (componentType !== "image" && componentType !== "other") {
+            targetComponent.pasteEvent(data.value);
+        }
+    }
 }
 
 function setComponentKind(kind: string) {
@@ -156,6 +198,28 @@ function setComponentKind(kind: string) {
             return textBlock;
             break;
     }
+}
+
+function setMenuPosition($target: HTMLElement) {
+    const parentNode = $wrap.value.parentNode;
+    const bodyRect = document.body.getBoundingClientRect();
+    const wrapRect = $wrap.value.getBoundingClientRect();
+    const targetRect = $target.getBoundingClientRect();
+    const parentNodeScrollY = parentNode.scrollTop;
+    const wrapTop = wrapRect.top - bodyRect.top;
+    const targetTop = targetRect.top - bodyRect.top;
+    const targetBottom = targetRect.bottom - bodyRect.top;
+    const top = ((targetTop - (wrapTop + 10)) - parentNodeScrollY) + 13;
+    const bottom = ((targetBottom - (wrapTop + 10)) - parentNodeScrollY) + 15;
+
+    styleMenuPosition.value = bottom;
+    leftMenuPosition.value = top;
+}
+
+function alignEvent(type: string) {
+    $child.value[activeIdx.value].setStyles(type);
+    // console.log(type);
+    // console.log();
 }
 
 
