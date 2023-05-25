@@ -1,73 +1,176 @@
 <template>
-    <div class="dragon-editor">
-        <p></p>
+    <div class="dragon-editor" @paste="pasteEvent">
+        <div class="d-left-menu">
+            <div class="d-add-block">
+                <button class="d-btn-menu-control"></button>
+
+                <div class="d-block-list">
+                    <button v-for="(row,count) in blockMenu" :key="count" class="d-btn-block" @click="row.action">
+                        <SvgIcon v-if="row.hasIcon" :kind="row.icon"/>
+                        <div v-else v-html="row.icon"></div>
+                        <p class="d-name">{{ row.name }}</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="d-row-block"
+            v-for="(row,count) in content"
+            :key="count"
+            @click="activeIdx = count"
+        >
+            <component
+                ref="$child"
+                v-model="content[count]"
+                :is="setComponentKind(row.type)"
+                @addBlock="addBlockLocal"
+            />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import {ref} from "#imports";
-import {test} from "../../core/utils";
-import {editorOptions} from "../../types/index";
+import {ref, unref} from "#imports";
+import {createBlock, getClipboardData} from "../../core/utils";
+import {editorOptions, editorMenu, editorContentType, userBlockMenu} from "../../types/index";
 
+// components
+import SvgIcon from "../../core/components/SvgIcon.vue";
+import textBlock from "../../core/components/TextBlock.vue";
 
-const componentStatus = defineProps<editorOptions>();
-const editStatus = ref<object>({
-    activeBlock: null,
-    cursor: {}
-});
-
-
-console.log(test);
-
-// console.log(useKeyboard());
-
-interface cursorSelection {
-    type: string,
-    startNode: HTMLElement | TextNode | null,
-    startOffset: number | null,
-    endNode: HTMLElement | TextNode | null,
-    endOffset: number | null,
-}
-
-const canEditing = ref<boolean>(false);
-
-// 렌더링에 영향을 안주는 값
-let $target: HTMLElement;
-let selectionData: cursorSelection = {
-    type: "",
-    startNode: null,
-    startOffset: null,
-    endNode: null,
-    endOffset: null,
-};
-
-// 임시 활성화
-canEditing.value = true;
-
-const setSelection = () => { // 셀렉션 가져오기
-    if (process.client) {
-        let selection = window.getSelection();
-
-        selectionData.type = selection.type;
-        selectionData.startNode = selection.anchorNode;
-        selectionData.startOffset = selection.anchorOffset;
-        selectionData.endNode = selection.focusNode;
-        selectionData.endOffset = selection.focusOffset;
-    }
-};
-
-const enterEvent = (e: KeyboardEvent) => { // 엔터 이벤트 컨트롤
-    if (process.client) {
-        console.log($target);
-        console.log(selectionData);
-        if (e.code === "Enter") {
-            e.preventDefault();
+// props
+const props = withDefaults(defineProps<{ modelValue: editorContentType, option?: editorOptions }>(), {
+    modelValue: () => [],
+    option: () => {
+        return {
+            blockMenu: ["text", "ol", "ul", "table", "quotation"]
         }
+    },
+});
+const emit = defineEmits<{
+    (e: "update:modelValue", modelValue: editorContentType): void;
+}>();
+
+// Editor data
+const $child = ref();
+const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlock", "tableBlock"];
+const blockMenu = ref<editorMenu[]>([]);
+const content = ref<editorContentType>([]);
+const activeIdx = ref<number>(0);
+const activeItemId = ref<string>("");
+const selectItems = ref<string[]>([]);
+
+// initial logic
+
+// block menu setting
+blockMenu.value = setEditorMenu(props.option.blockMenu as string[], unref(props.option.customBlockMenu) as userBlockMenu[]);
+
+// content data setting
+if (props.modelValue && Array.isArray(props.modelValue)) {
+    if (props.modelValue.length == 0) {
+        addBlockLocal("text", true);
+    } else {
+        content.value = unref(props.modelValue) as editorContentType;
+    }
+} else {
+    throw new Error("[DragonEditor]ERROR : You must set 'v-model' attribute and 'v-mode' type is must be Array.");
+}
+
+// local logic
+function setEditorMenu(vanillaData: string[], customData?: userBlockMenu[]) {
+    const dataList: editorMenu[] = [];
+
+    vanillaData.forEach((name) => {
+        dataList.push({
+            name: name,
+            hasIcon: true,
+            icon: `${name}Block`,
+            action: () => {
+                addBlockLocal(name);
+            }
+        });
+    });
+
+    if (customData) {
+        customData.forEach((row) => {
+            dataList.push({
+                name: row.name,
+                hasIcon: iconList.indexOf(row.icon) > -1,
+                icon: row.icon,
+                action: row.action
+            });
+        });
+    }
+
+    return dataList;
+}
+
+
+// event function
+function dataUpdateAction() {
+    $child.value.forEach((row: any) => {
+        row.updateBlockData();
+    });
+
+    emit("update:modelValue", content.value);
+}
+
+function addBlockLocal(name: string, time: boolean = false) {
+    const block = createBlock(name);
+
+    // console.log(activeIdx.value);
+    // if (index) {
+    content.value.splice(activeIdx.value + 1, 0, block);
+    // } else {
+    // content.value.push(block);
+    // }
+
+    if (time === false) {
+        activeIdx.value += 1;
+
+        if (name !== "image") {
+            console.log(activeIdx.value);
+            console.log("child", $child.value);
+            setTimeout(() => { // waiting data set
+                console.log("next-child", $child.value[activeIdx.value]);
+                $child.value[activeIdx.value].focus();
+            }, 100);
+        }
+
+        dataUpdateAction();
     }
 }
 
+function pasteEvent(e: ClipboardEvent) {
+    e.preventDefault();
+    const data = getClipboardData(e.clipboardData as DataTransfer);
+
+    console.log(`${activeIdx.value}번째 : `, $child.value[activeIdx.value]);
+    console.log(data);
+}
+
+function setComponentKind(kind: string) {
+    switch (kind) {
+        case "text":
+            return textBlock;
+            break;
+    }
+}
+
+
+// export function
+function addImageBlock() {
+    console.log("local image added event!");
+    console.log($child);
+    // contentData.value = value;
+}
+
+defineExpose({
+    addImageBlock,
+});
 </script>
 
-<style scoped>
+<style>
 @import "../../core/style/common.css";
 </style>
