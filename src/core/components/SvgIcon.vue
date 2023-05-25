@@ -11,6 +11,9 @@ import UlBlock from "./icon/UlBlock.vue";
 import OlBlock from "./icon/OlBlock.vue";
 import QuotationBlock from "./icon/QuotationBlock.vue";
 import TableBlock from "./icon/TableBlock.vue";
+import AlignLeft from "./icon/AlignLeft.vue";
+import AlignCenter from "./icon/AlignCenter.vue";
+import AlignRight from "./icon/AlignRight.vue";
 
 const props = defineProps<{ kind: string }>();
 let iconComponent;
@@ -33,6 +36,15 @@ switch (props.kind) {
         break;
     case "tableBlock" :
         iconComponent = TableBlock;
+        break;
+    case "alignLeft" :
+        iconComponent = AlignLeft;
+        break;
+    case "alignCenter" :
+        iconComponent = AlignCenter;
+        break;
+    case "alignRight" :
+        iconComponent = AlignRight;
         break;
 }
 
@@ -69,15 +81,15 @@ switch (props.kind) {
 //     </g>
 //
 //     <g id="icon-align-left">
-// <path d="M11 9C9.89543 9 9 9.89543 9 11C9 12.1046 9.89543 13 11 13H23C24.1046 13 25 12.1046 25 11C25 9.89543 24.1046 9 23 9H11ZM11 51C9.89543 51 9 51.8954 9 53C9 54.1046 9.89543 55 11 55H53C54.1046 55 55 54.1046 55 53C55 51.8954 54.1046 51 53 51H11ZM9 39C9 37.8954 9.89543 37 11 37H37C38.1046 37 39 37.8954 39 39C39 40.1046 38.1046 41 37 41H11C9.89543 41 9 40.1046 9 39ZM11 23C9.89543 23 9 23.8954 9 25C9 26.1046 9.89543 27 11 27H53C54.1046 27 55 26.1046 55 25C55 23.8954 54.1046 23 53 23H11Z"></path>
+//
 //     </g>
 //
 //     <g id="icon-align-right">
-// <path d="M41 9C39.8954 9 39 9.89543 39 11C39 12.1046 39.8954 13 41 13H53C54.1046 13 55 12.1046 55 11C55 9.89543 54.1046 9 53 9H41ZM11 51C9.89543 51 9 51.8954 9 53C9 54.1046 9.89543 55 11 55H53C54.1046 55 55 54.1046 55 53C55 51.8954 54.1046 51 53 51H11ZM25 39C25 37.8954 25.8954 37 27 37H53C54.1046 37 55 37.8954 55 39C55 40.1046 54.1046 41 53 41H27C25.8954 41 25 40.1046 25 39ZM11 23C9.89543 23 9 23.8954 9 25C9 26.1046 9.89543 27 11 27H53C54.1046 27 55 26.1046 55 25C55 23.8954 54.1046 23 53 23H11Z"></path>
+//
 //     </g>
 //
 //     <g id="icon-align-center">
-// <path d="M26 9C24.8954 9 24 9.89543 24 11C24 12.1046 24.8954 13 26 13H38C39.1046 13 40 12.1046 40 11C40 9.89543 39.1046 9 38 9H26ZM11 51C9.89543 51 9 51.8954 9 53C9 54.1046 9.89543 55 11 55H53C54.1046 55 55 54.1046 55 53C55 51.8954 54.1046 51 53 51H11ZM17 39C17 37.8954 17.8954 37 19 37H45C46.1046 37 47 37.8954 47 39C47 40.1046 46.1046 41 45 41H19C17.8954 41 17 40.1046 17 39ZM11 23C9.89543 23 9 23.8954 9 25C9 26.1046 9.89543 27 11 27H53C54.1046 27 55 26.1046 55 25C55 23.8954 54.1046 23 53 23H11Z"></path>
+//
 //     </g>
 //
 //     <g id="icon-bold">
