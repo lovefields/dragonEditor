@@ -17,6 +17,8 @@ export interface editorOptions {
 
 }
 
+export type allBlock = (textBlock);
+
 export type editorContentType = (textBlock)[];
 
 // Block types

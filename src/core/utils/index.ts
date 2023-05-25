@@ -42,3 +42,5 @@ export function createBlock(name: string) {
 
 
 export * from "./keyboard";
+export * from "./cursor";
+export * from "./style";
