@@ -1,7 +1,7 @@
 .dragon-editor {
     position: relative;
     width: 100%;
-    padding: 10px;
+    padding: 10px 10px 50px;
     line-height: 1.6;
 
     // reset css
@@ -59,6 +59,30 @@
 
     .d-align-right {
         text-align: right;
+    }
+
+    .d-deco-bold {
+        font-weight: bold;
+    }
+
+    .d-deco-italic {
+        font-style: italic;
+    }
+
+    .d-deco-underline {
+        text-decoration: underline;
+
+        &.d-deco-through {
+            text-decoration: underline line-through;
+        }
+    }
+
+    .d-deco-through {
+        text-decoration: line-through;
+
+        &.d-deco-underline {
+            text-decoration: line-through underline;
+        }
     }
 
     // left menu css
@@ -144,6 +168,13 @@
 
     .d-row-block {
         padding-left: 50px;
+        border-radius: 5px;
+        background: transparent;
+        transition: background 0.25s ease;
+
+        &:hover {
+            background: #fafafa;
+        }
     }
 
     .d-text-block {
@@ -195,6 +226,10 @@
             width: 20px;
             height: 20px;
             padding: 2px;
+
+            &.--active {
+                fill: blue;
+            }
         }
     }
 }

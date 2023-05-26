@@ -1,7 +1,7 @@
 .dragon-editor {
   position: relative;
   width: 100%;
-  padding: 10px;
+  padding: 10px 10px 50px;
   line-height: 1.6;
 }
 .dragon-editor h1, .dragon-editor h2, .dragon-editor h3, .dragon-editor h4, .dragon-editor h5, .dragon-editor h6, .dragon-editor p, .dragon-editor blockquote, .dragon-editor pre, .dragon-editor dl, .dragon-editor dd, .dragon-editor ol, .dragon-editor ul, .dragon-editor fieldset, .dragon-editor legend, .dragon-editor figure, .dragon-editor menu {
@@ -47,6 +47,24 @@
 }
 .dragon-editor .d-align-right {
   text-align: right;
+}
+.dragon-editor .d-deco-bold {
+  font-weight: bold;
+}
+.dragon-editor .d-deco-italic {
+  font-style: italic;
+}
+.dragon-editor .d-deco-underline {
+  text-decoration: underline;
+}
+.dragon-editor .d-deco-underline.d-deco-through {
+  text-decoration: underline line-through;
+}
+.dragon-editor .d-deco-through {
+  text-decoration: line-through;
+}
+.dragon-editor .d-deco-through.d-deco-underline {
+  text-decoration: line-through underline;
 }
 .dragon-editor .d-left-menu {
   display: flex;
@@ -117,6 +135,12 @@
 }
 .dragon-editor .d-row-block {
   padding-left: 50px;
+  border-radius: 5px;
+  background: transparent;
+  transition: background 0.25s ease;
+}
+.dragon-editor .d-row-block:hover {
+  background: #fafafa;
 }
 .dragon-editor .d-text-block {
   cursor: text;
@@ -160,4 +184,7 @@
   width: 20px;
   height: 20px;
   padding: 2px;
+}
+.dragon-editor .d-style-menu .d-btn.--active {
+  fill: blue;
 }

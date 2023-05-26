@@ -1,20 +1,92 @@
 import type {allBlock} from "../../types";
-import {getCursor} from "./cursor";
+import {getCursor, setCursor} from "./cursor";
+import {findEditableElement} from "./element"
 
 function arrangementAlignClass(originList: string[], className: string): string[] {
     const alignClassList = ["d-align-left", "d-align-center", "d-align-right"];
-    const isNotList = originList.filter(x => !alignClassList.includes(x));
+    const hasClass = originList.indexOf(className) > -1;
+    let array = originList;
 
-    console.log(isNotList);
-    console.log(originList);
+    if (hasClass) {
+        originList.splice(originList.indexOf(className), 1);
+        array = originList;
+    } else {
+        array = originList.filter(item => alignClassList.indexOf(item) === -1);
+        array.push(className);
+    }
+
+    return array;
+}
+
+function getNextNode($target: Node, node: Node) {
+    const childNode = $target.childNodes;
+    let idx: number = -1;
+
+    childNode.forEach((item, index) => {
+        if (item === node) {
+            idx = index;
+        }
+    });
+
+    return childNode[idx + 1] as HTMLElement;
+}
+
+function defaultDecorationMake(originData: allBlock, $target: HTMLElement, className: string): allBlock {
+    const cursorData = getCursor();
+
+    if (cursorData.startNode !== null) {
+        const editableElement = findEditableElement(cursorData.startNode);
+
+        if (cursorData.type === "Range") {
+            // 선택됨
+            console.log($target);
+            console.log(originData);
+            console.log(cursorData);
+            console.log(editableElement);
+        } else {
+            if (cursorData.startNode.constructor.name === "Text") {
+                const parentNodeClassList = [...cursorData.startNode.parentNode.classList];
+
+                if (parentNodeClassList.indexOf(className) > -1) {
+                    if (parentNodeClassList.length === 1) {
+                        const textContent = cursorData.startNode.parentNode.textContent;
+
+                        cursorData.startNode.parentNode.insertAdjacentText("afterend", textContent);
+                        setCursor(getNextNode($target, cursorData.startNode.parentNode), textContent.length);
+                        cursorData.startNode.parentNode.remove();
+                    } else {
+                        cursorData.startNode.parentNode.classList.remove(className);
+                    }
+                } else {
+                    cursorData.startNode.parentNode.classList.add(className);
+                }
+            } else {
+                cursorData.startNode.classList.toggle(className);
+            }
+        }
+    }
+
+    return originData;
+}
+
+function arrangementDecoration(originData: allBlock, $target: HTMLElement, className: string): allBlock {
+    let rawData: allBlock = originData;
+    // const cursorData = getCursor();
+
+    switch (originData.type) {
+        default:
+            rawData = defaultDecorationMake(originData, $target, className);
+    }
+
+    // console.log($target);
+    // console.log(cursorData);
 
 
-    return [];
+    return rawData;
 }
 
 export function styleSettings(type: string, blockData: allBlock, $target: HTMLElement) {
-    const cursorData = getCursor();
-    const rawData = blockData;
+    let rawData: allBlock = blockData;
 
     switch (type) {
         case "alignLeft" :
@@ -26,14 +98,21 @@ export function styleSettings(type: string, blockData: allBlock, $target: HTMLEl
         case "alignRight" :
             rawData.classList = arrangementAlignClass(rawData.classList, "d-align-right");
             break;
+        case "decorationBold" :
+            rawData = arrangementDecoration(rawData, $target, "d-deco-bold");
+            break;
+        case "decorationItalic" :
+            rawData = arrangementDecoration(rawData, $target, "d-deco-italic");
+            break;
+        case "decorationUnderline" :
+            rawData = arrangementDecoration(rawData, $target, "d-deco-underline");
+            break;
+        case "decorationStrikethrough" :
+            rawData = arrangementDecoration(rawData, $target, "d-deco-through");
+            break;
+        default:
+            rawData = arrangementDecoration(rawData, $target, type);
     }
-
-
-    // console.log(type);
-    // console.log(blockData);
-    // console.log($target);
-    // console.log(cursorData);
-
 
     return rawData;
 }
