@@ -29,17 +29,41 @@
         <div class="d-style-menu" :class="{'--active' : activeMenu}" :style="{top:`${styleMenuPosition}px`}">
             <div class="d-column">1</div>
             <div class="d-column">
-                <button class="d-btn d-btn-align-left" @click="alignEvent('alignLeft')">
+                <button class="d-btn" :class="{'--active' : checkAlignActive('d-align-left')}"
+                        @click="setBlockEvent('alignLeft')"
+                >
                     <SvgIcon kind="alignLeft"/>
                 </button>
-                <button class="d-btn d-btn-align-center" @click="alignEvent('alignCenter')">
+                <button class="d-btn" :class="{'--active' : checkAlignActive('d-align-center')}"
+                        @click="setBlockEvent('alignCenter')"
+                >
                     <SvgIcon kind="alignCenter"/>
                 </button>
-                <button class="d-btn d-btn-align-right" @click="alignEvent('alignRight')">
+                <button class="d-btn" :class="{'--active' : checkAlignActive('d-align-right')}"
+                        @click="setBlockEvent('alignRight')"
+                >
                     <SvgIcon kind="alignRight"/>
                 </button>
             </div>
-            <div class="d-column">1</div>
+
+            <div class="d-column">
+                <button class="d-btn" @click="setBlockEvent('decorationBold')">
+                    <SvgIcon kind="decorationBold"/>
+                </button>
+
+                <button class="d-btn" @click="setBlockEvent('decorationItalic')">
+                    <SvgIcon kind="decorationItalic"/>
+                </button>
+
+                <button class="d-btn" @click="setBlockEvent('decorationUnderline')">
+                    <SvgIcon kind="decorationUnderline"/>
+                </button>
+
+                <button class="d-btn" @click="setBlockEvent('decorationStrikethrough')">
+                    <SvgIcon kind="decorationStrikethrough"/>
+                </button>
+            </div>
+
             <div class="d-column">1</div>
             <div class="d-column">1</div>
         </div>
@@ -50,6 +74,7 @@
             :key="count"
             @click="activeIdx = count"
             @mouseenter="activeMenuEvent"
+            @mousemove="activeMenuEvent"
         >
             <component
                 ref="$child"
@@ -62,13 +87,13 @@
 </template>
 
 <script setup lang="ts">
-import {ref, unref} from "#imports";
+import {ref, unref, onMounted} from "#imports";
 import {createBlock, getClipboardData} from "../../core/utils";
 import {editorOptions, editorMenu, editorContentType, userBlockMenu} from "../../types/index";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon.vue";
-import textBlock from "../../core/components/TextBlock.vue";
+import textBlock from "../../core/components/editor/TextBlock.vue";
 
 // props
 const props = withDefaults(defineProps<{ modelValue: editorContentType, option?: editorOptions }>(), {
@@ -93,10 +118,13 @@ const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlo
 const blockMenu = ref<editorMenu[]>([]);
 const content = ref<editorContentType>([]);
 const activeIdx = ref<number>(0);
-const activeItemId = ref<string>("");
-const selectItems = ref<string[]>([]);
+// const activeItemId = ref<string>("");
+// const selectItems = ref<string[]>([]);
 
 // initial logic
+onMounted(() => {
+    dataUpdateAction();
+});
 
 // block menu setting
 blockMenu.value = setEditorMenu(props.option.blockMenu as string[], unref(props.option.customBlockMenu) as userBlockMenu[]);
@@ -113,6 +141,19 @@ if (props.modelValue && Array.isArray(props.modelValue)) {
 }
 
 // local logic
+function checkAlignActive(className: string) {
+    const data = content.value[activeIdx.value];
+    let value = false;
+
+    switch (data.type) {
+        case "text":
+            value = data.classList.indexOf(className) > -1;
+            break;
+    }
+
+    return value;
+}
+
 function setEditorMenu(vanillaData: string[], customData?: userBlockMenu[]) {
     const dataList: editorMenu[] = [];
 
@@ -216,10 +257,8 @@ function setMenuPosition($target: HTMLElement) {
     leftMenuPosition.value = top;
 }
 
-function alignEvent(type: string) {
+function setBlockEvent(type: string) {
     $child.value[activeIdx.value].setStyles(type);
-    // console.log(type);
-    // console.log();
 }
 
 

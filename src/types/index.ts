@@ -32,9 +32,15 @@ export interface textBlock {
 
 // detail type
 export interface cursorSelection {
-    type: string;
+    type: "Caret" | "Range";
     startNode: HTMLElement | TextNode | null;
     startOffset: number | null;
     endNode: HTMLElement | TextNode | null;
     endOffset: number | null;
+}
+
+export interface arrangementCursorData {
+    editableNode: HTMLElement;
+    childCount: number;
+    length: number;
 }
