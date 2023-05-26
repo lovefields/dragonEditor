@@ -5,9 +5,9 @@
 </template>
 
 <script setup lang="ts">
-import {ref, unref, watch} from "#imports";
-import {keyboardEvent, setCursor, pasteText, styleSettings} from "../utils/index";
-import {textBlock, cursorSelection} from "../../types/index";
+import {ref, unref} from "#imports";
+import {keyboardEvent, setCursor, pasteText, styleSettings, getArrangementCursorData} from "../../utils/index";
+import {textBlock} from "../../../types/index";
 
 const $block = ref();
 const data = ref<textBlock>({
@@ -25,23 +25,25 @@ const emit = defineEmits<{
 data.value = unref(props.modelValue) as textBlock;
 
 function textKeyboardEvent(e: KeyboardEvent) {
-    const windowObject = window;
-
     keyboardEvent("text", e, emit);
-}
-
-function blockHasClass(className: string) {
-    const idx = data.value.classList.indexOf(className);
-    return {
-        result: idx > -1,
-        index: idx
-    };
 }
 
 
 // export event
 function updateBlockData() {
+    data.value.classList = [...$block.value.classList];
     data.value.content = $block.value.innerHTML;
+
+
+    // FIXME : 텍스트 노드 병합 전 커서 위치를 병합 후 동일하게 맞추기
+    // if ($block.value.innerHTML.length > 0) {
+    //     const cursorData = getArrangementCursorData();
+    //
+    //
+    //     console.log(cursorData);
+    //     console.log($block.value.childNodes);
+    // }
+
     emit("update:modelValue", data.value);
 }
 
