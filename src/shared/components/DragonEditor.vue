@@ -47,19 +47,27 @@
             </div>
 
             <div class="d-column">
-                <button class="d-btn" @click="setBlockEvent('decorationBold')">
+                <button class="d-btn" :class="{'--active' : activeStyle.bold}"
+                        @click="setBlockEvent('decorationBold')"
+                >
                     <SvgIcon kind="decorationBold"/>
                 </button>
 
-                <button class="d-btn" @click="setBlockEvent('decorationItalic')">
+                <button class="d-btn" :class="{'--active' : activeStyle.italic}"
+                        @click="setBlockEvent('decorationItalic')"
+                >
                     <SvgIcon kind="decorationItalic"/>
                 </button>
 
-                <button class="d-btn" @click="setBlockEvent('decorationUnderline')">
+                <button class="d-btn" :class="{'--active' : activeStyle.underline}"
+                        @click="setBlockEvent('decorationUnderline')"
+                >
                     <SvgIcon kind="decorationUnderline"/>
                 </button>
 
-                <button class="d-btn" @click="setBlockEvent('decorationStrikethrough')">
+                <button class="d-btn" :class="{'--active' : activeStyle.through}"
+                        @click="setBlockEvent('decorationStrikethrough')"
+                >
                     <SvgIcon kind="decorationStrikethrough"/>
                 </button>
             </div>
@@ -75,6 +83,7 @@
             @click="activeIdx = count"
             @mouseenter="activeMenuEvent"
             @mousemove="activeMenuEvent"
+            @mouseup="activeMenuEvent"
         >
             <component
                 ref="$child"
@@ -88,8 +97,8 @@
 
 <script setup lang="ts">
 import {ref, unref, onMounted} from "#imports";
-import {createBlock, getClipboardData} from "../../core/utils";
-import {editorOptions, editorMenu, editorContentType, userBlockMenu} from "../../types/index";
+import {createBlock, getClipboardData, getCursor} from "../../core/utils";
+import {editorOptions, editorMenu, editorContentType, userBlockMenu, styleActiveType} from "../../types/index";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon.vue";
@@ -118,6 +127,12 @@ const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlo
 const blockMenu = ref<editorMenu[]>([]);
 const content = ref<editorContentType>([]);
 const activeIdx = ref<number>(0);
+const activeStyle = ref<styleActiveType>({
+    bold: false,
+    italic: false,
+    underline: false,
+    through: false,
+});
 // const activeItemId = ref<string>("");
 // const selectItems = ref<string[]>([]);
 
@@ -154,6 +169,38 @@ function checkAlignActive(className: string) {
     return value;
 }
 
+function checkDecoActive() {
+    activeStyle.value.bold = hasClassNameCheckLogic("d-deco-bold");
+    activeStyle.value.italic = hasClassNameCheckLogic("d-deco-italic");
+    activeStyle.value.underline = hasClassNameCheckLogic("d-deco-underline");
+    activeStyle.value.through = hasClassNameCheckLogic("d-deco-through");
+}
+
+function hasClassNameCheckLogic(className: string) {
+    const cursorData = getCursor();
+    let value = false;
+
+    if (cursorData.type === "Caret") {
+        const type = (cursorData.startNode as Node).constructor.name;
+        let $target = cursorData.startNode as HTMLElement;
+
+        if (type === "Text") {
+            $target = (cursorData.startNode as HTMLElement).parentNode as HTMLElement;
+        }
+
+        if ($target) {
+            const classList = [...$target.classList];
+
+            if (classList.indexOf(className) > -1) {
+                value = true;
+            }
+        }
+    }
+
+    return value;
+}
+
+
 function setEditorMenu(vanillaData: string[], customData?: userBlockMenu[]) {
     const dataList: editorMenu[] = [];
 
@@ -186,6 +233,7 @@ function setEditorMenu(vanillaData: string[], customData?: userBlockMenu[]) {
 // event function
 function activeMenuEvent(e: MouseEvent) {
     setMenuPosition(e.currentTarget as HTMLElement);
+    checkDecoActive();
     activeMenu.value = true;
 }
 
@@ -259,10 +307,17 @@ function setMenuPosition($target: HTMLElement) {
 
 function setBlockEvent(type: string) {
     $child.value[activeIdx.value].setStyles(type);
+    setTimeout(() => {
+        checkDecoActive();
+    }, 100);
 }
 
 
 // export function
+function checkStyleActive(className: string) {
+    return hasClassNameCheckLogic(className);
+}
+
 function addImageBlock() {
     console.log("local image added event!");
     console.log($child);
@@ -271,6 +326,7 @@ function addImageBlock() {
 
 defineExpose({
     addImageBlock,
+    checkStyleActive
 });
 </script>
 
