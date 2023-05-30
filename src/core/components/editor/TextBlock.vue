@@ -30,21 +30,30 @@ function textKeyboardEvent(e: KeyboardEvent) {
 
 
 // export event
-function updateBlockData() {
-    data.value.classList = [...$block.value.classList];
-    data.value.content = $block.value.innerHTML;
+function updateBlockData() { // 데이터 정규화 및 검수
+    const blockClassList = [...$block.value.classList];
+    blockClassList.splice(0, 1);
+    const pushList = blockClassList.filter(item => data.value.classList.indexOf(item) === -1);
 
+    data.value.classList = data.value.classList.concat(pushList);
 
-    // FIXME : 텍스트 노드 병합 전 커서 위치를 병합 후 동일하게 맞추기
-    // if ($block.value.innerHTML.length > 0) {
-    //     const cursorData = getArrangementCursorData();
-    //
-    //
-    //     console.log(cursorData);
-    //     console.log($block.value.childNodes);
-    // }
+    // 커서위치 재지정
+    if ($block.value.innerHTML.length > 0) {
+        const cursorData = getArrangementCursorData();
+        const preChildCount = $block.value.childNodes.length;
 
-    emit("update:modelValue", data.value);
+        data.value.content = $block.value.innerHTML;
+        emit("update:modelValue", data.value);
+
+        setTimeout(() => {
+            const $target = $block.value.childNodes[cursorData.childCount];
+            const childCount = $block.value.childNodes.length;
+
+            setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
+        }, 100)
+    } else {
+        emit("update:modelValue", data.value);
+    }
 }
 
 function focus() {
@@ -61,7 +70,9 @@ function pasteEvent(text: string) {
 
 function setStyles(kind: string) {
     data.value = styleSettings(kind, data.value, $block.value);
-    updateBlockData();
+    setTimeout(() => {
+        updateBlockData();
+    }, 250);
 }
 
 defineExpose({
