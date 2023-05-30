@@ -1,14 +1,25 @@
 import type {cursorSelection, arrangementCursorData} from "../../types";
 import {findEditableElement} from "./element";
 
-export function setCursor(target: HTMLElement, idx: number) {
-    const select = window.getSelection() as Selection;
-    const range = document.createRange();
+export function setCursor(target: Node, idx: number) {
+    console.log(target);
+    if (target) {
+        let $target: Node;
 
-    range.setStart(target, idx);
-    range.collapse(true);
-    select.removeAllRanges();
-    select.addRange(range);
+        if (target.constructor.name === "Text") {
+            $target = target;
+        } else {
+            $target = target.childNodes[0];
+        }
+
+        const select = window.getSelection() as Selection;
+        const range = document.createRange();
+
+        range.setStart($target, idx);
+        range.collapse(true);
+        select.removeAllRanges();
+        select.addRange(range);
+    }
 }
 
 export function getCursor(): cursorSelection {
@@ -23,18 +34,20 @@ export function getCursor(): cursorSelection {
     };
 }
 
-export function getArrangementCursorData(): arrangementCursorData {
+export function getArrangementCursorData(): arrangementCursorData { // Text 노드 병합 전에 병합 후 커서 위치 연산
     const cursorData = getCursor();
-    const editableElement = findEditableElement(cursorData.startNode);
+    const startNode = cursorData.startNode as Node;
+    const editableElement = findEditableElement(startNode) as HTMLElement;
     let childNode: Node;
     let childIdx: number = -1;
-    let preNodeType: string = "Text";
+    let fixIdx: number = 0;
+    let preNodeType: string = "";
     let childLength: number = 0;
 
-    if (cursorData.startNode.parentNode === editableElement) {
-        childNode = cursorData.startNode;
+    if (startNode.parentNode === editableElement) {
+        childNode = startNode;
     } else {
-        childNode = cursorData.startNode.parentNode;
+        childNode = startNode.parentNode as HTMLElement;
     }
 
     editableElement.childNodes.forEach((child, count) => {
@@ -44,16 +57,27 @@ export function getArrangementCursorData(): arrangementCursorData {
     });
 
     editableElement.childNodes.forEach((child, count) => {
-        const type = child.constructor.name;
+        if (count <= childIdx + fixIdx) {
+            const type = child.constructor.name;
 
-        if (type === "Text" && preNodeType === type && count < childIdx) {
-            childIdx -= 1;
-            childLength += child.textContent?.length ?? 0;
-        } else {
-            childLength = child.textContent?.length ?? 0;
+            if (preNodeType !== type) {
+                childLength = 0;
+            }
+
+            if (type === "Text") {
+                if (preNodeType === type) {
+                    childIdx -= 1;
+                    fixIdx += 1;
+                    childLength += child.textContent?.length ?? 0;
+                } else {
+                    childLength = child.textContent?.length ?? 0;
+                }
+            } else {
+                childLength = child.textContent?.length ?? 0;
+            }
+
+            preNodeType = type;
         }
-
-        preNodeType = type;
     });
 
     return {

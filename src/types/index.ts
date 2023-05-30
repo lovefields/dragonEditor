@@ -32,10 +32,10 @@ export interface textBlock {
 
 // detail type
 export interface cursorSelection {
-    type: "Caret" | "Range";
-    startNode: HTMLElement | TextNode | null;
+    type: string; // "Caret" | "Range";
+    startNode: Node | null;
     startOffset: number | null;
-    endNode: HTMLElement | TextNode | null;
+    endNode: Node | null;
     endOffset: number | null;
 }
 
@@ -43,4 +43,11 @@ export interface arrangementCursorData {
     editableNode: HTMLElement;
     childCount: number;
     length: number;
+}
+
+export interface styleActiveType {
+    bold: boolean;
+    italic: boolean;
+    underline: boolean;
+    through: boolean;
 }
