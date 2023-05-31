@@ -1,6 +1,6 @@
 <template>
     <svg class="dragon-icon" viewBox="0 0 64 64">
-        <component :is="iconComponent"/>
+        <component :is="iconComponent" />
     </svg>
 </template>
 
@@ -18,54 +18,54 @@ import DecorationBold from "./icon/DecorationBold.vue";
 import DecorationItalic from "./icon/DecorationItalic.vue";
 import DecorationUnderline from "./icon/DecorationUnderline.vue";
 import DecorationStrikethrough from "./icon/DecorationStrikethrough.vue";
-import Link from "./icon/Link.vue";
+import LinkPath from "./icon/LinkPath.vue";
 import CodeBlock from "./icon/CodeBlock.vue";
 
 const props = defineProps<{ kind: string }>();
-let iconComponent;
+let iconComponent: any;
 
 switch (props.kind) {
-    case "textBlock" :
+    case "textBlock":
         iconComponent = TextBlock;
         break;
-    case "imageBlock" :
+    case "imageBlock":
         iconComponent = ImageBlock;
         break;
-    case "ulBlock" :
+    case "ulBlock":
         iconComponent = UlBlock;
         break;
-    case "olBlock" :
+    case "olBlock":
         iconComponent = OlBlock;
         break;
-    case "quotationBlock" :
+    case "quotationBlock":
         iconComponent = QuotationBlock;
         break;
-    case "tableBlock" :
+    case "tableBlock":
         iconComponent = TableBlock;
         break;
-    case "alignLeft" :
+    case "alignLeft":
         iconComponent = AlignLeft;
         break;
-    case "alignCenter" :
+    case "alignCenter":
         iconComponent = AlignCenter;
         break;
-    case "alignRight" :
+    case "alignRight":
         iconComponent = AlignRight;
         break;
-    case "decorationBold" :
+    case "decorationBold":
         iconComponent = DecorationBold;
         break;
-    case "decorationItalic" :
+    case "decorationItalic":
         iconComponent = DecorationItalic;
         break;
-    case "decorationUnderline" :
+    case "decorationUnderline":
         iconComponent = DecorationUnderline;
         break;
-    case "decorationStrikethrough" :
+    case "decorationStrikethrough":
         iconComponent = DecorationStrikethrough;
         break;
     case "link":
-        iconComponent = Link;
+        iconComponent = LinkPath;
         break;
     case "codeBlock":
         iconComponent = CodeBlock;
