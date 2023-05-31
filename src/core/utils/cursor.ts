@@ -2,7 +2,6 @@ import type {cursorSelection, arrangementCursorData} from "../../types";
 import {findEditableElement} from "./element";
 
 export function setCursor(target: Node, idx: number) {
-    console.log(target);
     if (target) {
         let $target: Node;
 

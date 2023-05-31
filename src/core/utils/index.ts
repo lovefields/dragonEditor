@@ -1,4 +1,4 @@
-import {textBlock, userCustomMenu, editorMenu} from "../../types/index";
+import { textBlock, userCustomMenu, editorMenu } from "../../types/index";
 
 
 function generateId() {
@@ -44,3 +44,4 @@ export function createBlock(name: string) {
 export * from "./keyboard";
 export * from "./cursor";
 export * from "./style";
+export * from "./element";
