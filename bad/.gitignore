@@ -54,6 +54,3 @@ coverage
 Network Trash Folder
 Temporary Items
 .apdisk
-
-# assets
-src/core/style/*.js
