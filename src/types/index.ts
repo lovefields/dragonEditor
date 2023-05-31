@@ -24,14 +24,20 @@ export interface editorOptions {
     customStyleMenu?: userStyleMenu[];
 }
 
-export type allBlock = (textBlock);
+export type allBlock = (textBlock | commentBlock);
 
-export type editorContentType = (textBlock)[];
+export type editorContentType = allBlock[];
 
 // Block types
 export interface textBlock {
     type: string,
     id: string,
+    classList: string[],
+    content: string,
+}
+
+export interface commentBlock {
+    type: string;
     classList: string[],
     content: string,
 }

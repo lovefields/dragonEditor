@@ -1,12 +1,12 @@
-import {defineNuxtModule, addComponentsDir, createResolver} from '@nuxt/kit'
+import {defineNuxtModule, addComponentsDir, createResolver} from "@nuxt/kit"
 
 export default defineNuxtModule({
     meta: {
-        name: 'dragon-editor',
+        name: "dragon-editor",
     },
     setup(options, nuxt) {
         const resolver = createResolver(import.meta.url)
 
-        addComponentsDir(resolver.resolve('./shared/components'));
+        addComponentsDir(resolver.resolve("./shared/components"));
     }
 })
