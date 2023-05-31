@@ -1,4 +1,4 @@
-import {defineNuxtModule, addComponentsDir, createResolver} from "@nuxt/kit"
+import { defineNuxtModule, addComponentsDir, createResolver, addComponent } from "@nuxt/kit"
 
 export default defineNuxtModule({
     meta: {
@@ -7,6 +7,10 @@ export default defineNuxtModule({
     setup(options, nuxt) {
         const resolver = createResolver(import.meta.url)
 
-        addComponentsDir(resolver.resolve("./shared/components"));
+        // addComponentsDir(resolver.resolve("./shared/components"));
+        addComponent({
+            name: 'DragonEditorComment',
+            filePath: resolver.resolve('./runtime/components/DragonEditorComment')
+        });
     }
 })
