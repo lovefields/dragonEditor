@@ -84,7 +84,10 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
 
                     parentNode.innerHTML = htmlStructure;
                     setTimeout(() => {
-                        const $cursorTarget: HTMLElement = parentNode.childNodes[childNumber + 1] as HTMLElement;
+                        let $cursorTarget: HTMLElement = editableElement.childNodes[childNumber + 1] as HTMLElement;
+                        if (!$cursorTarget) {
+                            $cursorTarget = editableElement.childNodes[childNumber] as HTMLElement;
+                        }
                         const cursorLength: number = ($cursorTarget.textContent as string).length;
 
                         setCursor($cursorTarget, cursorLength);
@@ -274,17 +277,6 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
     return originData;
 }
 
-function arrangementDecoration(originData: allBlock, $target: HTMLElement, className: string): allBlock {
-    let rawData: allBlock = originData;
-
-    switch (originData.type) {
-        default:
-            rawData = defaultDecorationMake(originData, $target, className);
-    }
-
-    return rawData;
-}
-
 export function styleSettings(type: string, blockData: allBlock, $target: HTMLElement) {
     let rawData: allBlock = blockData;
 
@@ -299,19 +291,19 @@ export function styleSettings(type: string, blockData: allBlock, $target: HTMLEl
             rawData.classList = arrangementAlignClass(rawData.classList, "d-align-right");
             break;
         case "decorationBold" :
-            rawData = arrangementDecoration(rawData, $target, "d-deco-bold");
+            rawData = defaultDecorationMake(rawData, $target, "d-deco-bold");
             break;
         case "decorationItalic" :
-            rawData = arrangementDecoration(rawData, $target, "d-deco-italic");
+            rawData = defaultDecorationMake(rawData, $target, "d-deco-italic");
             break;
         case "decorationUnderline" :
-            rawData = arrangementDecoration(rawData, $target, "d-deco-underline");
+            rawData = defaultDecorationMake(rawData, $target, "d-deco-underline");
             break;
         case "decorationStrikethrough" :
-            rawData = arrangementDecoration(rawData, $target, "d-deco-through");
+            rawData = defaultDecorationMake(rawData, $target, "d-deco-through");
             break;
         default:
-            rawData = arrangementDecoration(rawData, $target, type);
+            rawData = defaultDecorationMake(rawData, $target, type);
     }
 
     return rawData;

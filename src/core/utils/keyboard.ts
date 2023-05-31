@@ -1,17 +1,18 @@
-let enterCount = 0;
+import { getCursor, setCursor } from "./cursor";
+import { findEditableElement, findChildNumber } from "./element"
 
+let enterCount = 0;
 function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
     if (event.code === "Enter") {
         if (enterCount === 0) {
             enterCount += 1;
 
-            const brtag = document.createElement("br");
             const useShift = event.shiftKey;
-
 
             switch (type) {
                 case "comment":
                     event.preventDefault();
+                    addBrEvent();
                     break;
                 default:
                     if (useShift === false) {
@@ -19,6 +20,10 @@ function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
                         addAction("addBlock", "text");
                     }
             }
+
+            setTimeout(() => {
+                enterCount = 0;
+            }, 150)
         } else {
             event.preventDefault();
             setTimeout(() => {
@@ -84,4 +89,32 @@ export function pasteText(type: string, value: string) {
     range.collapse(true);
     selection.removeAllRanges();
     selection.addRange(range);
+}
+
+function addBrEvent() {
+    const brTag = document.createElement("br");
+    const selection = window.getSelection() as Selection;
+    const range = document.createRange();
+
+    selection.deleteFromDocument();
+    selection.getRangeAt(0).insertNode(brTag);
+    range.setStart(brTag, 0);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    const cursorData = getCursor();
+
+    if ((cursorData.startNode as Node).constructor.name !== "Text") {
+        const editableElement = findEditableElement(cursorData.startNode as HTMLElement) as HTMLElement;
+        const childList = editableElement.childNodes;
+        const childIdx = findChildNumber(editableElement, cursorData.startNode as HTMLElement);
+
+        if (childList[childList.length - 1].textContent?.length === 0) {
+            (childList[childIdx] as HTMLElement).insertAdjacentHTML("beforebegin", "<br>");
+            childList[childList.length - 1].remove();
+        } else {
+            setCursor(childList[childIdx + 1], 0);
+        }
+    }
 }
