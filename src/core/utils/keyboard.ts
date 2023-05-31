@@ -1,17 +1,29 @@
+let enterCount = 0;
+
 function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
     if (event.code === "Enter") {
-        const brtag = document.createElement("br");
-        const useShift = event.shiftKey;
+        if (enterCount === 0) {
+            enterCount += 1;
 
-        switch (type) {
-            case "comment":
-                event.preventDefault();
-                break;
-            default:
-                if (useShift === false) {
+            const brtag = document.createElement("br");
+            const useShift = event.shiftKey;
+
+
+            switch (type) {
+                case "comment":
                     event.preventDefault();
-                    addAction("addBlock", "text");
-                }
+                    break;
+                default:
+                    if (useShift === false) {
+                        event.preventDefault();
+                        addAction("addBlock", "text");
+                    }
+            }
+        } else {
+            event.preventDefault();
+            setTimeout(() => {
+                enterCount = 0;
+            }, 150)
         }
     }
 }

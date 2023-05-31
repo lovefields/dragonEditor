@@ -9,7 +9,7 @@
                 <div class="d-block-list">
                     <button v-for="(row,count) in blockMenu" :key="count" class="d-btn-block" @click="row.action">
                         <SvgIcon v-if="row.hasIcon" :kind="row.icon"/>
-                        <div v-else v-html="row.icon"></div>
+                        <div v-else class="icon" v-html="row.icon"></div>
                         <p class="d-name">{{ row.name }}</p>
                     </button>
                 </div>
@@ -27,7 +27,6 @@
         </div>
 
         <div class="d-style-menu" :class="{'--active' : activeMenu}" :style="{top:`${styleMenuPosition}px`}">
-            <div class="d-column">1</div>
             <div class="d-column">
                 <button class="d-btn" :class="{'--active' : checkAlignActive('d-align-left')}"
                         @click="setBlockEvent('alignLeft')"
@@ -72,8 +71,21 @@
                 </button>
             </div>
 
-            <div class="d-column">1</div>
-            <div class="d-column">1</div>
+            <div class="d-column">
+                <button class="d-btn">
+                    <SvgIcon kind="link"/>
+                </button>
+            </div>
+
+            <div class="d-column">
+                <button class="d-btn">
+                    <SvgIcon kind="codeBlock"/>
+                </button>
+            </div>
+
+            <div v-if="customStyleMenu.length  > 0" class="d-column">
+                <!--                customStyleMenu-->
+            </div>
         </div>
 
         <div
@@ -98,7 +110,14 @@
 <script setup lang="ts">
 import {ref, unref, onMounted} from "#imports";
 import {createBlock, getClipboardData, getCursor} from "../../core/utils";
-import {editorOptions, editorMenu, editorContentType, userBlockMenu, styleActiveType} from "../../types/index";
+import {
+    editorOptions,
+    editorMenu,
+    editorContentType,
+    userCustomMenu,
+    styleActiveType,
+    userStyleMenu
+} from "../../types/index";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon.vue";
@@ -125,6 +144,7 @@ const leftMenuPosition = ref<number>(0);
 const styleMenuPosition = ref<number>(0);
 const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlock", "tableBlock"];
 const blockMenu = ref<editorMenu[]>([]);
+const customStyleMenu = ref<userStyleMenu[]>([]);
 const content = ref<editorContentType>([]);
 const activeIdx = ref<number>(0);
 const activeStyle = ref<styleActiveType>({
@@ -132,6 +152,8 @@ const activeStyle = ref<styleActiveType>({
     italic: false,
     underline: false,
     through: false,
+    link: false,
+    code: false,
 });
 // const activeItemId = ref<string>("");
 // const selectItems = ref<string[]>([]);
@@ -142,7 +164,12 @@ onMounted(() => {
 });
 
 // block menu setting
-blockMenu.value = setEditorMenu(props.option.blockMenu as string[], unref(props.option.customBlockMenu) as userBlockMenu[]);
+blockMenu.value = setEditorMenu(props.option.blockMenu as string[], unref(props.option.customBlockMenu) as userCustomMenu[]);
+
+// 유저 커스텀 스타일 메뉴
+if (props.option.customStyleMenu) {
+    customStyleMenu.value = unref(props.option.customStyleMenu);
+}
 
 // content data setting
 if (props.modelValue && Array.isArray(props.modelValue)) {
@@ -201,7 +228,7 @@ function hasClassNameCheckLogic(className: string) {
 }
 
 
-function setEditorMenu(vanillaData: string[], customData?: userBlockMenu[]) {
+function setEditorMenu(vanillaData: string[], customData?: userCustomMenu[]) {
     const dataList: editorMenu[] = [];
 
     vanillaData.forEach((name) => {
@@ -299,7 +326,7 @@ function setMenuPosition($target: HTMLElement) {
     const targetTop = targetRect.top - bodyRect.top;
     const targetBottom = targetRect.bottom - bodyRect.top;
     const top = ((targetTop - (wrapTop + 10)) - parentNodeScrollY) + 13;
-    const bottom = ((targetBottom - (wrapTop + 10)) - parentNodeScrollY) + 15;
+    const bottom = ((targetBottom - (wrapTop + 10)) - parentNodeScrollY) + 10;
 
     styleMenuPosition.value = bottom;
     leftMenuPosition.value = top;
@@ -314,9 +341,9 @@ function setBlockEvent(type: string) {
 
 
 // export function
-function checkStyleActive(className: string) {
-    return hasClassNameCheckLogic(className);
-}
+// function checkStyleActive(className: string) {
+//     return hasClassNameCheckLogic(className);
+// }
 
 function addImageBlock() {
     console.log("local image added event!");
@@ -325,8 +352,7 @@ function addImageBlock() {
 }
 
 defineExpose({
-    addImageBlock,
-    checkStyleActive
+    addImageBlock
 });
 </script>
 
