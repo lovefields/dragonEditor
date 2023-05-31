@@ -50,6 +50,13 @@ function updateBlockData() { // 데이터 정규화 및 검수
             const childCount = $block.value.childNodes.length;
 
             setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
+
+            // 빈 태그 삭제
+            $block.value.childNodes.forEach((child: ChildNode) => {
+                if (child.constructor.name !== "Text" && child.textContent === "") {
+                    child.remove();
+                }
+            });
         }, 100)
     } else {
         emit("update:modelValue", data.value);

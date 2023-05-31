@@ -9,7 +9,7 @@ export function setCursor(target: Node, idx: number) {
         if (target.constructor.name === "Text") {
             $target = target;
         } else {
-            $target = target.childNodes[0];
+            $target = target.childNodes.length > 0 ? target.childNodes[0] : target;
         }
 
         const select = window.getSelection() as Selection;
