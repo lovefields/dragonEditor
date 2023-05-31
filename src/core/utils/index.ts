@@ -1,4 +1,4 @@
-import {textBlock, userBlockMenu, editorMenu} from "../../types/index";
+import {textBlock, userCustomMenu, editorMenu} from "../../types/index";
 
 
 function generateId() {

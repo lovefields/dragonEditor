@@ -1,4 +1,4 @@
-export interface userBlockMenu {
+export interface userCustomMenu {
     name: string;
     icon: string;
     action: Function;
@@ -11,10 +11,17 @@ export interface editorMenu {
     action: Function;
 }
 
+export interface userStyleMenu {
+    name: string;
+    icon: string;
+    type: string[];
+    action: Function;
+}
+
 export interface editorOptions {
     blockMenu?: string[];
-    customBlockMenu?: userBlockMenu[];
-
+    customBlockMenu?: userCustomMenu[];
+    customStyleMenu?: userStyleMenu[];
 }
 
 export type allBlock = (textBlock);
@@ -50,4 +57,6 @@ export interface styleActiveType {
     italic: boolean;
     underline: boolean;
     through: boolean;
+    link: boolean;
+    code: boolean;
 }
