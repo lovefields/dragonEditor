@@ -17,7 +17,7 @@ import {
     getCursor,
     findEditableElement
 } from "../../core/utils/index";
-import { commentBlock } from "../../types/index";
+import { commentBlock } from "../../../types/index";
 
 const $block = ref();
 const data = ref<commentBlock>({

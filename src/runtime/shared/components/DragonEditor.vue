@@ -117,7 +117,7 @@ import {
     userCustomMenu,
     styleActiveType,
     userStyleMenu
-} from "../../types/index";
+} from "../../../types/index";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon.vue";
