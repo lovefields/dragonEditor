@@ -10,7 +10,7 @@ export default defineNuxtModule({
         // addComponentsDir(resolver.resolve("./shared/components"));
         addComponent({
             name: 'DragonEditorComment',
-            filePath: resolver.resolve('./runtime/components/DragonEditorComment')
+            filePath: resolver.resolve('./shared/components/DragonEditorComment')
         });
     }
 })
