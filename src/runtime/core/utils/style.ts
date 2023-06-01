@@ -1,4 +1,4 @@
-import type {allBlock} from "../../types";
+import type {allBlock} from "../../../types";
 import {getCursor, setCursor} from "./cursor";
 import {findEditableElement, findChildNumber} from "./element"
 
