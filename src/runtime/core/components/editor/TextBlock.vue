@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import {ref, unref} from "#imports";
 import {keyboardEvent, setCursor, pasteText, styleSettings, getArrangementCursorData} from "../../utils/index";
-import {textBlock} from "../../../types/index";
+import {textBlock} from "../../../../types/index";
 
 const $block = ref();
 const data = ref<textBlock>({
