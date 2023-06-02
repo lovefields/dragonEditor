@@ -144,6 +144,7 @@
         }
     }
 
+    // 텍스트 블럭
     .d-text-block {
         cursor: text;
         outline: 0;
@@ -153,8 +154,73 @@
         }
     }
 
+    // 이미지 블럭
+    .d-image-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 5px;
+
+        @for $i from 1 through 20 {
+            &.--#{"" + $i} .d-image-area {
+                width: (5% * $i);
+            }
+        }
+
+        .d-image-area {
+            position: relative;
+
+            .d-img {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        .d-caption {
+            color: #ccc;
+            font-size: 1rem;
+            cursor: text;
+            outline: 0;
+
+            &:empty {
+                min-width: 10px;
+                min-height: 1.6em;
+            }
+        }
+    }
+
+    // 메뉴 블럭
     .d-block-list {
-        display: none; // TODO : 작성
+        display: flex;
+        flex-direction: column;
+        row-gap: 5px;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100px;
+        padding: 5px;
+        background: #fff;
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+
+        &.--active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .d-btn-block {
+            display: flex;
+            align-items: center;
+            column-gap: 10px;
+            font-size: 14px;
+
+            .d-icon {
+                width: 20px;
+            }
+        }
     }
 
     // left menu css
@@ -167,6 +233,7 @@
         opacity: 0;
         visibility: hidden;
         transition: all 0.25s ease;
+        z-index: 100;
 
         &.--active {
             opacity: 1;
@@ -201,7 +268,7 @@
         .d-btn-menu-pop {
             &::before,
             &::after {
-                dispaly: bock;
+                display: block;
                 content: "";
                 position: absolute;
                 top: 50%;
@@ -245,14 +312,16 @@
         align-items: center;
         position: absolute;
         top: 0;
-        left: 60px;
+        left: 50%;
         height: 30px;
         background: #fff;
         border-radius: 5px;
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         opacity: 0;
         visibility: hidden;
+        transform: translateX(-50%);
         transition: all 0.25s ease;
+        z-index: 100;
 
         &.--active {
             opacity: 1;
@@ -268,6 +337,10 @@
 
             &:last-child {
                 border-right: 0;
+            }
+
+            &:empty {
+                display: none;
             }
         }
 

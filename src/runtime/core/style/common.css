@@ -125,8 +125,117 @@
 .dragon-editor .d-text-block:empty {
   min-height: 1.6em;
 }
+.dragon-editor .d-image-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 5px;
+}
+.dragon-editor .d-image-block.--1 .d-image-area {
+  width: 5%;
+}
+.dragon-editor .d-image-block.--2 .d-image-area {
+  width: 10%;
+}
+.dragon-editor .d-image-block.--3 .d-image-area {
+  width: 15%;
+}
+.dragon-editor .d-image-block.--4 .d-image-area {
+  width: 20%;
+}
+.dragon-editor .d-image-block.--5 .d-image-area {
+  width: 25%;
+}
+.dragon-editor .d-image-block.--6 .d-image-area {
+  width: 30%;
+}
+.dragon-editor .d-image-block.--7 .d-image-area {
+  width: 35%;
+}
+.dragon-editor .d-image-block.--8 .d-image-area {
+  width: 40%;
+}
+.dragon-editor .d-image-block.--9 .d-image-area {
+  width: 45%;
+}
+.dragon-editor .d-image-block.--10 .d-image-area {
+  width: 50%;
+}
+.dragon-editor .d-image-block.--11 .d-image-area {
+  width: 55%;
+}
+.dragon-editor .d-image-block.--12 .d-image-area {
+  width: 60%;
+}
+.dragon-editor .d-image-block.--13 .d-image-area {
+  width: 65%;
+}
+.dragon-editor .d-image-block.--14 .d-image-area {
+  width: 70%;
+}
+.dragon-editor .d-image-block.--15 .d-image-area {
+  width: 75%;
+}
+.dragon-editor .d-image-block.--16 .d-image-area {
+  width: 80%;
+}
+.dragon-editor .d-image-block.--17 .d-image-area {
+  width: 85%;
+}
+.dragon-editor .d-image-block.--18 .d-image-area {
+  width: 90%;
+}
+.dragon-editor .d-image-block.--19 .d-image-area {
+  width: 95%;
+}
+.dragon-editor .d-image-block.--20 .d-image-area {
+  width: 100%;
+}
+.dragon-editor .d-image-block .d-image-area {
+  position: relative;
+}
+.dragon-editor .d-image-block .d-image-area .d-img {
+  width: 100%;
+  height: auto;
+}
+.dragon-editor .d-image-block .d-caption {
+  color: #ccc;
+  font-size: 1rem;
+  cursor: text;
+  outline: 0;
+}
+.dragon-editor .d-image-block .d-caption:empty {
+  min-width: 10px;
+  min-height: 1.6em;
+}
 .dragon-editor .d-block-list {
-  display: none;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100px;
+  padding: 5px;
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+}
+.dragon-editor .d-block-list.--active {
+  opacity: 1;
+  visibility: visible;
+}
+.dragon-editor .d-block-list .d-btn-block {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  font-size: 14px;
+}
+.dragon-editor .d-block-list .d-btn-block .d-icon {
+  width: 20px;
 }
 .dragon-editor .d-left-menu {
   display: flex;
@@ -137,6 +246,7 @@
   opacity: 0;
   visibility: hidden;
   transition: all 0.25s ease;
+  z-index: 100;
 }
 .dragon-editor .d-left-menu.--active {
   opacity: 1;
@@ -166,7 +276,7 @@
   background: #757575;
 }
 .dragon-editor .d-left-menu .d-btn-menu-pop::before, .dragon-editor .d-left-menu .d-btn-menu-pop::after {
-  dispaly: bock;
+  display: block;
   content: "";
   position: absolute;
   top: 50%;
@@ -200,14 +310,16 @@
   align-items: center;
   position: absolute;
   top: 0;
-  left: 60px;
+  left: 50%;
   height: 30px;
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   opacity: 0;
   visibility: hidden;
+  transform: translateX(-50%);
   transition: all 0.25s ease;
+  z-index: 100;
 }
 .dragon-editor .d-style-menu.--active {
   opacity: 1;
@@ -222,6 +334,9 @@
 }
 .dragon-editor .d-style-menu .d-column:last-child {
   border-right: 0;
+}
+.dragon-editor .d-style-menu .d-column:empty {
+  display: none;
 }
 .dragon-editor .d-style-menu .d-btn {
   width: 20px;
