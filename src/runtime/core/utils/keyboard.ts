@@ -9,6 +9,9 @@ function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
         const useShift = event.shiftKey;
 
         switch (type) {
+            case "image":
+                addAction("addBlock", "text");
+                break;
             case "comment":
                 addBrEvent();
                 break;
