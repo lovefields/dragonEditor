@@ -6,48 +6,80 @@
     padding: 10px 10px 50px;
     line-height: 1.6;
 
+    &.--comment {
+        padding: 10px;
+    }
+
     // reset css
-    h1, h2, h3, h4, h5, h6, p, blockquote, pre, dl, dd, ol, ul, fieldset, legend, figure, menu {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    blockquote,
+    pre,
+    dl,
+    dd,
+    ol,
+    ul,
+    fieldset,
+    legend,
+    figure,
+    menu {
         margin: 0;
         padding: 0;
         border: 0;
     }
 
-    table, th, td {
+    table,
+    th,
+    td {
         border-spacing: 0;
-        border-collapse: collapse
+        border-collapse: collapse;
     }
 
-    ol, ul, li {
-        list-style: none
+    ol,
+    ul,
+    li {
+        list-style: none;
     }
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
         font-size: 1em;
-        font-weight: normal
+        font-weight: normal;
     }
 
-    input, textarea, select, button {
+    input,
+    textarea,
+    select,
+    button {
         margin: 0;
         padding: 0;
         border-radius: 0;
         outline: 0;
-        vertical-align: middle
+        vertical-align: middle;
     }
 
-    a:link, a:visited, a:hover, a:active {
-        text-decoration: none
-    }
-
-    a, button, input[type="submit"], input[type="button"], input[type="reset"] {
+    a,
+    button,
+    input[type="submit"],
+    input[type="button"],
+    input[type="reset"] {
         border: 0;
         background: transparent;
-        cursor: pointer
+        cursor: pointer;
     }
 
     img {
         border: 0;
-        vertical-align: top
+        vertical-align: top;
     }
 
     // global styles
@@ -82,12 +114,48 @@
     .d-deco-through {
         text-decoration: line-through;
 
-        &.d-deco-underline {
+        &.d-deco-underline,
+        &.d-deco-link {
             text-decoration: line-through underline;
         }
     }
 
+    .d-deco-code {
+        padding: 2px 5px;
+        margin: 0 2px;
+        background: #f1f1f1;
+        color: #c52e2e;
+        border-radius: 2px;
+        font-family: Inconsolata, monospace, sans-serif;
+    }
 
+    .d-deco-link {
+        color: inherit;
+    }
+
+    .d-row-block {
+        padding-left: 50px;
+        border-radius: 5px;
+        background: transparent;
+        transition: background 0.25s ease;
+
+        &:hover {
+            background: #fafafa;
+        }
+    }
+
+    .d-text-block {
+        cursor: text;
+        outline: 0;
+
+        &:empty {
+            min-height: 1.6em;
+        }
+    }
+
+    .d-block-list {
+        display: none; // TODO : 작성
+    }
 
     // left menu css
     .d-left-menu {
@@ -140,7 +208,7 @@
                 left: 50%;
                 background: #837c7c;
                 border-radius: 2px;
-                transform: translate(-50%, -50%)
+                transform: translate(-50%, -50%);
             }
 
             &::before {
@@ -165,33 +233,10 @@
                 height: 3px;
                 background: #837c7c;
                 border-radius: 50%;
-                box-shadow: 0 5px 0 #837c7c, 0 10px 0 #837c7c, 5px 0 0 #837c7c, 5px 5px 0 #837c7c, 5px 10px 0 #837c7c;
+                box-shadow: 0 5px 0 #837c7c, 0 10px 0 #837c7c, 5px 0 0 #837c7c,
+                    5px 5px 0 #837c7c, 5px 10px 0 #837c7c;
             }
         }
-    }
-
-    .d-row-block {
-        padding-left: 50px;
-        border-radius: 5px;
-        background: transparent;
-        transition: background 0.25s ease;
-
-        &:hover {
-            background: #fafafa;
-        }
-    }
-
-    .d-text-block {
-        cursor: text;
-        outline: 0;
-
-        &:empty {
-            min-height: 1.6em;
-        }
-    }
-
-    .d-block-list {
-        display: none; // TODO : 작성
     }
 
     // style menu css
@@ -236,4 +281,50 @@
             }
         }
     }
+
+    // link boc css
+    .d-link-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        column-gap: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 250px;
+        height: 30px;
+        padding: 0 5px;
+        background: #fff;
+        border-radius: 5px;
+        box-sizing: border-box;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.25s ease;
+
+        &.--active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .d-input {
+            flex: 1;
+            border: 0;
+            border-bottom: 2px solid #f1f1f1;
+        }
+
+        .d-btn-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+
+            .d-icon {
+                height: 16px;
+            }
+        }
+    }
+}
+
+.dragon-editor-viewer {
 }

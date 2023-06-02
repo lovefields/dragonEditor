@@ -3,12 +3,17 @@ export function findEditableElement(node: Node): (HTMLElement | null) {
         if (node.constructor.name === "Text") {
             return findEditableElement(node.parentNode as HTMLElement);
         } else {
-            const hasAttr = (node as HTMLElement).getAttribute("contenteditable") !== null;
+            if ((node as HTMLElement).getAttribute) {
 
-            if (hasAttr) {
-                return node as HTMLElement;
+                const hasAttr = (node as HTMLElement).getAttribute("contenteditable") !== null;
+
+                if (hasAttr) {
+                    return node as HTMLElement;
+                } else {
+                    return findEditableElement(node.parentNode as HTMLElement);
+                }
             } else {
-                return findEditableElement(node.parentNode as HTMLElement);
+                return null
             }
         }
     } else {

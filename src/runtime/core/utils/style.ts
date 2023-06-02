@@ -1,6 +1,6 @@
-import type {allBlock} from "../../../types";
-import {getCursor, setCursor} from "./cursor";
-import {findEditableElement, findChildNumber} from "./element"
+import type { allBlock, styleUtilArgument, cursorSelection } from "../../../types";
+import { getCursor, setCursor } from "./cursor";
+import { findEditableElement, findChildNumber } from "./element"
 
 const alignClassList = ["d-align-left", "d-align-center", "d-align-right"];
 
@@ -32,7 +32,14 @@ function getNextNode($target: Node, node: Node) {
     return childNode[idx + 1] as HTMLElement;
 }
 
-function warpStyleNode(node: Node, startOffset: number, endOffset: number, className: string) {
+function warpStyleNode({ node, startOffset, endOffset, className, url, tagName }: {
+    node: Node;
+    startOffset: number;
+    endOffset: number;
+    className: string;
+    url?: string,
+    tagName: string
+}) {
     const text = node.textContent as string;
     const textLength = text.length;
     let startIdx = startOffset;
@@ -43,16 +50,35 @@ function warpStyleNode(node: Node, startOffset: number, endOffset: number, class
         endIdx = startOffset;
     }
 
-    return `${text.substring(0, startIdx)}<span class="${className}">${text.substring(startIdx, endIdx)}</span>${text.substring(endIdx, textLength)}`;
+    return `${text.substring(0, startIdx)}<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${className}">${text.substring(startIdx, endIdx)}</${tagName}>${text.substring(endIdx, textLength)}`;
 }
 
-function defaultDecorationMake(originData: allBlock, $target: HTMLElement, className: string): allBlock {
-    const cursorData = getCursor();
-    const startNode = cursorData.startNode as Node;
-    const endNode = cursorData.endNode as Node;
+function defaultDecorationMake({ originData, $target, className, tagName = "span", url, parentCursorData }: {
+    originData: allBlock;
+    $target: HTMLElement;
+    className: string;
+    tagName?: string;
+    url?: string;
+    parentCursorData: cursorSelection;
+}): allBlock {
+    let cursorData = getCursor();
+
+    if (cursorData.startNode === null) { // 정보 없을시 부모 정보 사용
+        cursorData = parentCursorData;
+    }
+
+    let startNode = cursorData.startNode as Node;
+    let endNode = cursorData.endNode as Node;
 
     if (startNode !== null) {
-        const editableElement = findEditableElement(startNode) as HTMLElement;
+        let editableElement = findEditableElement(startNode) as HTMLElement;
+
+        if (editableElement === null) { // 에디터블 엘리먼트 존재하지 않을경우 부모 정보 기반으로 덮어 씌우기
+            cursorData = parentCursorData;
+            startNode = cursorData.startNode as Node;
+            endNode = cursorData.endNode as Node;
+            editableElement = findEditableElement(startNode) as HTMLElement;
+        }
 
         if (cursorData.type === "Range") { // 선택된 상태
             if (startNode === endNode) { // 같은 노드간 선택
@@ -67,7 +93,14 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
 
                 if (parentNode === editableElement) { // 랩핑 없는 경우
                     const childNumber: number = findChildNumber(editableElement, startNode);
-                    const wrpStructure: string = warpStyleNode(parentNode.childNodes[childNumber], startOffset, endOffset, className);
+                    const wrpStructure: string = warpStyleNode({
+                        node: parentNode.childNodes[childNumber],
+                        startOffset: startOffset,
+                        endOffset: endOffset,
+                        className: className,
+                        tagName: tagName,
+                        url: url
+                    });
                     let htmlStructure: string = "";
 
                     parentNode.childNodes.forEach((child: ChildNode, count: number) => {
@@ -93,6 +126,7 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
                         setCursor($cursorTarget, cursorLength);
                     }, 100);
                 } else {// 랩핑 있는경우
+                    const originTag = getTagName(parentNode);
                     const childNumber: number = findChildNumber(editableElement, parentNode);
                     const classList: string[] = [...parentNode.classList];
                     const text: string = parentNode.textContent as string;
@@ -111,9 +145,9 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
                         const middleClassList: string[] = [...parentNode.classList];
                         middleClassList.splice(hasClassIdx, 1);
 
-                        htmlStructure = `<span class="${classList.join(" ")}">${text.substring(0, startOffset)}</span><span class="${middleClassList.join(" ")}">${text.substring(startOffset, endOffset)}</span><span class="${classList.join(" ")}">${text.substring(endOffset, text.length)}</span>`;
+                        htmlStructure = `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${classList.join(" ")}">${text.substring(0, startOffset)}</${originTag.name}><${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${middleClassList.join(" ")}">${text.substring(startOffset, endOffset)}</${tagName}><${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${classList.join(" ")}">${text.substring(endOffset, text.length)}</${originTag.name}>`;
                     } else {
-                        htmlStructure = `<span class="${classList.join(" ")}">${text.substring(0, startOffset)}</span><span class="${classList.join(" ")} ${className}">${text.substring(startOffset, endOffset)}</span><span class="${classList.join(" ")}">${text.substring(endOffset, text.length)}</span>`;
+                        htmlStructure = `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${classList.join(" ")}">${text.substring(0, startOffset)}</${originTag.name}><${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${classList.join(" ")} ${className}">${text.substring(startOffset, endOffset)}</${tagName}><${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${classList.join(" ")}">${text.substring(endOffset, text.length)}</${originTag.name}>`;
                     }
 
                     parentNode.insertAdjacentHTML("afterend", htmlStructure);
@@ -174,7 +208,7 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
 
                     if (count > startIdx && count < endIdx) {
                         if (type === "Text") {
-                            htmlStructure += `<span class="${className}">${child.textContent}</span>`;
+                            htmlStructure += `<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${className}">${child.textContent}</${tagName}>`;
                         } else {
                             if (hasClassName) {
                                 if ((child as HTMLElement).classList.length === 1) {
@@ -189,47 +223,48 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
                             }
                         }
                     } else if (count === startIdx) {
-
                         if (type === "Text") {
-                            htmlStructure += `${text.substring(0, startOffset)}<span class="${className}">${text.substring(startOffset, text.length)}</span>`;
+                            htmlStructure += `${text.substring(0, startOffset)}<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${className}">${text.substring(startOffset, text.length)}</${tagName}>`;
                         } else {
                             const childClassList: string[] = [...(child as HTMLElement).classList];
+                            const originTag = getTagName(child as HTMLElement);
 
                             if (hasClassName) {
                                 if (childClassList.length === 1) {
-                                    htmlStructure += `<span class="${className}">${text.substring(0, startOffset)}</span>${text.substring(startOffset, text.length)}`;
+                                    htmlStructure += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${className}">${text.substring(0, startOffset)}</${originTag.name}>${text.substring(startOffset, text.length)}`;
                                 } else {
                                     const classIdx: number = childClassList.indexOf(className);
 
-                                    htmlStructure += `<span class="${childClassList.join(" ")}">${text.substring(0, startOffset)}</span>`;
+                                    htmlStructure += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(0, startOffset)}</${originTag.name}>`;
                                     childClassList.splice(classIdx, 1);
-                                    htmlStructure += `<span class="${childClassList.join(" ")}">${text.substring(startOffset, text.length)}</span>`;
+                                    htmlStructure += `<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(startOffset, text.length)}</${tagName}>`;
                                 }
                             } else {
-                                htmlStructure += `<span class="${childClassList.join(" ")}">${text.substring(0, startOffset)}</span>`;
-                                htmlStructure += `<span class="${childClassList.join(" ")} ${className}">${text.substring(startOffset, text.length)}</span>`;
+                                htmlStructure += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(0, startOffset)}</${originTag.name}>`;
+                                htmlStructure += `<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${childClassList.join(" ")} ${className}">${text.substring(startOffset, text.length)}</${tagName}>`;
                             }
                         }
                     } else if (count === endIdx) {
                         if (type === "Text") {
-                            htmlStructure += `<span class="${className}">${text.substring(0, endOffset)}</span>${text.substring(endOffset, text.length)}`;
+                            htmlStructure += `<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${className}">${text.substring(0, endOffset)}</${tagName}>${text.substring(endOffset, text.length)}`;
                         } else {
                             const childClassList: string[] = [...(child as HTMLElement).classList];
+                            const originTag = getTagName(child as HTMLElement);
 
                             if (hasClassName) {
                                 if (childClassList.length === 1) {
-                                    htmlStructure += `${text.substring(0, endOffset)}<span class="${className}">${text.substring(endOffset, text.length)}</span>`;
+                                    htmlStructure += `${text.substring(0, endOffset)}<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${className}">${text.substring(endOffset, text.length)}</${originTag.name}>`;
                                 } else {
                                     const classIdx: number = childClassList.indexOf(className);
                                     const newClassList: string[] = [...(child as HTMLElement).classList];
 
                                     newClassList.splice(classIdx, 1);
-                                    htmlStructure += `<span class="${newClassList.join(" ")}">${text.substring(0, endOffset)}</span>`;
-                                    htmlStructure += `<span class="${childClassList.join(" ")}">${text.substring(endOffset, text.length)}</span>`;
+                                    htmlStructure += `<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${newClassList.join(" ")}">${text.substring(0, endOffset)}</${tagName}>`;
+                                    htmlStructure += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(endOffset, text.length)}</${originTag.name}>`;
                                 }
                             } else {
-                                htmlStructure += `<span class="${childClassList.join(" ")} ${className}">${text.substring(0, endOffset)}</span>`;
-                                htmlStructure += `<span class="${childClassList.join(" ")}">${text.substring(endOffset, text.length)}</span>`;
+                                htmlStructure += `<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${childClassList.join(" ")} ${className}">${text.substring(0, endOffset)}</${tagName}>`;
+                                htmlStructure += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(endOffset, text.length)}</${originTag.name}>`;
                             }
                         }
                     } else {
@@ -277,34 +312,115 @@ function defaultDecorationMake(originData: allBlock, $target: HTMLElement, class
     return originData;
 }
 
-export function styleSettings(type: string, blockData: allBlock, $target: HTMLElement) {
+export function styleSettings({
+    kind,
+    blockData,
+    $target,
+    url,
+    cursorData
+}: styleUtilArgument) {
     let rawData: allBlock = blockData;
 
-    switch (type) {
-        case "alignLeft" :
+    switch (kind) {
+        case "alignLeft":
             rawData.classList = arrangementAlignClass(rawData.classList, "d-align-left");
             break;
-        case "alignCenter" :
+        case "alignCenter":
             rawData.classList = arrangementAlignClass(rawData.classList, "d-align-center");
             break;
-        case "alignRight" :
+        case "alignRight":
             rawData.classList = arrangementAlignClass(rawData.classList, "d-align-right");
             break;
-        case "decorationBold" :
-            rawData = defaultDecorationMake(rawData, $target, "d-deco-bold");
+        case "decorationBold":
+            rawData = defaultDecorationMake(
+                {
+                    originData: rawData,
+                    $target: $target,
+                    className: "d-deco-bold",
+                    parentCursorData: cursorData
+                }
+            );
             break;
-        case "decorationItalic" :
-            rawData = defaultDecorationMake(rawData, $target, "d-deco-italic");
+        case "decorationItalic":
+            rawData = defaultDecorationMake(
+                {
+                    originData: rawData,
+                    $target: $target,
+                    className: "d-deco-italic",
+                    parentCursorData: cursorData
+                }
+            );
             break;
-        case "decorationUnderline" :
-            rawData = defaultDecorationMake(rawData, $target, "d-deco-underline");
+        case "decorationUnderline":
+            rawData = defaultDecorationMake({
+                originData: rawData,
+                $target: $target,
+                className: "d-deco-underline",
+                parentCursorData: cursorData
+            }
+            );
             break;
-        case "decorationStrikethrough" :
-            rawData = defaultDecorationMake(rawData, $target, "d-deco-through");
+        case "decorationStrikethrough":
+            rawData = defaultDecorationMake(
+                {
+                    originData: rawData,
+                    $target: $target,
+                    className: "d-deco-through",
+                    parentCursorData: cursorData
+                }
+            );
+            break;
+        case "decorationCode":
+            rawData = defaultDecorationMake({
+                originData: rawData,
+                $target: $target,
+                className: "d-deco-code",
+                tagName: "code",
+                parentCursorData: cursorData
+            });
+            break;
+        case "decorationLink":
+            rawData = defaultDecorationMake({
+                originData: rawData,
+                $target: $target,
+                className: "d-deco-link",
+                tagName: "a",
+                url: url,
+                parentCursorData: cursorData
+            });
             break;
         default:
-            rawData = defaultDecorationMake(rawData, $target, type);
+            rawData = defaultDecorationMake(
+                {
+                    originData: rawData,
+                    $target: $target,
+                    className: kind,
+                    parentCursorData: cursorData
+                }
+            );
     }
 
     return rawData;
+}
+
+export function getTagName(node: HTMLElement) {
+    const value: {
+        name: string;
+        href: string | null;
+    } = {
+        name: "span",
+        href: null
+    };
+
+    switch (node.tagName) {
+        case "CODE":
+            value.name = "code";
+            break;
+        case "A":
+            value.name = "a";
+            value.href = node.getAttribute("href");
+            break;
+    }
+
+    return value;
 }
