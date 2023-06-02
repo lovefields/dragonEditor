@@ -24,7 +24,7 @@ export interface editorOptions {
     customStyleMenu?: userStyleMenu[];
 }
 
-export type allBlock = (textBlock | commentBlock);
+export type allBlock = (textBlock | commentBlock | imageBlock);
 
 export type editorContentType = allBlock[];
 
@@ -40,6 +40,17 @@ export interface commentBlock {
     type: string;
     classList: string[],
     content: string,
+}
+
+export interface imageBlock {
+    type: string,
+    id: string,
+    classList: string[],
+    src: string;
+    width: number,
+    height: number,
+    webp: boolean,
+    caption: string,
 }
 
 

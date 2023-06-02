@@ -23,7 +23,7 @@ import CodeBlock from "./icon/CodeBlock.vue";
 import Cancel from "./icon/Cancel.vue";
 import Accept from "./icon/Accept.vue";
 
-const props = defineProps<{ kind: string }>();
+const props = defineProps<{ kind: String }>();
 let iconComponent: any;
 
 switch (props.kind) {
