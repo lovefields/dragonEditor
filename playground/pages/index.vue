@@ -3,29 +3,48 @@
         Editor!
 
         <div class="editor">
-            <DragonEditor v-model="contentData" :option="option" ref="editor"/>
+            <DragonEditor v-model="contentData" :option="option" ref="editor" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted} from "#imports";
+import { ref, onMounted } from "#imports";
 
 const editor = ref();
 const contentData = ref([]);
 const option = {
-    blockMenu: ["text", "ol", "ul"],
+    // blockMenu: ["text", "ol", "ul"],
     customBlockMenu: [
         {
             name: "Image",
             icon: "imageBlock",
             action: addImage
+        },
+        {
+            name: "Image",
+            icon: "imageBlock",
+            action: addImage2
         }
     ]
 };
 
 function addImage() {
-    editor.value.addImageBlock();
+    editor.value.addImageBlock({
+        src: "https://worldanimalfoundation.org/wp-content/uploads/2022/12/Choose-the-Proper-Location-at-First-review.jpg",
+        width: 700,
+        height: 474,
+        webp: false,
+    });
+}
+
+function addImage2() {
+    editor.value.addImageBlock({
+        src: "https://c.pxhere.com/images/37/e4/22c0adf08932049eb1b8af36cbd7-1622414.jpg!d",
+        width: 1200,
+        height: 1739,
+        webp: false,
+    });
 }
 
 onMounted(() => {
@@ -37,5 +56,6 @@ onMounted(() => {
 <style>
 .editor {
     width: 800px;
+    padding: 100px;
 }
 </style>
