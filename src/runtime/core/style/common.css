@@ -4,33 +4,65 @@
   padding: 10px 10px 50px;
   line-height: 1.6;
 }
-.dragon-editor h1, .dragon-editor h2, .dragon-editor h3, .dragon-editor h4, .dragon-editor h5, .dragon-editor h6, .dragon-editor p, .dragon-editor blockquote, .dragon-editor pre, .dragon-editor dl, .dragon-editor dd, .dragon-editor ol, .dragon-editor ul, .dragon-editor fieldset, .dragon-editor legend, .dragon-editor figure, .dragon-editor menu {
+.dragon-editor.--comment {
+  padding: 10px;
+}
+.dragon-editor h1,
+.dragon-editor h2,
+.dragon-editor h3,
+.dragon-editor h4,
+.dragon-editor h5,
+.dragon-editor h6,
+.dragon-editor p,
+.dragon-editor blockquote,
+.dragon-editor pre,
+.dragon-editor dl,
+.dragon-editor dd,
+.dragon-editor ol,
+.dragon-editor ul,
+.dragon-editor fieldset,
+.dragon-editor legend,
+.dragon-editor figure,
+.dragon-editor menu {
   margin: 0;
   padding: 0;
   border: 0;
 }
-.dragon-editor table, .dragon-editor th, .dragon-editor td {
+.dragon-editor table,
+.dragon-editor th,
+.dragon-editor td {
   border-spacing: 0;
   border-collapse: collapse;
 }
-.dragon-editor ol, .dragon-editor ul, .dragon-editor li {
+.dragon-editor ol,
+.dragon-editor ul,
+.dragon-editor li {
   list-style: none;
 }
-.dragon-editor h1, .dragon-editor h2, .dragon-editor h3, .dragon-editor h4, .dragon-editor h5, .dragon-editor h6 {
+.dragon-editor h1,
+.dragon-editor h2,
+.dragon-editor h3,
+.dragon-editor h4,
+.dragon-editor h5,
+.dragon-editor h6 {
   font-size: 1em;
   font-weight: normal;
 }
-.dragon-editor input, .dragon-editor textarea, .dragon-editor select, .dragon-editor button {
+.dragon-editor input,
+.dragon-editor textarea,
+.dragon-editor select,
+.dragon-editor button {
   margin: 0;
   padding: 0;
   border-radius: 0;
   outline: 0;
   vertical-align: middle;
 }
-.dragon-editor a:link, .dragon-editor a:visited, .dragon-editor a:hover, .dragon-editor a:active {
-  text-decoration: none;
-}
-.dragon-editor a, .dragon-editor button, .dragon-editor input[type=submit], .dragon-editor input[type=button], .dragon-editor input[type=reset] {
+.dragon-editor a,
+.dragon-editor button,
+.dragon-editor input[type=submit],
+.dragon-editor input[type=button],
+.dragon-editor input[type=reset] {
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -63,8 +95,38 @@
 .dragon-editor .d-deco-through {
   text-decoration: line-through;
 }
-.dragon-editor .d-deco-through.d-deco-underline {
+.dragon-editor .d-deco-through.d-deco-underline, .dragon-editor .d-deco-through.d-deco-link {
   text-decoration: line-through underline;
+}
+.dragon-editor .d-deco-code {
+  padding: 2px 5px;
+  margin: 0 2px;
+  background: #f1f1f1;
+  color: #c52e2e;
+  border-radius: 2px;
+  font-family: Inconsolata, monospace, sans-serif;
+}
+.dragon-editor .d-deco-link {
+  color: inherit;
+}
+.dragon-editor .d-row-block {
+  padding-left: 50px;
+  border-radius: 5px;
+  background: transparent;
+  transition: background 0.25s ease;
+}
+.dragon-editor .d-row-block:hover {
+  background: #fafafa;
+}
+.dragon-editor .d-text-block {
+  cursor: text;
+  outline: 0;
+}
+.dragon-editor .d-text-block:empty {
+  min-height: 1.6em;
+}
+.dragon-editor .d-block-list {
+  display: none;
 }
 .dragon-editor .d-left-menu {
   display: flex;
@@ -133,25 +195,6 @@
   border-radius: 50%;
   box-shadow: 0 5px 0 #837c7c, 0 10px 0 #837c7c, 5px 0 0 #837c7c, 5px 5px 0 #837c7c, 5px 10px 0 #837c7c;
 }
-.dragon-editor .d-row-block {
-  padding-left: 50px;
-  border-radius: 5px;
-  background: transparent;
-  transition: background 0.25s ease;
-}
-.dragon-editor .d-row-block:hover {
-  background: #fafafa;
-}
-.dragon-editor .d-text-block {
-  cursor: text;
-  outline: 0;
-}
-.dragon-editor .d-text-block:empty {
-  min-height: 1.6em;
-}
-.dragon-editor .d-block-list {
-  display: none;
-}
 .dragon-editor .d-style-menu {
   display: flex;
   align-items: center;
@@ -187,4 +230,41 @@
 }
 .dragon-editor .d-style-menu .d-btn.--active {
   fill: blue;
+}
+.dragon-editor .d-link-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  column-gap: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 30px;
+  padding: 0 5px;
+  background: #fff;
+  border-radius: 5px;
+  box-sizing: border-box;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.25s ease;
+}
+.dragon-editor .d-link-box.--active {
+  opacity: 1;
+  visibility: visible;
+}
+.dragon-editor .d-link-box .d-input {
+  flex: 1;
+  border: 0;
+  border-bottom: 2px solid #f1f1f1;
+}
+.dragon-editor .d-link-box .d-btn-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+}
+.dragon-editor .d-link-box .d-btn-link .d-icon {
+  height: 16px;
 }

@@ -66,3 +66,16 @@ export interface styleActiveType {
     link: boolean;
     code: boolean;
 }
+
+export interface styleFunctionArgument {
+    type: string;
+    url?: string;
+}
+
+export interface styleUtilArgument {
+    kind: string,
+    blockData: allBlock,
+    $target: HTMLElement,
+    url?: string,
+    cursorData: cursorSelection
+}

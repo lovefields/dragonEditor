@@ -1,4 +1,4 @@
-import { textBlock, userCustomMenu, editorMenu } from "../../../types/index";
+import { textBlock, userCustomMenu, allBlock } from "../../../types/index";
 
 
 function generateId() {
@@ -21,7 +21,7 @@ export function createTextBlock(): textBlock {
     };
 }
 
-export function createBlock(name: string) {
+export function createBlock(name: string): allBlock {
     switch (name) {
         // case "ol":
         //     // return createTextBlock();
