@@ -1,14 +1,12 @@
 <template>
-    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent"
-         @keydown="deactiveMenuEvent"
-    >
-        <div class="d-left-menu" :class="{'--active' : activeMenu}" :style="{top:`${leftMenuPosition}px`}">
+    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent">
+        <div class="d-left-menu" :class="{ '--active': activeMenu }" :style="{ top: `${leftMenuPosition}px` }">
             <div class="d-add-block">
                 <button class="d-btn-menu-pop"></button>
 
                 <div class="d-block-list">
-                    <button v-for="(row,count) in blockMenu" :key="count" class="d-btn-block" @click="row.action">
-                        <SvgIcon v-if="row.hasIcon" :kind="row.icon"/>
+                    <button v-for="(row, count) in blockMenu" :key="count" class="d-btn-block" @click="row.action">
+                        <SvgIcon v-if="row.hasIcon" :kind="row.icon" />
                         <div v-else class="icon" v-html="row.icon"></div>
                         <p class="d-name">{{ row.name }}</p>
                     </button>
@@ -26,97 +24,54 @@
             </div>
         </div>
 
-        <div class="d-style-menu" :class="{'--active' : activeMenu}" :style="{top:`${styleMenuPosition}px`}">
-            <div class="d-column">
-                <button class="d-btn" :class="{'--active' : checkAlignActive('d-align-left')}"
-                        @click="setBlockEvent('alignLeft')"
-                >
-                    <SvgIcon kind="alignLeft"/>
+        <div class="d-link-box" :class="{ '--active': activeLinkBox }"
+            :style="{ top: `${linkBoxPosition.top}px`, left: `${linkBoxPosition.left}px` }">
+            <template v-if="styleButtonList[2][0].active">
+                <p class="d-input">{{ linkValue }}</p>
+                <button class="d-btn-link" @click="decoLinkControl">
+                    <SvgIcon kind="cancel" />
                 </button>
-                <button class="d-btn" :class="{'--active' : checkAlignActive('d-align-center')}"
-                        @click="setBlockEvent('alignCenter')"
-                >
-                    <SvgIcon kind="alignCenter"/>
+            </template>
+            <template v-else>
+                <input type="url" class="d-input" v-model="linkValue">
+                <button class="d-btn-link" @click="decoLinkControl">
+                    <SvgIcon kind="accept" />
                 </button>
-                <button class="d-btn" :class="{'--active' : checkAlignActive('d-align-right')}"
-                        @click="setBlockEvent('alignRight')"
-                >
-                    <SvgIcon kind="alignRight"/>
+            </template>
+        </div>
+
+        <div class="d-style-menu" :class="{ '--active': activeMenu }" :style="{ top: `${styleMenuPosition}px` }">
+            <div v-for="(column, count) in styleButtonList" :key="count" class="d-column">
+                <button v-for="(item, j) in column" :key="j" class="d-btn" :class="{ '--active': item.active }"
+                    @click="item.action">
+                    <SvgIcon :kind="item.icon" />
                 </button>
             </div>
 
-            <div class="d-column">
-                <button class="d-btn" :class="{'--active' : activeStyle.bold}"
-                        @click="setBlockEvent('decorationBold')"
-                >
-                    <SvgIcon kind="decorationBold"/>
-                </button>
-
-                <button class="d-btn" :class="{'--active' : activeStyle.italic}"
-                        @click="setBlockEvent('decorationItalic')"
-                >
-                    <SvgIcon kind="decorationItalic"/>
-                </button>
-
-                <button class="d-btn" :class="{'--active' : activeStyle.underline}"
-                        @click="setBlockEvent('decorationUnderline')"
-                >
-                    <SvgIcon kind="decorationUnderline"/>
-                </button>
-
-                <button class="d-btn" :class="{'--active' : activeStyle.through}"
-                        @click="setBlockEvent('decorationStrikethrough')"
-                >
-                    <SvgIcon kind="decorationStrikethrough"/>
-                </button>
-            </div>
-
-            <div class="d-column">
-                <button class="d-btn">
-                    <SvgIcon kind="link"/>
-                </button>
-            </div>
-
-            <div class="d-column">
-                <button class="d-btn">
-                    <SvgIcon kind="codeBlock"/>
-                </button>
-            </div>
-
-            <div v-if="customStyleMenu.length  > 0" class="d-column">
+            <div v-if="customStyleMenu.length > 0" class="d-column">
                 <!--                customStyleMenu-->
             </div>
         </div>
 
-        <div
-            class="d-row-block"
-            v-for="(row,count) in content"
-            :key="count"
-            @click="activeIdx = count"
-            @mouseenter="activeMenuEvent"
-            @mousemove="activeMenuEvent"
-            @mouseup="activeMenuEvent"
-        >
-            <component
-                ref="$child"
-                v-model="content[count]"
-                :is="setComponentKind(row.type)"
-                @addBlock="addBlockLocal"
-            />
+        <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count"
+            @mouseenter="activeMenuEvent" @mousemove="activeMenuEvent" @mouseup="activeMenuEvent">
+            <component ref="$child" v-model="content[count]" :is="setComponentKind(row.type)" :cursorData="cursorData"
+                @addBlock="addBlockLocal" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import {ref, unref, onMounted} from "#imports";
-import {createBlock, getClipboardData, getCursor} from "../../core/utils";
+import { ref, unref, onMounted } from "#imports";
+import { createBlock, getClipboardData, getCursor } from "../../core/utils";
 import {
     editorOptions,
     editorMenu,
     editorContentType,
     userCustomMenu,
     styleActiveType,
-    userStyleMenu
+    userStyleMenu,
+    cursorSelection
 } from "../../../types/index";
 
 // components
@@ -140,23 +95,108 @@ const emit = defineEmits<{
 const $wrap = ref();
 const $child = ref();
 const activeMenu = ref<boolean>(false);
+const activeLinkBox = ref<boolean>(false);
 const leftMenuPosition = ref<number>(0);
 const styleMenuPosition = ref<number>(0);
+const linkBoxPosition = ref({
+    top: 0,
+    left: 0
+});
 const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlock", "tableBlock"];
 const blockMenu = ref<editorMenu[]>([]);
 const customStyleMenu = ref<userStyleMenu[]>([]);
 const content = ref<editorContentType>([]);
 const activeIdx = ref<number>(0);
-const activeStyle = ref<styleActiveType>({
-    bold: false,
-    italic: false,
-    underline: false,
-    through: false,
-    link: false,
-    code: false,
+const linkValue = ref<string>("");
+const cursorData = ref<cursorSelection>({
+    type: "",
+    startNode: null,
+    startOffset: null,
+    endNode: null,
+    endOffset: null,
 });
-// const activeItemId = ref<string>("");
-// const selectItems = ref<string[]>([]);
+const styleButtonList = ref([
+    [
+        {
+            name: "Align Left",
+            icon: "alignLeft",
+            active: false,
+            action: () => {
+                setBlockEvent("alignLeft")
+            }
+        },
+        {
+            name: "Align Center",
+            icon: "alignCenter",
+            active: false,
+            action: () => {
+                setBlockEvent("alignCenter")
+            }
+        },
+        {
+            name: "Align right",
+            icon: "alignRight",
+            active: false,
+            action: () => {
+                setBlockEvent("alignRight")
+            }
+        },
+    ],
+    [
+        {
+            name: "Decoration Bold",
+            icon: "decorationBold",
+            active: false,
+            action: () => {
+                setBlockEvent("decorationBold")
+            }
+        },
+        {
+            name: "Decoration Italic",
+            icon: "decorationItalic",
+            active: false,
+            action: () => {
+                setBlockEvent("decorationItalic")
+            }
+        },
+        {
+            name: "Decoration Underline",
+            icon: "decorationUnderline",
+            active: false,
+            action: () => {
+                setBlockEvent("decorationUnderline")
+            }
+        },
+        {
+            name: "Decoration Strikethrough",
+            icon: "decorationStrikethrough",
+            active: false,
+            action: () => {
+                setBlockEvent("decorationStrikethrough")
+            }
+        },
+    ],
+    [
+        {
+            name: "Link",
+            icon: "link",
+            active: false,
+            action: () => {
+                activeLinkBox.value = !activeLinkBox.value;
+            }
+        }
+    ],
+    [
+        {
+            name: "Decoration Code",
+            icon: "codeBlock",
+            active: false,
+            action: () => {
+                setBlockEvent("decorationCode");
+            }
+        }
+    ]
+]);
 
 // initial logic
 onMounted(() => {
@@ -197,10 +237,15 @@ function checkAlignActive(className: string) {
 }
 
 function checkDecoActive() {
-    activeStyle.value.bold = hasClassNameCheckLogic("d-deco-bold");
-    activeStyle.value.italic = hasClassNameCheckLogic("d-deco-italic");
-    activeStyle.value.underline = hasClassNameCheckLogic("d-deco-underline");
-    activeStyle.value.through = hasClassNameCheckLogic("d-deco-through");
+    styleButtonList.value[0][0].active = checkAlignActive('d-align-left');
+    styleButtonList.value[0][1].active = checkAlignActive('d-align-center');
+    styleButtonList.value[0][2].active = checkAlignActive('d-align-right');
+    styleButtonList.value[1][0].active = hasClassNameCheckLogic("d-deco-bold");
+    styleButtonList.value[1][1].active = hasClassNameCheckLogic("d-deco-italic");
+    styleButtonList.value[1][2].active = hasClassNameCheckLogic("d-deco-underline");
+    styleButtonList.value[1][3].active = hasClassNameCheckLogic("d-deco-through");
+    styleButtonList.value[2][0].active = hasClassNameCheckLogic("d-deco-link");
+    styleButtonList.value[3][0].active = hasClassNameCheckLogic("d-deco-code");
 }
 
 function hasClassNameCheckLogic(className: string) {
@@ -220,6 +265,14 @@ function hasClassNameCheckLogic(className: string) {
 
             if (classList.indexOf(className) > -1) {
                 value = true;
+            }
+        }
+
+        if (className === "d-deco-link") {
+            if (value) {
+                linkValue.value = $target.getAttribute("href");
+            } else {
+                linkValue.value = "";
             }
         }
     }
@@ -256,16 +309,20 @@ function setEditorMenu(vanillaData: string[], customData?: userCustomMenu[]) {
     return dataList;
 }
 
-
 // event function
 function activeMenuEvent(e: MouseEvent) {
+    cursorData.value = getCursor();
     setMenuPosition(e.currentTarget as HTMLElement);
     checkDecoActive();
     activeMenu.value = true;
 }
 
-function deactiveMenuEvent() {
+function deactiveMenuEvent(e) {
     activeMenu.value = false;
+
+    if (e.type === "mouseleave") {
+        activeLinkBox.value = false;
+    }
 }
 
 function dataUpdateAction() {
@@ -327,18 +384,40 @@ function setMenuPosition($target: HTMLElement) {
     const targetBottom = targetRect.bottom - bodyRect.top;
     const top = ((targetTop - (wrapTop + 10)) - parentNodeScrollY) + 13;
     const bottom = ((targetBottom - (wrapTop + 10)) - parentNodeScrollY) + 10;
+    let startNode = cursorData.value.startNode;
+
+    if (startNode !== null) {
+        if (startNode.constructor.name === "Text") {
+            startNode = startNode.parentNode;
+        }
+
+        const startNodeRect = startNode.getBoundingClientRect();
+        const wrapleft = startNodeRect.left - bodyRect.left;
+
+        linkBoxPosition.value = {
+            top: top - 32,
+            left: wrapleft,
+        }
+    }
 
     styleMenuPosition.value = bottom;
     leftMenuPosition.value = top;
 }
 
-function setBlockEvent(type: string) {
-    $child.value[activeIdx.value].setStyles(type);
+function setBlockEvent(type: string, url?: string) {
+    $child.value[activeIdx.value].setStyles({
+        type: type,
+        url: url
+    });
     setTimeout(() => {
         checkDecoActive();
     }, 100);
 }
 
+function decoLinkControl() {
+    setBlockEvent("decorationLink", linkValue.value);
+    activeLinkBox.value = false;
+}
 
 // export function
 // function checkStyleActive(className: string) {
