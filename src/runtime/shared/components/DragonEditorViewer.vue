@@ -1,3 +1,3 @@
 <template>
-    <div class="editor-viewer"></div>
+    <div class="dragon-editor-viewer"></div>
 </template>

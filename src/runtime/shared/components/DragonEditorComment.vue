@@ -1,5 +1,5 @@
 <template>
-    <div class="dragon-editor">
+    <div class="dragon-editor --comment">
         <p class="d-text-block" :class="data.classList" contenteditable v-html="data.content" @keydown="textKeyboardEvent"
             @paste="pasteEvent" ref="$block"></p>
     </div>
@@ -17,7 +17,7 @@ import {
     getCursor,
     findEditableElement
 } from "../../core/utils/index";
-import { commentBlock } from "../../../types/index";
+import { commentBlock, cursorSelection } from "../../../types/index";
 
 const $block = ref();
 const data = ref<commentBlock>({
@@ -29,6 +29,13 @@ const props = defineProps<{ modelValue: commentBlock }>();
 const emit = defineEmits<{
     (e: "update:modelValue", modelValue: commentBlock): void;
 }>();
+const blockCursorData = ref<cursorSelection>({
+    type: "",
+    startNode: null,
+    startOffset: null,
+    endNode: null,
+    endOffset: null,
+});
 
 data.value = unref(props.modelValue) as commentBlock;
 
@@ -58,7 +65,7 @@ function updateBlockData() {
 
     // 커서위치 재지정
     if ($block.value.innerHTML.length > 0) {
-        const cursorData = getArrangementCursorData();
+        const cursorData = getArrangementCursorData(blockCursorData.value);
 
         data.value.content = $block.value.innerHTML;
         emit("update:modelValue", data.value);
@@ -69,13 +76,19 @@ function updateBlockData() {
                 cursorData.length
             );
 
-            // 빈 태그 삭제
+            // 구조 검수
             $block.value.childNodes.forEach((child: ChildNode) => {
-                if (
-                    child.constructor.name !== "Text" &&
-                    child.textContent === ""
-                ) {
-                    child.remove();
+                if (child.constructor.name !== "Text") { // 텍스트가 아닐경우
+                    if (child.constructor.name !== "HTMLBRElement") { // br 태그 유지
+                        if (child.textContent === "") { // 빈 태그 삭제
+                            child.remove();
+                        } else if ((child as HTMLElement).classList.length === 0) { // 클레스 없는 엘리먼트 처리
+                            (child as HTMLElement).insertAdjacentHTML("afterend", child.textContent as string);
+                            child.remove();
+                        }
+                    } else {
+                        (child as HTMLElement).removeAttribute("class");
+                    }
                 }
             });
         }, 100);
@@ -86,10 +99,19 @@ function updateBlockData() {
 
 function focus() {
     setCursor($block.value, 0);
+    blockCursorData.value = getCursor();
 }
 
-function setStyles(kind: string) {
-    data.value = styleSettings(kind, data.value, $block.value);
+function setStyles(kind: string, url?: string) {
+    data.value = styleSettings(
+        {
+            kind: kind,
+            blockData: data.value,
+            $target: $block.value,
+            url: url,
+            cursorData: blockCursorData.value
+        }
+    );
     setTimeout(() => {
         updateBlockData();
     }, 250);
