@@ -2,6 +2,7 @@ import { getCursor, setCursor } from "./cursor";
 import { findEditableElement, findChildNumber } from "./element";
 import { getTagName } from "./style";
 
+// 엔터 이벤트
 let enterCount = 0;
 function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
     if (event.code === "Enter") {
@@ -32,9 +33,18 @@ function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
     }
 }
 
+// 백스페이스 이벤트
+function backspaceEvent(type: string, event: KeyboardEvent) {
+    if (event.code === "Backspace") {
+        console.log(event);
+    }
+}
+
+
+// 키보드 이벤트 총괄
 export function keyboardEvent(type: string, event: KeyboardEvent, addAction: Function) {
     enterEvent(type, event, addAction);
-
+    backspaceEvent(type, event);
 }
 
 export function getClipboardData(data: DataTransfer) {
