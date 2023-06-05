@@ -1,0 +1,8 @@
+{
+    "printWidth": 1000,
+    "tabWidth": 4,
+    "trailingComma": "es5",
+    "requireConfig": true,
+    "htmlWhitespaceSensitivity": "strict",
+    "singleAttributePerLine": false
+}

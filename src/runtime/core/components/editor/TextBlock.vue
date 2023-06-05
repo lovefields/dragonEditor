@@ -1,6 +1,5 @@
 <template>
-    <p class="d-text-block" :class="data.classList" contenteditable v-html="data.content" @keydown="textKeyboardEvent"
-        ref="$block"></p>
+    <p class="d-text-block" :class="data.classList" contenteditable v-html="data.content" @keydown="textKeyboardEvent" ref="$block"></p>
 </template>
 
 <script setup lang="ts">
@@ -15,24 +14,29 @@ const data = ref<textBlock>({
     classList: [],
     content: "",
 });
-const props = defineProps<{ modelValue: textBlock, cursorData: cursorSelection }>();
+const props = defineProps<{ modelValue: textBlock; cursorData: cursorSelection }>();
 const emit = defineEmits<{
     (e: "update:modelValue", modelValue: textBlock): void;
-    (e: "addBlock", name: string): void;
+    (e: "addBlock", {}: { name: string; value: object }): void;
+    (e: "deleteBlockLocal", index?: number): void;
 }>();
 
 data.value = unref(props.modelValue) as textBlock;
 
 // 키보드 이벤트 할당
 function textKeyboardEvent(e: KeyboardEvent) {
-    keyboardEvent("text", e, emit);
+    keyboardEvent("text", e, emit, updateBlockData);
 }
 
-// 외부용 함수
-function updateBlockData() { // 데이터 정규화 및 검수
+/**
+ * 외부용 함수
+ */
+
+// 데이터 정규화 및 검수
+function updateBlockData() {
     const blockClassList = [...$block.value.classList];
     blockClassList.splice(0, 1);
-    const pushList = blockClassList.filter(item => data.value.classList.indexOf(item) === -1);
+    const pushList = blockClassList.filter((item) => data.value.classList.indexOf(item) === -1);
 
     data.value.classList = data.value.classList.concat(pushList);
 
@@ -44,32 +48,52 @@ function updateBlockData() { // 데이터 정규화 및 검수
         emit("update:modelValue", data.value);
 
         setTimeout(() => {
-            setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
+            if ($block.value) {
+                setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
 
-            // 구조 검수
-            $block.value.childNodes.forEach((child: ChildNode) => {
-                if (child.constructor.name !== "Text") { // 텍스트가 아닐경우
-                    if (child.constructor.name !== "HTMLBRElement") { // br 태그 유지
-                        if (child.textContent === "") { // 빈 태그 삭제
-                            child.remove();
-                        } else if ((child as HTMLElement).classList.length === 0) { // 클레스 없는 엘리먼트 처리
-                            (child as HTMLElement).insertAdjacentHTML("afterend", child.textContent as string);
-                            child.remove();
+                // 구조 검수
+                $block.value.childNodes.forEach((child: ChildNode) => {
+                    const $child = child as HTMLElement;
+
+                    if (child.constructor.name !== "Text") {
+                        // 텍스트가 아닐경우
+                        if (child.constructor.name !== "HTMLBRElement") {
+                            // br 태그 유지
+                            if (child.textContent === "") {
+                                // 빈 태그 삭제
+                                child.remove();
+                            } else if ($child.classList.length === 0) {
+                                // 클레스 없는 엘리먼트 처리
+                                $child.insertAdjacentHTML("afterend", $child.innerHTML);
+                                child.remove();
+                            }
+                        } else {
+                            $child.removeAttribute("class");
                         }
-                    } else {
-                        (child as HTMLElement).removeAttribute("class");
                     }
-                }
-            });
-        }, 100)
+                });
+            }
+        }, 100);
     } else {
         emit("update:modelValue", data.value);
     }
 }
 
 // 포커스
-function focus() {
-    setCursor($block.value, 0);
+function focus(type: string = "first") {
+    if (type === "first") {
+        setCursor($block.value, 0);
+    } else {
+        const childCount = $block.value.childNodes.length;
+        const targetChild = $block.value.childNodes[childCount - 1];
+
+        setCursor(targetChild, 0);
+    }
+}
+
+// 블럭 위치 주기
+function getBoundingClientRect() {
+    return $block.value.parentNode.getBoundingClientRect();
 }
 
 // 타입 전달
@@ -84,15 +108,13 @@ function pasteEvent(text: string) {
 
 // 텍스트 스타일 지정
 function setStyles({ type, url }: styleFunctionArgument) {
-    data.value = styleSettings(
-        {
-            kind: type,
-            blockData: data.value,
-            $target: $block.value,
-            url: url,
-            cursorData: props.cursorData
-        }
-    );
+    data.value = styleSettings({
+        kind: type,
+        blockData: data.value,
+        $target: $block.value,
+        url: url,
+        cursorData: props.cursorData,
+    });
     setTimeout(() => {
         updateBlockData();
     }, 250);
@@ -103,6 +125,7 @@ defineExpose({
     focus,
     getType,
     pasteEvent,
-    setStyles
+    setStyles,
+    getBoundingClientRect,
 });
 </script>
