@@ -2,7 +2,7 @@
     <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent">
         <div class="d-left-menu" :class="{ '--active': activeMenu }" :style="{ top: `${leftMenuPosition}px` }">
             <div class="d-add-block">
-                <button class="d-btn-menu-pop" @click="openBlockAddMenu"></button>
+                <button class="d-btn-menu-pop" @click="activeBlockAddMenu = !activeBlockAddMenu"></button>
 
                 <div class="d-block-list" :class="{ '--active': activeBlockAddMenu }">
                     <button v-for="(row, count) in blockMenu" :key="count" class="d-btn-block" @click="row.action">
@@ -14,12 +14,18 @@
             </div>
 
             <div class="d-control-block">
-                <button class="d-btn-block-pop"></button>
+                <button class="d-btn-block-pop" @click="activeBlockColtrolMenu = !activeBlockColtrolMenu"></button>
 
-                <div class="d-block-list">
-                    <button class="d-btn-block"></button>
-                    <button class="d-btn-block"></button>
-                    <button class="d-btn-block"></button>
+                <div class="d-block-list" :class="{ '--active': activeBlockColtrolMenu }">
+                    <button class="d-btn-block" @click="moveBlock('up')">
+                        <SvgIcon kind="arrowUp" />Up
+                    </button>
+                    <button class="d-btn-block" @click="moveBlock('down')">
+                        <SvgIcon kind="arrowDown" />Down
+                    </button>
+                    <button class="d-btn-block">
+                        <SvgIcon kind="delete" />Delete
+                    </button>
                 </div>
             </div>
         </div>
@@ -100,6 +106,7 @@ const $child = ref();
 const activeMenu = ref<boolean>(false);
 const activeLinkBox = ref<boolean>(false);
 const activeBlockAddMenu = ref<boolean>(false);
+const activeBlockColtrolMenu = ref<boolean>(false);
 const leftMenuPosition = ref<number>(0);
 const styleMenuPosition = ref<number>(0);
 const linkBoxPosition = ref({
@@ -338,6 +345,7 @@ function activeMenuEvent(e?: MouseEvent) {
 function deactiveMenuEvent(e) {
     activeMenu.value = false;
     activeBlockAddMenu.value = false;
+    activeBlockColtrolMenu.value = false;
 
     if (e.type === "mouseleave") {
         activeLinkBox.value = false;
@@ -471,9 +479,25 @@ function decoLinkControl() {
     activeLinkBox.value = false;
 }
 
-// 블럭 추가 메뉴
-function openBlockAddMenu() {
-    activeBlockAddMenu.value = !activeBlockAddMenu.value;
+// 블럭 위치 조정
+async function moveBlock(type: string) {
+    let targetIdx = 0;
+    dataUpdateAction();
+
+    if (type === "up") {
+        targetIdx = activeIdx.value - 1;
+    } else {
+        targetIdx = activeIdx.value + 1;
+    }
+
+    if (targetIdx >= 0 && targetIdx < content.value.length) {
+        const targetData = content.value[targetIdx];
+        const thisData = content.value[activeIdx.value];
+
+        content.value.splice(targetIdx, 1, thisData);
+        content.value.splice(activeIdx.value, 1, targetData);
+        activeIdx.value = targetIdx;
+    }
 }
 
 /**
