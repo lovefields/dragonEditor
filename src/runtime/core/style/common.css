@@ -125,11 +125,22 @@
 .dragon-editor .d-text-block:empty {
   min-height: 1.6em;
 }
+.dragon-editor .d-text-block:empty::after {
+  display: inline;
+  content: "Write text";
+  color: #ccc;
+}
 .dragon-editor .d-image-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   row-gap: 5px;
+}
+.dragon-editor .d-image-block.d-align-left {
+  align-items: flex-start;
+}
+.dragon-editor .d-image-block.d-align-right {
+  align-items: flex-end;
 }
 .dragon-editor .d-image-block.--1 .d-image-area {
   width: 5%;
@@ -198,6 +209,25 @@
   width: 100%;
   height: auto;
 }
+.dragon-editor .d-image-block .d-image-area .d-btn-size-left,
+.dragon-editor .d-image-block .d-image-area .d-btn-size-right {
+  position: absolute;
+  top: 50%;
+  width: 8px;
+  height: 60px;
+  background: #fff;
+  border: 2px solid #555;
+  border-radius: 6px;
+  cursor: col-resize;
+}
+.dragon-editor .d-image-block .d-image-area .d-btn-size-left {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+.dragon-editor .d-image-block .d-image-area .d-btn-size-right {
+  right: 0;
+  transform: translate(50%, -50%);
+}
 .dragon-editor .d-image-block .d-caption {
   width: 100%;
   color: #ccc;
@@ -207,6 +237,10 @@
 }
 .dragon-editor .d-image-block .d-caption:empty {
   min-height: 1.6em;
+}
+.dragon-editor .d-image-block .d-caption:empty::after {
+  display: inline;
+  content: "Write caption";
 }
 .dragon-editor .d-block-list {
   display: flex;
@@ -317,7 +351,7 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   opacity: 0;
   visibility: hidden;
-  transform: translateX(-50%);
+  transform: translateX(calc(-50% + 25px));
   transition: all 0.25s ease;
   z-index: 100;
 }

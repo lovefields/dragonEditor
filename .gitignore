@@ -56,4 +56,4 @@ Temporary Items
 .apdisk
 
 # assets
-src/core/style/*.js
+src/runtime/core/style/*.js

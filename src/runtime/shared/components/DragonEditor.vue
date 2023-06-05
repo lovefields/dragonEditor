@@ -24,14 +24,10 @@
             </div>
         </div>
 
-        <div
-            class="d-link-box"
-            :class="{ '--active': activeLinkBox }"
-            :style="{
-                top: `${linkBoxPosition.top}px`,
-                left: `${linkBoxPosition.left}px`,
-            }"
-        >
+        <div class="d-link-box" :class="{ '--active': activeLinkBox }" :style="{
+            top: `${linkBoxPosition.top}px`,
+            left: `${linkBoxPosition.left}px`,
+        }">
             <template v-if="styleButtonList[2][0].active">
                 <p class="d-input">{{ linkValue }}</p>
                 <button class="d-btn-link" @click="decoLinkControl">
@@ -49,7 +45,7 @@
         <div class="d-style-menu" :class="{ '--active': activeMenu }" :style="{ top: `${styleMenuPosition}px` }">
             <div v-for="(column, count) in styleButtonList" :key="count" class="d-column">
                 <template v-for="(item, j) in column">
-                    <button v-if="checkStyleTarget(item.target)" class="d-btn" :class="{ '--active': item.active }" @click="item.action">
+                    <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn" :class="{ '--active': item.active }" @click="item.action">
                         <SvgIcon :kind="item.icon" />
                     </button>
                 </template>
@@ -68,7 +64,7 @@
 <script setup lang="ts">
 import { ref, unref, onMounted } from "#imports";
 import { createBlock, getClipboardData, getCursor } from "../../core/utils";
-import { editorOptions, editorMenu, editorContentType, userCustomMenu, styleActiveType, userStyleMenu, cursorSelection } from "../../../types/index";
+import type { editorOptions, editorMenu, editorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon.vue";
@@ -82,7 +78,8 @@ const props = defineProps<{
 }>();
 const modelValue = ref<editorContentType>([]);
 const option = ref<editorOptions>({
-    blockMenu: ["text", "ol", "ul", "table", "quotation"],
+    blockMenu: ["text"],
+    // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
 });
 
 if (props.modelValue) {
@@ -477,15 +474,6 @@ function decoLinkControl() {
 // 블럭 추가 메뉴
 function openBlockAddMenu() {
     activeBlockAddMenu.value = !activeBlockAddMenu.value;
-}
-
-// 스타일 버튼 활성화 여부
-function checkStyleTarget(target) {
-    if (content[activeIdx]) {
-        return target.indexOf(content[activeIdx].type) > -1;
-    } else {
-        return false;
-    }
 }
 
 /**
