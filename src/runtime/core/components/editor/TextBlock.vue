@@ -40,6 +40,12 @@ function updateBlockData() {
 
     data.value.classList = data.value.classList.concat(pushList);
 
+    // 클레스 검수
+    const checkClassIdx = data.value.classList.indexOf("d-text-block");
+    if (checkClassIdx > -1) {
+        data.value.classList.splice(checkClassIdx, 1);
+    }
+
     // 커서위치 재지정
     if ($block.value.innerHTML.length > 0) {
         const cursorData = getArrangementCursorData(props.cursorData);

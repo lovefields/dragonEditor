@@ -1,0 +1,191 @@
+.dragon-editor-viewer {
+  width: 100%;
+  padding: 10px;
+  line-height: 1.6;
+}
+.dragon-editor-viewer h1,
+.dragon-editor-viewer h2,
+.dragon-editor-viewer h3,
+.dragon-editor-viewer h4,
+.dragon-editor-viewer h5,
+.dragon-editor-viewer h6,
+.dragon-editor-viewer p,
+.dragon-editor-viewer blockquote,
+.dragon-editor-viewer pre,
+.dragon-editor-viewer dl,
+.dragon-editor-viewer dd,
+.dragon-editor-viewer ol,
+.dragon-editor-viewer ul,
+.dragon-editor-viewer fieldset,
+.dragon-editor-viewer legend,
+.dragon-editor-viewer figure,
+.dragon-editor-viewer menu {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.dragon-editor-viewer table,
+.dragon-editor-viewer th,
+.dragon-editor-viewer td {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.dragon-editor-viewer ol,
+.dragon-editor-viewer ul,
+.dragon-editor-viewer li {
+  list-style: none;
+}
+.dragon-editor-viewer h1,
+.dragon-editor-viewer h2,
+.dragon-editor-viewer h3,
+.dragon-editor-viewer h4,
+.dragon-editor-viewer h5,
+.dragon-editor-viewer h6 {
+  font-size: 1em;
+  font-weight: normal;
+}
+.dragon-editor-viewer input,
+.dragon-editor-viewer textarea,
+.dragon-editor-viewer select,
+.dragon-editor-viewer button {
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  outline: 0;
+  vertical-align: middle;
+}
+.dragon-editor-viewer a,
+.dragon-editor-viewer button,
+.dragon-editor-viewer input[type=submit],
+.dragon-editor-viewer input[type=button],
+.dragon-editor-viewer input[type=reset] {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.dragon-editor-viewer img {
+  border: 0;
+  vertical-align: top;
+}
+.dragon-editor-viewer .d-align-left {
+  text-align: left;
+}
+.dragon-editor-viewer .d-align-center {
+  text-align: center;
+}
+.dragon-editor-viewer .d-align-right {
+  text-align: right;
+}
+.dragon-editor-viewer .d-deco-bold {
+  font-weight: bold;
+}
+.dragon-editor-viewer .d-deco-italic {
+  font-style: italic;
+}
+.dragon-editor-viewer .d-deco-underline {
+  text-decoration: underline;
+}
+.dragon-editor-viewer .d-deco-underline.d-deco-through {
+  text-decoration: underline line-through;
+}
+.dragon-editor-viewer .d-deco-through {
+  text-decoration: line-through;
+}
+.dragon-editor-viewer .d-deco-through.d-deco-underline, .dragon-editor-viewer .d-deco-through.d-deco-link {
+  text-decoration: line-through underline;
+}
+.dragon-editor-viewer .d-deco-code {
+  padding: 2px 5px;
+  margin: 0 2px;
+  background: #f1f1f1;
+  color: #c52e2e;
+  border-radius: 2px;
+  font-family: Inconsolata, monospace, sans-serif;
+}
+.dragon-editor-viewer .d-deco-link {
+  color: inherit;
+}
+.dragon-editor-viewer .d-text-block:empty {
+  min-height: 1.6em;
+}
+.dragon-editor-viewer .d-image-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 5px;
+}
+.dragon-editor-viewer .d-image-block.d-align-left {
+  align-items: flex-start;
+}
+.dragon-editor-viewer .d-image-block.d-align-right {
+  align-items: flex-end;
+}
+.dragon-editor-viewer .d-image-block.--1 .d-image-area {
+  width: 5%;
+}
+.dragon-editor-viewer .d-image-block.--2 .d-image-area {
+  width: 10%;
+}
+.dragon-editor-viewer .d-image-block.--3 .d-image-area {
+  width: 15%;
+}
+.dragon-editor-viewer .d-image-block.--4 .d-image-area {
+  width: 20%;
+}
+.dragon-editor-viewer .d-image-block.--5 .d-image-area {
+  width: 25%;
+}
+.dragon-editor-viewer .d-image-block.--6 .d-image-area {
+  width: 30%;
+}
+.dragon-editor-viewer .d-image-block.--7 .d-image-area {
+  width: 35%;
+}
+.dragon-editor-viewer .d-image-block.--8 .d-image-area {
+  width: 40%;
+}
+.dragon-editor-viewer .d-image-block.--9 .d-image-area {
+  width: 45%;
+}
+.dragon-editor-viewer .d-image-block.--10 .d-image-area {
+  width: 50%;
+}
+.dragon-editor-viewer .d-image-block.--11 .d-image-area {
+  width: 55%;
+}
+.dragon-editor-viewer .d-image-block.--12 .d-image-area {
+  width: 60%;
+}
+.dragon-editor-viewer .d-image-block.--13 .d-image-area {
+  width: 65%;
+}
+.dragon-editor-viewer .d-image-block.--14 .d-image-area {
+  width: 70%;
+}
+.dragon-editor-viewer .d-image-block.--15 .d-image-area {
+  width: 75%;
+}
+.dragon-editor-viewer .d-image-block.--16 .d-image-area {
+  width: 80%;
+}
+.dragon-editor-viewer .d-image-block.--17 .d-image-area {
+  width: 85%;
+}
+.dragon-editor-viewer .d-image-block.--18 .d-image-area {
+  width: 90%;
+}
+.dragon-editor-viewer .d-image-block.--19 .d-image-area {
+  width: 95%;
+}
+.dragon-editor-viewer .d-image-block.--20 .d-image-area {
+  width: 100%;
+}
+.dragon-editor-viewer .d-image-block .d-image-area .d-img {
+  width: 100%;
+  height: auto;
+}
+.dragon-editor-viewer .d-image-block .d-caption {
+  width: 100%;
+  color: #ccc;
+  font-size: 1rem;
+}
