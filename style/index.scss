@@ -177,13 +177,13 @@
         }
 
         .d-caption {
+            width: 100%;
             color: #ccc;
             font-size: 1rem;
             cursor: text;
             outline: 0;
 
             &:empty {
-                min-width: 10px;
                 min-height: 1.6em;
             }
         }

@@ -24,8 +24,14 @@
             </div>
         </div>
 
-        <div class="d-link-box" :class="{ '--active': activeLinkBox }"
-            :style="{ top: `${linkBoxPosition.top}px`, left: `${linkBoxPosition.left}px` }">
+        <div
+            class="d-link-box"
+            :class="{ '--active': activeLinkBox }"
+            :style="{
+                top: `${linkBoxPosition.top}px`,
+                left: `${linkBoxPosition.left}px`,
+            }"
+        >
             <template v-if="styleButtonList[2][0].active">
                 <p class="d-input">{{ linkValue }}</p>
                 <button class="d-btn-link" @click="decoLinkControl">
@@ -33,7 +39,7 @@
                 </button>
             </template>
             <template v-else>
-                <input type="url" class="d-input" v-model="linkValue">
+                <input type="url" class="d-input" v-model="linkValue" />
                 <button class="d-btn-link" @click="decoLinkControl">
                     <SvgIcon kind="accept" />
                 </button>
@@ -43,22 +49,18 @@
         <div class="d-style-menu" :class="{ '--active': activeMenu }" :style="{ top: `${styleMenuPosition}px` }">
             <div v-for="(column, count) in styleButtonList" :key="count" class="d-column">
                 <template v-for="(item, j) in column">
-                    <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn"
-                        :class="{ '--active': item.active }" @click="item.action">
+                    <button v-if="checkStyleTarget(item.target)" class="d-btn" :class="{ '--active': item.active }" @click="item.action">
                         <SvgIcon :kind="item.icon" />
                     </button>
                 </template>
             </div>
-
             <div v-if="customStyleMenu.length > 0" class="d-column">
                 <!--                customStyleMenu-->
             </div>
         </div>
 
-        <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count"
-            @mouseenter="activeMenuEvent" @mousemove="activeMenuEvent" @mouseup="activeMenuEvent">
-            <component ref="$child" v-model="content[count]" :is="setComponentKind(row.type)" :cursorData="cursorData"
-                @addBlock="addBlockLocal" />
+        <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count" @mouseenter="activeMenuEvent" @mousemove="activeMenuEvent" @mouseup="activeMenuEvent">
+            <component ref="$child" v-model="content[count]" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
         </div>
     </div>
 </template>
@@ -66,15 +68,7 @@
 <script setup lang="ts">
 import { ref, unref, onMounted } from "#imports";
 import { createBlock, getClipboardData, getCursor } from "../../core/utils";
-import {
-    editorOptions,
-    editorMenu,
-    editorContentType,
-    userCustomMenu,
-    styleActiveType,
-    userStyleMenu,
-    cursorSelection
-} from "../../../types/index";
+import { editorOptions, editorMenu, editorContentType, userCustomMenu, styleActiveType, userStyleMenu, cursorSelection } from "../../../types/index";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon.vue";
@@ -82,10 +76,13 @@ import textBlock from "../../core/components/editor/TextBlock.vue";
 import imageBlock from "../../core/components/editor/ImageBlock.vue";
 
 // 기본 정보
-const props = defineProps<{ modelValue: editorContentType; option?: editorOptions }>();
+const props = defineProps<{
+    modelValue: editorContentType;
+    option?: editorOptions;
+}>();
 const modelValue = ref<editorContentType>([]);
 const option = ref<editorOptions>({
-    blockMenu: ["text", "ol", "ul", "table", "quotation"]
+    blockMenu: ["text", "ol", "ul", "table", "quotation"],
 });
 
 if (props.modelValue) {
@@ -93,7 +90,7 @@ if (props.modelValue) {
 }
 
 if (props.option) {
-    option.value = Object.assign(option.value, props.option)
+    option.value = Object.assign(option.value, props.option);
 }
 
 const emit = defineEmits<{
@@ -110,7 +107,7 @@ const leftMenuPosition = ref<number>(0);
 const styleMenuPosition = ref<number>(0);
 const linkBoxPosition = ref({
     top: 0,
-    left: 0
+    left: 0,
 });
 const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlock", "tableBlock"];
 const blockMenu = ref<editorMenu[]>([]);
@@ -133,8 +130,8 @@ const styleButtonList = ref([
             active: false,
             target: ["text", "image", "table", "ul", "ol"],
             action: () => {
-                setBlockDecoEvent("alignLeft")
-            }
+                setBlockDecoEvent("alignLeft");
+            },
         },
         {
             name: "Align Center",
@@ -142,8 +139,8 @@ const styleButtonList = ref([
             target: ["text", "image", "table", "ul", "ol"],
             active: false,
             action: () => {
-                setBlockDecoEvent("alignCenter")
-            }
+                setBlockDecoEvent("alignCenter");
+            },
         },
         {
             name: "Align right",
@@ -151,8 +148,8 @@ const styleButtonList = ref([
             target: ["text", "image", "table", "ul", "ol"],
             active: false,
             action: () => {
-                setBlockDecoEvent("alignRight")
-            }
+                setBlockDecoEvent("alignRight");
+            },
         },
     ],
     [
@@ -162,8 +159,8 @@ const styleButtonList = ref([
             target: ["text", "table", "ul", "ol"],
             active: false,
             action: () => {
-                setBlockDecoEvent("decorationBold")
-            }
+                setBlockDecoEvent("decorationBold");
+            },
         },
         {
             name: "Decoration Italic",
@@ -171,8 +168,8 @@ const styleButtonList = ref([
             target: ["text", "table", "ul", "ol"],
             active: false,
             action: () => {
-                setBlockDecoEvent("decorationItalic")
-            }
+                setBlockDecoEvent("decorationItalic");
+            },
         },
         {
             name: "Decoration Underline",
@@ -180,8 +177,8 @@ const styleButtonList = ref([
             target: ["text", "table", "ul", "ol"],
             active: false,
             action: () => {
-                setBlockDecoEvent("decorationUnderline")
-            }
+                setBlockDecoEvent("decorationUnderline");
+            },
         },
         {
             name: "Decoration Strikethrough",
@@ -189,8 +186,8 @@ const styleButtonList = ref([
             target: ["text", "table", "ul", "ol"],
             active: false,
             action: () => {
-                setBlockDecoEvent("decorationStrikethrough")
-            }
+                setBlockDecoEvent("decorationStrikethrough");
+            },
         },
     ],
     [
@@ -201,8 +198,8 @@ const styleButtonList = ref([
             target: ["text", "table", "ul", "ol"],
             action: () => {
                 activeLinkBox.value = !activeLinkBox.value;
-            }
-        }
+            },
+        },
     ],
     [
         {
@@ -212,11 +209,10 @@ const styleButtonList = ref([
             active: false,
             action: () => {
                 setBlockDecoEvent("decorationCode");
-            }
-        }
-    ]
+            },
+        },
+    ],
 ]);
-
 
 // 블럭 추가 메뉴 설정
 blockMenu.value = setEditorMenu(option.value.blockMenu as string[], unref(option.value.customBlockMenu) as userCustomMenu[]);
@@ -252,9 +248,9 @@ function checkAlignActive(className: string) {
 }
 
 function checkDecoActive() {
-    styleButtonList.value[0][0].active = checkAlignActive('d-align-left');
-    styleButtonList.value[0][1].active = checkAlignActive('d-align-center');
-    styleButtonList.value[0][2].active = checkAlignActive('d-align-right');
+    styleButtonList.value[0][0].active = checkAlignActive("d-align-left");
+    styleButtonList.value[0][1].active = checkAlignActive("d-align-center");
+    styleButtonList.value[0][2].active = checkAlignActive("d-align-right");
     styleButtonList.value[1][0].active = hasClassNameCheckLogic("d-deco-bold");
     styleButtonList.value[1][1].active = hasClassNameCheckLogic("d-deco-italic");
     styleButtonList.value[1][2].active = hasClassNameCheckLogic("d-deco-underline");
@@ -295,7 +291,6 @@ function hasClassNameCheckLogic(className: string) {
     return value;
 }
 
-
 function setEditorMenu(vanillaData: string[], customData?: userCustomMenu[]) {
     const dataList: editorMenu[] = [];
 
@@ -306,7 +301,7 @@ function setEditorMenu(vanillaData: string[], customData?: userCustomMenu[]) {
             icon: `${name}Block`,
             action: () => {
                 addBlockLocal({ name: name });
-            }
+            },
         });
     });
 
@@ -316,7 +311,7 @@ function setEditorMenu(vanillaData: string[], customData?: userCustomMenu[]) {
                 name: row.name,
                 hasIcon: iconList.indexOf(row.icon) > -1,
                 icon: row.icon,
-                action: row.action
+                action: row.action,
             });
         });
     }
@@ -327,9 +322,18 @@ function setEditorMenu(vanillaData: string[], customData?: userCustomMenu[]) {
 /**
  * 내부용 이벤트 함수
  */
-function activeMenuEvent(e: MouseEvent) {
+function activeMenuEvent(e?: MouseEvent) {
+    let $target: HTMLElement;
+
     cursorData.value = getCursor();
-    setMenuPosition(e.currentTarget as HTMLElement);
+
+    if (e) {
+        $target = e.currentTarget as HTMLElement;
+    } else {
+        $target = $child.value[activeIdx.value];
+    }
+
+    setMenuPosition($target);
     checkDecoActive();
     activeMenu.value = true;
 }
@@ -351,12 +355,8 @@ function dataUpdateAction() {
     emit("update:modelValue", content.value);
 }
 
-function addBlockLocal({ name, value, time = false }:
-    {
-        name: string;
-        value?: object;
-        time?: boolean
-    }) {
+// 블럭 추가 로직
+function addBlockLocal({ name, value, time = false }: { name: string; value?: object; time?: boolean }) {
     const block = createBlock(name, value);
 
     content.value.splice(activeIdx.value + 1, 0, block);
@@ -364,16 +364,41 @@ function addBlockLocal({ name, value, time = false }:
     if (time === false) {
         activeIdx.value += 1;
 
-        setTimeout(() => { // waiting data set
-            if (name !== "image") {
-                $child.value[activeIdx.value].focus();
-            }
-
+        setTimeout(() => {
+            activeBlockAddMenu.value = false;
+            $child.value[activeIdx.value].focus();
             dataUpdateAction();
+            activeMenuEvent();
         }, 100);
     }
 }
 
+// 블럭 삭제 이벤트
+function deleteBlockLocal(index?: number) {
+    if (content.value.length > 1) {
+        if (index === undefined) {
+            index = activeIdx.value as number;
+        }
+
+        if (index - 1 !== -1) {
+            const $targetData = content.value[index - 1];
+            const $thisData = content.value[index];
+
+            if ($targetData.type === "text") {
+                activeIdx.value -= 1;
+                content.value[index - 1].content += `<span class="${$thisData.classList.join(" ")}">${$thisData.content}</span>`;
+                content.value.splice(index, 1);
+
+                setTimeout(() => {
+                    dataUpdateAction();
+                    $child.value[activeIdx.value].focus("last");
+                }, 150);
+            }
+        }
+    }
+}
+
+// 붙여넣기 이벤트
 function pasteEvent(e: ClipboardEvent) {
     e.preventDefault();
     const data = getClipboardData(e.clipboardData as DataTransfer);
@@ -382,7 +407,7 @@ function pasteEvent(e: ClipboardEvent) {
         const targetComponent = $child.value[activeIdx.value];
         const componentType = targetComponent.getType();
 
-        if (componentType !== "image" && componentType !== "other") {
+        if (componentType !== "other") {
             targetComponent.pasteEvent(data.value);
         }
     }
@@ -410,8 +435,8 @@ function setMenuPosition($target: HTMLElement) {
     const wrapTop = wrapRect.top - bodyRect.top;
     const targetTop = targetRect.top - bodyRect.top;
     const targetBottom = targetRect.bottom - bodyRect.top;
-    const top = ((targetTop - (wrapTop + 10)) - parentNodeScrollY) + 13;
-    const bottom = ((targetBottom - (wrapTop + 10)) - parentNodeScrollY) + 10;
+    const top = targetTop - (wrapTop + 10) - parentNodeScrollY + 13;
+    const bottom = targetBottom - (wrapTop + 10) - parentNodeScrollY + 10;
     let startNode = cursorData.value.startNode;
 
     if (startNode !== null) {
@@ -425,7 +450,7 @@ function setMenuPosition($target: HTMLElement) {
         linkBoxPosition.value = {
             top: top - 32,
             left: wrapleft,
-        }
+        };
     }
 
     styleMenuPosition.value = bottom;
@@ -436,7 +461,7 @@ function setMenuPosition($target: HTMLElement) {
 function setBlockDecoEvent(type: string, url?: string) {
     $child.value[activeIdx.value].setStyles({
         type: type,
-        url: url
+        url: url,
     });
     setTimeout(() => {
         checkDecoActive();
@@ -454,6 +479,14 @@ function openBlockAddMenu() {
     activeBlockAddMenu.value = !activeBlockAddMenu.value;
 }
 
+// 스타일 버튼 활성화 여부
+function checkStyleTarget(target) {
+    if (content[activeIdx]) {
+        return target.indexOf(content[activeIdx].type) > -1;
+    } else {
+        return false;
+    }
+}
 
 /**
  * 외부용 함수
@@ -462,13 +495,7 @@ function openBlockAddMenu() {
 //     return hasClassNameCheckLogic(className);
 // }
 
-function addImageBlock({ src, width, height, webp, caption }: {
-    src: string;
-    width: number;
-    height: number;
-    webp: boolean;
-    caption?: string;
-}) {
+function addImageBlock({ src, width, height, webp, caption }: { src: string; width: number; height: number; webp: boolean; caption?: string }) {
     addBlockLocal({
         name: "image",
         value: {
@@ -477,13 +504,13 @@ function addImageBlock({ src, width, height, webp, caption }: {
             height: height,
             webp: webp,
             caption: caption,
-        }
+        },
     });
 }
 
 // 함수 내보내기
 defineExpose({
-    addImageBlock
+    addImageBlock,
 });
 
 /**

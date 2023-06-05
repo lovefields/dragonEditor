@@ -13,6 +13,11 @@ export function setCursor(target: Node, idx: number) { // 노드 기준 커서 �
 
         const select = window.getSelection() as Selection;
         const range = document.createRange();
+        const realLength = $target.textContent?.length as number;
+
+        if (realLength < idx) {
+            idx = realLength;
+        }
 
         range.setStart($target, idx);
         range.collapse(true);

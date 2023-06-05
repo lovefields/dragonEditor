@@ -199,13 +199,13 @@
   height: auto;
 }
 .dragon-editor .d-image-block .d-caption {
+  width: 100%;
   color: #ccc;
   font-size: 1rem;
   cursor: text;
   outline: 0;
 }
 .dragon-editor .d-image-block .d-caption:empty {
-  min-width: 10px;
   min-height: 1.6em;
 }
 .dragon-editor .d-block-list {

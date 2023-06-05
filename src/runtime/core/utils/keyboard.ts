@@ -4,14 +4,16 @@ import { getTagName } from "./style";
 
 // 엔터 이벤트
 let enterCount = 0;
-function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
+function enterEvent(type: string, event: KeyboardEvent, action: Function) {
     if (event.code === "Enter") {
         event.preventDefault();
         const useShift = event.shiftKey;
 
         switch (type) {
             case "image":
-                addAction("addBlock", "text");
+                action("addBlock", {
+                    name: "text"
+                });
                 break;
             case "comment":
                 addBrEvent();
@@ -19,7 +21,8 @@ function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
             default:
                 if (useShift === false) {
                     if (enterCount == 0) {
-                        addAction("addBlock", "text");
+                        textEnterEvent(event, action);
+
                     }
                 } else {
                     addBrEvent();
@@ -33,18 +36,142 @@ function enterEvent(type: string, event: KeyboardEvent, addAction: Function) {
     }
 }
 
+// 텍스트 엔터 이벤트
+function textEnterEvent(event: KeyboardEvent, action: Function) {
+    const cursorData = getCursor();
+
+    if (cursorData.startNode) {
+        const editableElement = findEditableElement(cursorData.startNode as Node) as HTMLElement;
+        const editableElementClassList = [...editableElement.classList].slice(0, 1);
+        const startNode: Node = cursorData.startNode as Node;
+        const endNode: Node = cursorData.endNode as Node;
+        let startChild = startNode;
+        let endChild = endNode;
+
+        if (startNode.parentNode !== editableElement) {
+            startChild = startNode.parentNode as HTMLElement;
+        }
+
+        if (endNode.parentNode !== editableElement) {
+            endChild = endNode.parentNode as HTMLElement;
+        }
+
+        const startChildIdx: number = findChildNumber(editableElement, startChild);
+        const endChildIdx: number = findChildNumber(editableElement, endChild);
+
+        let startIdx: number = 0;
+        let endIdx: number = 0;
+        let startOffset: number = 0;
+        let endOffset: number = 0;
+        let preHTMLStructor: string = "";
+        let nextHTMLStructor: string = "";
+
+        if (startChildIdx > endChildIdx) {
+            startIdx = endChildIdx;
+            endIdx = startChildIdx;
+            startOffset = cursorData.endOffset as number;
+            endOffset = cursorData.startOffset as number;
+        } else {
+            startIdx = startChildIdx;
+            endIdx = endChildIdx;
+            startOffset = cursorData.startOffset as number;
+            endOffset = cursorData.endOffset as number;
+        }
+
+        if (editableElement.childNodes.length === 0 || (endChildIdx === editableElement.childNodes.length - 1 && (editableElement.childNodes[endChildIdx].textContent as string).length === endOffset)) {
+            action("addBlock", {
+                name: "text"
+            });
+        } else {
+            editableElement.childNodes.forEach((child: ChildNode, count: number) => {
+                const text: string = child.textContent as string;
+
+                if (count < startChildIdx) { // 첫부분 ~ 선택 시작 노드 직전
+                    if (child.constructor.name === "Text") {
+                        preHTMLStructor += child.textContent;
+                    } else {
+                        preHTMLStructor += (child as HTMLElement).outerHTML;
+                    }
+                } else if (count > endChildIdx) { // 선택 끝 노드 ~ 마지막 노드
+                    if (child.constructor.name === "Text") {
+                        nextHTMLStructor += child.textContent;
+                    } else {
+                        nextHTMLStructor += (child as HTMLElement).outerHTML;
+                    }
+                } else {
+                    if (startChildIdx === endChildIdx) { // 같은 노드일경우
+                        if (child.constructor.name === "Text") {
+                            preHTMLStructor += text.substring(0, startOffset);
+                            nextHTMLStructor += text.substring(endOffset, text.length);
+                        } else {
+                            const childClassList: string[] = [...(child as HTMLElement).classList];
+                            const originTag = getTagName(child as HTMLElement);
+
+                            preHTMLStructor += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(0, startOffset)}</${originTag.name}>`;
+                            nextHTMLStructor += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(endOffset, text.length)}</${originTag.name}>`;
+                        }
+                    } else {
+                        if (count === startChildIdx) { // 선택 시작 노드
+                            if (child.constructor.name === "Text") {
+                                preHTMLStructor += text.substring(0, startOffset);
+                            } else {
+                                const childClassList: string[] = [...(child as HTMLElement).classList];
+                                const originTag = getTagName(child as HTMLElement);
+
+                                preHTMLStructor += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(0, startOffset)}</${originTag.name}>`;
+                            }
+                        } else if (count === endChildIdx) { // 선택 끝 노드
+                            if (child.constructor.name === "Text") {
+                                nextHTMLStructor += text.substring(endOffset, text.length);
+                            } else {
+                                const childClassList: string[] = [...(child as HTMLElement).classList];
+                                const originTag = getTagName(child as HTMLElement);
+
+                                nextHTMLStructor += `<${originTag.name} ${originTag.href ? `href="${originTag.href}" rel="nofollow"` : ""} class="${childClassList.join(" ")}">${text.substring(endOffset, text.length)}</${originTag.name}>`;
+                            }
+                        }
+                    }
+                }
+            });
+
+            editableElement.innerHTML = preHTMLStructor;
+            action("addBlock", {
+                name: "text",
+                value: { classList: editableElementClassList, content: nextHTMLStructor }
+            });
+        }
+    }
+}
+
 // 백스페이스 이벤트
-function backspaceEvent(type: string, event: KeyboardEvent) {
+function backspaceEvent(type: string, event: KeyboardEvent, action: Function, update: Function) {
     if (event.code === "Backspace") {
-        console.log(event);
+        if (type === "text") {
+            const cursorData = getCursor();
+
+            if (cursorData.type === "Caret" && cursorData.startOffset === 0) {
+                const editableElement = findEditableElement(cursorData.startNode as Node);
+                let $target = cursorData.startNode as HTMLElement;
+
+                if ($target.constructor.name === "Text") {
+                    $target = $target.parentNode as HTMLElement;
+                }
+
+                if ($target === editableElement) {
+                    update();
+                    event.preventDefault();
+                    action("deleteBlockLocal");
+                }
+            }
+        }
     }
 }
 
 
 // 키보드 이벤트 총괄
-export function keyboardEvent(type: string, event: KeyboardEvent, addAction: Function) {
-    enterEvent(type, event, addAction);
-    backspaceEvent(type, event);
+export function keyboardEvent(type: string, event: KeyboardEvent, action: Function, update: Function) {
+    enterEvent(type, event, action);
+    backspaceEvent(type, event, action, update);
 }
 
 export function getClipboardData(data: DataTransfer) {

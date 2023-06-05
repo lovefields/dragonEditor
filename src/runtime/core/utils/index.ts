@@ -13,13 +13,23 @@ function generateId() {
 }
 
 // 텍스트 블럭 생성
-function createTextBlock(): textBlock {
-    return {
-        type: "text",
-        id: generateId(),
-        classList: [],
-        content: "",
-    };
+function createTextBlock(data?: { classList: []; content: string; }): textBlock {
+    if (data) {
+        return {
+            type: "text",
+            id: generateId(),
+            classList: data.classList,
+            content: data.content,
+        };
+    } else {
+
+        return {
+            type: "text",
+            id: generateId(),
+            classList: [],
+            content: "",
+        };
+    }
 }
 
 // 이미지 블럭 생성
@@ -73,7 +83,8 @@ export function createBlock(name: string, value?: object): allBlock {
             blockData = createImageBlock(value);
             break;
         default:
-            blockData = createTextBlock();
+            // @ts-ignore | 값의 유동성에 의해 너무 많은 타입을 가지고 있음.
+            blockData = createTextBlock(value);
     }
 
     return blockData;
