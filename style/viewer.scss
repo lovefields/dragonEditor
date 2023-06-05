@@ -1,0 +1,170 @@
+.dragon-editor-viewer {
+    width: 100%;
+    padding: 10px;
+    line-height: 1.6;
+
+    // reset css
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    blockquote,
+    pre,
+    dl,
+    dd,
+    ol,
+    ul,
+    fieldset,
+    legend,
+    figure,
+    menu {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+
+    table,
+    th,
+    td {
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    ol,
+    ul,
+    li {
+        list-style: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: 1em;
+        font-weight: normal;
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+        margin: 0;
+        padding: 0;
+        border-radius: 0;
+        outline: 0;
+        vertical-align: middle;
+    }
+
+    a,
+    button,
+    input[type="submit"],
+    input[type="button"],
+    input[type="reset"] {
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    img {
+        border: 0;
+        vertical-align: top;
+    }
+
+    // global styles
+    .d-align-left {
+        text-align: left;
+    }
+
+    .d-align-center {
+        text-align: center;
+    }
+
+    .d-align-right {
+        text-align: right;
+    }
+
+    .d-deco-bold {
+        font-weight: bold;
+    }
+
+    .d-deco-italic {
+        font-style: italic;
+    }
+
+    .d-deco-underline {
+        text-decoration: underline;
+
+        &.d-deco-through {
+            text-decoration: underline line-through;
+        }
+    }
+
+    .d-deco-through {
+        text-decoration: line-through;
+
+        &.d-deco-underline,
+        &.d-deco-link {
+            text-decoration: line-through underline;
+        }
+    }
+
+    .d-deco-code {
+        padding: 2px 5px;
+        margin: 0 2px;
+        background: #f1f1f1;
+        color: #c52e2e;
+        border-radius: 2px;
+        font-family: Inconsolata, monospace, sans-serif;
+    }
+
+    .d-deco-link {
+        color: inherit;
+    }
+
+    // 텍스트 블럭
+    .d-text-block {
+        &:empty {
+            min-height: 1.6em;
+        }
+    }
+
+    // 이미지 블럭
+    .d-image-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 5px;
+
+        &.d-align-left {
+            align-items: flex-start;
+        }
+
+        &.d-align-right {
+            align-items: flex-end;
+        }
+
+        @for $i from 1 through 20 {
+            &.--#{"" + $i} .d-image-area {
+                width: (5% * $i);
+            }
+        }
+
+        .d-image-area {
+            .d-img {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        .d-caption {
+            width: 100%;
+            color: #ccc;
+            font-size: 1rem;
+        }
+    }
+}

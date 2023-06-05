@@ -34,7 +34,7 @@ function addImage() {
         src: "https://worldanimalfoundation.org/wp-content/uploads/2022/12/Choose-the-Proper-Location-at-First-review.jpg",
         width: 700,
         height: 474,
-        webp: false,
+        webp: true,
     });
 }
 

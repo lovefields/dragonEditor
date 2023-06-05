@@ -151,6 +151,12 @@
 
         &:empty {
             min-height: 1.6em;
+
+            &::after {
+                display: inline;
+                content: "Write text";
+                color: #ccc;
+            }
         }
     }
 
@@ -160,6 +166,14 @@
         flex-direction: column;
         align-items: center;
         row-gap: 5px;
+
+        &.d-align-left {
+            align-items: flex-start;
+        }
+
+        &.d-align-right {
+            align-items: flex-end;
+        }
 
         @for $i from 1 through 20 {
             &.--#{"" + $i} .d-image-area {
@@ -174,6 +188,28 @@
                 width: 100%;
                 height: auto;
             }
+
+            .d-btn-size-left,
+            .d-btn-size-right {
+                position: absolute;
+                top: 50%;
+                width: 8px;
+                height: 60px;
+                background: #fff;
+                border: 2px solid #555;
+                border-radius: 6px;
+                cursor: col-resize;
+            }
+
+            .d-btn-size-left {
+                left: 0;
+                transform: translate(-50%, -50%);
+            }
+
+            .d-btn-size-right {
+                right: 0;
+                transform: translate(50%, -50%);
+            }
         }
 
         .d-caption {
@@ -185,6 +221,11 @@
 
             &:empty {
                 min-height: 1.6em;
+
+                &::after {
+                    display: inline;
+                    content: "Write caption";
+                }
             }
         }
     }
@@ -300,8 +341,7 @@
                 height: 3px;
                 background: #837c7c;
                 border-radius: 50%;
-                box-shadow: 0 5px 0 #837c7c, 0 10px 0 #837c7c, 5px 0 0 #837c7c,
-                    5px 5px 0 #837c7c, 5px 10px 0 #837c7c;
+                box-shadow: 0 5px 0 #837c7c, 0 10px 0 #837c7c, 5px 0 0 #837c7c, 5px 5px 0 #837c7c, 5px 10px 0 #837c7c;
             }
         }
     }
@@ -319,7 +359,7 @@
         box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         opacity: 0;
         visibility: hidden;
-        transform: translateX(-50%);
+        transform: translateX(calc(-50% + 25px));
         transition: all 0.25s ease;
         z-index: 100;
 
@@ -397,7 +437,4 @@
             }
         }
     }
-}
-
-.dragon-editor-viewer {
 }
