@@ -1,8 +1,8 @@
 <template>
-    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent">
+    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent" :key="totalKey">
         <div class="d-left-menu" :class="{ '--active': activeMenu }" :style="{ top: `${leftMenuPosition}px` }">
             <div class="d-add-block">
-                <button class="d-btn-menu-pop" @click="activeBlockAddMenu = !activeBlockAddMenu"></button>
+                <button class="d-btn-menu-pop" @click="toggleBlockAddMenu"></button>
 
                 <div class="d-block-list" :class="{ '--active': activeBlockAddMenu }">
                     <button v-for="(row, count) in blockMenu" :key="count" class="d-btn-block" @click="row.action">
@@ -14,7 +14,7 @@
             </div>
 
             <div class="d-control-block">
-                <button class="d-btn-block-pop" @click="activeBlockColtrolMenu = !activeBlockColtrolMenu"></button>
+                <button class="d-btn-block-pop" @click="toggleBlockControlMenu"></button>
 
                 <div class="d-block-list" :class="{ '--active': activeBlockColtrolMenu }">
                     <button class="d-btn-block" @click="moveBlock('up')">
@@ -61,8 +61,8 @@
             </div>
         </div>
 
-        <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count" @mouseenter="activeMenuEvent" @mousemove="activeMenuEvent" @mouseup="activeMenuEvent">
-            <component ref="$child" v-model="content[count]" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
+        <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
+            <component ref="$child" v-model="content[count]" :key="`${row.type}-count`" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
         </div>
     </div>
 </template>
@@ -118,6 +118,7 @@ const blockMenu = ref<editorMenu[]>([]);
 const customStyleMenu = ref<userStyleMenu[]>([]);
 const content = ref<editorContentType>([]);
 const activeIdx = ref<number>(0);
+const focusIdx = ref<number>(0);
 const linkValue = ref<string>("");
 const cursorData = ref<cursorSelection>({
     type: "",
@@ -217,6 +218,7 @@ const styleButtonList = ref([
         },
     ],
 ]);
+const totalKey = ref<number>(1);
 
 // 블럭 추가 메뉴 설정
 blockMenu.value = setEditorMenu(option.value.blockMenu as string[], unref(option.value.customBlockMenu) as userCustomMenu[]);
@@ -326,8 +328,11 @@ function setEditorMenu(vanillaData: string[], customData?: userCustomMenu[]) {
 /**
  * 내부용 이벤트 함수
  */
-function activeMenuEvent(e?: MouseEvent) {
+// 관련 메뉴 열기
+function activeMenuEvent(count: number, e?: MouseEvent) {
     let $target: HTMLElement;
+
+    focusIdx.value = count;
 
     cursorData.value = getCursor();
 
@@ -342,12 +347,13 @@ function activeMenuEvent(e?: MouseEvent) {
     activeMenu.value = true;
 }
 
-function deactiveMenuEvent(e) {
+// 관련 메뉴 닫기
+function deactiveMenuEvent(e?: (MouseEvent | KeyboardEvent)) {
     activeMenu.value = false;
     activeBlockAddMenu.value = false;
     activeBlockColtrolMenu.value = false;
 
-    if (e.type === "mouseleave") {
+    if (e && e.type === "mouseleave") {
         activeLinkBox.value = false;
     }
 }
@@ -373,7 +379,7 @@ function addBlockLocal({ name, value, time = false }: { name: string; value?: ob
             activeBlockAddMenu.value = false;
             $child.value[activeIdx.value].focus();
             dataUpdateAction();
-            activeMenuEvent();
+            activeMenuEvent(activeIdx.value);
         }, 100);
     }
 }
@@ -418,6 +424,7 @@ function pasteEvent(e: ClipboardEvent) {
     }
 }
 
+// 블럭 종류 정의
 function setComponentKind(kind: string) {
     let componentData: any;
     switch (kind) {
@@ -497,7 +504,22 @@ async function moveBlock(type: string) {
         content.value.splice(targetIdx, 1, thisData);
         content.value.splice(activeIdx.value, 1, targetData);
         activeIdx.value = targetIdx;
+
+        totalKey.value += 1;
+        deactiveMenuEvent();
     }
+}
+
+// 블럭 추가 메뉴 열기
+function toggleBlockAddMenu() {
+    activeIdx.value = focusIdx.value;
+    activeBlockAddMenu.value = !activeBlockAddMenu.value;
+}
+
+// 블럭 컨트롤 메뉴 열기
+function toggleBlockControlMenu() {
+    activeIdx.value = focusIdx.value;
+    activeBlockColtrolMenu.value = !activeBlockColtrolMenu.value;
 }
 
 /**
