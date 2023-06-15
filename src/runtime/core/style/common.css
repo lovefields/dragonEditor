@@ -2,7 +2,10 @@
   position: relative;
   width: 100%;
   padding: 10px 10px 50px;
+  background: #fff;
+  border-radius: 10px;
   line-height: 1.6;
+  box-sizing: border-box;
 }
 .dragon-editor.--comment {
   padding: 10px;

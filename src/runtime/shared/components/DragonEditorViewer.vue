@@ -8,7 +8,7 @@
                 <template v-else>
                     <div class="d-image-block" :class="row.classList">
                         <div class="d-image-area">
-                            <img class="d-img" :src="row.src" :width="row.width" :height="row.height" :alt="row.caption" loading="lazy">
+                            <img class="d-img" :src="row.src" :width="row.width" :height="row.height" :alt="row.caption" loading="lazy" />
                         </div>
                         <p class="d-caption" v-if="row.caption" v-html="row.caption"></p>
                     </div>

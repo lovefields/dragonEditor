@@ -1,6 +1,6 @@
-import { textBlock, userCustomMenu, allBlock, imageBlock } from "../../../types/index";
+import { textBlock, allBlock, imageBlock } from "../../../types/index";
 
-
+// 난수 아이디 생성
 function generateId() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let str = "";
@@ -13,7 +13,7 @@ function generateId() {
 }
 
 // 텍스트 블럭 생성
-function createTextBlock(data?: { classList: []; content: string; }): textBlock {
+function createTextBlock(data?: { classList: []; content: string }): textBlock {
     if (data) {
         return {
             type: "text",
@@ -22,7 +22,6 @@ function createTextBlock(data?: { classList: []; content: string; }): textBlock 
             content: data.content,
         };
     } else {
-
         return {
             type: "text",
             id: generateId(),
@@ -40,7 +39,9 @@ function createImageBlock(data): imageBlock {
     const contrast = w - h;
     let classList: string[] = ["d-align-center"];
 
-    switch (true) { // 이미지 비율에 따른 초기 사이즈 조정
+    switch (
+        true // 이미지 비율에 따른 초기 사이즈 조정
+    ) {
         case contrast < -40:
             classList.push("--5");
             break;
@@ -63,6 +64,7 @@ function createImageBlock(data): imageBlock {
     };
 }
 
+// 블럭 생성 함수
 export function createBlock(name: string, value?: object): allBlock {
     let blockData: allBlock;
 
@@ -89,7 +91,6 @@ export function createBlock(name: string, value?: object): allBlock {
 
     return blockData;
 }
-
 
 export * from "./keyboard";
 export * from "./cursor";

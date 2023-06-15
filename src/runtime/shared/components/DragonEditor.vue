@@ -1,5 +1,5 @@
 <template>
-    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent" :key="totalKey">
+    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent">
         <div class="d-left-menu" :class="{ '--active': activeMenu }" :style="{ top: `${leftMenuPosition}px` }">
             <div class="d-add-block">
                 <button class="d-btn-menu-pop" @click="toggleBlockAddMenu"></button>
@@ -67,13 +67,14 @@
             <div v-if="customStyleMenu.length > 0" class="d-column"></div>
         </div>
 
-        <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
+        <div class="d-row-block" v-for="(row, count) in content" :key="row.id" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
             <component ref="$child" v-model="content[count]" :key="`${row.type}-count`" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import { ref, unref, onMounted } from "#imports";
 import { createBlock, getClipboardData, getCursor } from "../../core/utils";
 import type { editorOptions, editorMenu, editorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
@@ -90,7 +91,7 @@ const props = defineProps<{
 }>();
 const modelValue = ref<editorContentType>([]);
 const option = ref<editorOptions>({
-    blockMenu: ["text"],
+    blockMenu: ["text", "ol"],
     // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
 });
 
@@ -295,7 +296,6 @@ const styleButtonList = ref([
         },
     ],
 ]);
-const totalKey = ref<number>(1);
 
 // 블럭 추가 메뉴 설정
 blockMenu.value = setEditorMenu(option.value.blockMenu as string[], unref(option.value.customBlockMenu) as userCustomMenu[]);
@@ -344,6 +344,7 @@ function checkDecoActive() {
     styleButtonList.value[4][0].value = checkHeadingClass();
 }
 
+// 텍스트 스타일 확인용 함수
 function hasClassNameCheckLogic(className: string) {
     const cursorData = getCursor();
     let value = false;
@@ -376,6 +377,7 @@ function hasClassNameCheckLogic(className: string) {
     return value;
 }
 
+// 글자크기 클레스 확인
 function checkHeadingClass(): string {
     let value: string = "";
 
@@ -613,8 +615,6 @@ async function moveBlock(type: string) {
         content.value.splice(targetIdx, 1, thisData);
         content.value.splice(activeIdx.value, 1, targetData);
         activeIdx.value = targetIdx;
-
-        totalKey.value += 1;
         deactiveMenuEvent();
     }
 }

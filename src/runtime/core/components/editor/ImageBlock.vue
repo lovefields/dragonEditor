@@ -6,13 +6,13 @@
 
             <template v-if="data.webp">
                 <picture>
-                    <source :srcset="data.src.replace(/\.(jpg|png)/g, '.webp')">
-                    <img class="d-img" :src="data.src" :width="data.width" :height="data.height" :alt="data.caption" loading="lazy">
+                    <source :srcset="data.src.replace(/\.(jpg|png|jpeg|apng|gif)/g, '.webp')" />
+                    <img class="d-img" :src="data.src" :width="data.width" :height="data.height" :alt="data.caption" loading="lazy" />
                 </picture>
             </template>
 
             <template v-else>
-                <img class="d-img" :src="data.src" :width="data.width" :height="data.height" :alt="data.caption" loading="lazy">
+                <img class="d-img" :src="data.src" :width="data.width" :height="data.height" :alt="data.caption" loading="lazy" />
             </template>
         </div>
         <p class="d-caption" v-html="data.caption" @keydown="textKeyboardEvent" ref="$caption" contenteditable></p>
@@ -20,6 +20,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import { ref, unref } from "#imports";
 import { keyboardEvent, pasteText, styleSettings } from "../../utils/index";
 import { imageBlock, cursorSelection, styleFunctionArgument } from "../../../../types/index";
