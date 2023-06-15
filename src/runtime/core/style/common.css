@@ -109,6 +109,24 @@
 .dragon-editor .d-deco-link {
   color: inherit;
 }
+.dragon-editor .d-h1 {
+  font-size: 2em;
+}
+.dragon-editor .d-h2 {
+  font-size: 1.5em;
+}
+.dragon-editor .d-h3 {
+  font-size: 1.17em;
+}
+.dragon-editor .d-h4 {
+  font-size: 1em;
+}
+.dragon-editor .d-h5 {
+  font-size: 0.83em;
+}
+.dragon-editor .d-h6 {
+  font-size: 0.67em;
+}
 .dragon-editor .d-row-block {
   padding-left: 50px;
   border-radius: 5px;
@@ -362,6 +380,7 @@
 .dragon-editor .d-style-menu .d-column {
   display: flex;
   column-gap: 2px;
+  position: relative;
   padding: 5px;
   border-right: 1px solid #eee;
   box-sizing: border-box;
@@ -379,6 +398,27 @@
 }
 .dragon-editor .d-style-menu .d-btn.--active {
   fill: blue;
+}
+.dragon-editor .d-style-menu .d-btn.--hug {
+  width: auto;
+  min-width: 60px;
+}
+.dragon-editor .d-style-menu .d-child-list {
+  display: none;
+  flex-direction: column;
+  row-gap: 4px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  padding: 4px 0;
+  background: #fff;
+  border: 1px solid #f1f1f1;
+  border-top: 0;
+  border-radius: 0 0 5px 5px;
+}
+.dragon-editor .d-style-menu .d-child-list.--active {
+  display: flex;
 }
 .dragon-editor .d-link-box {
   display: flex;
