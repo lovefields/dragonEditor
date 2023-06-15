@@ -133,6 +133,30 @@
         color: inherit;
     }
 
+    .d-h1 {
+        font-size: 2em;
+    }
+
+    .d-h2 {
+        font-size: 1.5em;
+    }
+
+    .d-h3 {
+        font-size: 1.17em;
+    }
+
+    .d-h4 {
+        font-size: 1em;
+    }
+
+    .d-h5 {
+        font-size: 0.83em;
+    }
+
+    .d-h6 {
+        font-size: 0.67em;
+    }
+
     .d-row-block {
         padding-left: 50px;
         border-radius: 5px;
@@ -371,6 +395,7 @@
         .d-column {
             display: flex;
             column-gap: 2px;
+            position: relative;
             padding: 5px;
             border-right: 1px solid #eee;
             box-sizing: border-box;
@@ -391,6 +416,30 @@
 
             &.--active {
                 fill: blue;
+            }
+
+            &.--hug {
+                width: auto;
+                min-width: 60px;
+            }
+        }
+
+        .d-child-list {
+            display: none;
+            flex-direction: column;
+            row-gap: 4px;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            padding: 4px 0;
+            background: #fff;
+            border: 1px solid #f1f1f1;
+            border-top: 0;
+            border-radius: 0 0 5px 5px;
+
+            &.--active {
+                display: flex;
             }
         }
     }

@@ -1,9 +1,9 @@
 import type { allBlock, styleUtilArgument, cursorSelection } from "../../../types";
 import { getCursor, setCursor } from "./cursor";
-import { findEditableElement, findChildNumber } from "./element"
+import { findEditableElement, findChildNumber } from "./element";
 
+// 정렬 부여 함수
 const alignClassList = ["d-align-left", "d-align-center", "d-align-right"];
-
 function arrangementAlignClass(originList: string[], className: string): string[] {
     const hasClass = originList.indexOf(className) > -1;
     let array = originList;
@@ -12,7 +12,24 @@ function arrangementAlignClass(originList: string[], className: string): string[
         originList.splice(originList.indexOf(className), 1);
         array = originList;
     } else {
-        array = originList.filter(item => alignClassList.indexOf(item) === -1);
+        array = originList.filter((item) => alignClassList.indexOf(item) === -1);
+        array.push(className);
+    }
+
+    return array;
+}
+
+// 해딩 부여 함수
+const headingClassList = ["d-h1", "d-h2", "d-h3", "d-h4", "d-h5", "d-h6"];
+function arrangementHeadingClass(originList: string[], className: string): string[] {
+    const hasClass = originList.indexOf(className) > -1;
+    let array = originList;
+
+    if (hasClass) {
+        originList.splice(originList.indexOf(className), 1);
+        array = originList;
+    } else {
+        array = originList.filter((item) => headingClassList.indexOf(item) === -1);
         array.push(className);
     }
 
@@ -32,14 +49,7 @@ function getNextNode($target: Node, node: Node) {
     return childNode[idx + 1] as HTMLElement;
 }
 
-function warpStyleNode({ node, startOffset, endOffset, className, url, tagName }: {
-    node: Node;
-    startOffset: number;
-    endOffset: number;
-    className: string;
-    url?: string,
-    tagName: string
-}) {
+function warpStyleNode({ node, startOffset, endOffset, className, url, tagName }: { node: Node; startOffset: number; endOffset: number; className: string; url?: string; tagName: string }) {
     const text = node.textContent as string;
     const textLength = text.length;
     let startIdx = startOffset;
@@ -53,17 +63,11 @@ function warpStyleNode({ node, startOffset, endOffset, className, url, tagName }
     return `${text.substring(0, startIdx)}<${tagName} ${url ? `href="${url}" rel="nofollow"` : ""} class="${className}">${text.substring(startIdx, endIdx)}</${tagName}>${text.substring(endIdx, textLength)}`;
 }
 
-function defaultDecorationMake({ originData, $target, className, tagName = "span", url, parentCursorData }: {
-    originData: allBlock;
-    $target: HTMLElement;
-    className: string;
-    tagName?: string;
-    url?: string;
-    parentCursorData: cursorSelection;
-}): allBlock {
+function defaultDecorationMake({ originData, $target, className, tagName = "span", url, parentCursorData }: { originData: allBlock; $target: HTMLElement; className: string; tagName?: string; url?: string; parentCursorData: cursorSelection }): allBlock {
     let cursorData = getCursor();
 
-    if (cursorData.startNode === null) { // 정보 없을시 부모 정보 사용
+    if (cursorData.startNode === null) {
+        // 정보 없을시 부모 정보 사용
         cursorData = parentCursorData;
     }
 
@@ -73,15 +77,18 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
     if (startNode !== null) {
         let editableElement = findEditableElement(startNode) as HTMLElement;
 
-        if (editableElement === null) { // 에디터블 엘리먼트 존재하지 않을경우 부모 정보 기반으로 덮어 씌우기
+        if (editableElement === null) {
+            // 에디터블 엘리먼트 존재하지 않을경우 부모 정보 기반으로 덮어 씌우기
             cursorData = parentCursorData;
             startNode = cursorData.startNode as Node;
             endNode = cursorData.endNode as Node;
             editableElement = findEditableElement(startNode) as HTMLElement;
         }
 
-        if (cursorData.type === "Range") { // 선택된 상태
-            if (startNode === endNode) { // 같은 노드간 선택
+        if (cursorData.type === "Range") {
+            // 선택된 상태
+            if (startNode === endNode) {
+                // 같은 노드간 선택
                 const parentNode: HTMLElement = startNode.parentNode as HTMLElement;
                 let startOffset: number = cursorData.startOffset as number;
                 let endOffset: number = cursorData.endOffset as number;
@@ -91,7 +98,8 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
                     endOffset = cursorData.startOffset as number;
                 }
 
-                if (parentNode === editableElement) { // 랩핑 없는 경우
+                if (parentNode === editableElement) {
+                    // 랩핑 없는 경우
                     const childNumber: number = findChildNumber(editableElement, startNode);
                     const wrpStructure: string = warpStyleNode({
                         node: parentNode.childNodes[childNumber],
@@ -99,7 +107,7 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
                         endOffset: endOffset,
                         className: className,
                         tagName: tagName,
-                        url: url
+                        url: url,
                     });
                     let htmlStructure: string = "";
 
@@ -125,7 +133,8 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
 
                         setCursor($cursorTarget, cursorLength);
                     }, 100);
-                } else {// 랩핑 있는경우
+                } else {
+                    // 랩핑 있는경우
                     const originTag = getTagName(parentNode);
                     const childNumber: number = findChildNumber(editableElement, parentNode);
                     const classList: string[] = [...parentNode.classList];
@@ -156,7 +165,8 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
                         setCursor(editableElement.childNodes[childNumber + 1], text.substring(startOffset, endOffset).length);
                     }, 100);
                 }
-            } else { // 다른 노드간 선택
+            } else {
+                // 다른 노드간 선택
                 let startChild: Node = startNode;
                 let endChild: Node = endNode;
 
@@ -285,8 +295,10 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
                     setCursor($target, length);
                 }, 100);
             }
-        } else { // 선택 안된 상태
-            if (startNode.constructor.name === "Text") { // 텍스트 노드인 경우
+        } else {
+            // 선택 안된 상태
+            if (startNode.constructor.name === "Text") {
+                // 텍스트 노드인 경우
                 const parentNode = startNode.parentNode as HTMLElement;
                 const parentNodeClassList = [...parentNode.classList];
 
@@ -303,7 +315,8 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
                 } else {
                     parentNode.classList.add(className);
                 }
-            } else { // 아닌경우 단순 클레스 조정
+            } else {
+                // 아닌경우 단순 클레스 조정
                 (startNode as HTMLElement).classList.toggle(className);
             }
         }
@@ -312,13 +325,7 @@ function defaultDecorationMake({ originData, $target, className, tagName = "span
     return originData;
 }
 
-export function styleSettings({
-    kind,
-    blockData,
-    $target,
-    url,
-    cursorData
-}: styleUtilArgument) {
+export function styleSettings({ kind, blockData, $target, url, cursorData }: styleUtilArgument) {
     let rawData: allBlock = blockData;
 
     switch (kind) {
@@ -332,43 +339,36 @@ export function styleSettings({
             rawData.classList = arrangementAlignClass(rawData.classList, "d-align-right");
             break;
         case "decorationBold":
-            rawData = defaultDecorationMake(
-                {
-                    originData: rawData,
-                    $target: $target,
-                    className: "d-deco-bold",
-                    parentCursorData: cursorData
-                }
-            );
+            rawData = defaultDecorationMake({
+                originData: rawData,
+                $target: $target,
+                className: "d-deco-bold",
+                parentCursorData: cursorData,
+            });
             break;
         case "decorationItalic":
-            rawData = defaultDecorationMake(
-                {
-                    originData: rawData,
-                    $target: $target,
-                    className: "d-deco-italic",
-                    parentCursorData: cursorData
-                }
-            );
+            rawData = defaultDecorationMake({
+                originData: rawData,
+                $target: $target,
+                className: "d-deco-italic",
+                parentCursorData: cursorData,
+            });
             break;
         case "decorationUnderline":
             rawData = defaultDecorationMake({
                 originData: rawData,
                 $target: $target,
                 className: "d-deco-underline",
-                parentCursorData: cursorData
-            }
-            );
+                parentCursorData: cursorData,
+            });
             break;
         case "decorationStrikethrough":
-            rawData = defaultDecorationMake(
-                {
-                    originData: rawData,
-                    $target: $target,
-                    className: "d-deco-through",
-                    parentCursorData: cursorData
-                }
-            );
+            rawData = defaultDecorationMake({
+                originData: rawData,
+                $target: $target,
+                className: "d-deco-through",
+                parentCursorData: cursorData,
+            });
             break;
         case "decorationCode":
             rawData = defaultDecorationMake({
@@ -376,7 +376,7 @@ export function styleSettings({
                 $target: $target,
                 className: "d-deco-code",
                 tagName: "code",
-                parentCursorData: cursorData
+                parentCursorData: cursorData,
             });
             break;
         case "decorationLink":
@@ -386,18 +386,34 @@ export function styleSettings({
                 className: "d-deco-link",
                 tagName: "a",
                 url: url,
-                parentCursorData: cursorData
+                parentCursorData: cursorData,
             });
             break;
+        case "heading-1":
+            rawData.classList = arrangementHeadingClass(rawData.classList, "d-h1");
+            break;
+        case "heading-2":
+            rawData.classList = arrangementHeadingClass(rawData.classList, "d-h2");
+            break;
+        case "heading-3":
+            rawData.classList = arrangementHeadingClass(rawData.classList, "d-h3");
+            break;
+        case "heading-4":
+            rawData.classList = arrangementHeadingClass(rawData.classList, "d-h4");
+            break;
+        case "heading-5":
+            rawData.classList = arrangementHeadingClass(rawData.classList, "d-h5");
+            break;
+        case "heading-6":
+            rawData.classList = arrangementHeadingClass(rawData.classList, "d-h6");
+            break;
         default:
-            rawData = defaultDecorationMake(
-                {
-                    originData: rawData,
-                    $target: $target,
-                    className: kind,
-                    parentCursorData: cursorData
-                }
-            );
+            rawData = defaultDecorationMake({
+                originData: rawData,
+                $target: $target,
+                className: kind,
+                parentCursorData: cursorData,
+            });
     }
 
     return rawData;
@@ -409,7 +425,7 @@ export function getTagName(node: HTMLElement) {
         href: string | null;
     } = {
         name: "span",
-        href: null
+        href: null,
     };
 
     switch (node.tagName) {

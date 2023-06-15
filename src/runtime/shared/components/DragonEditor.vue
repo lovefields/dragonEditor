@@ -17,23 +17,21 @@
                 <button class="d-btn-block-pop" @click="toggleBlockControlMenu"></button>
 
                 <div class="d-block-list" :class="{ '--active': activeBlockColtrolMenu }">
-                    <button class="d-btn-block" @click="moveBlock('up')">
-                        <SvgIcon kind="arrowUp" />Up
-                    </button>
-                    <button class="d-btn-block" @click="moveBlock('down')">
-                        <SvgIcon kind="arrowDown" />Down
-                    </button>
-                    <button class="d-btn-block">
-                        <SvgIcon kind="delete" />Delete
-                    </button>
+                    <button class="d-btn-block" @click="moveBlock('up')"> <SvgIcon kind="arrowUp" />Up </button>
+                    <button class="d-btn-block" @click="moveBlock('down')"> <SvgIcon kind="arrowDown" />Down </button>
+                    <button class="d-btn-block"> <SvgIcon kind="delete" />Delete </button>
                 </div>
             </div>
         </div>
 
-        <div class="d-link-box" :class="{ '--active': activeLinkBox }" :style="{
-            top: `${linkBoxPosition.top}px`,
-            left: `${linkBoxPosition.left}px`,
-        }">
+        <div
+            class="d-link-box"
+            :class="{ '--active': activeLinkBox }"
+            :style="{
+                top: `${linkBoxPosition.top}px`,
+                left: `${linkBoxPosition.left}px`,
+            }"
+        >
             <template v-if="styleButtonList[2][0].active">
                 <p class="d-input">{{ linkValue }}</p>
                 <button class="d-btn-link" @click="decoLinkControl">
@@ -51,14 +49,22 @@
         <div class="d-style-menu" :class="{ '--active': activeMenu }" :style="{ top: `${styleMenuPosition}px` }">
             <div v-for="(column, count) in styleButtonList" :key="count" class="d-column">
                 <template v-for="(item, j) in column">
-                    <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn" :class="{ '--active': item.active }" @click="item.action">
-                        <SvgIcon :kind="item.icon" />
-                    </button>
+                    <template v-if="item.type === 'single'">
+                        <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn" :class="{ '--active': item.active }" @click="item.action">
+                            <SvgIcon :kind="item.icon" />
+                        </button>
+                    </template>
+
+                    <template v-else>
+                        <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn --hug" @click="item.action(count, j)">{{ item.value }}</button>
+
+                        <div class="d-child-list" :class="{ '--active': item.active }">
+                            <button class="d-child-btn" v-for="(child, k) in item.childList" :key="k" @click="child.action(count, j)">{{ child.name }}</button>
+                        </div>
+                    </template>
                 </template>
             </div>
-            <div v-if="customStyleMenu.length > 0" class="d-column">
-                <!--                customStyleMenu-->
-            </div>
+            <div v-if="customStyleMenu.length > 0" class="d-column"></div>
         </div>
 
         <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
@@ -130,6 +136,7 @@ const cursorData = ref<cursorSelection>({
 const styleButtonList = ref([
     [
         {
+            type: "single",
             name: "Align Left",
             icon: "alignLeft",
             active: false,
@@ -139,6 +146,7 @@ const styleButtonList = ref([
             },
         },
         {
+            type: "single",
             name: "Align Center",
             icon: "alignCenter",
             target: ["text", "image", "table", "ul", "ol"],
@@ -148,6 +156,7 @@ const styleButtonList = ref([
             },
         },
         {
+            type: "single",
             name: "Align right",
             icon: "alignRight",
             target: ["text", "image", "table", "ul", "ol"],
@@ -159,6 +168,7 @@ const styleButtonList = ref([
     ],
     [
         {
+            type: "single",
             name: "Decoration Bold",
             icon: "decorationBold",
             target: ["text", "table", "ul", "ol"],
@@ -168,6 +178,7 @@ const styleButtonList = ref([
             },
         },
         {
+            type: "single",
             name: "Decoration Italic",
             icon: "decorationItalic",
             target: ["text", "table", "ul", "ol"],
@@ -177,6 +188,7 @@ const styleButtonList = ref([
             },
         },
         {
+            type: "single",
             name: "Decoration Underline",
             icon: "decorationUnderline",
             target: ["text", "table", "ul", "ol"],
@@ -186,6 +198,7 @@ const styleButtonList = ref([
             },
         },
         {
+            type: "single",
             name: "Decoration Strikethrough",
             icon: "decorationStrikethrough",
             target: ["text", "table", "ul", "ol"],
@@ -197,6 +210,7 @@ const styleButtonList = ref([
     ],
     [
         {
+            type: "single",
             name: "Link",
             icon: "link",
             active: false,
@@ -208,6 +222,7 @@ const styleButtonList = ref([
     ],
     [
         {
+            type: "single",
             name: "Decoration Code",
             icon: "codeBlock",
             target: ["text", "table", "ul", "ol"],
@@ -215,6 +230,68 @@ const styleButtonList = ref([
             action: () => {
                 setBlockDecoEvent("decorationCode");
             },
+        },
+    ],
+    [
+        {
+            type: "list",
+            name: "Decoration Font Size",
+            value: "default",
+            target: ["text"],
+            active: false,
+            action: (count, j) => {
+                styleButtonList.value[count][j].active = !styleButtonList.value[count][j].active;
+            },
+            childList: [
+                {
+                    name: "default",
+                    action: (count, j) => {
+                        setBlockDecoEvent("heading-4");
+                        styleButtonList.value[count][j].value = "default";
+                        styleButtonList.value[count][j].active = false;
+                    },
+                },
+                {
+                    name: "h1",
+                    action: (count, j) => {
+                        setBlockDecoEvent("heading-1");
+                        styleButtonList.value[count][j].value = "h1";
+                        styleButtonList.value[count][j].active = false;
+                    },
+                },
+                {
+                    name: "h2",
+                    action: (count, j) => {
+                        setBlockDecoEvent("heading-2");
+                        styleButtonList.value[count][j].value = "h2";
+                        styleButtonList.value[count][j].active = false;
+                    },
+                },
+                {
+                    name: "h3",
+                    action: (count, j) => {
+                        setBlockDecoEvent("heading-3");
+                        styleButtonList.value[count][j].value = "h3";
+                        styleButtonList.value[count][j].active = false;
+                    },
+                },
+                {
+                    name: "h5",
+                    action: (count, j) => {
+                        setBlockDecoEvent("heading-5");
+                        styleButtonList.value[count][j].value = "h5";
+                        styleButtonList.value[count][j].active = false;
+                    },
+                },
+                {
+                    name: "h6",
+                    action: (count, j) => {
+                        setBlockDecoEvent("heading-6");
+                        styleButtonList.value[count][j].value = "h6";
+                        styleButtonList.value[count][j].active = false;
+                    },
+                },
+            ],
         },
     ],
 ]);
@@ -253,6 +330,7 @@ function checkAlignActive(className: string) {
     return value;
 }
 
+// 스타일 메뉴 엑티브 상황
 function checkDecoActive() {
     styleButtonList.value[0][0].active = checkAlignActive("d-align-left");
     styleButtonList.value[0][1].active = checkAlignActive("d-align-center");
@@ -263,6 +341,7 @@ function checkDecoActive() {
     styleButtonList.value[1][3].active = hasClassNameCheckLogic("d-deco-through");
     styleButtonList.value[2][0].active = hasClassNameCheckLogic("d-deco-link");
     styleButtonList.value[3][0].active = hasClassNameCheckLogic("d-deco-code");
+    styleButtonList.value[4][0].value = checkHeadingClass();
 }
 
 function hasClassNameCheckLogic(className: string) {
@@ -292,6 +371,32 @@ function hasClassNameCheckLogic(className: string) {
                 linkValue.value = "";
             }
         }
+    }
+
+    return value;
+}
+
+function checkHeadingClass(): string {
+    let value: string = "";
+
+    switch (true) {
+        case hasClassNameCheckLogic("d-h1"):
+            value = "h1";
+            break;
+        case hasClassNameCheckLogic("d-h2"):
+            value = "h2";
+            break;
+        case hasClassNameCheckLogic("d-h3"):
+            value = "h3";
+            break;
+        case hasClassNameCheckLogic("d-h5"):
+            value = "h5";
+            break;
+        case hasClassNameCheckLogic("d-h6"):
+            value = "h6";
+            break;
+        default:
+            value = "default";
     }
 
     return value;
@@ -345,13 +450,15 @@ function activeMenuEvent(count: number, e?: MouseEvent) {
     setMenuPosition($target);
     checkDecoActive();
     activeMenu.value = true;
+    styleButtonList.value[4][0].active = false;
 }
 
 // 관련 메뉴 닫기
-function deactiveMenuEvent(e?: (MouseEvent | KeyboardEvent)) {
+function deactiveMenuEvent(e?: MouseEvent | KeyboardEvent) {
     activeMenu.value = false;
     activeBlockAddMenu.value = false;
     activeBlockColtrolMenu.value = false;
+    styleButtonList.value[4][0].active = false;
 
     if (e && e.type === "mouseleave") {
         activeLinkBox.value = false;
@@ -418,7 +525,9 @@ function pasteEvent(e: ClipboardEvent) {
         const targetComponent = $child.value[activeIdx.value];
         const componentType = targetComponent.getType();
 
-        if (componentType !== "other") {
+        if (componentType === "other") {
+            // TODO : add block
+        } else {
             targetComponent.pasteEvent(data.value);
         }
     }
