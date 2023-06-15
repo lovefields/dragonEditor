@@ -24,35 +24,46 @@ export interface editorOptions {
     customStyleMenu?: userStyleMenu[];
 }
 
-export type allBlock = (textBlock | commentBlock | imageBlock);
+export type allBlock = textBlock | commentBlock | imageBlock | listBlock;
 
 export type editorContentType = allBlock[];
 
 // Block types
 export interface textBlock {
-    type: string,
-    id: string,
-    classList: string[],
-    content: string,
+    type: string;
+    id: string;
+    classList: string[];
+    content: string;
 }
 
 export interface commentBlock {
     type: string;
-    classList: string[],
-    content: string,
+    classList: string[];
+    content: string;
 }
 
 export interface imageBlock {
-    type: string,
-    id: string,
-    classList: string[],
+    type: string;
+    id: string;
+    classList: string[];
     src: string;
-    width: number,
-    height: number,
-    webp: boolean,
-    caption: string,
+    width: number;
+    height: number;
+    webp: boolean;
+    caption: string;
 }
 
+export interface liItem {
+    classList: string[];
+    content: string;
+}
+
+export interface listBlock {
+    type: string;
+    id: string;
+    classList: string[];
+    childList: liItem[];
+}
 
 // detail type
 export interface cursorSelection {
@@ -84,9 +95,9 @@ export interface styleFunctionArgument {
 }
 
 export interface styleUtilArgument {
-    kind: string,
-    blockData: allBlock,
-    $target: HTMLElement,
-    url?: string,
-    cursorData: cursorSelection
+    kind: string;
+    blockData: allBlock;
+    $target: HTMLElement;
+    url?: string;
+    cursorData: cursorSelection;
 }

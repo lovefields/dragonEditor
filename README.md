@@ -1,14 +1,35 @@
-[![Github stars](https://img.shields.io/github/stars/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/stargazers)
-[![Github issues](https://img.shields.io/github/issues/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/issues)
-[![Github forks](https://img.shields.io/github/forks/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/network/members)
-[![Github top language](https://img.shields.io/github/languages/top/lovefields/dragonEditor)](https://github.com/lovefields/dragonEditor/)
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Flovefields%2FdragonEditor&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
+[stars-src]: https://img.shields.io/github/stars/lovefields/dragonEditor
+[stars-href]: https://github.com/lovefields/dragonEditor/stargazers
+[issues-src]: https://img.shields.io/github/issues/lovefields/dragonEditor
+[issues-href]: https://github.com/lovefields/dragonEditor/issues
+[forks-src]: https://img.shields.io/github/forks/lovefields/dragonEditor
+[forks-href]: https://github.com/lovefields/dragonEditor/network/members
+[language-src]: https://img.shields.io/github/languages/top/lovefields/dragonEditor
+[language-href]: https://github.com/lovefields/dragonEditor/
+[hits-src]: https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Flovefields%2FdragonEditor&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false
+[hits-href]: https://hits.seeyoufarm.com
+[npm-version-src]: https://img.shields.io/npm/v/my-module/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-version-href]: https://www.npmjs.com/package/dragon-editor
+[npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-href]: https://www.npmjs.com/package/dragon-editor
+[license-src]: https://img.shields.io/npm/l/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
+[license-href]: https://www.npmjs.com/package/dragon-editor
+[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
+[nuxt-href]: https://nuxt.com
+[readme-ko]: https://github.com/lovefields/dragonEditor/blob/main/README.md
+[readme-en]: https://github.com/lovefields/dragonEditor/blob/main/README_en.md
+
+[![Github stars](stars-src)](stars-href)
+[![Github issues](issues-src)](issues-href)
+[![Github forks](forks-src)](forks-href)
+[![Github top language](language-src)](language-href)
+[![Hits](hits-src)](hits-href)
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-[KO](https://github.com/lovefields/dragonEditor/blob/main/README.md) &#47; [EN](https://github.com/lovefields/dragonEditor/blob/main/README_en.md)
+[KO](readme-ko) &#47; [EN](readme-en)
 
 # DragonEditor
 
@@ -102,14 +123,3 @@ const contentData = ref([]); // 에디터로 저장한 데이터
 ## 문서
 
 -   [DragonEditor Document](https://lovefields.github.io/dragonEditor-doc/) -->
-
-<!-- Badges -->
-
-[npm-version-src]: https://img.shields.io/npm/v/my-module/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
-[npm-version-href]: https://www.npmjs.com/package/dragon-edito
-[npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
-[npm-downloads-href]: https://www.npmjs.com/package/dragon-edito
-[license-src]: https://img.shields.io/npm/l/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
-[license-href]: https://www.npmjs.com/package/dragon-edito
-[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
-[nuxt-href]: https://nuxt.com
