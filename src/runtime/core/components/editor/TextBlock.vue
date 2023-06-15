@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import { ref, unref } from "#imports";
 import { keyboardEvent, setCursor, pasteText, styleSettings, getArrangementCursorData } from "../../utils/index";
 import { textBlock, styleFunctionArgument, cursorSelection } from "../../../../types/index";
