@@ -151,6 +151,23 @@
   content: "Write text";
   color: #ccc;
 }
+.dragon-editor .d-ol-block {
+  padding-left: 30px;
+  cursor: text;
+  list-style: decimal;
+}
+.dragon-editor .d-ol-block .d-li-item {
+  list-style: inherit;
+  outline: 0;
+}
+.dragon-editor .d-ol-block .d-li-item:empty {
+  min-height: 1.6em;
+}
+.dragon-editor .d-ol-block .d-li-item:empty::after {
+  display: inline;
+  content: "Write text";
+  color: #ccc;
+}
 .dragon-editor .d-image-block {
   display: flex;
   flex-direction: column;

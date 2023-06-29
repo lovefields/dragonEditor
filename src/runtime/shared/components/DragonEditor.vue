@@ -67,8 +67,8 @@
             <div v-if="customStyleMenu.length > 0" class="d-column"></div>
         </div>
 
-        <div class="d-row-block" v-for="(row, count) in content" :key="row.id" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
-            <component ref="$child" v-model="content[count]" :key="`${row.type}-count`" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
+        <div class="d-row-block" v-for="(row, count) in content" :key="`${row.id}-wrap`" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
+            <component ref="$child" v-model="content[count]" :key="row.id" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
         </div>
     </div>
 </template>
@@ -83,6 +83,7 @@ import type { editorOptions, editorMenu, editorContentType, userCustomMenu, user
 import SvgIcon from "../../core/components/SvgIcon.vue";
 import textBlock from "../../core/components/editor/TextBlock.vue";
 import imageBlock from "../../core/components/editor/ImageBlock.vue";
+import olBlock from "../../core/components/editor/OlBlock.vue";
 
 // 기본 정보
 const props = defineProps<{
@@ -445,6 +446,22 @@ function activeMenuEvent(count: number, e?: MouseEvent) {
 
     if (e) {
         $target = e.currentTarget as HTMLElement;
+
+        if (e.type === "mouseup") {
+            const wrap = $target.parentElement as HTMLElement;
+            const child = wrap.querySelectorAll(".d-row-block");
+            let idx: number = -1;
+
+            [...child].filter((item, count) => {
+                if (item === $target) {
+                    idx = count;
+                }
+            });
+
+            if (idx > -1) {
+                activeIdx.value = idx;
+            }
+        }
     } else {
         $target = $child.value[activeIdx.value];
     }
@@ -538,7 +555,11 @@ function pasteEvent(e: ClipboardEvent) {
 // 블럭 종류 정의
 function setComponentKind(kind: string) {
     let componentData: any;
+
     switch (kind) {
+        case "ol":
+            componentData = olBlock;
+            break;
         case "image":
             componentData = imageBlock;
             break;

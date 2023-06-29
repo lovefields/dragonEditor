@@ -1,4 +1,4 @@
-import { textBlock, allBlock, imageBlock } from "../../../types/index";
+import { textBlock, allBlock, imageBlock, listBlock } from "../../../types/index";
 
 // 난수 아이디 생성
 function generateId() {
@@ -64,23 +64,29 @@ function createImageBlock(data): imageBlock {
     };
 }
 
+// 순서 있는 리스트 블럭 생성
+function createlistBlock(type: string = "ul"): listBlock {
+    return {
+        type: type,
+        id: generateId(),
+        classList: [],
+        childList: [
+            {
+                classList: [],
+                content: "",
+            },
+        ],
+    };
+}
+
 // 블럭 생성 함수
 export function createBlock(name: string, value?: object): allBlock {
     let blockData: allBlock;
 
     switch (name) {
-        // case "ol":
-        //     // return createTextBlock();
-        //     break;
-        // case "ul":
-        //     // return createTextBlock();
-        //     break;
-        // case "table":
-        //     // return createTextBlock();
-        //     break;
-        // case "quotation":
-        //     // return createTextBlock();
-        //     break;
+        case "ol":
+            blockData = createlistBlock("ol");
+            break;
         case "image":
             blockData = createImageBlock(value);
             break;

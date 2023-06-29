@@ -19,8 +19,10 @@
 </template>
 
 <script setup lang="ts">
+import { editorContentType } from "../../../types";
+
 const props = defineProps<{
-    content: any[];
+    content: editorContentType;
 }>();
 </script>
 
