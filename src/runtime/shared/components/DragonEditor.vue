@@ -58,7 +58,7 @@
                     <template v-else>
                         <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn --hug" @click="item.action(count, j)">{{ `${item.name} : ${item.value}` }}</button>
 
-                        <div class="d-child-list" :class="{ '--active': item.active }">
+                        <div v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-child-list" :class="{ '--active': item.active }">
                             <button class="d-child-btn" v-for="(child, k) in item.childList" :key="k" @click="child.action(count, j)">{{ child.name }}</button>
                         </div>
                     </template>
@@ -92,7 +92,7 @@ const props = defineProps<{
 }>();
 const modelValue = ref<editorContentType>([]);
 const option = ref<editorOptions>({
-    blockMenu: ["text"],
+    blockMenu: ["text", "ol"],
     // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
 });
 
@@ -675,6 +675,7 @@ function addImageBlock({ src, width, height, webp, caption }: { src: string; wid
 // 함수 내보내기
 defineExpose({
     addImageBlock,
+    dataUpdateAction,
 });
 
 /**

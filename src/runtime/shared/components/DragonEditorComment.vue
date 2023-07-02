@@ -12,7 +12,6 @@ import { commentBlock, cursorSelection } from "../../../types/index";
 
 const $block = ref();
 const data = ref<commentBlock>({
-    type: "comment",
     classList: [],
     content: "",
 });
@@ -54,34 +53,68 @@ function updateBlockData() {
 
     // 커서위치 재지정
     if ($block.value.innerHTML.length > 0) {
-        const cursorData = getArrangementCursorData(blockCursorData.value);
+        const preCursorData = getCursor();
 
-        data.value.content = $block.value.innerHTML;
-        emit("update:modelValue", data.value);
+        if (preCursorData.startNode !== null) {
+            const cursorData = getArrangementCursorData(blockCursorData.value);
 
-        setTimeout(() => {
-            setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
+            data.value.content = $block.value.innerHTML;
+            emit("update:modelValue", data.value);
 
-            // 구조 검수
-            $block.value.childNodes.forEach((child: ChildNode) => {
-                if (child.constructor.name !== "Text") {
-                    // 텍스트가 아닐경우
-                    if (child.constructor.name !== "HTMLBRElement") {
-                        // br 태그 유지
-                        if (child.textContent === "") {
-                            // 빈 태그 삭제
-                            child.remove();
-                        } else if ((child as HTMLElement).classList.length === 0) {
-                            // 클레스 없는 엘리먼트 처리
-                            (child as HTMLElement).insertAdjacentHTML("afterend", child.textContent as string);
-                            child.remove();
+            setTimeout(() => {
+                if ($block.value) {
+                    setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
+
+                    // 구조 검수
+                    $block.value.childNodes.forEach((child: ChildNode) => {
+                        const $child = child as HTMLElement;
+
+                        if (child.constructor.name !== "Text") {
+                            // 텍스트가 아닐경우
+                            if (child.constructor.name !== "HTMLBRElement") {
+                                // br 태그 유지
+                                if (child.textContent === "") {
+                                    // 빈 태그 삭제
+                                    child.remove();
+                                } else if ($child.classList.length === 0) {
+                                    // 클레스 없는 엘리먼트 처리
+                                    $child.insertAdjacentHTML("afterend", $child.innerHTML);
+                                    child.remove();
+                                }
+                            } else {
+                                $child.removeAttribute("class");
+                            }
                         }
-                    } else {
-                        (child as HTMLElement).removeAttribute("class");
-                    }
+                    });
                 }
-            });
-        }, 100);
+            }, 100);
+        } else {
+            if ($block.value) {
+                $block.value.childNodes.forEach((child: ChildNode) => {
+                    const $child = child as HTMLElement;
+
+                    if (child.constructor.name !== "Text") {
+                        // 텍스트가 아닐경우
+                        if (child.constructor.name !== "HTMLBRElement") {
+                            // br 태그 유지
+                            if (child.textContent === "") {
+                                // 빈 태그 삭제
+                                child.remove();
+                            } else if ($child.classList.length === 0) {
+                                // 클레스 없는 엘리먼트 처리
+                                $child.insertAdjacentHTML("afterend", $child.innerHTML);
+                                child.remove();
+                            }
+                        } else {
+                            $child.removeAttribute("class");
+                        }
+                    }
+                });
+
+                data.value.content = $block.value.innerHTML;
+                emit("update:modelValue", data.value);
+            }
+        }
     } else {
         emit("update:modelValue", data.value);
     }

@@ -1,21 +1,28 @@
 <template>
-    <ol class="d-ol-block" :class="data.classList" @keydown="textKeyboardEvent">
-        <li class="d-li-item" contenteditable ref="$olItem"></li>
+    <ol class="d-ol-block" @keydown="textKeyboardEvent" ref="$ol" :key="updateCount">
+        <li class="d-li-item" v-for="(row, i) in data.childList" :key="i" :class="row.classList" contenteditable ref="$item" v-html="row.content"></li>
     </ol>
 </template>
 
 <script setup lang="ts">
 // @ts-ignore
 import { ref, unref } from "#imports";
-import { cursorSelection, listBlock, styleFunctionArgument } from "../../../../types";
+import { cursorSelection, liItem, listBlock, styleFunctionArgument } from "../../../../types";
 import { getArrangementCursorData, setCursor, pasteText, styleSettings, keyboardEvent } from "../../utils";
 
-const $olItem = ref();
+const updateCount = ref<number>(0);
+const $ol = ref();
+const $item = ref();
+const itemIdx = ref<number>(0);
 const data = ref<listBlock>({
     type: "",
     id: "",
-    classList: [],
-    childList: [],
+    childList: [
+        {
+            classList: [],
+            content: "",
+        },
+    ],
 });
 const props = defineProps<{ modelValue: listBlock; cursorData: cursorSelection }>();
 const emit = defineEmits<{
@@ -25,8 +32,7 @@ const emit = defineEmits<{
 }>();
 data.value = unref(props.modelValue) as listBlock;
 
-if(data.value.childList.length === 0){
-
+if (data.value.childList.length === 0) {
 }
 
 // 키보드 이벤트 할당
@@ -40,6 +46,23 @@ function textKeyboardEvent(e: KeyboardEvent) {
 
 // 데이터 정규화 및 검수
 function updateBlockData() {
+    const $block = $ol.value;
+    const $childList = $block.querySelectorAll("li");
+    const childData: liItem[] = [];
+
+    $childList.forEach((row) => {
+        console.log(row);
+        childData.push({
+            classList: [],
+            content: row.innerHTML,
+        });
+    });
+    // console.log($block);
+    // console.log("$childList", $childList);
+
+    data.value.childList = childData;
+    emit("update:modelValue", data.value);
+    updateCount.value += 1;
     // const blockClassList = [...$block.value.classList];
     // blockClassList.splice(0, 1);
     // const pushList = blockClassList.filter((item) => data.value.classList.indexOf(item) === -1);
@@ -85,19 +108,14 @@ function updateBlockData() {
 }
 
 // 포커스
-function focus(type: string = "first") {
-    // if (type === "first") {
-    //     setCursor($block.value, 0);
-    // } else {
-    //     const childCount = $block.value.childNodes.length;
-    //     const targetChild = $block.value.childNodes[childCount - 1];
-    //     setCursor(targetChild, 0);
-    // }
+function focus() {
+    const childList = $ol.value.querySelectorAll(".d-li-item");
+    setCursor(childList[itemIdx.value], 0);
 }
 
 // 블럭 위치 주기
 function getBoundingClientRect() {
-    // return $block.value.parentNode.getBoundingClientRect();
+    return $ol.value.parentNode.getBoundingClientRect();
 }
 
 // 타입 전달
@@ -115,7 +133,7 @@ function setStyles({ type, url }: styleFunctionArgument) {
     data.value = styleSettings({
         kind: type,
         blockData: data.value,
-        $target: undefined,
+        $target: $item[itemIdx.value],
         url: url,
         cursorData: props.cursorData,
     });
