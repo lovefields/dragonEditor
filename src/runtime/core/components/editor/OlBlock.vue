@@ -1,6 +1,6 @@
 <template>
     <ol class="d-ol-block" :class="data.classList" @keydown="textKeyboardEvent">
-        <li class="d-li-item" contenteditable></li>
+        <li class="d-li-item" contenteditable ref="$olItem"></li>
     </ol>
 </template>
 
@@ -10,6 +10,7 @@ import { ref, unref } from "#imports";
 import { cursorSelection, listBlock, styleFunctionArgument } from "../../../../types";
 import { getArrangementCursorData, setCursor, pasteText, styleSettings, keyboardEvent } from "../../utils";
 
+const $olItem = ref();
 const data = ref<listBlock>({
     type: "",
     id: "",
@@ -23,6 +24,10 @@ const emit = defineEmits<{
     (e: "deleteBlockLocal", index?: number): void;
 }>();
 data.value = unref(props.modelValue) as listBlock;
+
+if(data.value.childList.length === 0){
+
+}
 
 // 키보드 이벤트 할당
 function textKeyboardEvent(e: KeyboardEvent) {
