@@ -5,6 +5,7 @@
         <div class="editor">
             <DragonEditor v-model="contentData" :option="option" ref="editor" />
         </div>
+        <button @click="test">업데이트</button>
     </div>
 </template>
 
@@ -45,6 +46,10 @@ function addImage2() {
         height: 1739,
         webp: false,
     });
+}
+
+function test(){
+    editor.value.dataUpdateAction();
 }
 
 onMounted(() => {

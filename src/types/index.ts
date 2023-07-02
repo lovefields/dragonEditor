@@ -37,7 +37,6 @@ export interface textBlock {
 }
 
 export interface commentBlock {
-    type: string;
     classList: string[];
     content: string;
 }
