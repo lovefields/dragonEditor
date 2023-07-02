@@ -56,7 +56,7 @@
                     </template>
 
                     <template v-else>
-                        <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn --hug" @click="item.action(count, j)">{{ item.value }}</button>
+                        <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn --hug" @click="item.action(count, j)">{{ `${item.name} : ${item.value}` }}</button>
 
                         <div class="d-child-list" :class="{ '--active': item.active }">
                             <button class="d-child-btn" v-for="(child, k) in item.childList" :key="k" @click="child.action(count, j)">{{ child.name }}</button>
@@ -92,7 +92,7 @@ const props = defineProps<{
 }>();
 const modelValue = ref<editorContentType>([]);
 const option = ref<editorOptions>({
-    blockMenu: ["text", "ol"],
+    blockMenu: ["text"],
     // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
 });
 
@@ -237,7 +237,7 @@ const styleButtonList = ref([
     [
         {
             type: "list",
-            name: "Decoration Font Size",
+            name: "Font Size",
             value: "default",
             target: ["text"],
             active: false,
