@@ -4,7 +4,7 @@ import { getTagName } from "./style";
 
 // 엔터 이벤트
 let enterCount = 0;
-function enterEvent(type: string, event: KeyboardEvent, action: Function) {
+function enterEvent(type: string, event: KeyboardEvent, action: Function, update: Function) {
     if (event.code === "Enter") {
         event.preventDefault();
         const useShift = event.shiftKey;
@@ -13,7 +13,7 @@ function enterEvent(type: string, event: KeyboardEvent, action: Function) {
             case "ol":
                 if (useShift === false) {
                     if (enterCount == 0) {
-                        listEnterEvent(event, action);
+                        listEnterEvent(action, update);
                     }
                 } else {
                     addBrEvent();
@@ -30,7 +30,7 @@ function enterEvent(type: string, event: KeyboardEvent, action: Function) {
             default:
                 if (useShift === false) {
                     if (enterCount == 0) {
-                        textEnterEvent(event, action);
+                        textEnterEvent(action);
                     }
                 } else {
                     addBrEvent();
@@ -45,7 +45,7 @@ function enterEvent(type: string, event: KeyboardEvent, action: Function) {
 }
 
 // list 엔터 이벤트
-function listEnterEvent(event: KeyboardEvent, action: Function) {
+function listEnterEvent(action: Function, update: Function) {
     const cursorData = getCursor();
 
     if (cursorData.startNode) {
@@ -87,9 +87,10 @@ function listEnterEvent(event: KeyboardEvent, action: Function) {
         }
 
         if (editableElement.childNodes.length === 0 || (endChildIdx === editableElement.childNodes.length - 1 && (editableElement.childNodes[endChildIdx].textContent as string).length === endOffset)) {
-            action("addBlock", {
-                name: "text",
-            });
+            // 맨뒤 엔터인 경우
+            editableElement.insertAdjacentHTML("afterend", `<li class="d-li-item"  contenteditable></li>`);
+            setCursor(editableElement.nextSibling as Node, 0);
+            update();
         } else {
             editableElement.childNodes.forEach((child: ChildNode, count: number) => {
                 const text: string = child.textContent as string;
@@ -157,7 +158,7 @@ function listEnterEvent(event: KeyboardEvent, action: Function) {
 }
 
 // 텍스트 엔터 이벤트
-function textEnterEvent(event: KeyboardEvent, action: Function) {
+function textEnterEvent(action: Function) {
     const cursorData = getCursor();
 
     if (cursorData.startNode) {
@@ -199,6 +200,7 @@ function textEnterEvent(event: KeyboardEvent, action: Function) {
         }
 
         if (editableElement.childNodes.length === 0 || (endChildIdx === editableElement.childNodes.length - 1 && (editableElement.childNodes[endChildIdx].textContent as string).length === endOffset)) {
+            // 텍스트 뒷부분 엔터
             action("addBlock", {
                 name: "text",
             });
@@ -294,7 +296,7 @@ function backspaceEvent(type: string, event: KeyboardEvent, action: Function, up
 
 // 키보드 이벤트 총괄
 export function keyboardEvent(type: string, event: KeyboardEvent, action: Function, update: Function) {
-    enterEvent(type, event, action);
+    enterEvent(type, event, action, update);
     backspaceEvent(type, event, action, update);
 }
 

@@ -16,7 +16,7 @@ import { ref, onMounted } from "#imports";
 const contentData = ref({
     type: "comment",
     classList: [],
-    content: ""
+    content: "123ㄹ"
 });
 const editor = ref();
 
@@ -27,6 +27,7 @@ function addOption() {
 
 function getStatus() {
     console.log(editor.value.getCursorClassList());
+    editor.value.updateBlockData();
 }
 </script>
 

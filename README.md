@@ -66,6 +66,13 @@ editor.value.addImageBlock({
 });
 ```
 
+2. 저장
+
+```typescript
+editor.value.updateBlockData();
+// do somthing
+```
+
 ### 코멘트
 
 ```vue
@@ -103,6 +110,19 @@ editor.value.setStyles("decorationBold");
 -   `decorationItalic` : 이텔릭
 -   `decorationUnderline` : 밑줄
 -   `decorationStrikethrough` : 취소선
+
+2. 저장
+
+```typescript
+editor.value.updateBlockData();
+// do somthing
+```
+
+3. 포커스
+
+```typescript
+editor.value.focus();
+```
 
 ### 뷰어
 
