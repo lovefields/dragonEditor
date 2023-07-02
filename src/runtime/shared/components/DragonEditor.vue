@@ -675,6 +675,7 @@ function addImageBlock({ src, width, height, webp, caption }: { src: string; wid
 // 함수 내보내기
 defineExpose({
     addImageBlock,
+    dataUpdateAction
 });
 
 /**
