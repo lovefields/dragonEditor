@@ -167,4 +167,23 @@
             font-size: 1rem;
         }
     }
+
+    // 리스트 블럭
+    .d-ol-block {
+        padding-left: 30px;
+        list-style: decimal;
+
+        .d-li-item {
+            list-style: inherit;
+        }
+    }
+
+    .d-ul-block {
+        padding-left: 30px;
+        list-style: disc;
+
+        .d-li-item {
+            list-style: inherit;
+        }
+    }
 }

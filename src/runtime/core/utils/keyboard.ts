@@ -10,7 +10,7 @@ function enterEvent(type: string, event: KeyboardEvent, action: Function, update
         const useShift = event.shiftKey;
 
         switch (type) {
-            case "ol":
+            case "list":
                 if (useShift === false) {
                     if (enterCount == 0) {
                         listEnterEvent(action, update);
@@ -88,9 +88,16 @@ function listEnterEvent(action: Function, update: Function) {
 
         if (editableElement.childNodes.length === 0 || (endChildIdx === editableElement.childNodes.length - 1 && (editableElement.childNodes[endChildIdx].textContent as string).length === endOffset)) {
             // 맨뒤 엔터인 경우
-            editableElement.insertAdjacentHTML("afterend", `<li class="d-li-item"  contenteditable></li>`);
-            setCursor(editableElement.nextSibling as Node, 0);
-            update();
+            if (editableElement.childNodes.length === 0) {
+                editableElement.remove();
+                action("addBlock", {
+                    name: "text",
+                });
+            } else {
+                editableElement.insertAdjacentHTML("afterend", `<li class="d-li-item"  contenteditable></li>`);
+                setCursor(editableElement.nextSibling as Node, 0);
+                update();
+            }
         } else {
             editableElement.childNodes.forEach((child: ChildNode, count: number) => {
                 const text: string = child.textContent as string;
@@ -149,10 +156,11 @@ function listEnterEvent(action: Function, update: Function) {
             });
 
             editableElement.innerHTML = preHTMLStructor;
-            action("addBlock", {
-                name: "text",
-                value: { classList: editableElementClassList, content: nextHTMLStructor },
-            });
+            editableElement.insertAdjacentHTML("afterend", `<li class="d-li-item ${editableElementClassList.join(" ")}">${nextHTMLStructor}</li>`);
+            setTimeout(() => {
+                setCursor((editableElement.nextSibling as HTMLElement).childNodes[0], 0);
+                update();
+            }, 100);
         }
     }
 }

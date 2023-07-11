@@ -209,6 +209,27 @@
         }
     }
 
+    .d-ul-block {
+        padding-left: 30px;
+        cursor: text;
+        list-style: disc;
+
+        .d-li-item {
+            list-style: inherit;
+            outline: 0;
+
+            &:empty {
+                min-height: 1.6em;
+
+                &::after {
+                    display: inline;
+                    content: "Write text";
+                    color: #ccc;
+                }
+            }
+        }
+    }
+
     // 이미지 블럭
     .d-image-block {
         display: flex;

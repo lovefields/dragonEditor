@@ -117,7 +117,13 @@ function updateBlockData() {
 // 포커스
 function focus(type: string = "first") {
     if (type === "first") {
-        setCursor($block.value, 0);
+        if ($block.value.childNodes.length > 0) {
+            setTimeout(() => {
+                setCursor($block.value.childNodes[0], 0);
+            }, 100);
+        } else {
+            setCursor($block.value, 0);
+        }
     } else {
         const childCount = $block.value.childNodes.length;
         const targetChild = $block.value.childNodes[childCount - 1];
