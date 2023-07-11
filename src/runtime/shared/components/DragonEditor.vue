@@ -1,5 +1,5 @@
 <template>
-    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent" :key="totalKey">
+    <div class="dragon-editor" @paste="pasteEvent" ref="$wrap" @mouseleave="deactiveMenuEvent" @keydown="deactiveMenuEvent">
         <div class="d-left-menu" :class="{ '--active': activeMenu }" :style="{ top: `${leftMenuPosition}px` }">
             <div class="d-add-block">
                 <button class="d-btn-menu-pop" @click="toggleBlockAddMenu"></button>
@@ -56,9 +56,9 @@
                     </template>
 
                     <template v-else>
-                        <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn --hug" @click="item.action(count, j)">{{ item.value }}</button>
+                        <button v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-btn --hug" @click="item.action(count, j)">{{ `${item.name} : ${item.value}` }}</button>
 
-                        <div class="d-child-list" :class="{ '--active': item.active }">
+                        <div v-if="item.target.indexOf(content[activeIdx].type) > -1" class="d-child-list" :class="{ '--active': item.active }">
                             <button class="d-child-btn" v-for="(child, k) in item.childList" :key="k" @click="child.action(count, j)">{{ child.name }}</button>
                         </div>
                     </template>
@@ -67,13 +67,14 @@
             <div v-if="customStyleMenu.length > 0" class="d-column"></div>
         </div>
 
-        <div class="d-row-block" v-for="(row, count) in content" :key="count" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
-            <component ref="$child" v-model="content[count]" :key="`${row.type}-count`" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
+        <div class="d-row-block" v-for="(row, count) in content" :key="`${row.id}-wrap`" @click="activeIdx = count" @mouseenter="activeMenuEvent(count, $event)" @mousemove="activeMenuEvent(count, $event)" @mouseup="activeMenuEvent(count, $event)">
+            <component ref="$child" v-model="content[count]" :key="row.id" :is="setComponentKind(row.type)" :cursorData="cursorData" @addBlock="addBlockLocal" @deleteBlockLocal="deleteBlockLocal" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import { ref, unref, onMounted } from "#imports";
 import { createBlock, getClipboardData, getCursor } from "../../core/utils";
 import type { editorOptions, editorMenu, editorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
@@ -82,6 +83,8 @@ import type { editorOptions, editorMenu, editorContentType, userCustomMenu, user
 import SvgIcon from "../../core/components/SvgIcon.vue";
 import textBlock from "../../core/components/editor/TextBlock.vue";
 import imageBlock from "../../core/components/editor/ImageBlock.vue";
+import olBlock from "../../core/components/editor/OlBlock.vue";
+import ulBlock from "../../core/components/editor/UlBlock.vue";
 
 // 기본 정보
 const props = defineProps<{
@@ -90,7 +93,7 @@ const props = defineProps<{
 }>();
 const modelValue = ref<editorContentType>([]);
 const option = ref<editorOptions>({
-    blockMenu: ["text"],
+    blockMenu: ["text", "ol", "ul"],
     // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
 });
 
@@ -235,7 +238,7 @@ const styleButtonList = ref([
     [
         {
             type: "list",
-            name: "Decoration Font Size",
+            name: "Font Size",
             value: "default",
             target: ["text"],
             active: false,
@@ -295,7 +298,6 @@ const styleButtonList = ref([
         },
     ],
 ]);
-const totalKey = ref<number>(1);
 
 // 블럭 추가 메뉴 설정
 blockMenu.value = setEditorMenu(option.value.blockMenu as string[], unref(option.value.customBlockMenu) as userCustomMenu[]);
@@ -344,6 +346,7 @@ function checkDecoActive() {
     styleButtonList.value[4][0].value = checkHeadingClass();
 }
 
+// 텍스트 스타일 확인용 함수
 function hasClassNameCheckLogic(className: string) {
     const cursorData = getCursor();
     let value = false;
@@ -376,6 +379,7 @@ function hasClassNameCheckLogic(className: string) {
     return value;
 }
 
+// 글자크기 클레스 확인
 function checkHeadingClass(): string {
     let value: string = "";
 
@@ -443,6 +447,22 @@ function activeMenuEvent(count: number, e?: MouseEvent) {
 
     if (e) {
         $target = e.currentTarget as HTMLElement;
+
+        if (e.type === "mouseup") {
+            const wrap = $target.parentElement as HTMLElement;
+            const child = wrap.querySelectorAll(".d-row-block");
+            let idx: number = -1;
+
+            [...child].filter((item, count) => {
+                if (item === $target) {
+                    idx = count;
+                }
+            });
+
+            if (idx > -1) {
+                activeIdx.value = idx;
+            }
+        }
     } else {
         $target = $child.value[activeIdx.value];
     }
@@ -536,7 +556,14 @@ function pasteEvent(e: ClipboardEvent) {
 // 블럭 종류 정의
 function setComponentKind(kind: string) {
     let componentData: any;
+
     switch (kind) {
+        case "ul":
+            componentData = ulBlock;
+            break;
+        case "ol":
+            componentData = olBlock;
+            break;
         case "image":
             componentData = imageBlock;
             break;
@@ -613,8 +640,6 @@ async function moveBlock(type: string) {
         content.value.splice(targetIdx, 1, thisData);
         content.value.splice(activeIdx.value, 1, targetData);
         activeIdx.value = targetIdx;
-
-        totalKey.value += 1;
         deactiveMenuEvent();
     }
 }
@@ -654,6 +679,7 @@ function addImageBlock({ src, width, height, webp, caption }: { src: string; wid
 // 함수 내보내기
 defineExpose({
     addImageBlock,
+    dataUpdateAction,
 });
 
 /**

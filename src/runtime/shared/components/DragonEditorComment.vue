@@ -1,27 +1,17 @@
 <template>
     <div class="dragon-editor --comment">
-        <p class="d-text-block" :class="data.classList" contenteditable v-html="data.content" @keydown="textKeyboardEvent"
-            @paste="pasteEvent" ref="$block"></p>
+        <p class="d-text-block" :class="data.classList" contenteditable v-html="data.content" @keydown="textKeyboardEvent" @paste="pasteEvent" ref="$block"></p>
     </div>
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import { ref, unref } from "#imports";
-import {
-    keyboardEvent,
-    setCursor,
-    pasteText,
-    styleSettings,
-    getArrangementCursorData,
-    getClipboardData,
-    getCursor,
-    findEditableElement
-} from "../../core/utils/index";
+import { keyboardEvent, setCursor, pasteText, styleSettings, getArrangementCursorData, getClipboardData, getCursor, findEditableElement } from "../../core/utils/index";
 import { commentBlock, cursorSelection } from "../../../types/index";
 
 const $block = ref();
 const data = ref<commentBlock>({
-    type: "comment",
     classList: [],
     content: "",
 });
@@ -40,7 +30,7 @@ const blockCursorData = ref<cursorSelection>({
 data.value = unref(props.modelValue) as commentBlock;
 
 function textKeyboardEvent(e: KeyboardEvent) {
-    keyboardEvent("comment", e, emit);
+    keyboardEvent("comment", e, emit, updateBlockData);
 }
 
 function pasteEvent(e: ClipboardEvent) {
@@ -57,41 +47,74 @@ function updateBlockData() {
     // 데이터 정규화 및 검수
     const blockClassList = [...$block.value.classList];
     blockClassList.splice(0, 1);
-    const pushList = blockClassList.filter(
-        (item) => data.value.classList.indexOf(item) === -1
-    );
+    const pushList = blockClassList.filter((item) => data.value.classList.indexOf(item) === -1);
 
     data.value.classList = data.value.classList.concat(pushList);
 
     // 커서위치 재지정
     if ($block.value.innerHTML.length > 0) {
-        const cursorData = getArrangementCursorData(blockCursorData.value);
+        const preCursorData = getCursor();
 
-        data.value.content = $block.value.innerHTML;
-        emit("update:modelValue", data.value);
+        if (preCursorData.startNode !== null) {
+            const cursorData = getArrangementCursorData(blockCursorData.value);
 
-        setTimeout(() => {
-            setCursor(
-                $block.value.childNodes[cursorData.childCount],
-                cursorData.length
-            );
+            data.value.content = $block.value.innerHTML;
+            emit("update:modelValue", data.value);
 
-            // 구조 검수
-            $block.value.childNodes.forEach((child: ChildNode) => {
-                if (child.constructor.name !== "Text") { // 텍스트가 아닐경우
-                    if (child.constructor.name !== "HTMLBRElement") { // br 태그 유지
-                        if (child.textContent === "") { // 빈 태그 삭제
-                            child.remove();
-                        } else if ((child as HTMLElement).classList.length === 0) { // 클레스 없는 엘리먼트 처리
-                            (child as HTMLElement).insertAdjacentHTML("afterend", child.textContent as string);
-                            child.remove();
+            setTimeout(() => {
+                if ($block.value) {
+                    setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
+
+                    // 구조 검수
+                    $block.value.childNodes.forEach((child: ChildNode) => {
+                        const $child = child as HTMLElement;
+
+                        if (child.constructor.name !== "Text") {
+                            // 텍스트가 아닐경우
+                            if (child.constructor.name !== "HTMLBRElement") {
+                                // br 태그 유지
+                                if (child.textContent === "") {
+                                    // 빈 태그 삭제
+                                    child.remove();
+                                } else if ($child.classList.length === 0) {
+                                    // 클레스 없는 엘리먼트 처리
+                                    $child.insertAdjacentHTML("afterend", $child.innerHTML);
+                                    child.remove();
+                                }
+                            } else {
+                                $child.removeAttribute("class");
+                            }
                         }
-                    } else {
-                        (child as HTMLElement).removeAttribute("class");
-                    }
+                    });
                 }
-            });
-        }, 100);
+            }, 100);
+        } else {
+            if ($block.value) {
+                $block.value.childNodes.forEach((child: ChildNode) => {
+                    const $child = child as HTMLElement;
+
+                    if (child.constructor.name !== "Text") {
+                        // 텍스트가 아닐경우
+                        if (child.constructor.name !== "HTMLBRElement") {
+                            // br 태그 유지
+                            if (child.textContent === "") {
+                                // 빈 태그 삭제
+                                child.remove();
+                            } else if ($child.classList.length === 0) {
+                                // 클레스 없는 엘리먼트 처리
+                                $child.insertAdjacentHTML("afterend", $child.innerHTML);
+                                child.remove();
+                            }
+                        } else {
+                            $child.removeAttribute("class");
+                        }
+                    }
+                });
+
+                data.value.content = $block.value.innerHTML;
+                emit("update:modelValue", data.value);
+            }
+        }
     } else {
         emit("update:modelValue", data.value);
     }
@@ -103,15 +126,13 @@ function focus() {
 }
 
 function setStyles(kind: string, url?: string) {
-    data.value = styleSettings(
-        {
-            kind: kind,
-            blockData: data.value,
-            $target: $block.value,
-            url: url,
-            cursorData: blockCursorData.value
-        }
-    );
+    data.value = styleSettings({
+        kind: kind,
+        blockData: data.value,
+        $target: $block.value,
+        url: url,
+        cursorData: blockCursorData.value,
+    });
     setTimeout(() => {
         updateBlockData();
     }, 250);
@@ -142,7 +163,7 @@ defineExpose({
     updateBlockData,
     focus,
     setStyles,
-    getCursorClassList
+    getCursorClassList,
 });
 </script>
 

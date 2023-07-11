@@ -189,3 +189,17 @@
   color: #ccc;
   font-size: 1rem;
 }
+.dragon-editor-viewer .d-ol-block {
+  padding-left: 30px;
+  list-style: decimal;
+}
+.dragon-editor-viewer .d-ol-block .d-li-item {
+  list-style: inherit;
+}
+.dragon-editor-viewer .d-ul-block {
+  padding-left: 30px;
+  list-style: disc;
+}
+.dragon-editor-viewer .d-ul-block .d-li-item {
+  list-style: inherit;
+}

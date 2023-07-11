@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+// @ts-ignore
 import { ref, unref } from "#imports";
 import { keyboardEvent, setCursor, pasteText, styleSettings, getArrangementCursorData } from "../../utils/index";
 import { textBlock, styleFunctionArgument, cursorSelection } from "../../../../types/index";
@@ -48,16 +49,41 @@ function updateBlockData() {
 
     // 커서위치 재지정
     if ($block.value.innerHTML.length > 0) {
-        const cursorData = getArrangementCursorData(props.cursorData);
+        if (props.cursorData.endOffset !== null) {
+            const cursorData = getArrangementCursorData(props.cursorData);
 
-        data.value.content = $block.value.innerHTML;
-        emit("update:modelValue", data.value);
+            data.value.content = $block.value.innerHTML;
+            emit("update:modelValue", data.value);
 
-        setTimeout(() => {
+            setTimeout(() => {
+                if ($block.value) {
+                    setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
+
+                    // 구조 검수
+                    $block.value.childNodes.forEach((child: ChildNode) => {
+                        const $child = child as HTMLElement;
+
+                        if (child.constructor.name !== "Text") {
+                            // 텍스트가 아닐경우
+                            if (child.constructor.name !== "HTMLBRElement") {
+                                // br 태그 유지
+                                if (child.textContent === "") {
+                                    // 빈 태그 삭제
+                                    child.remove();
+                                } else if ($child.classList.length === 0) {
+                                    // 클레스 없는 엘리먼트 처리
+                                    $child.insertAdjacentHTML("afterend", $child.innerHTML);
+                                    child.remove();
+                                }
+                            } else {
+                                $child.removeAttribute("class");
+                            }
+                        }
+                    });
+                }
+            }, 100);
+        } else {
             if ($block.value) {
-                setCursor($block.value.childNodes[cursorData.childCount], cursorData.length);
-
-                // 구조 검수
                 $block.value.childNodes.forEach((child: ChildNode) => {
                     const $child = child as HTMLElement;
 
@@ -78,8 +104,11 @@ function updateBlockData() {
                         }
                     }
                 });
+
+                data.value.content = $block.value.innerHTML;
+                emit("update:modelValue", data.value);
             }
-        }, 100);
+        }
     } else {
         emit("update:modelValue", data.value);
     }
@@ -88,7 +117,13 @@ function updateBlockData() {
 // 포커스
 function focus(type: string = "first") {
     if (type === "first") {
-        setCursor($block.value, 0);
+        if ($block.value.childNodes.length > 0) {
+            setTimeout(() => {
+                setCursor($block.value.childNodes[0], 0);
+            }, 100);
+        } else {
+            setCursor($block.value, 0);
+        }
     } else {
         const childCount = $block.value.childNodes.length;
         const targetChild = $block.value.childNodes[childCount - 1];

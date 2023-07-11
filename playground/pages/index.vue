@@ -5,12 +5,7 @@
         <div class="editor">
             <DragonEditor v-model="contentData" :option="option" ref="editor" />
         </div>
-        <h1>1</h1>
-        <h2>2</h2>
-        <h3>3</h3>
-        <h4>4</h4>
-        <h5>5</h5>
-        <h6>6</h6>
+        <button @click="test">업데이트</button>
     </div>
 </template>
 
@@ -18,7 +13,18 @@
 import { ref, onMounted } from "#imports";
 
 const editor = ref();
-const contentData = ref([]);
+const contentData = ref([
+    {
+        type: "ol",
+        id: "ksadgjkl3",
+        childList: [
+            {
+                classList: [],
+                content: "123<span>3333</span>",
+            },
+        ],
+    },
+]);
 const option = {
     // blockMenu: ["text", "ol", "ul"],
     customBlockMenu: [
@@ -53,6 +59,10 @@ function addImage2() {
     });
 }
 
+function test() {
+    editor.value.dataUpdateAction();
+}
+
 onMounted(() => {
     console.log(editor);
     // console.log(editor.value.setContent(test));
@@ -60,8 +70,12 @@ onMounted(() => {
 </script>
 
 <style>
+body {
+    background: #ccc;
+}
+
 .editor {
     width: 800px;
-    padding: 100px;
+    margin: 100px auto;
 }
 </style>

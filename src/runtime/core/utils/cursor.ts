@@ -1,7 +1,8 @@
 import type { cursorSelection, arrangementCursorData } from "../../../types";
 import { findEditableElement } from "./element";
 
-export function setCursor(target: Node, idx: number) { // 노드 기준 커서 위치 설정
+export function setCursor(target: Node, idx: number) {
+    // 노드 기준 커서 위치 설정
     if (target) {
         let $target: Node;
 
@@ -26,7 +27,8 @@ export function setCursor(target: Node, idx: number) { // 노드 기준 커서 �
     }
 }
 
-export function getCursor(): cursorSelection { // 실행 시점 커서 위치 정보값 전달
+export function getCursor(): cursorSelection {
+    // 실행 시점 커서 위치 정보값 전달
     const select = window.getSelection() as Selection;
 
     return {
@@ -38,17 +40,20 @@ export function getCursor(): cursorSelection { // 실행 시점 커서 위치 �
     };
 }
 
-export function getArrangementCursorData(parentCursorData): arrangementCursorData { // Text 노드 병합 전에 병합 후 커서 위치 연산
+export function getArrangementCursorData(parentCursorData): arrangementCursorData {
+    // Text 노드 병합 전에 병합 후 커서 위치 연산
     let cursorData = getCursor();
 
-    if (cursorData.startNode === null) { // 커서위치가 올바르지 않은경우 부모의 커서 위치 사용
+    if (cursorData.startNode === null) {
+        // 커서위치가 올바르지 않은경우 부모의 커서 위치 사용
         cursorData = parentCursorData;
     }
 
     let startNode = cursorData.startNode as Node;
     let editableElement = findEditableElement(startNode) as HTMLElement;
 
-    if (editableElement === null) { // 에디터블 노드가 없는 경우 부모의 커서 위치를 사용해 재지정
+    if (editableElement === null) {
+        // 에디터블 노드가 없는 경우 부모의 커서 위치를 사용해 재지정
         cursorData = parentCursorData;
         startNode = cursorData.startNode as Node;
         editableElement = findEditableElement(startNode) as HTMLElement;
@@ -103,5 +108,5 @@ export function getArrangementCursorData(parentCursorData): arrangementCursorDat
         editableNode: editableElement,
         childCount: childIdx,
         length: childLength,
-    }
+    };
 }
