@@ -59,12 +59,11 @@ function createImageBlock(data): imageBlock {
         src: data.src,
         width: data.width,
         height: data.height,
-        webp: data.webp,
         caption: data.caption,
     };
 }
 
-// 순서 있는 리스트 블럭 생성
+// 리스트 블럭 생성
 function createlistBlock(type: string = "ul"): listBlock {
     return {
         type: type,
@@ -84,6 +83,9 @@ export function createBlock(name: string, value?: object): allBlock {
     let blockData: allBlock;
 
     switch (name) {
+        case "ul":
+            blockData = createlistBlock();
+            break;
         case "ol":
             blockData = createlistBlock("ol");
             break;
@@ -102,3 +104,4 @@ export * from "./keyboard";
 export * from "./cursor";
 export * from "./style";
 export * from "./element";
+export * from "./convertor";

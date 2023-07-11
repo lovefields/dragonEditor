@@ -1,7 +1,7 @@
 <template>
-    <ol class="d-ol-block" @keydown="textKeyboardEvent" ref="$ol" :key="updateCount">
+    <ul class="d-ul-block" @keydown="textKeyboardEvent" ref="$ul" :key="updateCount">
         <li class="d-li-item" v-for="(row, i) in data.childList" :key="i" :class="row.classList" contenteditable ref="$item" v-html="row.content"></li>
-    </ol>
+    </ul>
 </template>
 
 <script setup lang="ts">
@@ -11,7 +11,7 @@ import { cursorSelection, liItem, listBlock, styleFunctionArgument } from "../..
 import { getArrangementCursorData, setCursor, pasteText, styleSettings, keyboardEvent, getCursor, findEditableElement } from "../../utils";
 
 const updateCount = ref<number>(0);
-const $ol = ref();
+const $ul = ref();
 const $item = ref();
 const itemIdx = ref<number>(0);
 const data = ref<listBlock>({
@@ -46,7 +46,7 @@ function textKeyboardEvent(e: KeyboardEvent) {
 
 // 데이터 정규화 및 검수
 function updateBlockData() {
-    const $block = $ol.value;
+    const $block = $ul.value;
     const $childList = $block.querySelectorAll("li");
     const childData: liItem[] = [];
     const cursorData = getCursor();
@@ -97,7 +97,7 @@ function updateBlockData() {
             // 기본 로직
             itemIdx.value = childIdx;
             setTimeout(() => {
-                const afterChildList = $ol.value.querySelectorAll("li");
+                const afterChildList = $ul.value.querySelectorAll("li");
                 setCursor(afterChildList[childIdx], cursorData.startOffset as number);
             }, 100);
         } else {
@@ -109,7 +109,7 @@ function updateBlockData() {
             });
 
             setTimeout(() => {
-                const afterChildList = $ol.value.querySelectorAll("li");
+                const afterChildList = $ul.value.querySelectorAll("li");
                 setCursor(afterChildList[childIdx], cursorData.startOffset as number);
             }, 100);
         }
@@ -118,13 +118,13 @@ function updateBlockData() {
 
 // 포커스
 function focus() {
-    const childList = $ol.value.querySelectorAll(".d-li-item");
+    const childList = $ul.value.querySelectorAll(".d-li-item");
     setCursor(childList[itemIdx.value], 0);
 }
 
 // 블럭 위치 주기
 function getBoundingClientRect() {
-    return $ol.value.parentNode.getBoundingClientRect();
+    return $ul.value.parentNode.getBoundingClientRect();
 }
 
 // 타입 전달

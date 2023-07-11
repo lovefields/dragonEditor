@@ -168,6 +168,23 @@
   content: "Write text";
   color: #ccc;
 }
+.dragon-editor .d-ul-block {
+  padding-left: 30px;
+  cursor: text;
+  list-style: disc;
+}
+.dragon-editor .d-ul-block .d-li-item {
+  list-style: inherit;
+  outline: 0;
+}
+.dragon-editor .d-ul-block .d-li-item:empty {
+  min-height: 1.6em;
+}
+.dragon-editor .d-ul-block .d-li-item:empty::after {
+  display: inline;
+  content: "Write text";
+  color: #ccc;
+}
 .dragon-editor .d-image-block {
   display: flex;
   flex-direction: column;
