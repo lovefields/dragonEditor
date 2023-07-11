@@ -18,6 +18,20 @@ const contentData = ref([
     { type: "text", id: "D3ubnFyQIjYfI9YWs4x6", classList: [], content: "" },
     { type: "image", id: "FgCpjlXNZVx7KgHKjEzO", classList: ["d-align-center", "--10"], src: "https://c.pxhere.com/images/37/e4/22c0adf08932049eb1b8af36cbd7-1622414.jpg!d", width: 1200, height: 1739, webp: false, caption: undefined },
     { type: "text", id: "0ygjWGTB4V6O2dAOgkPJ", classList: [], content: 'sadfasdfsa<a href="sdafsadfsadf" rel="nofollow" class="d-deco-link">dfsdfsadfsafsafsa</a>fsafsafsafasd' },
+    { type: "ol", id: "ksadgjkl3", classList: [], childList: [{ classList: [], content: "1233333" }] },
+    {
+        type: "ul",
+        id: "YyocAhurpA4eQ5fAxlTe",
+        classList: [],
+        childList: [
+            { classList: [], content: "sdafsfksdfjkaslfj" },
+            { classList: [], content: "saklfjsaldfjsklafs" },
+            { classList: [], content: "skalfjsaklfjsadklfsafj" },
+            { classList: [], content: "afkjsladf" },
+            { classList: [], content: "jsadklfjsakldf" },
+        ],
+    },
+    { type: "text", id: "B1akIdmWYW7vshudsRMN", classList: [], content: "" },
 ]);
 </script>
 

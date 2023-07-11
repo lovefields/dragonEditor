@@ -13,7 +13,18 @@
 import { ref, onMounted } from "#imports";
 
 const editor = ref();
-const contentData = ref([]);
+const contentData = ref([
+    {
+        type: "ol",
+        id: "ksadgjkl3",
+        childList: [
+            {
+                classList: [],
+                content: "123<span>3333</span>",
+            },
+        ],
+    },
+]);
 const option = {
     // blockMenu: ["text", "ol", "ul"],
     customBlockMenu: [
@@ -48,7 +59,7 @@ function addImage2() {
     });
 }
 
-function test(){
+function test() {
     editor.value.dataUpdateAction();
 }
 

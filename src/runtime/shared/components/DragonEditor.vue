@@ -84,6 +84,7 @@ import SvgIcon from "../../core/components/SvgIcon.vue";
 import textBlock from "../../core/components/editor/TextBlock.vue";
 import imageBlock from "../../core/components/editor/ImageBlock.vue";
 import olBlock from "../../core/components/editor/OlBlock.vue";
+import ulBlock from "../../core/components/editor/UlBlock.vue";
 
 // 기본 정보
 const props = defineProps<{
@@ -92,7 +93,7 @@ const props = defineProps<{
 }>();
 const modelValue = ref<editorContentType>([]);
 const option = ref<editorOptions>({
-    blockMenu: ["text", "ol"],
+    blockMenu: ["text", "ol", "ul"],
     // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
 });
 
@@ -557,6 +558,9 @@ function setComponentKind(kind: string) {
     let componentData: any;
 
     switch (kind) {
+        case "ul":
+            componentData = ulBlock;
+            break;
         case "ol":
             componentData = olBlock;
             break;
