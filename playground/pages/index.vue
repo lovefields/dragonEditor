@@ -6,6 +6,7 @@
             <DragonEditor v-model="contentData" :option="option" ref="editor" />
         </div>
         <button @click="test">업데이트</button>
+        <button @click="addImage">이미지1!</button>
     </div>
 </template>
 
@@ -17,6 +18,7 @@ const contentData = ref([
     {
         type: "ol",
         id: "ksadgjkl3",
+        classList: [],
         childList: [
             {
                 classList: [],
@@ -64,7 +66,7 @@ function test() {
 }
 
 onMounted(() => {
-    console.log(editor);
+    // console.log(editor);
     // console.log(editor.value.setContent(test));
 });
 </script>
