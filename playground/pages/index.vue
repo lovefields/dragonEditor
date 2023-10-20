@@ -32,12 +32,12 @@ const option = {
     customBlockMenu: [
         {
             name: "Image",
-            icon: "imageBlock",
+            icon: "ImageBlock",
             action: addImage,
         },
         {
             name: "Image",
-            icon: "imageBlock",
+            icon: "ImageBlock",
             action: addImage2,
         },
     ],

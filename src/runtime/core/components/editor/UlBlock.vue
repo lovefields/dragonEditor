@@ -7,14 +7,14 @@
 <script setup lang="ts">
 // @ts-ignore
 import { ref, unref } from "#imports";
-import { cursorSelection, liItem, listBlock, styleFunctionArgument } from "../../../../types";
+import { cursorSelection, liItem, ListBlock, styleFunctionArgument } from "../../../../types";
 import { getArrangementCursorData, setCursor, pasteText, styleSettings, keyboardEvent, getCursor, findEditableElement } from "../../utils";
 
 const updateCount = ref<number>(0);
 const $ul = ref();
 const $item = ref();
 const itemIdx = ref<number>(0);
-const data = ref<listBlock>({
+const data = ref<ListBlock>({
     type: "",
     id: "",
     childList: [
@@ -24,13 +24,13 @@ const data = ref<listBlock>({
         },
     ],
 });
-const props = defineProps<{ modelValue: listBlock; cursorData: cursorSelection }>();
+const props = defineProps<{ modelValue: ListBlock; cursorData: cursorSelection }>();
 const emit = defineEmits<{
-    (e: "update:modelValue", modelValue: listBlock): void;
+    (e: "update:modelValue", modelValue: ListBlock): void;
     (e: "addBlock", {}: { name: string; value: object }): void;
     (e: "deleteBlockLocal", index?: number): void;
 }>();
-data.value = unref(props.modelValue) as listBlock;
+data.value = unref(props.modelValue) as ListBlock;
 
 if (data.value.childList.length === 0) {
 }
