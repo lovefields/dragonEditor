@@ -6,6 +6,7 @@
             <DragonEditor v-model="contentData" :option="option" ref="editor" />
         </div>
         <button @click="test">업데이트</button>
+        <button @click="change">변경!</button>
         <button @click="addImage">이미지1!</button>
     </div>
 </template>
@@ -14,18 +15,18 @@
 import { ref, onMounted } from "#imports";
 
 const editor = ref();
-const contentData = ref([
-    {
-        type: "ol",
-        id: "ksadgjkl3",
-        classList: [],
-        childList: [
-            {
-                classList: [],
-                content: "123<span>3333</span>",
-            },
-        ],
-    },
+const contentData = ref<any>([
+    // {
+    //     type: "ol",
+    //     id: "ksadgjkl3",
+    //     classList: [],
+    //     childList: [
+    //         {
+    //             classList: [],
+    //             content: "123<span>3333</span>",
+    //         },
+    //     ],
+    // },
 ]);
 const option = {
     // blockMenu: ["text", "ol", "ul"],
@@ -42,6 +43,16 @@ const option = {
         },
     ],
 };
+
+function change() {
+    contentData.value = [
+        {
+            type: "text",
+            classList: [],
+            content: "31312312313",
+        },
+    ];
+}
 
 function addImage() {
     editor.value.addImageBlock({

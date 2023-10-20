@@ -22,6 +22,7 @@ export interface editorOptions {
     blockMenu?: string[];
     customBlockMenu?: userCustomMenu[];
     customStyleMenu?: userStyleMenu[];
+    medaiURL?: string;
 }
 
 export type allBlock = TextBlock | ImageBlock | ListBlock | OtherBlock;
@@ -31,7 +32,6 @@ export type EditorContentType = allBlock[];
 // Block types
 export interface TextBlock {
     type: string;
-    id: string;
     classList: string[];
     content: string;
 }
@@ -43,7 +43,6 @@ export interface commentBlock {
 
 export interface ImageBlock {
     type: string;
-    id: string;
     classList: string[];
     src: string;
     width: number;
@@ -58,7 +57,6 @@ export interface liItem {
 
 export interface ListBlock {
     type: string;
-    id: string;
     classList: string[];
     childList: liItem[];
 }
