@@ -23,11 +23,11 @@
 // @ts-ignore
 import { ref, unref } from "#imports";
 import { keyboardEvent, pasteText, styleSettings } from "../../utils/index";
-import { imageBlock, cursorSelection, styleFunctionArgument } from "../../../../types/index";
+import { ImageBlock, cursorSelection, styleFunctionArgument } from "../../../../types/index";
 
 const $block = ref();
 const $caption = ref();
-const data = ref<imageBlock>({
+const data = ref<ImageBlock>({
     type: "",
     id: "",
     classList: [],
@@ -37,14 +37,14 @@ const data = ref<imageBlock>({
     webp: false,
     caption: "",
 });
-const props = defineProps<{ modelValue: imageBlock; cursorData: cursorSelection }>();
+const props = defineProps<{ modelValue: ImageBlock; cursorData: cursorSelection }>();
 const emit = defineEmits<{
-    (e: "update:modelValue", modelValue: imageBlock): void;
+    (e: "update:modelValue", modelValue: ImageBlock): void;
     (e: "addBlock", name: string): void;
     (e: "deleteBlockLocal", index?: number): void;
 }>();
 
-data.value = unref(props.modelValue) as imageBlock;
+data.value = unref(props.modelValue) as ImageBlock;
 
 /**
  * 내부 상수

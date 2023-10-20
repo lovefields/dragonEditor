@@ -1,4 +1,4 @@
-import { textBlock, allBlock, imageBlock, listBlock } from "../../../types/index";
+import { TextBlock, allBlock, ImageBlock, ListBlock } from "../../../types/index";
 
 // 난수 아이디 생성
 function generateId() {
@@ -13,7 +13,7 @@ function generateId() {
 }
 
 // 텍스트 블럭 생성
-function createTextBlock(data?: { classList: []; content: string }): textBlock {
+function createTextBlock(data?: { classList: []; content: string }): TextBlock {
     if (data) {
         return {
             type: "text",
@@ -32,7 +32,7 @@ function createTextBlock(data?: { classList: []; content: string }): textBlock {
 }
 
 // 이미지 블럭 생성
-function createImageBlock(data): imageBlock {
+function createImageBlock(data): ImageBlock {
     const totalSize = data.width + data.height;
     const w = Math.round((100 / totalSize) * data.width);
     const h = Math.round((100 / totalSize) * data.height);
@@ -64,7 +64,7 @@ function createImageBlock(data): imageBlock {
 }
 
 // 리스트 블럭 생성
-function createlistBlock(type: string = "ul"): listBlock {
+function createListBlock(type: string = "ul"): ListBlock {
     return {
         type: type,
         id: generateId(),
@@ -84,10 +84,10 @@ export function createBlock(name: string, value?: object): allBlock {
 
     switch (name) {
         case "ul":
-            blockData = createlistBlock();
+            blockData = createListBlock();
             break;
         case "ol":
-            blockData = createlistBlock("ol");
+            blockData = createListBlock("ol");
             break;
         case "image":
             blockData = createImageBlock(value);
@@ -104,4 +104,3 @@ export * from "./keyboard";
 export * from "./cursor";
 export * from "./style";
 export * from "./element";
-export * from "./convertor";

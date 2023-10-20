@@ -1,15 +1,15 @@
 // default
 import { h, defineComponent, ref } from "vue";
 import { createBlock, getClipboardData, getCursor } from "../../core/utils";
-import type { editorOptions, editorMenu, editorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
+import type { editorOptions, editorMenu, EditorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
 
 // style
 import "../../core/style/common.css";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon";
-import textBlock from "../../core/components/editor/TextBlock.vue";
-import imageBlock from "../../core/components/editor/ImageBlock.vue";
+import TextBlock from "../../core/components/editor/TextBlock.vue";
+import ImageBlock from "../../core/components/editor/ImageBlock.vue";
 import olBlock from "../../core/components/editor/OlBlock.vue";
 import ulBlock from "../../core/components/editor/UlBlock.vue";
 
@@ -19,12 +19,12 @@ export default defineComponent({
     emits: ["update:modelValue"],
     setup: (
         props: {
-            readonly modelValue: editorContentType;
+            readonly modelValue: EditorContentType;
             readonly option?: editorOptions;
         },
         ctx
     ) => {
-        const modelValue = ref<editorContentType>([]);
+        const modelValue = ref<EditorContentType>([]);
         const option = ref<editorOptions>({
             blockMenu: ["text", "ol", "ul"],
             // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
@@ -42,7 +42,7 @@ export default defineComponent({
         testNode.type = "p";
         console.log("testNode", testNode);
 
-        function addImageBlock({ src, width, height, webp, caption }: { src: string; width: number; height: number; webp: boolean; caption?: string }) {
+        function addImageBlock({ src, width, height, caption = "" }: { src: string; width: number; height: number; caption: string }) {
             console.log("addImage");
             // addBlockLocal({
             //     name: "image",
@@ -50,7 +50,6 @@ export default defineComponent({
             //         src: src,
             //         width: width,
             //         height: height,
-            //         webp: webp,
             //         caption: caption,
             //     },
             // });

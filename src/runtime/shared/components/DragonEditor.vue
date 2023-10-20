@@ -77,21 +77,21 @@
 // @ts-ignore
 import { ref, unref, onMounted } from "#imports";
 import { createBlock, getClipboardData, getCursor } from "../../core/utils";
-import type { editorOptions, editorMenu, editorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
+import type { editorOptions, editorMenu, EditorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
 
 // components
 import SvgIcon from "../../core/components/SvgIcon.vue";
-import textBlock from "../../core/components/editor/TextBlock.vue";
-import imageBlock from "../../core/components/editor/ImageBlock.vue";
+import TextBlock from "../../core/components/editor/TextBlock.vue";
+import ImageBlock from "../../core/components/editor/ImageBlock.vue";
 import olBlock from "../../core/components/editor/OlBlock.vue";
 import ulBlock from "../../core/components/editor/UlBlock.vue";
 
 // 기본 정보
 const props = defineProps<{
-    modelValue: editorContentType;
+    modelValue: EditorContentType;
     option?: editorOptions;
 }>();
-const modelValue = ref<editorContentType>([]);
+const modelValue = ref<EditorContentType>([]);
 const option = ref<editorOptions>({
     blockMenu: ["text", "ol", "ul"],
     // blockMenu: ["text", "ol", "ul", "table", "quotation"], // TODO : 다른 블럭 만들기
@@ -106,7 +106,7 @@ if (props.option) {
 }
 
 const emit = defineEmits<{
-    (e: "update:modelValue", modelValue: editorContentType): void;
+    (e: "update:modelValue", modelValue: EditorContentType): void;
 }>();
 
 // 내부 데이터
@@ -122,10 +122,10 @@ const linkBoxPosition = ref({
     top: 0,
     left: 0,
 });
-const iconList = ["textBlock", "imageBlock", "ulBlock", "olBlock", "quotationBlock", "tableBlock"];
+const iconList = ["TextBlock", "ImageBlock", "ulBlock", "olBlock", "quotationBlock", "tableBlock"];
 const blockMenu = ref<editorMenu[]>([]);
 const customStyleMenu = ref<userStyleMenu[]>([]);
-const content = ref<editorContentType>([]);
+const content = ref<EditorContentType>([]);
 const activeIdx = ref<number>(0);
 const focusIdx = ref<number>(0);
 const linkValue = ref<string>("");
@@ -565,10 +565,10 @@ function setComponentKind(kind: string) {
             componentData = olBlock;
             break;
         case "image":
-            componentData = imageBlock;
+            componentData = ImageBlock;
             break;
         case "text":
-            componentData = textBlock;
+            componentData = TextBlock;
     }
 
     return componentData;

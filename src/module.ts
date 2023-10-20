@@ -24,7 +24,7 @@ export default defineNuxtModule({
 
         addComponent({
             name: 'DragonEditorViewer',
-            filePath: resolver.resolve('./runtime/shared/components/DragonEditorViewer')
+            filePath: resolver.resolve('./runtime/shared/components/DragonEditorViewer.ts')
         });
     }
 })
