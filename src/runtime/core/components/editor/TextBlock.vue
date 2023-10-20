@@ -6,23 +6,23 @@
 // @ts-ignore
 import { ref, unref } from "#imports";
 import { keyboardEvent, setCursor, pasteText, styleSettings, getArrangementCursorData } from "../../utils/index";
-import { textBlock, styleFunctionArgument, cursorSelection } from "../../../../types/index";
+import { TextBlock, styleFunctionArgument, cursorSelection } from "../../../../types/index";
 
 const $block = ref();
-const data = ref<textBlock>({
+const data = ref<TextBlock>({
     type: "",
     id: "",
     classList: [],
     content: "",
 });
-const props = defineProps<{ modelValue: textBlock; cursorData: cursorSelection }>();
+const props = defineProps<{ modelValue: TextBlock; cursorData: cursorSelection }>();
 const emit = defineEmits<{
-    (e: "update:modelValue", modelValue: textBlock): void;
+    (e: "update:modelValue", modelValue: TextBlock): void;
     (e: "addBlock", {}: { name: string; value: object }): void;
     (e: "deleteBlockLocal", index?: number): void;
 }>();
 
-data.value = unref(props.modelValue) as textBlock;
+data.value = unref(props.modelValue) as TextBlock;
 
 // 키보드 이벤트 할당
 function textKeyboardEvent(e: KeyboardEvent) {
