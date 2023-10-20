@@ -122,7 +122,7 @@ editor.value.updateBlockData();
 editor.value.focus();
 ```
 
-### 뷰어
+### Viewer
 
 ```vue
 <tempalte>
@@ -130,9 +130,15 @@ editor.value.focus();
 </tempalte>
 
 <script setup lang="ts">
-const contentData = ref([]); // 에디터로 저장한 데이터
+const contentData = ref([]); // Save Data for Editor
 </script>
 ```
+
+#### Props
+
+- content : This props is must be Array in Editor data.
+- mediaURL (Option) : This props is pre URL in Media.
+
 
 <!-- ## 데모 페이지
 

@@ -166,7 +166,8 @@
         background: transparent;
         transition: background 0.25s ease;
 
-        &:hover {
+        &:hover,
+        &.--active {
             background: #fafafa;
         }
     }
