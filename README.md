@@ -34,8 +34,7 @@
 # DragonEditor
 
 드래곤 에디터는 그냥 블로그에 쓸 이지윅 에디터가 필요해서 만들었습니다.<br>
-커스터마이징이 가능하며 AMP 페이지를 지원합니다.<br>
-2.0 기점으로 Nuxt.js만 지원합니다.
+커스터마이징이 가능하며 Nuxt.js만 지원합니다.
 
 ## 사용법
 
@@ -70,7 +69,7 @@ editor.value.addImageBlock({
 
 ```typescript
 editor.value.updateBlockData();
-// do somthing
+// do save
 ```
 
 ### 코멘트
@@ -83,7 +82,6 @@ editor.value.updateBlockData();
 <script setup lang="ts">
 const editor = ref();
 const commentData = ref({
-    type: "comment",
     classList: [],
     content: "",
 });
@@ -115,7 +113,7 @@ editor.value.setStyles("decorationBold");
 
 ```typescript
 editor.value.updateBlockData();
-// do somthing
+// do save
 ```
 
 3. 포커스
@@ -124,7 +122,7 @@ editor.value.updateBlockData();
 editor.value.focus();
 ```
 
-### 뷰어
+### Viewer
 
 ```vue
 <tempalte>
@@ -132,9 +130,15 @@ editor.value.focus();
 </tempalte>
 
 <script setup lang="ts">
-const contentData = ref([]); // 에디터로 저장한 데이터
+const contentData = ref([]); // Save Data for Editor
 </script>
 ```
+
+#### Props
+
+- content : This props is must be Array in Editor data.
+- mediaURL (Option) : This props is pre URL in Media.
+
 
 <!-- ## 데모 페이지
 

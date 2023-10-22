@@ -7,9 +7,14 @@ export default defineNuxtModule({
     setup(options, nuxt) {
         const resolver = createResolver(import.meta.url)
 
+        // addComponent({
+        //     name: 'DragonEditor',
+        //     filePath: resolver.resolve('./runtime/shared/components/DragonEditor')
+        // });
+
         addComponent({
             name: 'DragonEditor',
-            filePath: resolver.resolve('./runtime/shared/components/DragonEditor')
+            filePath: resolver.resolve('./runtime/shared/components/DragonEditor.ts')
         });
 
         addComponent({
@@ -19,7 +24,7 @@ export default defineNuxtModule({
 
         addComponent({
             name: 'DragonEditorViewer',
-            filePath: resolver.resolve('./runtime/shared/components/DragonEditorViewer')
+            filePath: resolver.resolve('./runtime/shared/components/DragonEditorViewer.ts')
         });
     }
 })

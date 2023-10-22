@@ -136,7 +136,7 @@
   background: transparent;
   transition: background 0.25s ease;
 }
-.dragon-editor .d-row-block:hover {
+.dragon-editor .d-row-block:hover, .dragon-editor .d-row-block.--active {
   background: #fafafa;
 }
 .dragon-editor .d-text-block {
