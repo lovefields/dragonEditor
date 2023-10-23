@@ -80,7 +80,7 @@ import { createBlock, getClipboardData, getCursor } from "../../core/utils";
 import type { editorOptions, editorMenu, EditorContentType, userCustomMenu, userStyleMenu, cursorSelection } from "../../../types/index";
 
 // components
-import SvgIcon from "../../core/components/SvgIcon.vue";
+import SvgIcon from "../../core/components/SvgIcon";
 import TextBlock from "../../core/components/editor/TextBlock.vue";
 import ImageBlock from "../../core/components/editor/ImageBlock.vue";
 import olBlock from "../../core/components/editor/OlBlock.vue";

@@ -1,30 +1,30 @@
-import { defineNuxtModule, createResolver, addComponent } from "@nuxt/kit"
+import { defineNuxtModule, createResolver, addComponent } from "@nuxt/kit";
 
 export default defineNuxtModule({
     meta: {
         name: "dragon-editor",
     },
     setup(options, nuxt) {
-        const resolver = createResolver(import.meta.url)
-
-        // addComponent({
-        //     name: 'DragonEditor',
-        //     filePath: resolver.resolve('./runtime/shared/components/DragonEditor')
-        // });
+        const resolver = createResolver(import.meta.url);
 
         addComponent({
-            name: 'DragonEditor',
-            filePath: resolver.resolve('./runtime/shared/components/DragonEditor')
+            name: "DragonEditor",
+            filePath: resolver.resolve("./runtime/shared/components/DragonEditor"),
         });
 
         addComponent({
-            name: 'DragonEditorComment',
-            filePath: resolver.resolve('./runtime/shared/components/DragonEditorComment')
+            name: "DragonEditorNew",
+            filePath: resolver.resolve("./runtime/shared/components/DragonEditorNew"),
         });
 
         addComponent({
-            name: 'DragonEditorViewer',
-            filePath: resolver.resolve('./runtime/shared/components/DragonEditorViewer')
+            name: "DragonEditorComment",
+            filePath: resolver.resolve("./runtime/shared/components/DragonEditorComment"),
         });
-    }
-})
+
+        addComponent({
+            name: "DragonEditorViewer",
+            filePath: resolver.resolve("./runtime/shared/components/DragonEditorViewer"),
+        });
+    },
+});
