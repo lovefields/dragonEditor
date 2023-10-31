@@ -23,7 +23,7 @@
 // @ts-ignore
 import { ref, unref } from "#imports";
 import { keyboardEvent, pasteText, styleSettings } from "../../utils/index";
-import { ImageBlock, cursorSelection, styleFunctionArgument } from "../../../../types/index";
+import { ImageBlock, CursorSelection, styleFunctionArgument } from "../../../../types/index";
 
 const $block = ref();
 const $caption = ref();
@@ -37,7 +37,7 @@ const data = ref<ImageBlock>({
     webp: false,
     caption: "",
 });
-const props = defineProps<{ modelValue: ImageBlock; cursorData: cursorSelection }>();
+const props = defineProps<{ modelValue: ImageBlock; cursorData: CursorSelection }>();
 const emit = defineEmits<{
     (e: "update:modelValue", modelValue: ImageBlock): void;
     (e: "addBlock", name: string): void;

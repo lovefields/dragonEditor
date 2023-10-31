@@ -18,20 +18,29 @@ export interface userStyleMenu {
     action: Function;
 }
 
-export interface editorOptions {
+export interface EditorOptions {
     blockMenu?: string[];
     customBlockMenu?: userCustomMenu[];
     customStyleMenu?: userStyleMenu[];
     medaiURL?: string;
 }
 
-export type allBlock = TextBlock | ImageBlock | ListBlock | OtherBlock;
+// data types
+export interface ImageCreateData {
+    src: string;
+    width: number;
+    height: number;
+    caption?: string;
+}
 
-export type EditorContentType = allBlock[];
+export type AllBlock = TextBlock | ImageBlock | ListBlock | OtherBlock;
+
+export type EditorContentType = AllBlock[];
 
 // Block types
 export interface TextBlock {
     type: string;
+    key?: string;
     classList: string[];
     content: string;
 }
@@ -42,6 +51,7 @@ export interface commentBlock {
 }
 
 export interface ImageBlock {
+    key?: string;
     type: string;
     classList: string[];
     src: string;
@@ -57,17 +67,19 @@ export interface liItem {
 
 export interface ListBlock {
     type: string;
+    key?: string;
     classList: string[];
     childList: liItem[];
 }
 
 export interface OtherBlock {
     type: string;
+    key?: string;
     innerHTML: string;
 }
 
 // detail type
-export interface cursorSelection {
+export interface CursorSelection {
     type: string; // "Caret" | "Range";
     startNode: Node | null;
     startOffset: number | null;
@@ -97,8 +109,8 @@ export interface styleFunctionArgument {
 
 export interface styleUtilArgument {
     kind: string;
-    blockData: allBlock;
+    blockData: AllBlock;
     $target: HTMLElement;
     url?: string;
-    cursorData: cursorSelection;
+    cursorData: CursorSelection;
 }

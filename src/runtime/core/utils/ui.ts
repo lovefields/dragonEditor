@@ -1,8 +1,9 @@
-import { h } from "vue";
+import { h, ref } from "vue";
+import store from "../../core/store/editorStore";
 import type { EditorContentType, TextBlock, ImageBlock, ListBlock, OtherBlock } from "../../../types/index";
 
-export function createLeftMenu(modelValue: EditorContentType, top: number, isActive: boolean) {
-    console.log(modelValue);
+export function createLeftMenu() {
+    console.log(store.editorData.value);
     // <div class="d-left-menu" :class="{ '--active': activeMenu }" :style="{ top: `${leftMenuPosition}px` }">
     //         <div class="d-add-block">
     //             <button class="d-btn-menu-pop" @click="toggleBlockAddMenu"></button>
@@ -28,13 +29,14 @@ export function createLeftMenu(modelValue: EditorContentType, top: number, isAct
     //     </div>
 
     return h("div", {
-        class: ["d-left-menu", { "--active": isActive }],
-        onClick: () => {
-            test();
+        class: [
+            "d-left-menu",
+            {
+                "--active": store.leftMenuActive.value,
+            },
+        ],
+        style: {
+            top: `${store.leftMenuTop.value}px`,
         },
     });
-
-    function test() {
-        modelValue = [{ type: "text", classList: [], content: "123" }];
-    }
 }
