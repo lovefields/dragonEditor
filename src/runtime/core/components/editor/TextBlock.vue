@@ -6,7 +6,7 @@
 // @ts-ignore
 import { ref, unref } from "#imports";
 import { keyboardEvent, setCursor, pasteText, styleSettings, getArrangementCursorData } from "../../utils/index";
-import { TextBlock, styleFunctionArgument, cursorSelection } from "../../../../types/index";
+import { TextBlock, styleFunctionArgument, CursorSelection } from "../../../../types/index";
 
 const $block = ref();
 const data = ref<TextBlock>({
@@ -15,7 +15,7 @@ const data = ref<TextBlock>({
     classList: [],
     content: "",
 });
-const props = defineProps<{ modelValue: TextBlock; cursorData: cursorSelection }>();
+const props = defineProps<{ modelValue: TextBlock; cursorData: CursorSelection }>();
 const emit = defineEmits<{
     (e: "update:modelValue", modelValue: TextBlock): void;
     (e: "addBlock", {}: { name: string; value: object }): void;

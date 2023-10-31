@@ -334,7 +334,6 @@
   left: 10px;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.25s ease;
   z-index: 100;
 }
 .dragon-editor .d-left-menu.--active {

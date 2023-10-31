@@ -3,7 +3,7 @@
         Editor!
 
         <div class="editor">
-            <DragonEditor v-model="contentData" :option="option" ref="editor" />
+            <DragonEditorNew v-model="contentData" :option="option" ref="editor" />
         </div>
         <button @click="test">업데이트</button>
         <button @click="change">변경!</button>
@@ -18,7 +18,6 @@ const editor = ref();
 const contentData = ref<any>([
     // {
     //     type: "ol",
-    //     id: "ksadgjkl3",
     //     classList: [],
     //     childList: [
     //         {
@@ -26,6 +25,11 @@ const contentData = ref<any>([
     //             content: "123<span>3333</span>",
     //         },
     //     ],
+    // },
+    // {
+    //     type: "text",
+    //     classList: [],
+    //     content: "",
     // },
 ]);
 const option = {
@@ -59,7 +63,6 @@ function addImage() {
         src: "https://worldanimalfoundation.org/wp-content/uploads/2022/12/Choose-the-Proper-Location-at-First-review.jpg",
         width: 700,
         height: 474,
-        webp: true,
     });
 }
 
@@ -68,7 +71,6 @@ function addImage2() {
         src: "https://c.pxhere.com/images/37/e4/22c0adf08932049eb1b8af36cbd7-1622414.jpg!d",
         width: 1200,
         height: 1739,
-        webp: false,
     });
 }
 

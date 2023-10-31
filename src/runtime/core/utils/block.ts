@@ -1,30 +1,16 @@
-import type { TextBlock, allBlock, ImageBlock, ListBlock } from "../../../types/index";
-
-// 난수 아이디 생성
-export function generateId() {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let str = "";
-
-    for (let i = 0; i < 20; i++) {
-        str += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return str;
-}
+import type { TextBlock, AllBlock, ImageBlock, ListBlock, ImageCreateData } from "../../../types/index";
 
 // 텍스트 블럭 생성
-function createTextBlock(data?: { classList: []; content: string }): TextBlock {
-    if (data) {
+export function createTextBlock(data?: { classList: []; content: string }): TextBlock {
+    if (data !== undefined) {
         return {
             type: "text",
-            id: generateId(),
             classList: data.classList,
             content: data.content,
         };
     } else {
         return {
             type: "text",
-            id: generateId(),
             classList: [],
             content: "",
         };
@@ -32,7 +18,7 @@ function createTextBlock(data?: { classList: []; content: string }): TextBlock {
 }
 
 // 이미지 블럭 생성
-function createImageBlock(data): ImageBlock {
+export function createImageBlock(data: ImageCreateData): ImageBlock {
     const totalSize = data.width + data.height;
     const w = Math.round((100 / totalSize) * data.width);
     const h = Math.round((100 / totalSize) * data.height);
@@ -54,12 +40,11 @@ function createImageBlock(data): ImageBlock {
 
     return {
         type: "image",
-        id: generateId(),
         classList: classList,
         src: data.src,
         width: data.width,
         height: data.height,
-        caption: data.caption,
+        caption: data.caption ?? "",
     };
 }
 
@@ -67,7 +52,6 @@ function createImageBlock(data): ImageBlock {
 function createListBlock(type: string = "ul"): ListBlock {
     return {
         type: type,
-        id: generateId(),
         classList: [],
         childList: [
             {
@@ -78,24 +62,24 @@ function createListBlock(type: string = "ul"): ListBlock {
     };
 }
 
-// 블럭 생성 함수
-export function createBlock(name: string, value?: object): allBlock {
-    let blockData: allBlock;
+// // 블럭 생성 함수
+// export function createBlock(name: string, value?: object): AllBlock {
+//     let blockData: AllBlock;
 
-    switch (name) {
-        case "ul":
-            blockData = createListBlock();
-            break;
-        case "ol":
-            blockData = createListBlock("ol");
-            break;
-        case "image":
-            blockData = createImageBlock(value);
-            break;
-        default:
-            // @ts-ignore | 값의 유동성에 의해 너무 많은 타입을 가지고 있음.
-            blockData = createTextBlock(value);
-    }
+//     switch (name) {
+//         case "ul":
+//             blockData = createListBlock();
+//             break;
+//         case "ol":
+//             blockData = createListBlock("ol");
+//             break;
+//         case "image":
+//             blockData = createImageBlock(value);
+//             break;
+//         default:
+//             // @ts-ignore | 값의 유동성에 의해 너무 많은 타입을 가지고 있음.
+//             blockData = createTextBlock(value);
+//     }
 
-    return blockData;
-}
+//     return blockData;
+// }
