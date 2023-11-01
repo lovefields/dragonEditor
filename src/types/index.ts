@@ -81,9 +81,9 @@ export interface OtherBlock {
 // detail type
 export interface CursorSelection {
     type: string; // "Caret" | "Range";
-    startNode: Node | null;
+    startNode: string | null;
     startOffset: number | null;
-    endNode: Node | null;
+    endNode: string | null;
     endOffset: number | null;
 }
 

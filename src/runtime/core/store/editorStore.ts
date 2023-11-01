@@ -65,7 +65,10 @@ class DragonEditorStore {
         });
 
         this.emit("update:modelValue", exportData);
-        setCursorToView();
+        // 데이터 업데이트에 의한 딜레이 설정
+        setTimeout(() => {
+            setCursorToView();
+        });
     }
 }
 
