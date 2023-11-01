@@ -696,7 +696,6 @@ export function keyboardEvent(e: KeyboardEvent, type: string, idx: number) {
         case "Enter":
             e.preventDefault();
             enterEvent(type, idx);
-            console.log("Enter event");
             break;
         case "ArrowUp":
             e.preventDefault();
@@ -716,12 +715,14 @@ export function keyboardEvent(e: KeyboardEvent, type: string, idx: number) {
             break;
         default:
             defaultEvent(e, type, idx);
-            console.log(e);
     }
 }
 
 // 엔터 이벤트
-function enterEvent(type: string, idx: number) {}
+function enterEvent(type: string, idx: number) {
+    console.log("type", type);
+    console.log("Enter event");
+}
 
 // 기본 이벤트
 let defaultEventFn: NodeJS.Timeout;
@@ -735,8 +736,9 @@ function defaultEvent(e: KeyboardEvent, type: string, idx: number) {
                 const pTag = $target as HTMLParagraphElement;
 
                 (store.editorData.value[idx] as TextBlock).content = pTag.innerHTML;
+                (store.editorData.value[idx] as TextBlock).classList = [...pTag.classList].splice(1);
                 store.updateModelValue();
                 break;
         }
-    }, 250);
+    }, 1000);
 }
