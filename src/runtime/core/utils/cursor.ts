@@ -1,6 +1,40 @@
-import store from "../../core/store/editorStore";
 import type { CursorSelection, arrangementCursorData } from "../../../types";
-import { findEditableElement } from "./element";
+import store from "../../core/store/editorStore";
+
+// 커서 위치 설정
+export function setCursorData() {
+    const data: CursorSelection = {
+        type: "",
+        startNode: null,
+        startOffset: null,
+        endNode: null,
+        endOffset: null,
+    };
+
+    if (store.windowObject !== undefined) {
+        const select: Selection | null = store.windowObject.getSelection();
+
+        if (select !== null) {
+            data.type = select.type;
+            data.startOffset = select.anchorOffset;
+            data.endOffset = select.focusOffset;
+
+            if ((select.anchorNode as Node).constructor.name === "Text") {
+                data.startNode = (select.anchorNode as Node).textContent;
+            } else {
+                data.startNode = (select.anchorNode as HTMLElement).outerHTML;
+            }
+
+            if ((select.focusNode as Node).constructor.name === "Text") {
+                data.endNode = (select.focusNode as Node).textContent;
+            } else {
+                data.endNode = (select.focusNode as HTMLElement).outerHTML;
+            }
+        }
+    }
+
+    store.selection = data;
+}
 
 // 화면에 커서 부여
 export function setCursorToView() {
@@ -95,41 +129,6 @@ export function setCursorToView() {
             }
         }
     }
-}
-
-// 커서 위치 설정
-export function setCursorData() {
-    const data: CursorSelection = {
-        type: "",
-        startNode: null,
-        startOffset: null,
-        endNode: null,
-        endOffset: null,
-    };
-
-    if (store.windowObject !== undefined) {
-        const select: Selection | null = store.windowObject.getSelection();
-
-        if (select !== null) {
-            data.type = select.type;
-            data.startOffset = select.anchorOffset;
-            data.endOffset = select.focusOffset;
-
-            if ((select.anchorNode as Node).constructor.name === "Text") {
-                data.startNode = (select.anchorNode as Node).textContent;
-            } else {
-                data.startNode = (select.anchorNode as HTMLElement).outerHTML;
-            }
-
-            if ((select.focusNode as Node).constructor.name === "Text") {
-                data.endNode = (select.focusNode as Node).textContent;
-            } else {
-                data.endNode = (select.focusNode as HTMLElement).outerHTML;
-            }
-        }
-    }
-
-    store.selection = data;
 }
 
 // export function getArrangementCursorData(parentCursorData): arrangementCursorData {

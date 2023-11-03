@@ -1,16 +1,19 @@
 import type { TextBlock, AllBlock, ImageBlock, ListBlock, ImageCreateData } from "../../../types/index";
+import { generateId } from "./key";
 
 // 텍스트 블럭 생성
 export function createTextBlock(data?: { classList: []; content: string }): TextBlock {
     if (data !== undefined) {
         return {
             type: "text",
+            key: generateId(),
             classList: data.classList,
             content: data.content,
         };
     } else {
         return {
             type: "text",
+            key: generateId(),
             classList: [],
             content: "",
         };
@@ -41,6 +44,7 @@ export function createImageBlock(data: ImageCreateData): ImageBlock {
     return {
         type: "image",
         classList: classList,
+        key: generateId(),
         src: data.src,
         width: data.width,
         height: data.height,

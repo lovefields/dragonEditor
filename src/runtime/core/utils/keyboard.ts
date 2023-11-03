@@ -1,6 +1,7 @@
 import store from "../../core/store/editorStore";
 import { setCursorData, setCursorToView } from "./cursor";
 import { findEditableElement, findChildNumber, findLiElement } from "./element";
+import { createTextBlock } from "./block";
 // import { getTagName } from "./style";
 import type { EditorContentType, TextBlock, ImageBlock, ListBlock, OtherBlock, AllBlock } from "../../../types/index";
 
@@ -691,11 +692,25 @@ import type { EditorContentType, TextBlock, ImageBlock, ListBlock, OtherBlock, A
 // }
 
 // 모든 키보드 이벤트 시작점
+let enterCount: number = 0;
 export function keyboardEvent(e: KeyboardEvent, type: string, idx: number) {
     switch (e.code) {
         case "Enter":
-            e.preventDefault();
-            enterEvent(type, idx);
+            if (enterCount === 0) {
+                if (type === "codeblock") {
+                    // TODO : 코드블럭 엔터처리
+                } else {
+                    e.preventDefault();
+                    enterEvent(type, idx);
+                }
+            } else {
+                e.preventDefault();
+            }
+
+            enterCount += 1;
+            setTimeout(() => {
+                enterCount = 0;
+            }, 150);
             break;
         case "ArrowUp":
             e.preventDefault();
@@ -720,8 +735,11 @@ export function keyboardEvent(e: KeyboardEvent, type: string, idx: number) {
 
 // 엔터 이벤트
 function enterEvent(type: string, idx: number) {
+    store.editorData.value.splice(idx + 1, 0, createTextBlock());
     console.log("type", type);
+    console.log(store.rowList);
     console.log("Enter event");
+    store.editorKey.value += 1;
 }
 
 // 기본 이벤트
@@ -737,7 +755,7 @@ function defaultEvent(e: KeyboardEvent, type: string, idx: number) {
 
                 (store.editorData.value[idx] as TextBlock).content = pTag.innerHTML;
                 (store.editorData.value[idx] as TextBlock).classList = [...pTag.classList].splice(1);
-                store.updateModelValue();
+                // store.updateModelValue();
                 break;
         }
     }, 1000);
