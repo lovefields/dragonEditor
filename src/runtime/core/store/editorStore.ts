@@ -10,6 +10,8 @@ class DragonEditorStore {
     });
     emit: any;
     windowObject: Window | undefined;
+    rowList = ref<any[]>([]);
+    editorKey = ref<number>(0);
 
     // ui value
     editorWrapInfo = ref<DOMRect>({
@@ -35,41 +37,6 @@ class DragonEditorStore {
         endNode: null,
         endOffset: null,
     };
-
-    // option setting function
-    setOption(userValue: EditorOptions) {
-        if (userValue.blockMenu !== undefined) {
-            this.option.value.blockMenu = userValue.blockMenu;
-        }
-
-        if (userValue.customBlockMenu !== undefined) {
-            this.option.value.customBlockMenu = userValue.customBlockMenu;
-        }
-
-        if (userValue.customStyleMenu !== undefined) {
-            this.option.value.customStyleMenu = userValue.customStyleMenu;
-        }
-
-        if (userValue.medaiURL !== undefined) {
-            this.option.value.medaiURL = userValue.medaiURL;
-        }
-    }
-
-    updateModelValue() {
-        setCursorData();
-        const exportData: EditorContentType[] = [];
-
-        this.editorData.value.forEach((item: any) => {
-            delete item.key;
-            exportData.push(item);
-        });
-
-        this.emit("update:modelValue", exportData);
-        // 데이터 업데이트에 의한 딜레이 설정
-        setTimeout(() => {
-            setCursorToView();
-        });
-    }
 }
 
 export default new DragonEditorStore();

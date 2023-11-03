@@ -215,6 +215,7 @@ export function convertWriteBlock() {
                 {
                     class: ["d-row-block"],
                     key: row.key,
+                    ref: store.rowList,
                     // active left menu & set left menu top value
                     onMouseenter(e: Event) {
                         const $target = e.currentTarget as HTMLDivElement;

@@ -1,7 +1,7 @@
 // default
-import { h, defineComponent, ref, onMounted, watch } from "vue";
 import store from "../../core/store/editorStore";
-import { convertWriteBlock, createLeftMenu, createTextBlock, createImageBlock, convertLocalData } from "../../core/utils";
+import { h, defineComponent, ref, onMounted, watch } from "vue";
+import { convertWriteBlock, createLeftMenu, createTextBlock, createImageBlock, convertLocalData, updateModelValue, setOption } from "../../core/utils";
 import type { EditorOptions, ImageCreateData, EditorContentType, AllBlock, CursorSelection } from "../../../types/index";
 
 // style
@@ -29,7 +29,7 @@ export default defineComponent({
         const $editorWrap = ref<any>();
 
         if (props.option !== undefined) {
-            store.setOption(props.option);
+            setOption(props.option);
         }
 
         store.emit = ctx.emit;
@@ -41,15 +41,18 @@ export default defineComponent({
             if (targetData && Array.isArray(targetData)) {
                 if (targetData.length == 0) {
                     store.editorData.value = [createTextBlock()];
-                    store.updateModelValue();
+                    updateModelValue();
                 } else {
                     store.editorData.value = convertLocalData(targetData);
                 }
+
+                store.editorKey.value += 1;
             } else {
                 throw new Error("[DragonEditor] : You must set 'v-model' attribute and 'v-mode' type is must be Array(EditorContentType).");
             }
         }
 
+        // 이미지 블럭 삽입
         function addImageBlock(data: ImageCreateData) {
             const blockData = createImageBlock(data);
             store.editorData.value.splice(store.activeIndexNumber + 1, 0, blockData);
@@ -81,6 +84,7 @@ export default defineComponent({
                 {
                     class: ["dragon-editor"],
                     ref: $editorWrap,
+                    key: store.editorKey.value,
                     onPaste: () => {
                         console.log("paste");
                     },
