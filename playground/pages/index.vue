@@ -3,11 +3,12 @@
         Editor!
 
         <div class="editor">
-            <DragonEditorNew v-model="contentData" :option="option" ref="editor" />
+            <DragonEditor v-model="contentData" :option="option" ref="editor" />
         </div>
         <button @click="test">업데이트</button>
         <button @click="change">변경!</button>
         <button @click="addImage">이미지1!</button>
+        <button @click="console.log(contentData)">Check Data</button>
     </div>
 </template>
 
@@ -51,9 +52,10 @@ const option = {
 function change() {
     contentData.value = [
         {
-            type: "text",
             classList: [],
-            content: "31312312313",
+            key: "kvBLnhT4zW5Jdc7Gi0DJ",
+            textContent: "83123921783712893718928912739173918937",
+            type: "text",
         },
     ];
 }
