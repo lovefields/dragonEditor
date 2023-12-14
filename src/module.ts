@@ -9,17 +9,17 @@ export default defineNuxtModule({
 
         addComponent({
             name: "DragonEditor",
-            filePath: resolver.resolve("./runtime/shared/components/DragonEditor"),
+            filePath: resolver.resolve("./runtime/components/DragonEditor"),
         });
 
         addComponent({
             name: "DragonEditorComment",
-            filePath: resolver.resolve("./runtime/shared/components/DragonEditorComment"),
+            filePath: resolver.resolve("./runtime/components/DragonEditorComment"),
         });
 
         addComponent({
             name: "DragonEditorViewer",
-            filePath: resolver.resolve("./runtime/shared/components/DragonEditorViewer"),
+            filePath: resolver.resolve("./runtime/components/DragonEditorViewer"),
         });
     },
 });
