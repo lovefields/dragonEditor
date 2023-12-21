@@ -12,31 +12,25 @@
 [npm-version-href]: https://www.npmjs.com/package/dragon-editor
 [npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
 [npm-downloads-href]: https://www.npmjs.com/package/dragon-editor
-[license-src]: https://img.shields.io/npm/l/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
-[license-href]: https://www.npmjs.com/package/dragon-editor
-[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
-[nuxt-href]: https://nuxt.com
-[readme-ko]: https://github.com/lovefields/dragonEditor/blob/main/README.md
-[readme-en]: https://github.com/lovefields/dragonEditor/blob/main/README_en.md
+[license-src]: https://img.shields.io/npm/l/dragon-editor
 
-[![Github stars](stars-src)](stars-href)
-[![Github issues](issues-src)](issues-href)
-[![Github forks](forks-src)](forks-href)
-[![Github top language](language-src)](language-href)
-[![Hits](hits-src)](hits-href)
+[![Github stars][stars-src]](stars-href)
+[![Github issues][issues-src]](issues-href)
+[![Github forks][forks-src]](forks-href)
+[![Github top language][language-src]](language-href)
+[![Hits][hits-src]](hits-href)
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![License][license-src]][license-href]
-[![Nuxt][nuxt-src]][nuxt-href]
-
-[KO](readme-ko) &#47; [EN](readme-en)
+![NPM][license-src]
 
 # DragonEditor
 
-드래곤 에디터는 그냥 블로그에 쓸 이지윅 에디터가 필요해서 만들었습니다.<br>
-커스터마이징이 가능하며 Nuxt.js만 지원합니다.
+I just made the DragonEditor because I needed the WYSIWYG Editor to write on my blog.
 
-## 사용법
+## Install
+
+## Using
+
 
 ### 에디터
 
