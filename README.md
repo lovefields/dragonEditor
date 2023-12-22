@@ -29,115 +29,12 @@ I just made the DragonEditor because I needed the WYSIWYG Editor to write on my 
 
 ## Install
 
+```shell
+mpm i dragon-edtior
+# or
+yarn add dragon-editor
+# or
+bun add dragon-editor
+```
+
 ## Using
-
-
-### 에디터
-
-```vue
-<tempalte>
-  <DragonEditor v-model="contentData" :option="option" ref="editor" />
-</tempalte>
-
-<script setup lang="ts">
-const editor = ref();
-const contentData = ref([]);
-const option = ref({}); // 선택사항
-</script>
-```
-
-#### 컴포넌트 명령어
-
-1. 이미지 삽입
-
-```typescript
-editor.value.addImageBlock({
-    src: string;
-    width: number;
-    height: number;
-    webp: boolean;
-});
-```
-
-2. 저장
-
-```typescript
-editor.value.updateBlockData();
-// do save
-```
-
-### 코멘트
-
-```vue
-<tempalte>
-  <DragonEditorComment v-model="commentData" ref="editor" />
-</tempalte>
-
-<script setup lang="ts">
-const editor = ref();
-const commentData = ref({
-    classList: [],
-    content: "",
-});
-</script>
-```
-
-#### 컴포넌트 명령어
-
-1. 스타일 설정
-
-스타일의 경우 컴포넌트에서 다음과 같이 명령어를 사용할 수 있습니다.<br>
-해당되는 스타일이 존재하지 않을 경우 클레스에 값을 부여합니다.
-
-```typescript
-editor.value.setStyles("decorationBold");
-```
-
-2. 스타일 리스트
-
--   `alignLeft` : 왼쪽 정렬
--   `alignCenter` : 가운데 정렬
--   `alignRight` : 오른쪽 정렬
--   `decorationBold` : 볼드
--   `decorationItalic` : 이텔릭
--   `decorationUnderline` : 밑줄
--   `decorationStrikethrough` : 취소선
-
-2. 저장
-
-```typescript
-editor.value.updateBlockData();
-// do save
-```
-
-3. 포커스
-
-```typescript
-editor.value.focus();
-```
-
-### Viewer
-
-```vue
-<tempalte>
-  <DragonEditorViewer :content="contentData"/>
-</tempalte>
-
-<script setup lang="ts">
-const contentData = ref([]); // Save Data for Editor
-</script>
-```
-
-#### Props
-
-- content : This props is must be Array in Editor data.
-- mediaURL (Option) : This props is pre URL in Media.
-
-
-<!-- ## 데모 페이지
-
-[Demo page](https://lovefields.github.io/dragonEditor/examples)
-
-## 문서
-
--   [DragonEditor Document](https://lovefields.github.io/dragonEditor-doc/) -->

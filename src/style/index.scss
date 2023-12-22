@@ -1,9 +1,77 @@
 .de-wrapper {
-    
+    background: #fff;
+    font-size: 14px;
+    line-height: 1.6;
+
+    // reset css
+    & {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p,
+        blockquote,
+        pre,
+        dl,
+        dd,
+        ol,
+        ul,
+        fieldset,
+        legend,
+        figure,
+        menu {
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        table,
+        th,
+        td {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        ol,
+        ul,
+        li {
+            list-style: none;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-size: 1em;
+            font-weight: normal;
+        }
+    }
 
     &.de-editor {
     }
 
-    &.de-viewer {
+    &.de-viewer,
+    .de-block-list {
+        display: grid;
+        gap: 4px;
+        padding: 20px;
+    }
+
+    // 블럭 스타일
+    .de-text-block {
+        min-height: 1.6em;
+        outline: 0;
+
+        &:empty:hover::before,
+        &:empty:focus::before {
+            display: inline;
+            content: "Type a paragraph";
+            color: #ccc;
+            cursor: text;
+        }
     }
 }

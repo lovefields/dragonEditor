@@ -5,6 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Dragon Editor</title>
         <style>
+            body,
+            html {
+                margin: 0;
+                background: #f1f1f1;
+            }
+
             #wrap {
                 display: flex;
                 justify-content: center;
@@ -27,6 +33,7 @@
             import "/src/style/index.scss";
 
             const editor = DragonEditor(".my-editor");
+            console.log("editor", editor);
         </script>
     </body>
 </html>
