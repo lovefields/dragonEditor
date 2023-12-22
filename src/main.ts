@@ -1,29 +1,25 @@
 import "./style/index.scss";
 import "./types.d.ts";
-import store from "./sotre";
-import { setEditorOption } from "./utils/data";
-import { setLayout } from "./utils/layout";
-
-// 에디터 구성 및 컨트롤러 내보내기
-function editorInit($el: HTMLDivElement, option?: DEditorOption) {
-    store.wrap = $el;
-    setEditorOption(option);
-    setLayout();
-
-    return {};
-}
+import EditorInit from "./utils/init";
 
 // 첫 실행시 환경 확인
-export default function (selector: string, option?: DEditorOption) {
-    if (window) {
-        const $element = document.querySelector(selector);
-
-        if ($element.tagName === "DIV") {
-            return editorInit($element as HTMLDivElement, option);
-        } else {
-            console.error("[Dragon Editor] Please use div element.");
-        }
-    } else {
+export default function (selector: string, option?: DEditorOption): EditorInit | null {
+    if (window === undefined) {
         console.error("[Dragon Editor] This environment is not client. Please using client environment.");
+        return null;
     }
+
+    const $element = document.querySelector(selector);
+
+    if ($element === null) {
+        console.error("[Dragon Editor] Didn't find element.");
+        return null;
+    }
+
+    if ($element.tagName !== "DIV") {
+        console.error("[Dragon Editor] Please use div element.");
+        return null;
+    }
+
+    return new EditorInit($element as HTMLDivElement, option);
 }

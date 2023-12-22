@@ -1,14 +1,15 @@
-import store from "../sotre";
+import type EditorInit from "./init";
+import { createTextBlock } from "./block";
 
 // 레이아웃 구성
-export function setLayout() {
+export function setLayout(store: EditorInit) {
     let layoutStructre: string = "";
 
     if (store.mode === "edit") {
-        layoutStructre = setEditorLayout();
+        layoutStructre = setEditorLayout(store);
         store.wrap.classList.add("de-editor");
     } else {
-        layoutStructre = setViewerLayout();
+        layoutStructre = setViewerLayout(store);
         store.wrap.classList.add("de-viewer");
     }
 
@@ -17,28 +18,38 @@ export function setLayout() {
 }
 
 // 에디터 레이아웃 구성
-function setEditorLayout(): string {
+function setEditorLayout(store: EditorInit): string {
     let structure: string = "";
 
+    structure += `<div class="de-control-bar">`;
+    structure += "";
+    structure += `</div>`;
+
     structure += `<div class="de-block-list">`;
-    structure += createBlockStructure();
+    structure += createBlockStructure(store);
     structure += `</div>`;
 
     return structure;
 }
 
 // 뷰어 레이아웃 구성
-function setViewerLayout(): string {
+function setViewerLayout(store: EditorInit): string {
     let structure: string = "";
+
+    structure += createBlockStructure(store);
 
     return structure;
 }
 
 // 블록 구조 생성
-function createBlockStructure(): string {
+function createBlockStructure(store: EditorInit): string {
     let structure: string = "";
 
-    console.log(store.data);
+    if (store.data.length === 0) {
+        structure += createTextBlock(store);
+    } else {
+        store.data.forEach((row) => {});
+    }
 
     return structure;
 }
