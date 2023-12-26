@@ -1,12 +1,16 @@
 import type EditorInit from "./init";
 
-export function createTextBlock(store: EditorInit, data?: DEditorTextBlock) {
+export function createTextBlock(store: EditorInit, childString?: string) {
     let structure: string = "";
 
     structure += `<p`;
     structure += ` class="de-block de-text-block" `;
     structure += setContentEditableAttr(store.mode);
     structure += `>`;
+
+    if (childString !== undefined) {
+        structure += childString;
+    }
 
     structure += `</p>`;
 
