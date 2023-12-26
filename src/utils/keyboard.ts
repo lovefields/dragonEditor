@@ -96,7 +96,7 @@ function textBlockEnterEvent(store: EditorInit, element: Element) {
             }
 
             // 구조 정리
-            childNodeList.forEach((node, i) => {
+            childNodeList.forEach((node: ChildNode, i: number) => {
                 if (i < nodeIdx) {
                     if (node.constructor.name === "Text") {
                         preStructure += node.textContent;
@@ -133,9 +133,109 @@ function textBlockEnterEvent(store: EditorInit, element: Element) {
             setCursor($nextBlock, 0);
         }
     } else {
-        
         // 셀렉 커서인경우
-    }
+        const childNodeList = $textBlock.childNodes;
+        let startTargetNode = store.cursorData.startNode;
+        let startNodeIdx: number = -1;
+        let startOffset: number = store.cursorData.startOffset;
+        let endTargetNode = store.cursorData.endNode;
+        let endNodeIdx: number = -1;
+        let endOffset: number = store.cursorData.endOffset;
+        let preStructure = "";
+        let nextStructure = "";
 
-    // console.log("store.cursorData", store.cursorData);
+        if (startTargetNode.constructor.name === "Text") {
+            if (startTargetNode.parentElement !== $textBlock) {
+                startTargetNode = startTargetNode.parentElement;
+            }
+        }
+
+        if (endTargetNode.constructor.name === "Text") {
+            if (endTargetNode.parentElement !== $textBlock) {
+                endTargetNode = endTargetNode.parentElement;
+            }
+        }
+
+        for (let i: number = 0; childNodeList.length > i; i += 1) {
+            if (startTargetNode === childNodeList[i]) {
+                startNodeIdx = i;
+            }
+
+            if (endTargetNode === childNodeList[i]) {
+                endNodeIdx = i;
+            }
+
+            if (startNodeIdx !== -1 && endNodeIdx !== -1) {
+                break;
+            }
+        }
+
+        // 역 드레그 인 경우 정리
+        if (startNodeIdx !== endNodeIdx) {
+            if (startNodeIdx > endNodeIdx) {
+                const originalEndNodeIdx: number = endNodeIdx;
+                const originalEndOffset: number = endOffset;
+                const originalStartNodeIdx: number = startNodeIdx;
+                const originalStartOffset: number = startOffset;
+
+                startNodeIdx = originalEndNodeIdx;
+                startOffset = originalEndOffset;
+                endNodeIdx = originalStartNodeIdx;
+                endOffset = originalStartOffset;
+            }
+        } else {
+            if (startOffset > endOffset) {
+                const originalEndOffset: number = endOffset;
+                const originalStartOffset: number = startOffset;
+
+                startOffset = originalEndOffset;
+                endOffset = originalStartOffset;
+            }
+        }
+
+        childNodeList.forEach((node: ChildNode, i: number) => {
+            if (startNodeIdx > i) {
+                if (node.constructor.name === "Text") {
+                    preStructure += node.textContent;
+                } else {
+                    preStructure += (node as Element).outerHTML;
+                }
+            } else if (startNodeIdx === i) {
+                if (node.constructor.name === "Text") {
+                    preStructure += node.textContent.slice(0, startOffset);
+                } else {
+                    const originalClassList = [...(node as Element).classList];
+                    const text = node.textContent;
+
+                    preStructure += `<span class="${originalClassList.join(" ")}">${text.slice(0, startOffset)}</span>`;
+                }
+            }
+
+            if (endNodeIdx < i) {
+                if (node.constructor.name === "Text") {
+                    nextStructure += node.textContent;
+                } else {
+                    nextStructure += (node as Element).outerHTML;
+                }
+            } else if (endNodeIdx === i) {
+                if (node.constructor.name === "Text") {
+                    nextStructure += node.textContent.slice(endOffset);
+                } else {
+                    const originalClassList = [...(node as Element).classList];
+                    const text = node.textContent;
+
+                    nextStructure += `<span class="${originalClassList.join(" ")}">${text.slice(endOffset)}</span>`;
+                }
+            }
+        });
+
+        // 텍스트 블럭 삽입
+        const nextBlockStructure = createTextBlock(store, nextStructure);
+        $textBlock.insertAdjacentHTML("afterend", nextBlockStructure);
+        $textBlock.innerHTML = preStructure;
+
+        // 커서 위치 지정
+        const $nextBlock = $textBlock.nextElementSibling;
+        setCursor($nextBlock, 0);
+    }
 }
