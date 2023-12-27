@@ -16,10 +16,14 @@ export function setCursor($target: Element, startIdx: number) {
     const range = document.createRange();
     const selection = window.getSelection();
 
-    if ($target.hasChildNodes() === true) {
-        range.setStart($target.childNodes[0], startIdx);
+    if ($target.constructor.name === "Text") {
+        range.setStart($target, startIdx);
     } else {
-        range.setStart($target, 0);
+        if ($target.hasChildNodes() === true) {
+            range.setStart($target.childNodes[0], startIdx);
+        } else {
+            range.setStart($target, 0);
+        }
     }
 
     selection.removeAllRanges();

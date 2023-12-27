@@ -3,7 +3,7 @@ import { getBlockType, createTextBlock } from "./block";
 import { setCursorData, setCursor, clenupCursor } from "./cursor";
 
 // 에디팅 요소 키 이벤트
-let enterCount: number = 0;
+let ketEventCount: number = 0;
 export function elementKeyEvent(e: KeyboardEvent, store: EditorInit) {
     setCursorData(store);
 
@@ -11,8 +11,8 @@ export function elementKeyEvent(e: KeyboardEvent, store: EditorInit) {
         case "Enter":
             e.preventDefault();
 
-            if (enterCount === 0) {
-                // 한글에 의한 중복 제거 처리
+            if (ketEventCount === 0) {
+                // 문자 조합에 의한 중복 제거 처리
                 clenupCursor(store);
 
                 // 커서 정렬후 딜레이
@@ -25,14 +25,36 @@ export function elementKeyEvent(e: KeyboardEvent, store: EditorInit) {
                 });
             }
 
-            enterCount += 1;
+            // 문자 조합에 의한 중복 이벤트 막는 처리
+            ketEventCount += 1;
             setTimeout(() => {
-                enterCount = 0;
+                ketEventCount = 0;
             }, 150);
             break;
         case "Backspace":
+            elementBackspaceEvent(e, store);
+            break;
+        case "Tab":
+            e.preventDefault();
+
+            if (ketEventCount === 0) {
+                // 문자 조합에 의한 중복 제거 처리
+                clenupCursor(store);
+
+                // 커서 정렬후 딜레이
+                setTimeout(() => {
+                    elementTabEvent(e, store);
+                });
+            }
+
+            // 문자 조합에 의한 중복 이벤트 막는 처리
+            ketEventCount += 1;
+            setTimeout(() => {
+                ketEventCount = 0;
+            }, 150);
             break;
         case "Space":
+            console.log("space");
             break;
         // default:
         //     console.log("e.code", e.code);
@@ -47,17 +69,11 @@ function elementEnterEvent(e: KeyboardEvent, store: EditorInit) {
         case "text":
             textBlockEnterEvent(store, element);
             break;
+        // TODO : 다른 타입 블럭 이벤트
     }
+
     // console.log("enter");
     // console.log("type", type);
-}
-
-// 쉬프트 엔터 이벤트
-function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
-    const { element, type } = getBlockType(e.target as HTMLElement);
-
-    console.log("shift enter");
-    console.log("type", type);
 }
 
 // 텍스트 블럭 엔터 이벤트
@@ -133,7 +149,7 @@ function textBlockEnterEvent(store: EditorInit, element: Element) {
             setCursor($nextBlock, 0);
         }
     } else {
-        // 셀렉 커서인경우
+        // 셀렉트 커서인경우
         const childNodeList = $textBlock.childNodes;
         let startTargetNode = store.cursorData.startNode;
         let startNodeIdx: number = -1;
@@ -238,4 +254,91 @@ function textBlockEnterEvent(store: EditorInit, element: Element) {
         const $nextBlock = $textBlock.nextElementSibling;
         setCursor($nextBlock, 0);
     }
+}
+
+// 쉬프트 엔터 이벤트
+function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
+    const { element, type } = getBlockType(e.target as HTMLElement);
+
+    // TODO : 쉬프트 엔터 이벤트 지정
+    console.log("shift enter");
+    console.log("type", type);
+}
+
+// 백스페이스 이벤트
+function elementBackspaceEvent(e: KeyboardEvent, store: EditorInit) {
+    const { element, type } = getBlockType(e.target as HTMLElement);
+
+    switch (type) {
+        case "text":
+            textBlockBackspaceEvent(e, store, element);
+            break;
+        // TODO : 다른 타입 블럭 이벤트
+    }
+}
+
+// 텍스트 블럭 백스페이스 이벤트
+function textBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element: Element) {
+    const $textBlock = element as HTMLParagraphElement;
+    const childLength = store.wrap.querySelectorAll(".de-block").length;
+
+    if (childLength === 1) {
+        // 블럭이 한개만 있는 경우
+        if (store.cursorData.startOffset === 0) {
+            // 커서가 첫번째에 있는 경우
+            e.preventDefault();
+        }
+    } else {
+        // 블럭이 한개만 있지 않는 경우
+        if ($textBlock.textContent === "") {
+            // 내용이 없는 경우
+            e.preventDefault();
+
+            const $preBlock = $textBlock.previousElementSibling;
+            const { type: preBlockType } = getBlockType($textBlock);
+
+            $textBlock.remove();
+
+            if (preBlockType === "text") {
+                if ($preBlock.hasChildNodes() === true) {
+                    const textBlockChildList = $preBlock.childNodes;
+                    const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+                    setCursor(textBlockTargetChild as Element, textBlockTargetChild.textContent.length);
+                } else {
+                    setCursor($preBlock as Element, 0);
+                }
+            }
+        } else {
+            // 내용이 있는 경우
+            if (store.cursorData.startOffset === 0) {
+                // 커서가 첫번째에 있는 경우
+                e.preventDefault();
+
+                const $preBlock = $textBlock.previousElementSibling;
+                const { type: preBlockType } = getBlockType($textBlock);
+
+                if (preBlockType === "text") {
+                    if ($preBlock.hasChildNodes() === true) {
+                        const textBlockChildList = $preBlock.childNodes;
+                        const textBlockTargetChildIdx = textBlockChildList.length - 1;
+                        const textBlockTargetCursorIdx = textBlockChildList[textBlockTargetChildIdx].textContent.length;
+                        const thisBlockHTML = $textBlock.innerHTML;
+
+                        $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
+                        setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
+                    } else {
+                        $preBlock.innerHTML = $textBlock.innerHTML;
+                        setCursor($preBlock as Element, 0);
+                    }
+
+                    $textBlock.remove();
+                }
+            }
+        }
+    }
+}
+
+// 탭 이벤트
+function elementTabEvent(e: KeyboardEvent, store: EditorInit) {
+    const { element, type } = getBlockType(e.target as HTMLElement);
 }
