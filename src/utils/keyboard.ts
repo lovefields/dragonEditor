@@ -341,4 +341,32 @@ function textBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element: E
 // 탭 이벤트
 function elementTabEvent(e: KeyboardEvent, store: EditorInit) {
     const { element, type } = getBlockType(e.target as HTMLElement);
+
+    switch (type) {
+        case "text":
+            defaultTabEvent(e.shiftKey, element);
+            break;
+    }
+}
+
+// 기본 탭 이벤트
+function defaultTabEvent(useShiftKey: boolean, element: Element) {
+    const $target = element as HTMLElement;
+    let value: number = $target.dataset["depth"] === undefined ? 0 : parseInt($target.dataset["depth"]);
+
+    if (useShiftKey === true) {
+        if (value !== 0) {
+            value -= 1;
+        }
+    } else {
+        if (value < 5) {
+            value += 1;
+        }
+    }
+
+    if (value === 0) {
+        delete $target.dataset["depth"];
+    } else {
+        $target.dataset["depth"] = String(value);
+    }
 }
