@@ -1,0 +1,47 @@
+@mixin Controlbar {
+    .de-control-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 38px;
+        border-bottom: 1px solid #ccc;
+
+        .de-menu {
+            min-width: 38px;
+            height: 38px;
+            padding: 0 8px;
+            border-right: 1px solid #ccc;
+            box-sizing: border-box;
+
+            &.--lastchild {
+                border-right: 0;
+            }
+        }
+
+        .de-block-menu-area {
+            display: none;
+            position: absolute;
+            top: 39px;
+            left: 0;
+            width: 120px;
+            background: #fff;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+            z-index: 1000;
+
+            &.--active {
+                display: block;
+            }
+
+            .de-list {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                padding: 5px;
+            }
+
+            .de-add-block {
+            }
+        }
+    }
+}

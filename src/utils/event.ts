@@ -1,14 +1,22 @@
 import type EditorInit from "./init";
 import { elementKeyEvent } from "./keyboard";
 import { findScrollingElement } from "./element";
+import { setCursorData } from "./cursor";
+import { createTextBlock } from "./block";
 
 export function setEvent(store: EditorInit) {
     setContentEditorbleElementEvent(store);
     setControlbarEvetn(store);
+
+    // 마우스 조작시 커서 데이터 업데이트
+    store.wrap.addEventListener("mouseup", function () {
+        setCursorData(store);
+    });
 }
 
 // 에디팅 요소 이벤트
 function setContentEditorbleElementEvent(store: EditorInit) {
+    // 키보드 이벤트
     store.wrap.addEventListener("keydown", function (e: KeyboardEvent) {
         if ((e.target as HTMLElement).isContentEditable === true) {
             elementKeyEvent(e, store);
@@ -20,6 +28,7 @@ function setContentEditorbleElementEvent(store: EditorInit) {
 
 // 컨트롤 바 이벤트
 function setControlbarEvetn(store: EditorInit) {
+    const $controlBar = store.wrap.querySelector(".de-control-bar");
     const $scrollElement = findScrollingElement(store.wrap.parentElement);
 
     // 상단 고정 이벤트
@@ -51,5 +60,34 @@ function setControlbarEvetn(store: EditorInit) {
         $target.style.top = `${constrolBarTop}px`;
     });
 
-    // 
+    // 메뉴 추가 리스트 토글 이벤트
+    $controlBar.querySelector(".de-menu-add").addEventListener("click", function () {
+        $controlBar.querySelector(".de-block-menu-area").classList.toggle("--active");
+    });
+
+    document.addEventListener("click", function (e: MouseEvent) {
+        if ((e.target as HTMLElement).closest(".de-menu-add") === null && (e.target as HTMLElement).closest(".de-block-menu-area") === null) {
+            $controlBar.querySelector(".de-block-menu-area").classList.remove("--active");
+        }
+    });
+
+    // 메뉴 추가 이벤트
+    $controlBar.querySelectorAll(".de-add-block").forEach(($btn) => {
+        $btn.addEventListener("click", function () {
+            const type = this.dataset["type"];
+            let blockStructure: string = "";
+
+            switch (type) {
+                case "text":
+                    blockStructure = createTextBlock(store);
+                    break;
+            }
+
+            // DOING : 블럭 추가 메뉴 이벤트 작성
+            console.log(type);
+            console.log(store.cursorData);
+
+            $controlBar.querySelector(".de-block-menu-area").classList.remove("--active");
+        });
+    });
 }

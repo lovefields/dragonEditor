@@ -3,7 +3,7 @@ import type EditorInit from "./init";
 export function createTextBlock(store: EditorInit, childString?: string) {
     let structure: string = "";
 
-    structure += `<p`;
+    structure += `<p `;
     structure += ` class="de-block de-text-block" `;
     structure += setContentEditableAttr(store.mode);
     structure += `>`;
@@ -25,14 +25,14 @@ function setContentEditableAttr(mode: string): string {
 // 블럭 타입 추출
 export function getBlockType(element: HTMLElement) {
     const $block = element.closest(".de-block");
-    let typeName: string | undefined;
+    let typeName: string;
 
     switch (true) {
         case $block.classList.contains("de-text-block"):
             typeName = "text";
             break;
         default:
-            typeName = undefined;
+            typeName = "other";
     }
 
     return {

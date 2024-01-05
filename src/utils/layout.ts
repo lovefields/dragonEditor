@@ -22,9 +22,7 @@ export function setLayout(store: EditorInit) {
 function setEditorLayout(store: EditorInit): string {
     let structure: string = "";
 
-    structure += `<div class="de-control-bar">`;
     structure += createControlBar(store);
-    structure += `</div>`;
 
     structure += `<div class="de-block-list">`;
     structure += createBlockStructure(store);
@@ -46,10 +44,20 @@ function setViewerLayout(store: EditorInit): string {
 function createControlBar(store: EditorInit): string {
     let structure: string = "";
 
+    structure += `<div class="de-control-bar">`;
+
     structure += `<button class="de-menu de-menu-add">${getIcon("plus")}</button>`;
 
-    
+    // 블럭 추가 리스트
+    structure += `<div class="de-block-menu-area">`;
+    structure += `<div class="de-list">`;
+    store.blockList.forEach((item) => {
+        structure += `<button class="de-add-block" data-type="${item.value}">${item.name}</button>`;
+    });
+    structure += `</div>`;
+    structure += `</div>`;
 
+    structure += `</div>`;
     return structure;
 }
 
