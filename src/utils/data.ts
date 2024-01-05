@@ -13,6 +13,37 @@ import type EditorInit from "./init";
 // }
 
 export function setEditorOption(store: EditorInit, option: DEditorOption = {}) {
+    const defaultBlockList: BlockListItem[] = [
+        {
+            name: "Text",
+            value: "text",
+        },
+        {
+            name: "Heading-1",
+            value: "heading1",
+        },
+        {
+            name: "Heading-2",
+            value: "heading2",
+        },
+    ];
+
     store.mode = option.mode ?? "edit";
     store.data = option.data ?? [];
+
+    if (option.blockList !== undefined) {
+        let listArray: BlockListItem[] = [];
+
+        option.blockList.forEach((value: string) => {
+            const target = defaultBlockList.find((item) => item.value === value);
+
+            if (target !== undefined) {
+                listArray.push(target);
+            }
+        });
+
+        store.blockList = listArray;
+    } else {
+        store.blockList = defaultBlockList;
+    }
 }

@@ -3,7 +3,7 @@ import "./types.d.ts";
 import EditorInit from "./utils/init";
 
 // 기본 에디터 함수
-export function DragonEditor(selector: string, option?: DEditorOption): EditorInit | null {
+export function DragonEditor(selector: string, option?: DEditorOption): any | null {
     // 첫 실행시 환경 확인
     if (window === undefined) {
         console.error("[Dragon Editor] This environment is not client. Please using client environment.");
@@ -22,7 +22,11 @@ export function DragonEditor(selector: string, option?: DEditorOption): EditorIn
         return null;
     }
 
-    return new EditorInit($element as HTMLDivElement, option);
+    const editor = new EditorInit($element as HTMLDivElement, option);
+
+    return {
+        getData: () => editor.getData(),
+    };
 }
 
 // 데이터 컨버트용 함수
