@@ -52,6 +52,8 @@
     }
 
     &.de-editor {
+        position: relative;
+        padding-top: 39px;
     }
 
     &.de-viewer,
@@ -61,6 +63,34 @@
         padding: 20px;
     }
 
+    .de-control-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 38px;
+        border-bottom: 1px solid #ccc;
+        overflow: hidden;
+
+        .de-menu {
+            padding: 0;
+            min-width: 38px;
+            height: 38px;
+            padding: 0 8px;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            border-right: 1px solid #ccc;
+            box-sizing: border-box;
+            cursor: pointer;
+
+            &:last-child {
+                border-right: 0;
+            }
+        }
+    }
+
+    // 블럭 뎁스
     .de-block {
         @for $i from 1 through 5 {
             &[data-depth="#{$i}"] {

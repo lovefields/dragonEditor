@@ -2,8 +2,9 @@ import "./style/index.scss";
 import "./types.d.ts";
 import EditorInit from "./utils/init";
 
-// 첫 실행시 환경 확인
-export default function (selector: string, option?: DEditorOption): EditorInit | null {
+// 기본 에디터 함수
+export function DragonEditor(selector: string, option?: DEditorOption): EditorInit | null {
+    // 첫 실행시 환경 확인
     if (window === undefined) {
         console.error("[Dragon Editor] This environment is not client. Please using client environment.");
         return null;
@@ -23,3 +24,6 @@ export default function (selector: string, option?: DEditorOption): EditorInit |
 
     return new EditorInit($element as HTMLDivElement, option);
 }
+
+// 데이터 컨버트용 함수
+export function ConvertDataToHTML(data: any[]) {}

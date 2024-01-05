@@ -1,5 +1,6 @@
 import type EditorInit from "./init";
 import { createTextBlock } from "./block";
+import { getIcon } from "./ui";
 
 // 레이아웃 구성
 export function setLayout(store: EditorInit) {
@@ -22,7 +23,7 @@ function setEditorLayout(store: EditorInit): string {
     let structure: string = "";
 
     structure += `<div class="de-control-bar">`;
-    structure += "";
+    structure += createControlBar(store);
     structure += `</div>`;
 
     structure += `<div class="de-block-list">`;
@@ -37,6 +38,17 @@ function setViewerLayout(store: EditorInit): string {
     let structure: string = "";
 
     structure += createBlockStructure(store);
+
+    return structure;
+}
+
+// 컨트롤 바 생성
+function createControlBar(store: EditorInit): string {
+    let structure: string = "";
+
+    structure += `<button class="de-menu de-menu-add">${getIcon("plus")}</button>`;
+
+    
 
     return structure;
 }
