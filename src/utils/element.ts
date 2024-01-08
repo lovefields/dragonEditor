@@ -9,3 +9,17 @@ export function findScrollingElement($target: HTMLElement): HTMLElement | Window
         }
     }
 }
+
+export function findContentEditableElement($target: Node): HTMLElement {
+    if ($target.constructor.name === "Text") {
+        $target = $target.parentNode;
+    }
+
+    const $baseElement = $target as HTMLElement;
+
+    if ($baseElement.isContentEditable === false) {
+        return findContentEditableElement($baseElement.parentNode);
+    } else {
+        return $baseElement;
+    }
+}
