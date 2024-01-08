@@ -83,9 +83,19 @@ function setControlbarEvetn(store: EditorInit) {
                     break;
             }
 
-            // DOING : 블럭 추가 메뉴 이벤트 작성
-            console.log(type);
-            console.log(store.cursorData);
+            if (store.cursorData === null) {
+                store.wrap.querySelector(".de-block-list").insertAdjacentHTML("beforeend", blockStructure);
+            } else {
+                let $target = store.cursorData.startNode;
+
+                if ($target.constructor.name === "Text") {
+                    $target = $target.parentNode;
+                }
+
+                const $block = ($target as HTMLElement).closest(".de-block");
+
+                $block.insertAdjacentHTML("afterend", blockStructure);
+            }
 
             $controlBar.querySelector(".de-block-menu-area").classList.remove("--active");
         });

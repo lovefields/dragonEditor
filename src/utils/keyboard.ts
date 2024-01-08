@@ -56,6 +56,12 @@ export function elementKeyEvent(e: KeyboardEvent, store: EditorInit) {
         case "Space":
             console.log("space");
             break;
+        case "ArrowUp":
+            console.log("ArrowUp");
+            break;
+        case "ArrowDown":
+            console.log("ArrowDown");
+            break;
         // default:
         //     console.log("e.code", e.code);
     }
