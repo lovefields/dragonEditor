@@ -2,7 +2,7 @@ import type EditorInit from "./init";
 import { elementKeyEvent } from "./keyboard";
 import { findScrollingElement } from "./element";
 import { setCursorData } from "./cursor";
-import { createTextBlock } from "./block";
+import { createTextBlock, createHeadingBlock } from "./block";
 
 export function setEvent(store: EditorInit) {
     setContentEditorbleElementEvent(store);
@@ -80,6 +80,11 @@ function setControlbarEvetn(store: EditorInit) {
             switch (type) {
                 case "text":
                     blockStructure = createTextBlock(store);
+                    break;
+                case "heading1":
+                case "heading2":
+                case "heading3":
+                    blockStructure = createHeadingBlock(store, type);
                     break;
             }
 
