@@ -73,18 +73,20 @@ function elementEnterEvent(e: KeyboardEvent, store: EditorInit) {
 
     switch (type) {
         case "text":
-            textBlockEnterEvent(store, element);
+        case "heading":
+            defaultBlockEnterEvent(store, element);
             break;
-        // TODO : 다른 타입 블럭 이벤트
+        default:
+            console.log("// TODO : 다른 타입 블럭 엔터 이벤트 :", type);
     }
 
     // console.log("enter");
     // console.log("type", type);
 }
 
-// 텍스트 블럭 엔터 이벤트
-function textBlockEnterEvent(store: EditorInit, element: Element) {
-    const $textBlock = element as HTMLParagraphElement;
+// 기본 블럭 엔터 이벤트
+function defaultBlockEnterEvent(store: EditorInit, element: Element) {
+    const $textBlock = element as HTMLElement;
 
     if (store.cursorData.type === "Caret") {
         // 단일 커서인경우
@@ -93,7 +95,7 @@ function textBlockEnterEvent(store: EditorInit, element: Element) {
                 // 자식 노드가 없는 경우
                 $textBlock.insertAdjacentHTML("afterend", createTextBlock(store));
 
-                const $nextBlock = $textBlock.nextElementSibling as HTMLParagraphElement;
+                const $nextBlock = $textBlock.nextElementSibling as HTMLElement;
 
                 $nextBlock.focus();
             } else {
@@ -103,7 +105,7 @@ function textBlockEnterEvent(store: EditorInit, element: Element) {
                 let nextStructure = "";
                 let targetIdx = -1;
 
-                if ($target.constructor.name === "HTMLParagraphElement") {
+                if ($target === $textBlock) {
                     $target = $target.childNodes[store.cursorData.startOffset];
                 }
 
@@ -308,15 +310,17 @@ function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
 
     switch (type) {
         case "text":
-            textBlockShiftEnterEvent(store, element);
+        case "heading":
+            defaultBlockShiftEnterEvent(store, element);
             break;
-        // TODO : 다른 타입 블럭 이벤트
+        default:
+            console.log("// TODO : 다른 타입 블럭 쉬프트 이벤트 :", type);
     }
 }
 
 // 텍스트 블럭 쉬프트 엔터 이벤트
-function textBlockShiftEnterEvent(store: EditorInit, element: Element) {
-    const $textBlock = element as HTMLParagraphElement;
+function defaultBlockShiftEnterEvent(store: EditorInit, element: Element) {
+    const $textBlock = element as HTMLElement;
 
     if (store.cursorData.type === "Caret") {
         // 단일 커서인경우
@@ -400,9 +404,8 @@ function textBlockShiftEnterEvent(store: EditorInit, element: Element) {
                     } else {
                         // 엘리먼트인 경우
                         if (constructorName === "HTMLBRElement") {
-                            // br 태그인 경우 // 존재 하나?
-                            
-                            console.log("is br?");
+                            // br 태그인 경우 (가장 첫 노드의 첫 커서 인경우)
+                            structure += `<br><br>`;
                         } else {
                             // span 태그인 경우
                             // TODO : 스타일 태그 분리 작업
@@ -541,15 +544,17 @@ function elementBackspaceEvent(e: KeyboardEvent, store: EditorInit) {
 
     switch (type) {
         case "text":
-            textBlockBackspaceEvent(e, store, element);
+        case "heading":
+            defaultBlockBackspaceEvent(e, store, element);
             break;
-        // TODO : 다른 타입 블럭 이벤트
+        default:
+            console.log("// TODO : 다른 타입 블럭 백스페이스 이벤트", type);
     }
 }
 
-// 텍스트 블럭 백스페이스 이벤트
-function textBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element: Element) {
-    const $textBlock = element as HTMLParagraphElement;
+// 기본 블럭 백스페이스 이벤트
+function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element: Element) {
+    const $textBlock = element as HTMLElement;
     const childLength = store.wrap.querySelectorAll(".de-block").length;
 
     if (childLength === 1) {

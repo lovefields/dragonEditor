@@ -1,4 +1,5 @@
 @import "./controlbar.scss";
+@import "./block.scss";
 
 .de-wrapper {
     background: #fff;
@@ -74,27 +75,5 @@
     }
 
     @include Controlbar;
-
-    // 블럭 뎁스
-    .de-block {
-        @for $i from 1 through 5 {
-            &[data-depth="#{$i}"] {
-                padding-left: $i * 30px;
-            }
-        }
-    }
-
-    // 블럭 스타일
-    .de-text-block {
-        min-height: 1.6em;
-        outline: 0;
-
-        &:empty:hover::before,
-        &:empty:focus::before {
-            display: inline;
-            content: "Type a paragraph";
-            color: #ccc;
-            cursor: text;
-        }
-    }
+    @include BlockStyle;
 }

@@ -17,7 +17,9 @@ interface DEditorBlockDefaultType {
 
 type DEditorBlockType = DEditorTextBlock;
 
-interface DEditorTextBlock extends DEditorBlockDefaultType {}
+interface DEditorTextBlock extends DEditorBlockDefaultType {
+    content: string;
+}
 
 // 부수적 타입
 interface DEditorCursor {

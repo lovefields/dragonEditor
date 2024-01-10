@@ -1,0 +1,56 @@
+@mixin BlockStyle {
+    // 블럭 뎁스
+    .de-block {
+        @for $i from 1 through 5 {
+            &[data-depth="#{$i}"] {
+                padding-left: $i * 30px;
+            }
+        }
+    }
+
+    /**
+    * 블럭 스타일
+    */
+
+    // 텍스트 블럭
+    .de-text-block {
+        min-height: 1.6em;
+        outline: 0;
+
+        &:empty:hover::before,
+        &:empty:focus::before {
+            display: inline;
+            content: "Type a paragraph";
+            color: #ccc;
+            cursor: text;
+        }
+    }
+
+    // 해딩 블럭
+    .de-heading-block {
+        outline: 0;
+
+        &[data-level="1"] {
+            font-size: 2em;
+            min-height: 2em;
+        }
+
+        &[data-level="2"] {
+            font-size: 1.5em;
+            min-height: 1.5em;
+        }
+
+        &[data-level="3"] {
+            font-size: 1.17em;
+            min-height: 1.17em;
+        }
+
+        &:empty:hover::before,
+        &:empty:focus::before {
+            display: inline;
+            content: "Type a Heading";
+            color: #ccc;
+            cursor: text;
+        }
+    }
+}
