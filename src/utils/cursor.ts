@@ -22,9 +22,13 @@ export function setCursor($target: Element, startIdx: number) {
         range.setStart($target, startIdx);
     } else {
         if ($target.hasChildNodes() === true) {
-            range.setStart($target.childNodes[0], startIdx);
+            if ($target.textContent === "") {
+                range.setStart($target.childNodes[startIdx], 0);
+            } else {
+                range.setStart($target.childNodes[0], startIdx);
+            }
         } else {
-            range.setStart($target, 0);
+            range.setStart($target, startIdx);
         }
     }
 
@@ -40,6 +44,10 @@ export function clenupCursor(store: EditorInit) {
     if (store.cursorData.startNode !== store.cursorData.endNode || store.cursorData.startOffset !== store.cursorData.endOffset) {
         // setRangeCursor();
     } else {
-        setCursor(store.cursorData.startNode as Element, store.cursorData.startOffset);
+        if (store.cursorData.startNode.hasChildNodes() === true) {
+            setCursor(store.cursorData.startNode.childNodes[store.cursorData.startOffset] as Element, 0);
+        } else {
+            setCursor(store.cursorData.startNode as Element, store.cursorData.startOffset);
+        }
     }
 }
