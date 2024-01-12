@@ -8,16 +8,22 @@ interface DEditorOption {
 
 type DEditorData = DEditorBlockType[];
 
-type BlockType = "text" | "numberList" | "dotList" | "heading1" | "heading2" | "heading3" | "heading4" | "heading5" | "heading6" | "table";
+type BlockType = "text" | "orderedList" | "unorderedList" | "heading1" | "heading2" | "heading3" | "table";
 
 interface DEditorBlockDefaultType {
     type: BlockType;
     classList: string[];
 }
 
-type DEditorBlockType = DEditorTextBlock;
+type DEditorBlockType = DEditorTextBlock | DEditorHeadingBlock;
 
 interface DEditorTextBlock extends DEditorBlockDefaultType {
+    content: string;
+}
+
+interface DEditorHeadingBlock extends DEditorBlockDefaultType {
+    level: number;
+    id: string;
     content: string;
 }
 

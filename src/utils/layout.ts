@@ -47,6 +47,7 @@ function createControlBar(store: EditorInit): string {
     structure += `<div class="de-control-bar">`;
 
     structure += `<button class="de-menu de-menu-add">${getIcon("plus")}</button>`;
+    structure += `<button class="de-menu de-add-decoration" data-style="bold">${getIcon("decorationBold")}</button>`;
 
     // 블럭 추가 리스트
     structure += `<div class="de-block-menu-area">`;
