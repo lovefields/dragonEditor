@@ -562,6 +562,13 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element
         if (store.cursorData.startOffset === 0 && store.cursorData.startNode === $textBlock) {
             // 커서가 첫번째에 있는 경우
             e.preventDefault();
+
+            if ($textBlock.tagName !== "P") {
+                // 해딩 태그인 경우
+                $textBlock.insertAdjacentHTML("afterend", createTextBlock(store, $textBlock.textContent));
+                setCursor($textBlock.nextElementSibling, 0);
+                $textBlock.remove();
+            }
         }
     } else {
         // 블럭이 한개만 있지 않는 경우
