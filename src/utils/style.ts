@@ -61,7 +61,6 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                 } else {
                     // 부모가 최상위 노드가 아닌 경우
                     const classList: string[] = [...$parentElement.classList];
-                    const tagName: string = $parentElement.tagName.toLocaleLowerCase();
                     const classIdx: number = classList.indexOf(className);
 
                     if (classIdx === -1) {
@@ -84,9 +83,6 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
                     setCursorData(store);
                 }
-            } else {
-                // 엘리먼트인 경우
-                console.log("i'm element");
             }
         }
     } else {
