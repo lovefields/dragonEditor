@@ -1,6 +1,7 @@
 import type EditorInit from "./init";
 import { getBlockType, createTextBlock } from "./block";
 import { setCursorData, setCursor, clenupCursor } from "./cursor";
+import { getParentElementIfNodeIsText } from "./element";
 
 // 에디팅 요소 키 이벤트
 let ketEventCount: number = 0;
@@ -553,25 +554,45 @@ function elementBackspaceEvent(e: KeyboardEvent, store: EditorInit) {
 }
 
 // 기본 블럭 백스페이스 이벤트
-function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element: Element) {
-    const $textBlock = element as HTMLElement;
-    const childLength = store.wrap.querySelectorAll(".de-block").length;
+function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, $element: Element) {
+    const $textBlock = $element as HTMLElement;
+    const childList = store.wrap.querySelectorAll(".de-block");
+    const childLength: number = childList.length;
+    const $target: HTMLElement = getParentElementIfNodeIsText(store.cursorData.startNode);
+    // const $parentElement: HTMLElement = $target.parentElement;
+    let elementIdx: number = -1;
 
-    if (childLength === 1) {
-        // 블럭이 한개만 있는 경우
-        if (store.cursorData.startOffset === 0 && store.cursorData.startNode === $textBlock) {
-            // 커서가 첫번째에 있는 경우
-            e.preventDefault();
+    for (let i = 0; childLength > i; i += 1) {
+        if (childList[i] === $element) {
+            elementIdx = i;
+            break;
+        }
+    }
 
-            if ($textBlock.tagName !== "P") {
-                // 해딩 태그인 경우
-                $textBlock.insertAdjacentHTML("afterend", createTextBlock(store, $textBlock.textContent));
+    // 블럭의 경우
+    if (elementIdx === 0) {
+        // 첫번째 블럭인 경우
+        if (store.cursorData.startOffset === 0 && $target === $textBlock) {
+            // 에디팅 블럭의 첫 커서인 경우
+            if ($target.textContent === "") {
+                // 내용이 없는 경우 : 상태 초기화를 위한 교체
+                $textBlock.insertAdjacentHTML("afterend", createTextBlock(store));
                 setCursor($textBlock.nextElementSibling, 0);
                 $textBlock.remove();
+            } else {
+                // 내용이 있는 경우
+                e.preventDefault();
+
+                if ($textBlock.tagName !== "P") {
+                    // 해딩 태그인 경우
+                    $textBlock.insertAdjacentHTML("afterend", createTextBlock(store, $textBlock.textContent));
+                    setCursor($textBlock.nextElementSibling, 0);
+                    $textBlock.remove();
+                }
             }
         }
     } else {
-        // 블럭이 한개만 있지 않는 경우
+        // 첫번째 블럭이 아닌 경우
         if ($textBlock.hasChildNodes() === false) {
             // 내용이 없는 경우
             e.preventDefault();
@@ -595,7 +616,7 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element
             }
         } else {
             // 내용이 있는 경우
-            if (store.cursorData.startOffset === 0 && $textBlock.childNodes[0] === store.cursorData.startNode) {
+            if (store.cursorData.startOffset === 0 && ($textBlock.childNodes[0] === store.cursorData.startNode || $textBlock.childNodes[0] === $target)) {
                 // 커서가 첫번째에 있는 경우
                 e.preventDefault();
 
@@ -624,6 +645,33 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, element
             }
         }
     }
+
+    // 노드의 경우
+    if (store.cursorData.startOffset === 1 && $target !== $textBlock) {
+        if ($target.textContent.length === 1) {
+            // 삭제될 노드의 경우
+            e.preventDefault();
+
+            const preNode = $target.previousSibling;
+
+            if (preNode !== null) {
+                // 이전 노드가 있는 경우
+                $target.remove();
+                setCursor(preNode as Element, preNode.textContent.length);
+            } else {
+                // 이전 노드가 없는 경우
+                if ($textBlock.childNodes[1] === undefined) {
+                    $textBlock.innerHTML = "";
+                    setCursor($textBlock, 0);
+                } else {
+                    setCursor($textBlock.childNodes[1] as Element, 0);
+                    $target.remove();
+                }
+            }
+        }
+    }
+
+    setCursorData(store);
 }
 
 // 탭 이벤트

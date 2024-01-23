@@ -1,3 +1,4 @@
+// 스크롤 가능한 요소 찾기
 export function findScrollingElement($target: HTMLElement): HTMLElement | Window {
     if ($target.scrollHeight > $target.clientHeight) {
         return $target;
@@ -10,6 +11,7 @@ export function findScrollingElement($target: HTMLElement): HTMLElement | Window
     }
 }
 
+// 에디팅 요소 찾기
 export function findContentEditableElement($target: Node): HTMLElement | null {
     if ($target.constructor.name === "Text") {
         $target = $target.parentNode;
@@ -26,4 +28,13 @@ export function findContentEditableElement($target: Node): HTMLElement | null {
             return $baseElement;
         }
     }
+}
+
+// 타겟이 텍스트 인경우 상위 엘리먼트 추출
+export function getParentElementIfNodeIsText($target: Node): HTMLElement {
+    if ($target.constructor.name === "Text") {
+        $target = $target.parentElement;
+    }
+
+    return $target as HTMLElement;
 }
