@@ -9,13 +9,16 @@ export function setEvent(store: EditorInit) {
     setControlbarEvetn(store);
 
     // 마우스 조작시 커서 데이터 업데이트
-    store.wrap.addEventListener("mouseup", function (e: Event) {
-        const $editableElement = findContentEditableElement(e.target as HTMLElement);
+    store.wrap.addEventListener("mouseup", function (e: MouseEvent) {
+        const originalCursorData = store.cursorData;
 
-        if ($editableElement !== null) {
-            setCursorData(store);
-            // TODO : 스타일 값 추출
+        setCursorData(store);
+
+        if (findContentEditableElement(store.cursorData.startNode) === null) {
+            // 비정상 커서 값일 경우 초기화
+            store.cursorData = originalCursorData;
         }
+        // TODO : 스타일 값 추출
     });
 }
 
