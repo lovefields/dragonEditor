@@ -7,7 +7,7 @@ export default class EditorInit {
     mode: DEMode = "edit";
     data: DEditorData = [];
     cursorData: DEditorCursor | null = null;
-    blockList: BlockListItem[] = [];
+    blockList: DEBlockListItem[] = [];
 
     constructor($el: HTMLDivElement, option?: DEditorOption) {
         const self = this;

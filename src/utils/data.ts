@@ -13,7 +13,7 @@ export function generateId() {
 }
 
 export function setEditorOption(store: EditorInit, option: DEditorOption = {}) {
-    const defaultBlockList: BlockListItem[] = [
+    const defaultBlockList: DEBlockListItem[] = [
         {
             name: "Text",
             value: "text",
@@ -36,7 +36,7 @@ export function setEditorOption(store: EditorInit, option: DEditorOption = {}) {
     store.data = option.data ?? [];
 
     if (option.blockList !== undefined) {
-        let listArray: BlockListItem[] = [];
+        let listArray: DEBlockListItem[] = [];
 
         option.blockList.forEach((value: string) => {
             const target = defaultBlockList.find((item) => item.value === value);
