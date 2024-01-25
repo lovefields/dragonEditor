@@ -29,14 +29,23 @@ interface DEditorHeadingBlock extends DEditorBlockDefaultType {
 
 // 부수적 타입
 interface DEditorCursor {
-    type: "Range" | "Caret";
+    type: "Range" | "Caret" | "None";
     startNode: Node;
     startOffset: number;
     endNode: Node;
     endOffset: number;
 }
 
-interface BlockListItem {
+interface DEBlockListItem {
     name: string;
     value: BlockType;
+}
+
+interface DEArrangeCursorData {
+    startNode: Node;
+    startNodeIdx: number;
+    startOffset: number;
+    endNode: Node;
+    endNodeIdx: number;
+    endOffset: number;
 }

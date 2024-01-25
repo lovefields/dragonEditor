@@ -1,6 +1,6 @@
 import type EditorInit from "./init";
 import { findContentEditableElement } from "./element";
-import { setCursor, setCursorData } from "./cursor";
+import { setCursor, setCursorData, soltingCursorDataOnElement } from "./cursor";
 
 export function setStyle(type: string, store: EditorInit) {
     if (store.cursorData !== null) {
@@ -87,8 +87,76 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
         }
     } else {
         // 범위 선택인 경우
+        const cursorData = soltingCursorDataOnElement(store.cursorData, $element);
+        let structure: string = "";
 
-        console.log(store.cursorData);
+        if (cursorData.startNodeIdx === cursorData.endNodeIdx) {
+            // 같은 노드인 경우
+            if (cursorData.startNode.constructor.name === "Text") {
+                // 텍스트인 경우
+            } else {
+                // 엘리먼트인 경우
+                const $target = cursorData.startNode as HTMLElement;
+
+                if ($target.tagName !== "A") {
+                    // 일반 태그의 경우만 허용
+                    const classList = [...$target.classList];
+                    const classIdx = classList.indexOf(className);
+                    let isDuble: boolean = false;
+
+                    if (classIdx === -1) {
+                        // 클레스 없는 경우
+                        if (cursorData.startOffset !== 0) {
+                            structure += `<span class="${classList.join(" ")}">${$target.textContent.slice(0, cursorData.startOffset)}</span>`;
+                            isDuble = true;
+                        }
+
+                        structure += `<span class="${classList.join(" ")} ${className}">${$target.textContent.slice(cursorData.startOffset, cursorData.endOffset)}</span>`;
+
+                        if (cursorData.endOffset !== $target.textContent.length) {
+                            structure += `<span class="${classList.join(" ")}">${$target.textContent.slice(cursorData.endOffset)}</span>`;
+                        }
+                    } else {
+                        // 클레스 있는 경우
+                        if (cursorData.startOffset !== 0) {
+                            structure += `<span class="${classList.join(" ")}">${$target.textContent.slice(0, cursorData.startOffset)}</span>`;
+                            isDuble = true;
+                        }
+
+                        if (classList.length === 1) {
+                            // 마지막 클레스인 경우
+                            structure += $target.textContent.slice(cursorData.startOffset, cursorData.endOffset);
+                        } else {
+                            // 다른 클레스도 존재하는 경우
+                            const copyList = [...classList];
+
+                            copyList.splice(classIdx, 1);
+                            structure += `<span class="${copyList.join(" ")}">${$target.textContent.slice(cursorData.startOffset, cursorData.endOffset)}</span>`;
+                        }
+
+                        if (cursorData.endOffset !== $target.textContent.length) {
+                            structure += `<span class="${classList.join(" ")}">${$target.textContent.slice(cursorData.endOffset)}</span>`;
+                        }
+                    }
+
+                    $target.insertAdjacentHTML("afterend", structure);
+
+                    let $nextElement = $target.nextSibling;
+
+                    if (isDuble === true) {
+                        $nextElement = $nextElement.nextSibling;
+                    }
+
+                    $target.remove();
+                    setCursor($nextElement as Element, cursorData.endOffset - cursorData.startOffset);
+                }
+            }
+        } else {
+            // 다른 노드인 경우
+            console.log("wrong");
+
+            // $element.childNodes.forEach((childNode: ChildNode, i: number) => {});
+        }
     }
 
     // console.log("store.cursorData.startNode", store.cursorData.startNode);
