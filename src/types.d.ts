@@ -1,4 +1,4 @@
-type DEMode = "view" | "edit";
+type DEMode = "view" | "edit" | "command";
 
 interface DEditorOption {
     mode?: DEMode;
@@ -48,4 +48,8 @@ interface DEArrangeCursorData {
     endNode: Node;
     endNodeIdx: number;
     endOffset: number;
+}
+
+interface DEMessage {
+    linkTextNoStyle: string;
 }

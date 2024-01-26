@@ -3,10 +3,13 @@ import { getBlockType, createTextBlock } from "./block";
 import { setCursorData, setCursor, clenupCursor } from "./cursor";
 import { getParentElementIfNodeIsText } from "./element";
 
+let preKeyEvent: KeyboardEvent;
+
 // 에디팅 요소 키 이벤트
 let ketEventCount: number = 0;
 export function elementKeyEvent(e: KeyboardEvent, store: EditorInit) {
     setCursorData(store);
+    preKeyEvent = e;
 
     switch (e.code) {
         case "Enter":
@@ -559,7 +562,6 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, $elemen
     const childList = store.wrap.querySelectorAll(".de-block");
     const childLength: number = childList.length;
     const $target: HTMLElement = getParentElementIfNodeIsText(store.cursorData.startNode);
-    // const $parentElement: HTMLElement = $target.parentElement;
     let elementIdx: number = -1;
 
     for (let i = 0; childLength > i; i += 1) {
@@ -704,5 +706,22 @@ function defaultTabEvent(useShiftKey: boolean, element: Element) {
         delete $target.dataset["depth"];
     } else {
         $target.dataset["depth"] = String(value);
+    }
+}
+
+export function elementKeyAfterEvent(e: KeyboardEvent, store: EditorInit) {
+    setCursorData(store);
+    const $target: HTMLElement = getParentElementIfNodeIsText(store.cursorData.startNode);
+
+    switch (preKeyEvent.code) {
+        case "Backspace":
+            if ($target.textContent === "" && $target.querySelectorAll("br").length === 1) {
+                // 브라우저 잔여 스타일 제거를 위한 처리
+                $target.insertAdjacentHTML("afterend", createTextBlock(store));
+                const $nextBlock = $target.nextElementSibling;
+                setCursor($nextBlock, 0);
+                $target.remove();
+            }
+            break;
     }
 }

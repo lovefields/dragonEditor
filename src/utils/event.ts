@@ -1,5 +1,5 @@
 import type EditorInit from "./init";
-import { elementKeyEvent } from "./keyboardEvent";
+import { elementKeyEvent, elementKeyAfterEvent } from "./keyboardEvent";
 import { setCursorData } from "./cursor";
 import { setControlbarEvetn } from "./controlbarEvent";
 import { findContentEditableElement } from "./element";
@@ -29,6 +29,12 @@ function setContentEditorbleElementEvent(store: EditorInit) {
         if ((e.target as HTMLElement).isContentEditable === true) {
             elementKeyEvent(e, store);
             // TODO : 스타일 값 추출
+        }
+    });
+
+    store.wrap.addEventListener("keyup", function (e: KeyboardEvent) {
+        if ((e.target as HTMLElement).isContentEditable === true) {
+            elementKeyAfterEvent(e, store);
         }
     });
 
