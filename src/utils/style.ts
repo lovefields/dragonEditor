@@ -8,14 +8,7 @@ export function setStyle(type: string, store: EditorInit) {
         const $editableElement = findContentEditableElement(store.cursorData.startNode as HTMLElement);
 
         if ($editableElement !== null) {
-            switch (type) {
-                case "bold":
-                    setNodeStyle("de-bold", store, $editableElement);
-                    break;
-                case "italic":
-                    setNodeStyle("de-italic", store, $editableElement);
-                    break;
-            }
+            setNodeStyle(`de-${type}`, store, $editableElement);
         }
 
         setCursorData(store);
@@ -274,6 +267,7 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                         const $targetNode = childNode as HTMLElement;
                         const classList = [...$targetNode.classList];
                         const classIdx = classList.indexOf(className);
+
                         if ($targetNode.tagName === "SPAN") {
                             if (isWrap === true) {
                                 // 첫 시작점이 부여인 경우
@@ -365,6 +359,7 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
             $element.innerHTML = structureArray.join("");
 
+            // FIXME : 커서 위치데이터 재정의 필요, is duble 없이 재정의 해야함
             // @ts-ignore : IDE가 인식 못함
             if (isWrap === true) {
                 // @ts-ignore : IDE가 인식 못함
@@ -386,15 +381,15 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                     }
 
                     if (endNodeIdx === i) {
-                        endNodeIdx -= endMinusCount - 1;
+                        endNodeIdx -= endMinusCount;
                     }
 
                     if (tagReg.test(string) === true) {
                         startMinusCount = 0;
                         startOffsetCount = 0;
+                        endMinusCount += 1;
                     } else {
                         startMinusCount += 1;
-                        endMinusCount += 1;
                         startOffsetCount += string.length;
                     }
                 });
