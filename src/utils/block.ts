@@ -1,7 +1,7 @@
 import type EditorInit from "./init";
 import { generateId } from "./data";
 
-export function createTextBlock(store: EditorInit, childString?: string) {
+export function createTextBlock(store: EditorInit, childString?: string): string {
     let structure: string = "";
 
     structure += `<p `;
@@ -19,7 +19,7 @@ export function createTextBlock(store: EditorInit, childString?: string) {
 }
 
 // 해딩 블럭 생성
-export function createHeadingBlock(store: EditorInit, type: string, childString?: string) {
+export function createHeadingBlock(store: EditorInit, type: string, childString?: string): string {
     const level: number = parseInt(type.replace("heading", ""));
     let structure: string = "";
 
@@ -33,6 +33,25 @@ export function createHeadingBlock(store: EditorInit, type: string, childString?
     }
 
     structure += `</h${level}>`;
+
+    return structure;
+}
+
+// 리스트 블럭 생성
+export function createListBlock(store: EditorInit, type: string, childString?: string[]): string {
+    let structure: string = "";
+
+    structure += `<${type} class="de-block de-list-block">`;
+
+    if (childString !== undefined) {
+        // TODO : 리스트 아이템 넣기
+    } else {
+        structure += `<li class="de-item" `;
+        structure += setContentEditableAttr(store.mode);
+        structure += `></li>`;
+    }
+
+    structure += `</${type}>`;
 
     return structure;
 }
@@ -53,6 +72,9 @@ export function getBlockType(element: HTMLElement) {
             break;
         case $block.classList.contains("de-heading-block"):
             typeName = "heading";
+            break;
+        case $block.classList.contains("de-list-block"):
+            typeName = "list";
             break;
         default:
             typeName = "other";

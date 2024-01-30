@@ -80,6 +80,9 @@ function elementEnterEvent(e: KeyboardEvent, store: EditorInit) {
         case "heading":
             defaultBlockEnterEvent(store, element);
             break;
+        case "list":
+            listBlockEnterEvent(store, element);
+            break;
         default:
             console.log("// TODO : 다른 타입 블럭 엔터 이벤트 :", type);
     }
@@ -308,6 +311,13 @@ function defaultBlockEnterEvent(store: EditorInit, element: Element) {
     }
 }
 
+// 리스트 블럭 엔터 이벤트
+function listBlockEnterEvent(store: EditorInit, element: Element) {
+    const $listBlock = element as HTMLElement;
+
+    console.log("$listBlock", $listBlock);
+}
+
 // 쉬프트 엔터 이벤트
 function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
     const { element, type } = getBlockType(e.target as HTMLElement);
@@ -316,6 +326,10 @@ function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
         case "text":
         case "heading":
             defaultBlockShiftEnterEvent(store, element);
+            break;
+        case "list":
+            // NOTE: 리스트 블럭은 쉬프트 엔터 비허용
+            listBlockEnterEvent(store, element);
             break;
         default:
             console.log("// TODO : 다른 타입 블럭 쉬프트 이벤트 :", type);

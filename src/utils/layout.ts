@@ -70,11 +70,7 @@ function createControlBar(store: EditorInit): string {
 function createBlockStructure(store: EditorInit): string {
     let structure: string = "";
 
-    if (store.data.length === 0) {
-        structure += createTextBlock(store);
-    } else {
-        store.data.forEach((row) => {});
-    }
+    structure += createTextBlock(store);
 
     return structure;
 }

@@ -30,10 +30,17 @@ export function setEditorOption(store: EditorInit, option: DEditorOption = {}) {
             name: "Heading-3",
             value: "heading3",
         },
+        {
+            name: "Unodered List",
+            value: "ul",
+        },
+        {
+            name: "Odered List",
+            value: "ol",
+        },
     ];
 
     store.mode = option.mode ?? "edit";
-    store.data = option.data ?? [];
 
     if (option.blockList !== undefined) {
         let listArray: DEBlockListItem[] = [];

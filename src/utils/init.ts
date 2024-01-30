@@ -5,7 +5,6 @@ import { setEvent } from "./event";
 export default class EditorInit {
     wrap: HTMLDivElement;
     mode: DEMode = "edit";
-    data: DEditorData = [];
     cursorData: DEditorCursor | null = null;
     blockList: DEBlockListItem[] = [];
 
