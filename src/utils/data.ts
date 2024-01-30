@@ -1,4 +1,5 @@
 import type EditorInit from "./init";
+import defaultMessage from "./message";
 
 // 난수 아이디 생성
 export function generateId() {
@@ -41,6 +42,7 @@ export function setEditorOption(store: EditorInit, option: DEditorOption = {}) {
     ];
 
     store.mode = option.mode ?? "edit";
+    store.message = option.message ?? defaultMessage;
 
     if (option.blockList !== undefined) {
         let listArray: DEBlockListItem[] = [];

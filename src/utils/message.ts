@@ -1,5 +1,9 @@
-const message: DEMessage = {
+const defaultMessage: DEMessage = {
     linkTextNoStyle: "Link text can't set any style.",
 };
 
-export default message;
+export default defaultMessage;
+
+export function openMessage(){
+    
+}
