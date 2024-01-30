@@ -2,6 +2,7 @@ import type EditorInit from "./init";
 import { getBlockType, createTextBlock, createListItemBlock } from "./block";
 import { setCursorData, setCursor, clenupCursor, soltingCursorDataOnElement } from "./cursor";
 import { getParentElementIfNodeIsText, findContentEditableElement } from "./element";
+import { setStyle } from "./style";
 
 let preKeyEvent: KeyboardEvent;
 
@@ -828,4 +829,24 @@ export function elementKeyAfterEvent(e: KeyboardEvent, store: EditorInit) {
             }
             break;
     }
+}
+
+/**
+ * 핫 키 이벤트
+ */
+export function hotKeyEvent(event: KeyboardEvent, store: EditorInit) {
+    setCursorData(store);
+    const isControlKeyActive = event.ctrlKey || event.metaKey;
+
+    if (isControlKeyActive === true) {
+        switch (event.key) {
+            case "b":
+                setStyle("bold", store);
+                break;
+            case "i":
+                setStyle("italic", store);
+                break;
+        }
+    }
+
 }

@@ -46,7 +46,11 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                             cursorOffset = node.textContent.length;
                         } else {
                             // 대상 노드가 아닌 경우
-                            structure += (node as HTMLElement).outerHTML;
+                            if (node.constructor.name === "Text") {
+                                structure += node.textContent;
+                            } else {
+                                structure += (node as HTMLElement).outerHTML;
+                            }
                         }
                     });
 
