@@ -2,13 +2,12 @@ type DEMode = "view" | "edit" | "command";
 
 interface DEditorOption {
     mode?: DEMode;
-    data?: DEditorData;
     blockList?: BlockType[];
 }
 
 type DEditorData = DEditorBlockType[];
 
-type BlockType = "text" | "orderedList" | "unorderedList" | "heading1" | "heading2" | "heading3" | "table";
+type BlockType = "text" | "orderedList" | "unorderedList" | "heading1" | "heading2" | "heading3" | "ul" | "ol";
 
 interface DEditorBlockDefaultType {
     type: BlockType;

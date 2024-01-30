@@ -14,7 +14,7 @@ export function setEvent(store: EditorInit) {
 
         setCursorData(store);
 
-        if (findContentEditableElement(store.cursorData.startNode) === null) {
+        if (store.cursorData !== null && findContentEditableElement(store.cursorData.startNode) === null) {
             // 비정상 커서 값일 경우 초기화
             store.cursorData = originalCursorData;
         }

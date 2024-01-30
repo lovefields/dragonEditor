@@ -1,6 +1,6 @@
 import type EditorInit from "./init";
 import { findScrollingElement } from "./element";
-import { createTextBlock, createHeadingBlock } from "./block";
+import { createTextBlock, createHeadingBlock, createListBlock } from "./block";
 import { setStyle } from "./style";
 
 // 컨트롤 바 이벤트
@@ -63,10 +63,15 @@ export function setControlbarEvetn(store: EditorInit) {
                 case "heading3":
                     blockStructure = createHeadingBlock(store, type);
                     break;
+                case "ul":
+                case "ol":
+                    blockStructure = createListBlock(store, type);
+                    break;
             }
 
             if (store.cursorData === null) {
                 store.wrap.querySelector(".de-block-list").insertAdjacentHTML("beforeend", blockStructure);
+                // TODO : 커서 셋 하기
             } else {
                 let $target = store.cursorData.startNode;
 
@@ -77,6 +82,7 @@ export function setControlbarEvetn(store: EditorInit) {
                 const $block = ($target as HTMLElement).closest(".de-block");
 
                 $block.insertAdjacentHTML("afterend", blockStructure);
+                // TODO : 커서 셋 하기
             }
 
             $controlBar.querySelector(".de-block-menu-area").classList.remove("--active");
