@@ -1,7 +1,7 @@
 import type EditorInit from "./init";
-import { getBlockType, createTextBlock } from "./block";
-import { setCursorData, setCursor, clenupCursor } from "./cursor";
-import { getParentElementIfNodeIsText } from "./element";
+import { getBlockType, createTextBlock, createListItemBlock } from "./block";
+import { setCursorData, setCursor, clenupCursor, soltingCursorDataOnElement } from "./cursor";
+import { getParentElementIfNodeIsText, findContentEditableElement } from "./element";
 
 let preKeyEvent: KeyboardEvent;
 
@@ -81,7 +81,7 @@ function elementEnterEvent(e: KeyboardEvent, store: EditorInit) {
             defaultBlockEnterEvent(store, element);
             break;
         case "list":
-            listBlockEnterEvent(store, element);
+            listBlockEnterEvent(e, store, element);
             break;
         default:
             console.log("// TODO : 다른 타입 블럭 엔터 이벤트 :", type);
@@ -204,97 +204,43 @@ function defaultBlockEnterEvent(store: EditorInit, element: Element) {
     } else {
         // 셀렉트 커서인경우
         const childNodeList = $textBlock.childNodes;
-        let startTargetNode = store.cursorData.startNode;
-        let startNodeIdx: number = -1;
-        let startOffset: number = store.cursorData.startOffset;
-        let endTargetNode = store.cursorData.endNode;
-        let endNodeIdx: number = -1;
-        let endOffset: number = store.cursorData.endOffset;
+        const cursorData = soltingCursorDataOnElement(store.cursorData, $textBlock);
         let preStructure = "";
         let nextStructure = "";
 
-        if (startTargetNode.constructor.name === "Text") {
-            if (startTargetNode.parentElement !== $textBlock) {
-                startTargetNode = startTargetNode.parentElement;
-            }
-        }
-
-        if (endTargetNode.constructor.name === "Text") {
-            if (endTargetNode.parentElement !== $textBlock) {
-                endTargetNode = endTargetNode.parentElement;
-            }
-        }
-
-        for (let i: number = 0; childNodeList.length > i; i += 1) {
-            if (startTargetNode === childNodeList[i]) {
-                startNodeIdx = i;
-            }
-
-            if (endTargetNode === childNodeList[i]) {
-                endNodeIdx = i;
-            }
-
-            if (startNodeIdx !== -1 && endNodeIdx !== -1) {
-                break;
-            }
-        }
-
-        // 역 드레그 인 경우 정리
-        if (startNodeIdx !== endNodeIdx) {
-            if (startNodeIdx > endNodeIdx) {
-                const originalEndNodeIdx: number = endNodeIdx;
-                const originalEndOffset: number = endOffset;
-                const originalStartNodeIdx: number = startNodeIdx;
-                const originalStartOffset: number = startOffset;
-
-                startNodeIdx = originalEndNodeIdx;
-                startOffset = originalEndOffset;
-                endNodeIdx = originalStartNodeIdx;
-                endOffset = originalStartOffset;
-            }
-        } else {
-            if (startOffset > endOffset) {
-                const originalEndOffset: number = endOffset;
-                const originalStartOffset: number = startOffset;
-
-                startOffset = originalEndOffset;
-                endOffset = originalStartOffset;
-            }
-        }
-
         childNodeList.forEach((node: ChildNode, i: number) => {
-            if (startNodeIdx > i) {
+            if (cursorData.startNodeIdx > i) {
                 if (node.constructor.name === "Text") {
                     preStructure += node.textContent;
                 } else {
                     preStructure += (node as Element).outerHTML;
                 }
-            } else if (startNodeIdx === i) {
+            } else if (cursorData.startNodeIdx === i) {
                 if (node.constructor.name === "Text") {
-                    preStructure += node.textContent.slice(0, startOffset);
+                    preStructure += node.textContent.slice(0, cursorData.startOffset);
                 } else {
                     const originalClassList = [...(node as Element).classList];
                     const text = node.textContent;
 
-                    preStructure += `<span class="${originalClassList.join(" ")}">${text.slice(0, startOffset)}</span>`;
+                    preStructure += `<span class="${originalClassList.join(" ")}">${text.slice(0, cursorData.startOffset)}</span>`;
                 }
             }
 
-            if (endNodeIdx < i) {
+            if (cursorData.endNodeIdx < i) {
                 if (node.constructor.name === "Text") {
                     nextStructure += node.textContent;
                 } else {
                     nextStructure += (node as Element).outerHTML;
                 }
-            } else if (endNodeIdx === i) {
+            } else if (cursorData.endNodeIdx === i) {
                 if (node.constructor.name === "Text") {
-                    nextStructure += node.textContent.slice(endOffset);
+                    nextStructure += node.textContent.slice(cursorData.endOffset);
                 } else {
                     const originalClassList = [...(node as Element).classList];
-                    const text = node.textContent.slice(endOffset);
+                    const text = node.textContent.slice(cursorData.endOffset);
 
                     if (text !== "") {
-                        nextStructure += `<span class="${originalClassList.join(" ")}">${text.slice(endOffset)}</span>`;
+                        nextStructure += `<span class="${originalClassList.join(" ")}">${text.slice(cursorData.endOffset)}</span>`;
                     }
                 }
             }
@@ -312,10 +258,154 @@ function defaultBlockEnterEvent(store: EditorInit, element: Element) {
 }
 
 // 리스트 블럭 엔터 이벤트
-function listBlockEnterEvent(store: EditorInit, element: Element) {
+function listBlockEnterEvent(event: KeyboardEvent, store: EditorInit, element: Element) {
     const $listBlock = element as HTMLElement;
+    const $editableElement = findContentEditableElement(event.target as Node) as HTMLLIElement;
+    const liList = $listBlock.querySelectorAll(".de-item");
+    let liIdx = -1;
 
-    console.log("$listBlock", $listBlock);
+    for (let i = 0; liList.length > i; i += 1) {
+        if (liList[i] === $editableElement) {
+            liIdx = i;
+            break;
+        }
+    }
+
+    if (store.cursorData.type === "Caret") {
+        // 단일 커서인경우
+        if ($editableElement.textContent === "") {
+            // 텍스트가 없는 경우
+            if (liList.length - 1 === liIdx) {
+                // 마지막 아이템인 경우
+                $listBlock.insertAdjacentHTML("afterend", createTextBlock(store));
+
+                const $nextBlock = $listBlock.nextElementSibling as HTMLElement;
+
+                if (liList.length === 1) {
+                    $listBlock.remove();
+                } else {
+                    $editableElement.remove();
+                }
+
+                $nextBlock.focus();
+            } else {
+                // 마지막 아이템이 아닌 경우
+                $editableElement.insertAdjacentHTML("afterend", createListItemBlock());
+
+                const $nextBlock = $editableElement.nextElementSibling as HTMLLIElement;
+                $nextBlock.focus();
+            }
+        } else {
+            // 텍스트가 있는 경우
+            const childNodeList = $editableElement.childNodes;
+            let targetNode = store.cursorData.startNode;
+            let nodeIdx = -1;
+            let preStructure = "";
+            let nextStructure = "";
+
+            if (targetNode.constructor.name === "Text") {
+                if (targetNode.parentElement !== $editableElement) {
+                    targetNode = targetNode.parentElement;
+                }
+            }
+
+            // 노드 위치 파악
+            for (let i = 0; childNodeList.length > i; i += 1) {
+                if (childNodeList[i] === targetNode) {
+                    nodeIdx = i;
+                    break;
+                }
+            }
+
+            // 구조 정리
+            childNodeList.forEach((node: ChildNode, i: number) => {
+                if (nodeIdx < i) {
+                    if (node.constructor.name === "Text") {
+                        nextStructure += node.textContent;
+                    } else {
+                        nextStructure += (node as Element).outerHTML;
+                    }
+                } else if (nodeIdx > i) {
+                    if (node.constructor.name === "Text") {
+                        preStructure += node.textContent;
+                    } else {
+                        preStructure += (node as Element).outerHTML;
+                    }
+                } else if (nodeIdx === i) {
+                    if (node.constructor.name === "Text") {
+                        preStructure += node.textContent.slice(0, store.cursorData.startOffset);
+                        nextStructure += node.textContent.slice(store.cursorData.startOffset);
+                    } else {
+                        const originalClassList = [...(node as Element).classList];
+                        const text = node.textContent;
+
+                        preStructure += `<span class="${originalClassList.join(" ")}">${text.slice(0, store.cursorData.startOffset)}</span>`;
+                        nextStructure += `<span class="${originalClassList.join(" ")}">${text.slice(store.cursorData.startOffset)}</span>`;
+                    }
+                }
+            });
+
+            // 리스트 블럭 삽입
+            $editableElement.insertAdjacentHTML("afterend", createListItemBlock(nextStructure));
+            $editableElement.innerHTML = preStructure;
+
+            // 커서 위치 지정
+            const $nextBlock = $editableElement.nextElementSibling;
+            setCursor($nextBlock, 0);
+        }
+    } else {
+        // 셀렉트 커서인 경우
+        const childNodeList = $editableElement.childNodes;
+        const cursorData = soltingCursorDataOnElement(store.cursorData, $editableElement);
+        let preStructure = "";
+        let nextStructure = "";
+
+        childNodeList.forEach((node: ChildNode, i: number) => {
+            if (cursorData.startNodeIdx > i) {
+                if (node.constructor.name === "Text") {
+                    preStructure += node.textContent;
+                } else {
+                    preStructure += (node as Element).outerHTML;
+                }
+            } else if (cursorData.startNodeIdx === i) {
+                if (node.constructor.name === "Text") {
+                    preStructure += node.textContent.slice(0, cursorData.startOffset);
+                } else {
+                    const originalClassList = [...(node as Element).classList];
+                    const text = node.textContent;
+
+                    preStructure += `<span class="${originalClassList.join(" ")}">${text.slice(0, cursorData.startOffset)}</span>`;
+                }
+            }
+
+            if (cursorData.endNodeIdx < i) {
+                if (node.constructor.name === "Text") {
+                    nextStructure += node.textContent;
+                } else {
+                    nextStructure += (node as Element).outerHTML;
+                }
+            } else if (cursorData.endNodeIdx === i) {
+                if (node.constructor.name === "Text") {
+                    nextStructure += node.textContent.slice(cursorData.endOffset);
+                } else {
+                    const originalClassList = [...(node as Element).classList];
+                    const text = node.textContent.slice(cursorData.endOffset);
+
+                    if (text !== "") {
+                        nextStructure += `<span class="${originalClassList.join(" ")}">${text.slice(cursorData.endOffset)}</span>`;
+                    }
+                }
+            }
+        });
+
+        // 리스트 블럭 삽입
+        $editableElement.insertAdjacentHTML("afterend", createListItemBlock(nextStructure));
+        $editableElement.innerHTML = preStructure;
+
+        // 커서 위치 지정
+        const $nextBlock = $editableElement.nextElementSibling;
+        setCursor($nextBlock, 0);
+    }
 }
 
 // 쉬프트 엔터 이벤트
@@ -329,7 +419,7 @@ function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
             break;
         case "list":
             // NOTE: 리스트 블럭은 쉬프트 엔터 비허용
-            listBlockEnterEvent(store, element);
+            listBlockEnterEvent(e, store, element);
             break;
         default:
             console.log("// TODO : 다른 타입 블럭 쉬프트 이벤트 :", type);
