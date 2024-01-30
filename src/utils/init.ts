@@ -7,6 +7,7 @@ export default class EditorInit {
     mode: DEMode = "edit";
     cursorData: DEditorCursor | null = null;
     blockList: DEBlockListItem[] = [];
+    message: DEMessage;
 
     constructor($el: HTMLDivElement, option?: DEditorOption) {
         const self = this;
@@ -17,9 +18,5 @@ export default class EditorInit {
         if (self.mode === "edit") {
             setEvent(self);
         }
-    }
-
-    getData() {
-        return [];
     }
 }

@@ -3,6 +3,7 @@ type DEMode = "view" | "edit" | "command";
 interface DEditorOption {
     mode?: DEMode;
     blockList?: BlockType[];
+    message?: DEMessage;
 }
 
 type DEditorData = DEditorBlockType[];
@@ -49,6 +50,14 @@ interface DEArrangeCursorData {
     endOffset: number;
 }
 
+// 에디터에서 사용하는 모든 메세지
 interface DEMessage {
     linkTextNoStyle: string;
+}
+
+// 유저가 넣는 이미지 데이터
+interface DEImageData {
+    url: string;
+    width: number;
+    height: number;
 }

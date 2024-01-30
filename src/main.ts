@@ -25,7 +25,9 @@ export function DragonEditor(selector: string, option?: DEditorOption): any | nu
     const editor = new EditorInit($element as HTMLDivElement, option);
 
     return {
-        getData: () => editor.getData(),
+        addImageBlock: (data: DEImageData) => {
+            
+        },
     };
 }
 

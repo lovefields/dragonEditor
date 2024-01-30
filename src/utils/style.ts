@@ -1,7 +1,6 @@
 import type EditorInit from "./init";
 import { findContentEditableElement } from "./element";
 import { setCursor, setCursorData, soltingCursorDataOnElement, setRangeCursor } from "./cursor";
-import message from "./message";
 
 export function setStyle(type: string, store: EditorInit) {
     if (store.cursorData !== null) {
@@ -56,7 +55,7 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                 } else {
                     // 부모가 최상위 노드가 아닌 경우
                     if ($parentElement.tagName === "A") {
-                        alert(message.linkTextNoStyle);
+                        alert(store.message.linkTextNoStyle);
                     }
 
                     if ($parentElement.tagName === "SPAN") {
@@ -399,7 +398,7 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
             // @ts-ignore : IDE가 인식 못함
             if (isAnchorElement === true) {
-                alert(message.linkTextNoStyle);
+                alert(store.message.linkTextNoStyle);
             }
         }
     }
