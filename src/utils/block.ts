@@ -56,6 +56,21 @@ export function createListBlock(store: EditorInit, type: string, childString?: s
     return structure;
 }
 
+// 리스트 아이템 블럭 생성
+export function createListItemBlock(childString?: string): string {
+    let structure: string = "";
+
+    structure += `<li class="de-item" contenteditable>`;
+
+    if (childString !== undefined) {
+        structure += childString;
+    }
+
+    structure += `</li>`;
+
+    return structure;
+}
+
 // 에디트 속성
 function setContentEditableAttr(mode: string): string {
     return mode === "edit" ? " contenteditable " : "";

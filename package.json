@@ -1,6 +1,6 @@
 {
   "name": "dragon-editor",
-  "version": "3.0.0-beta",
+  "version": "3.0.0",
   "description": "Javascript WYSIWYG editor!",
   "repository": {
     "type": "git",
