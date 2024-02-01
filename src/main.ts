@@ -26,10 +26,10 @@ export function DragonEditor(selector: string, option?: DEditorOption): any | nu
 
     return {
         addImageBlock: (data: DEImageData) => {
-            
+
         },
     };
 }
 
 // 데이터 컨버트용 함수
-export function ConvertDataToHTML(data: any[]) {}
+export function ConvertDataToView(data: any[]) {}

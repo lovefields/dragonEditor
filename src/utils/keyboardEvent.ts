@@ -62,10 +62,10 @@ export function elementKeyEvent(e: KeyboardEvent, store: EditorInit) {
             console.log("space");
             break;
         case "ArrowUp":
-            console.log("ArrowUp");
+            moveToBlockEvent(e, store, "up");
             break;
         case "ArrowDown":
-            console.log("ArrowDown");
+            moveToBlockEvent(e, store, "down");
             break;
         // default:
         //     console.log("e.code", e.code);
@@ -74,15 +74,15 @@ export function elementKeyEvent(e: KeyboardEvent, store: EditorInit) {
 
 // 엔터 이벤트
 function elementEnterEvent(e: KeyboardEvent, store: EditorInit) {
-    const { element, type } = getBlockType(e.target as HTMLElement);
+    const { $element, type } = getBlockType(e.target as HTMLElement);
 
     switch (type) {
         case "text":
         case "heading":
-            defaultBlockEnterEvent(store, element);
+            defaultBlockEnterEvent(store, $element);
             break;
         case "list":
-            listBlockEnterEvent(e, store, element);
+            listBlockEnterEvent(e, store, $element);
             break;
         default:
             console.log("// TODO : 다른 타입 블럭 엔터 이벤트 :", type);
@@ -93,8 +93,8 @@ function elementEnterEvent(e: KeyboardEvent, store: EditorInit) {
 }
 
 // 기본 블럭 엔터 이벤트
-function defaultBlockEnterEvent(store: EditorInit, element: Element) {
-    const $textBlock = element as HTMLElement;
+function defaultBlockEnterEvent(store: EditorInit, $element: Element) {
+    const $textBlock = $element as HTMLElement;
 
     if (store.cursorData.type === "Caret") {
         // 단일 커서인경우
@@ -145,7 +145,7 @@ function defaultBlockEnterEvent(store: EditorInit, element: Element) {
             }
         } else {
             // 자식 노드가 있는 경우
-            const childNodeList = element.childNodes;
+            const childNodeList = $element.childNodes;
             let targetNode = store.cursorData.startNode;
             let nodeIdx = -1;
             let preStructure = "";
@@ -259,8 +259,8 @@ function defaultBlockEnterEvent(store: EditorInit, element: Element) {
 }
 
 // 리스트 블럭 엔터 이벤트
-function listBlockEnterEvent(event: KeyboardEvent, store: EditorInit, element: Element) {
-    const $listBlock = element as HTMLElement;
+function listBlockEnterEvent(event: KeyboardEvent, store: EditorInit, $element: Element) {
+    const $listBlock = $element as HTMLElement;
     const $editableElement = findContentEditableElement(event.target as Node) as HTMLLIElement;
     const liList = $listBlock.querySelectorAll(".de-item");
     let liIdx = -1;
@@ -411,16 +411,16 @@ function listBlockEnterEvent(event: KeyboardEvent, store: EditorInit, element: E
 
 // 쉬프트 엔터 이벤트
 function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
-    const { element, type } = getBlockType(e.target as HTMLElement);
+    const { $element, type } = getBlockType(e.target as HTMLElement);
 
     switch (type) {
         case "text":
         case "heading":
-            defaultBlockShiftEnterEvent(store, element);
+            defaultBlockShiftEnterEvent(store, $element);
             break;
         case "list":
             // NOTE: 리스트 블럭은 쉬프트 엔터 비허용
-            listBlockEnterEvent(e, store, element);
+            listBlockEnterEvent(e, store, $element);
             break;
         default:
             console.log("// TODO : 다른 타입 블럭 쉬프트 이벤트 :", type);
@@ -428,8 +428,8 @@ function elementShiftEnterEvent(e: KeyboardEvent, store: EditorInit) {
 }
 
 // 텍스트 블럭 쉬프트 엔터 이벤트
-function defaultBlockShiftEnterEvent(store: EditorInit, element: Element) {
-    const $textBlock = element as HTMLElement;
+function defaultBlockShiftEnterEvent(store: EditorInit, $element: Element) {
+    const $textBlock = $element as HTMLElement;
 
     if (store.cursorData.type === "Caret") {
         // 단일 커서인경우
@@ -649,12 +649,12 @@ function defaultBlockShiftEnterEvent(store: EditorInit, element: Element) {
 
 // 백스페이스 이벤트
 function elementBackspaceEvent(e: KeyboardEvent, store: EditorInit) {
-    const { element, type } = getBlockType(e.target as HTMLElement);
+    const { $element, type } = getBlockType(e.target as HTMLElement);
 
     switch (type) {
         case "text":
         case "heading":
-            defaultBlockBackspaceEvent(e, store, element);
+            defaultBlockBackspaceEvent(e, store, $element);
             break;
         default:
             console.log("// TODO : 다른 타입 블럭 백스페이스 이벤트", type);
@@ -783,18 +783,18 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: EditorInit, $elemen
 
 // 탭 이벤트
 function elementTabEvent(e: KeyboardEvent, store: EditorInit) {
-    const { element, type } = getBlockType(e.target as HTMLElement);
+    const { $element, type } = getBlockType(e.target as HTMLElement);
 
     switch (type) {
         case "text":
-            defaultTabEvent(e.shiftKey, element);
+            defaultTabEvent(e.shiftKey, $element);
             break;
     }
 }
 
 // 기본 탭 이벤트
-function defaultTabEvent(useShiftKey: boolean, element: Element) {
-    const $target = element as HTMLElement;
+function defaultTabEvent(useShiftKey: boolean, $element: Element) {
+    const $target = $element as HTMLElement;
     let value: number = $target.dataset["depth"] === undefined ? 0 : parseInt($target.dataset["depth"]);
 
     if (useShiftKey === true) {
@@ -831,6 +831,62 @@ export function elementKeyAfterEvent(e: KeyboardEvent, store: EditorInit) {
     }
 }
 
+// 위 아래 화살표 이동 이벤트
+function moveToBlockEvent(e: KeyboardEvent, store: EditorInit, keyType: "up" | "down") {
+    const $editableElement = findContentEditableElement(store.cursorData.startNode);
+    const { $element, type } = getBlockType($editableElement);
+    let $target: HTMLElement;
+
+    switch (type) {
+        case "list":
+            if (keyType === "up") {
+                $target = $editableElement.previousElementSibling as HTMLElement;
+            } else {
+                $target = $editableElement.nextElementSibling as HTMLElement;
+            }
+
+            if ($target === null) {
+                if (keyType === "up") {
+                    $target = $element.previousElementSibling as HTMLElement;
+                } else {
+                    $target = $element.nextElementSibling as HTMLElement;
+                }
+            }
+            break;
+        default:
+            if (keyType === "up") {
+                $target = $element.previousElementSibling as HTMLElement;
+            } else {
+                $target = $element.nextElementSibling as HTMLElement;
+            }
+    }
+
+    if ($target !== null) {
+        if ($target.classList.contains("de-block") == true) {
+            const { $element, type: targetType } = getBlockType($target);
+
+            switch (targetType) {
+                case "list":
+                    const $targetItem = $element.querySelectorAll(".de-item");
+                    let $item: Element;
+
+                    if (keyType === "up") {
+                        $item = $targetItem[$targetItem.length - 1];
+                    } else {
+                        $item = $targetItem[0];
+                    }
+
+                    setCursor($item, 0);
+                    break;
+                default:
+                    setCursor($element, 0);
+            }
+        } else {
+            setCursor($target, 0);
+        }
+    }
+}
+
 /**
  * 핫 키 이벤트
  */
@@ -841,12 +897,29 @@ export function hotKeyEvent(event: KeyboardEvent, store: EditorInit) {
     if (isControlKeyActive === true) {
         switch (event.key) {
             case "b":
+                event.preventDefault();
                 setStyle("bold", store);
                 break;
             case "i":
+                event.preventDefault();
                 setStyle("italic", store);
+                break;
+            case "u":
+                event.preventDefault();
+                setStyle("underline", store);
+                break;
+            case "s":
+                if (event.shiftKey === true) {
+                    event.preventDefault();
+                    setStyle("strikethrough", store);
+                }
+                break;
+            case "c":
+                if (event.shiftKey === true) {
+                    event.preventDefault();
+                    setStyle("code", store);
+                }
                 break;
         }
     }
-
 }
