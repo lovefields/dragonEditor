@@ -96,7 +96,7 @@ export function getBlockType(element: HTMLElement) {
     }
 
     return {
-        element: $block,
+        $element: $block,
         type: typeName,
     };
 }

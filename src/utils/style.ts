@@ -311,36 +311,50 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                     const endTextContent = childNode.textContent.slice(cursorData.endOffset);
 
                     if (childNode.constructor.name === "Text") {
-                        structureArray.push(`<span class="${className}">${textContent}</span>`);
-                        structureArray.push(endTextContent);
+                        if (isWrap === true) {
+                            structureArray.push(`<span class="${className}">${textContent}</span>`);
+                            structureArray.push(endTextContent);
+                        } else {
+                            structureArray.push(childNode.textContent);
+                        }
                     } else {
                         const $targetNode = childNode as HTMLElement;
                         const classList = [...$targetNode.classList];
                         const classIdx = classList.indexOf(className);
 
                         if ($targetNode.tagName === "SPAN") {
-                            if (classIdx === -1) {
-                                // 클레스가 없는 경우
-                                structureArray.push(`<span class="${classList.join(" ")} ${className}">${textContent}</span>`);
-                                if (endTextContent !== "") {
-                                    structureArray.push(`<span class="${classList.join(" ")}">${endTextContent}</span>`);
-                                }
-                            } else {
-                                // 클레스가 있는 경우
-                                if (classList.length === 1) {
-                                    // 마지막 클레스인 경우
-                                    structureArray.push(textContent);
+                            if (isWrap === true) {
+                                if (classIdx === -1) {
+                                    // 클레스가 없는 경우
+                                    structureArray.push(`<span class="${classList.join(" ")} ${className}">${textContent}</span>`);
                                     if (endTextContent !== "") {
                                         structureArray.push(`<span class="${classList.join(" ")}">${endTextContent}</span>`);
                                     }
                                 } else {
-                                    // 마지막 클레스가 아닌 경우
-                                    const newClassList = [...classList];
-                                    newClassList.splice(classIdx, 1);
+                                    // 클레스가 있는 경우
+                                    structureArray.push($targetNode.outerHTML);
+                                }
+                            } else {
+                                if (classIdx === -1) {
+                                    // 클레스가 없는 경우
+                                    structureArray.push($targetNode.outerHTML);
+                                } else {
+                                    // 클레스가 있는 경우
+                                    if (classList.length === 1) {
+                                        // 마지막 클레스인 경우
+                                        structureArray.push(textContent);
+                                        if (endTextContent !== "") {
+                                            structureArray.push(`<span class="${classList.join(" ")}">${endTextContent}</span>`);
+                                        }
+                                    } else {
+                                        // 마지막 클레스가 아닌 경우
+                                        const newClassList = [...classList];
+                                        newClassList.splice(classIdx, 1);
 
-                                    structureArray.push(`<span class="${newClassList.join(" ")}">${textContent}</span>`);
-                                    if (endTextContent !== "") {
-                                        structureArray.push(`<span class="${classList.join(" ")}">${endTextContent}</span>`);
+                                        structureArray.push(`<span class="${newClassList.join(" ")}">${textContent}</span>`);
+                                        if (endTextContent !== "") {
+                                            structureArray.push(`<span class="${classList.join(" ")}">${endTextContent}</span>`);
+                                        }
                                     }
                                 }
                             }
@@ -362,7 +376,6 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
             $element.innerHTML = structureArray.join("");
 
-            // FIXME : 커서 위치데이터 재정의 필요, is duble 없이 재정의 해야함
             // @ts-ignore : IDE가 인식 못함
             if (isWrap === true) {
                 // @ts-ignore : IDE가 인식 못함
@@ -372,31 +385,43 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                     startOffset = 0;
                 }
             } else {
-                let startMinusCount: number = 0;
-                let endMinusCount: number = 0;
-                let startOffsetCount: number = 0;
-                let tagReg = new RegExp("(<([^>]+)>)", "i");
+                // FIXME : 커서 위치데이터 재정의 필요, 이전에 텍스트 노드가 있다 -> 합쳐졋다 = +1 .
+                // let startMinusCount: number = 0;
+                // let endMinusCount: number = 0;
+                // let startOffsetCount: number = 0;
+                // let tagReg = new RegExp("(<([^>]+)>)", "i");
+                // let isPreText: boolean = false;
+                // let endPlusOffset: number = 0;
 
-                structureArray.forEach((string: string, i: number) => {
-                    if (startNodeIdx === i) {
-                        startNodeIdx -= startMinusCount;
-                        startOffset = startOffsetCount;
-                    }
+                // console.log("structureArray", structureArray);
+                // structureArray.forEach((string: string, i: number) => {
+                //     if (startNodeIdx === i) {
+                //         startNodeIdx -= startMinusCount;
+                //         startOffset = startOffsetCount;
+                //     }
 
-                    if (endNodeIdx === i) {
-                        endNodeIdx -= endMinusCount;
-                    }
+                //     if (tagReg.test(string) === true) {
+                //         startMinusCount = 0;
+                //         startOffsetCount = 0;
+                //     } else {
+                //         startMinusCount += 1;
+                //         startOffsetCount += string.length;
+                //     }
+                // });
 
-                    if (tagReg.test(string) === true) {
-                        startMinusCount = 0;
-                        startOffsetCount = 0;
-                        endMinusCount += 1;
-                    } else {
-                        startMinusCount += 1;
-                        startOffsetCount += string.length;
-                    }
-                });
+                // console.log("endMinusCount", endMinusCount);
+                // console.log("endPlusOffset", endPlusOffset);
+                // endNodeIdx -= endMinusCount - 1;
+                // endOffset += endPlusOffset + 1;
             }
+
+            console.log("$element.childNodes", $element.childNodes);
+            console.log("$element.childNodes[startNodeIdx]", $element.childNodes[startNodeIdx]);
+            console.log("startNodeIdx", startNodeIdx);
+            console.log("startOffset", startOffset);
+            console.log("$element.childNodes[endNodeIdx]", $element.childNodes[endNodeIdx]);
+            console.log("endNodeIdx", endNodeIdx);
+            console.log("endOffset", endOffset);
 
             setRangeCursor($element.childNodes[startNodeIdx] as Element, $element.childNodes[endNodeIdx] as Element, startOffset, endOffset);
 
