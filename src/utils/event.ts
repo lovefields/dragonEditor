@@ -1,5 +1,5 @@
 import type EditorInit from "./init";
-import { elementKeyEvent, elementKeyAfterEvent, hotKeyEvent } from "./keyboardEvent";
+import { elementKeyEvent, elementKeyAfterEvent, hotKeyEvent, copyEvent, pasteEvent } from "./keyboardEvent";
 import { setCursorData } from "./cursor";
 import { setControlbarEvetn } from "./controlbarEvent";
 import { findContentEditableElement } from "./element";
@@ -39,5 +39,15 @@ function setContentEditorbleElementEvent(store: EditorInit) {
         }
     });
 
-    // console.log($targetList);
+    // 복사 이벤트
+    store.wrap.addEventListener("copy", function (e: KeyboardEvent) {
+        e.preventDefault();
+        copyEvent(e, store);
+    });
+
+    // 붙여넣기 이벤트
+    store.wrap.addEventListener("paste", function (e: KeyboardEvent) {
+        e.preventDefault();
+        pasteEvent(e, store);
+    });
 }

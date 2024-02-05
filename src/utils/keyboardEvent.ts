@@ -863,6 +863,7 @@ function moveToBlockEvent(e: KeyboardEvent, store: EditorInit, keyType: "up" | "
 
     if ($target !== null) {
         if ($target.classList.contains("de-block") == true) {
+            // 타겟이 블럭인 경우
             const { $element, type: targetType } = getBlockType($target);
 
             switch (targetType) {
@@ -882,6 +883,7 @@ function moveToBlockEvent(e: KeyboardEvent, store: EditorInit, keyType: "up" | "
                     setCursor($element, 0);
             }
         } else {
+            // 블럭이 아닌 경우
             setCursor($target, 0);
         }
     }
@@ -923,3 +925,11 @@ export function hotKeyEvent(event: KeyboardEvent, store: EditorInit) {
         }
     }
 }
+
+/**
+ * 복사 & 붙여넣기 이벤트
+ */
+
+export function copyEvent(event: KeyboardEvent, store: EditorInit) {}
+
+export function pasteEvent(event: KeyboardEvent, store: EditorInit) {}

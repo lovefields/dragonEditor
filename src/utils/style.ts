@@ -385,43 +385,47 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                     startOffset = 0;
                 }
             } else {
-                // FIXME : 커서 위치데이터 재정의 필요, 이전에 텍스트 노드가 있다 -> 합쳐졋다 = +1 .
-                // let startMinusCount: number = 0;
-                // let endMinusCount: number = 0;
-                // let startOffsetCount: number = 0;
-                // let tagReg = new RegExp("(<([^>]+)>)", "i");
-                // let isPreText: boolean = false;
-                // let endPlusOffset: number = 0;
+                const tagReg = new RegExp("(<([^>]+)>)", "i");
+                const isTagList: (boolean | null)[] = [];
+                let newStartNodeIdx: number = 0;
+                let newStartOffset: number = startOffset * 1;
+                let newEndOffset: number = 0;
+                let endMinusCount: number = 0;
 
-                // console.log("structureArray", structureArray);
-                // structureArray.forEach((string: string, i: number) => {
-                //     if (startNodeIdx === i) {
-                //         startNodeIdx -= startMinusCount;
-                //         startOffset = startOffsetCount;
-                //     }
+                structureArray.forEach((string: string, i: number) => {
+                    const isTag: boolean = tagReg.test(string);
 
-                //     if (tagReg.test(string) === true) {
-                //         startMinusCount = 0;
-                //         startOffsetCount = 0;
-                //     } else {
-                //         startMinusCount += 1;
-                //         startOffsetCount += string.length;
-                //     }
-                // });
+                    isTagList.push(isTag);
 
-                // console.log("endMinusCount", endMinusCount);
-                // console.log("endPlusOffset", endPlusOffset);
-                // endNodeIdx -= endMinusCount - 1;
-                // endOffset += endPlusOffset + 1;
+                    if (startNodeIdx <= i && i <= endNodeIdx) {
+                        if (isTag === true) {
+                            newEndOffset = 0;
+                        } else {
+                            endMinusCount += 1;
+                            newEndOffset += string.length;
+                        }
+                    }
+                });
+
+                // 시작 노드의 전 노드가 텍스트라면
+                if (isTagList[startNodeIdx - 1] === false) {
+                    newStartNodeIdx = startNodeIdx - 1;
+                    newStartOffset = startOffset + structureArray[startNodeIdx - 1].length;
+                }
+
+                if (isTagList.slice(startNodeIdx, endNodeIdx).includes(true) === true) {
+                    // 중간에 태그가 있는경우
+                    endNodeIdx -= endMinusCount - 1;
+                    endOffset = newEndOffset;
+                } else {
+                    // 중간에 태그가 없는 경우
+                    endNodeIdx = newStartNodeIdx;
+                    endOffset = newStartOffset + newEndOffset;
+                }
+
+                startNodeIdx = newStartNodeIdx;
+                startOffset = newStartOffset;
             }
-
-            console.log("$element.childNodes", $element.childNodes);
-            console.log("$element.childNodes[startNodeIdx]", $element.childNodes[startNodeIdx]);
-            console.log("startNodeIdx", startNodeIdx);
-            console.log("startOffset", startOffset);
-            console.log("$element.childNodes[endNodeIdx]", $element.childNodes[endNodeIdx]);
-            console.log("endNodeIdx", endNodeIdx);
-            console.log("endOffset", endOffset);
 
             setRangeCursor($element.childNodes[startNodeIdx] as Element, $element.childNodes[endNodeIdx] as Element, startOffset, endOffset);
 
