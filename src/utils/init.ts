@@ -15,6 +15,7 @@ export default class EditorInit {
         self.wrap = $el;
         setEditorOption(self, option);
         setLayout(self);
+
         if (self.mode === "edit") {
             setEvent(self);
         }
