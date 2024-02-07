@@ -101,7 +101,7 @@ function defaultBlockEnterEvent(store: EditorInit, $element: Element) {
         if ($textBlock.textContent === "") {
             if ($textBlock.hasChildNodes() === false) {
                 // 자식 노드가 없는 경우
-                $textBlock.insertAdjacentHTML("afterend", createTextBlock(store));
+                $textBlock.insertAdjacentElement("afterend", createTextBlock(store));
 
                 const $nextBlock = $textBlock.nextElementSibling as HTMLElement;
 
@@ -133,7 +133,7 @@ function defaultBlockEnterEvent(store: EditorInit, $element: Element) {
                 });
 
                 $textBlock.innerHTML = preStructure;
-                $textBlock.insertAdjacentHTML("afterend", createTextBlock(store, nextStructure));
+                $textBlock.insertAdjacentElement("afterend", createTextBlock(store, nextStructure));
 
                 const $nextBlock = $textBlock.nextElementSibling as HTMLParagraphElement;
 
