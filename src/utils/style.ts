@@ -27,35 +27,41 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
                 if ($parentElement === $element) {
                     // 부모가 최상위 노드인 경우
-                    const childList = $element.childNodes;
-                    let targetIdx: number = -1;
-                    let structure: string = "";
-                    let cursorOffset: number = 0;
+                    const test = document.createElement("span");
+                    test.textContent = "123";
 
-                    for (let i = 0; childList.length > i; i += 1) {
-                        if ($target === childList[i]) {
-                            targetIdx = i;
-                            break;
-                        }
-                    }
+                    // $parentElement.replace
+                    setCursor(test, 2);
 
-                    childList.forEach((node, i) => {
-                        if (i === targetIdx) {
-                            // 대상 노드인 경우
-                            structure += `<span class="${className}">${node.textContent}</span>`;
-                            cursorOffset = node.textContent.length;
-                        } else {
-                            // 대상 노드가 아닌 경우
-                            if (node.constructor.name === "Text") {
-                                structure += node.textContent;
-                            } else {
-                                structure += (node as HTMLElement).outerHTML;
-                            }
-                        }
-                    });
+                    // const childList = $element.childNodes;
+                    // let targetIdx: number = -1;
+                    // let structure: string = "";
+                    // let cursorOffset: number = 0;
 
-                    $element.innerHTML = structure;
-                    setCursor($element.childNodes[targetIdx] as Element, cursorOffset);
+                    // for (let i = 0; childList.length > i; i += 1) {
+                    //     if ($target === childList[i]) {
+                    //         targetIdx = i;
+                    //         break;
+                    //     }
+                    // }
+
+                    // childList.forEach((node, i) => {
+                    //     if (i === targetIdx) {
+                    //         // 대상 노드인 경우
+                    //         structure += `<span class="${className}">${node.textContent}</span>`;
+                    //         cursorOffset = node.textContent.length;
+                    //     } else {
+                    //         // 대상 노드가 아닌 경우
+                    //         if (node.constructor.name === "Text") {
+                    //             structure += node.textContent;
+                    //         } else {
+                    //             structure += (node as HTMLElement).outerHTML;
+                    //         }
+                    //     }
+                    // });
+
+                    // $element.innerHTML = structure;
+                    // setCursor($element.childNodes[targetIdx] as Element, cursorOffset);
                 } else {
                     // 부모가 최상위 노드가 아닌 경우
                     if ($parentElement.tagName === "A") {
@@ -198,12 +204,15 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
             let structureArray: string[] = [];
 
             $element.childNodes.forEach((childNode: ChildNode, i: number) => {
+                const $elementNode = childNode as HTMLElement;
+                let isText = childNode.constructor.name === "Text";
+
                 if (cursorData.startNodeIdx > i) {
                     // 이전 노드인 경우
-                    if (childNode.constructor.name === "Text") {
+                    if (isText === true) {
                         structureArray.push(childNode.textContent);
                     } else {
-                        structureArray.push((childNode as HTMLElement).outerHTML);
+                        structureArray.push($elementNode.outerHTML);
                     }
                 }
 
@@ -212,7 +221,7 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                     const preTextContent = childNode.textContent.slice(0, cursorData.startOffset);
                     const textContent = childNode.textContent.slice(cursorData.startOffset);
 
-                    if (childNode.constructor.name === "Text") {
+                    if (isText === true) {
                         structureArray.push(preTextContent);
                         structureArray.push(`<span class="${className}">${textContent}</span>`);
                         isWrap = true;
@@ -221,11 +230,10 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                             isDuble = true;
                         }
                     } else {
-                        const $targetNode = childNode as HTMLElement;
-                        const classList = [...$targetNode.classList];
+                        const classList = [...$elementNode.classList];
                         const classIdx = classList.indexOf(className);
 
-                        if ($targetNode.tagName === "SPAN") {
+                        if ($elementNode.tagName === "SPAN") {
                             if (classIdx === -1) {
                                 // 클레스가 없는 경우
                                 if (preTextContent !== "") {
@@ -252,6 +260,8 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                                     structureArray.push(`<span class="${newClassList.join(" ")}">${textContent}</span>`);
                                 }
                             }
+                        } else if ($elementNode.tagName === "BR") {
+                            structureArray.push("<br>");
                         } else {
                             isAnchorElement = true;
                         }
@@ -260,18 +270,17 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
                 if (cursorData.startNodeIdx < i && cursorData.endNodeIdx > i) {
                     // 첫번쨰 노드와 마지막 노드의 사이에 있는 노드인 경우
-                    if (childNode.constructor.name === "Text") {
+                    if (isText === true) {
                         if (isWrap === true) {
                             structureArray.push(`<span class="${className}">${childNode.textContent}</span>`);
                         } else {
                             structureArray.push(childNode.textContent);
                         }
                     } else {
-                        const $targetNode = childNode as HTMLElement;
-                        const classList = [...$targetNode.classList];
+                        const classList = [...$elementNode.classList];
                         const classIdx = classList.indexOf(className);
 
-                        if ($targetNode.tagName === "SPAN") {
+                        if ($elementNode.tagName === "SPAN") {
                             if (isWrap === true) {
                                 // 첫 시작점이 부여인 경우
                                 if (classIdx === -1) {
@@ -279,13 +288,13 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                                     structureArray.push(`<span class="${classList.join(" ")} ${className}">${childNode.textContent}</span>`);
                                 } else {
                                     // 클레스가 있는 경우
-                                    structureArray.push((childNode as HTMLElement).outerHTML);
+                                    structureArray.push($elementNode.outerHTML);
                                 }
                             } else {
                                 // 첫 시작점이 부여가 아닌 경우
                                 if (classIdx === -1) {
                                     // 클레스가 없는 경우
-                                    structureArray.push((childNode as HTMLElement).outerHTML);
+                                    structureArray.push($elementNode.outerHTML);
                                 } else {
                                     // 클레스가 있는 경우
                                     if (classList.length === 1) {
@@ -299,6 +308,8 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                                     }
                                 }
                             }
+                        } else if ($elementNode.tagName === "BR") {
+                            structureArray.push("<br>");
                         } else {
                             isAnchorElement = true;
                         }
@@ -310,7 +321,7 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                     const textContent = childNode.textContent.slice(0, cursorData.endOffset);
                     const endTextContent = childNode.textContent.slice(cursorData.endOffset);
 
-                    if (childNode.constructor.name === "Text") {
+                    if (isText === true) {
                         if (isWrap === true) {
                             structureArray.push(`<span class="${className}">${textContent}</span>`);
                             structureArray.push(endTextContent);
@@ -318,11 +329,10 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                             structureArray.push(childNode.textContent);
                         }
                     } else {
-                        const $targetNode = childNode as HTMLElement;
-                        const classList = [...$targetNode.classList];
+                        const classList = [...$elementNode.classList];
                         const classIdx = classList.indexOf(className);
 
-                        if ($targetNode.tagName === "SPAN") {
+                        if ($elementNode.tagName === "SPAN") {
                             if (isWrap === true) {
                                 if (classIdx === -1) {
                                     // 클레스가 없는 경우
@@ -332,12 +342,12 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                                     }
                                 } else {
                                     // 클레스가 있는 경우
-                                    structureArray.push($targetNode.outerHTML);
+                                    structureArray.push($elementNode.outerHTML);
                                 }
                             } else {
                                 if (classIdx === -1) {
                                     // 클레스가 없는 경우
-                                    structureArray.push($targetNode.outerHTML);
+                                    structureArray.push($elementNode.outerHTML);
                                 } else {
                                     // 클레스가 있는 경우
                                     if (classList.length === 1) {
@@ -358,6 +368,8 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
                                     }
                                 }
                             }
+                        } else if ($elementNode.tagName === "BR") {
+                            structureArray.push("<br>");
                         } else {
                             isAnchorElement = true;
                         }
@@ -366,10 +378,10 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
                 if (cursorData.endNodeIdx < i) {
                     // 이후 노드인 경우
-                    if (childNode.constructor.name === "Text") {
+                    if (isText === true) {
                         structureArray.push(childNode.textContent);
                     } else {
-                        structureArray.push((childNode as HTMLElement).outerHTML);
+                        structureArray.push($elementNode.outerHTML);
                     }
                 }
             });
@@ -415,6 +427,9 @@ function setNodeStyle(className: string, store: EditorInit, $element: HTMLElemen
 
                 if (isTagList.slice(startNodeIdx, endNodeIdx).includes(true) === true) {
                     // 중간에 태그가 있는경우
+                    console.log("endNodeIdx", endNodeIdx);
+                    console.log("endMinusCount", endMinusCount);
+                    console.log("newEndOffset", newEndOffset);
                     endNodeIdx -= endMinusCount - 1;
                     endOffset = newEndOffset;
                 } else {

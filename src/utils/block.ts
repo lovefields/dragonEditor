@@ -1,21 +1,20 @@
 import type EditorInit from "./init";
 import { generateId } from "./data";
 
-export function createTextBlock(store: EditorInit, childString?: string): string {
-    let structure: string = "";
+export function createTextBlock(store: EditorInit, childString?: string): HTMLParagraphElement {
+    const $paragraph = document.createElement("p");
 
-    structure += `<p `;
-    structure += ` class="de-block de-text-block" `;
-    structure += setContentEditableAttr(store.mode);
-    structure += `>`;
+    $paragraph.classList.add("de-block", "de-text-block");
 
-    if (childString !== undefined) {
-        structure += childString;
+    if (store.mode === "edit") {
+        $paragraph.setAttribute("contenteditable", "true");
     }
 
-    structure += `</p>`;
+    if (childString !== undefined) {
+        $paragraph.innerHTML = childString;
+    }
 
-    return structure;
+    return $paragraph;
 }
 
 // 해딩 블럭 생성
