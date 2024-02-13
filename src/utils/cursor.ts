@@ -15,7 +15,7 @@ export function setCursorData(store: EditorInit) {
     }
 }
 
-export function setCursor($target: Element, startIdx: number) {
+export function setCursor($target: Node, startIdx: number) {
     const range = document.createRange();
     const selection = window.getSelection();
 
