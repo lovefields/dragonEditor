@@ -1,17 +1,13 @@
 import type EditorInit from "./init";
 import { generateId } from "./data";
 
-export function createTextBlock(store: EditorInit, childString?: string): HTMLParagraphElement {
+export function createTextBlock(store: EditorInit): HTMLParagraphElement {
     const $paragraph = document.createElement("p");
 
     $paragraph.classList.add("de-block", "de-text-block");
 
     if (store.mode === "edit") {
         $paragraph.setAttribute("contenteditable", "true");
-    }
-
-    if (childString !== undefined) {
-        $paragraph.innerHTML = childString;
     }
 
     return $paragraph;
