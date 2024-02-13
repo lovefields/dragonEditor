@@ -31,10 +31,14 @@ export function findContentEditableElement($target: Node): HTMLElement | null {
 }
 
 // 타겟이 텍스트 인경우 상위 엘리먼트 추출
-export function getParentElementIfNodeIsText($target: Node): HTMLElement {
+export function getParentElementIfNodeIsText($target: Node, $block: HTMLElement): Node {
     if ($target.constructor.name === "Text") {
-        $target = $target.parentElement;
+        const $parent = $target.parentElement;
+
+        if ($parent !== $block) {
+            $target = $parent;
+        }
     }
 
-    return $target as HTMLElement;
+    return $target as Node;
 }
