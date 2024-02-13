@@ -131,7 +131,7 @@ function defaultBlockEnterEvent(store: EditorInit, $element: Element) {
                     }
 
                     $nextBlock.replaceChildren(...nextStructure);
-                    setCursor(nextStructure[0] as Element, 0);
+                    setCursor(nextStructure[0], 0);
                 }
             }
         } else {
@@ -141,7 +141,6 @@ function defaultBlockEnterEvent(store: EditorInit, $element: Element) {
             const preStructure: Node[] = [];
             const nextStructure: Node[] = [];
             let nodeIdx = -1;
-            // let curruntNodeIdx: number;
 
             // 노드 위치 파악
             for (let i = 0; childNodeList.length > i; i += 1) {
@@ -186,67 +185,135 @@ function defaultBlockEnterEvent(store: EditorInit, $element: Element) {
             $textBlock.insertAdjacentElement("afterend", $nextBlock);
             $textBlock.replaceChildren(...preStructure);
             $nextBlock.replaceChildren(...nextStructure);
-            
+
             // 커서 위치 지정
             if (nextStructure.length === 0) {
                 $nextBlock.focus();
             } else {
-                setCursor($nextBlock.childNodes[0] as Element, 0);
+                setCursor($nextBlock.childNodes[0], 0);
             }
         }
     } else {
         // 셀렉트 커서인경우
         const childNodeList = $textBlock.childNodes;
         const cursorData = soltingCursorDataOnElement(store.cursorData, $textBlock);
-        let preStructure = "";
-        let nextStructure = "";
+        const preStructure: Node[] = [];
+        const nextStructure: Node[] = [];
 
-        childNodeList.forEach((node: ChildNode, i: number) => {
-            if (cursorData.startNodeIdx > i) {
-                if (node.constructor.name === "Text") {
-                    preStructure += node.textContent;
-                } else {
-                    preStructure += (node as Element).outerHTML;
-                }
-            } else if (cursorData.startNodeIdx === i) {
-                if (node.constructor.name === "Text") {
-                    preStructure += node.textContent.slice(0, cursorData.startOffset);
-                } else {
-                    const originalClassList = [...(node as Element).classList];
-                    const text = node.textContent;
+        if (cursorData.startNodeIdx === cursorData.endNodeIdx) {
+            // 같은 노드의 경우
+            childNodeList.forEach((node: ChildNode, i: number) => {
+                if (cursorData.startNodeIdx > i) {
+                    preStructure.push(node);
+                } else if (cursorData.endNodeIdx < i) {
+                    nextStructure.push(node);
+                } else if (cursorData.startNodeIdx === i) {
+                    if (node.constructor.name === "Text") {
+                        const preText = node.textContent.slice(0, cursorData.startOffset);
+                        const nextText = node.textContent.slice(cursorData.endOffset);
 
-                    preStructure += `<span class="${originalClassList.join(" ")}">${text.slice(0, cursorData.startOffset)}</span>`;
-                }
-            }
+                        if (preText !== "") {
+                            const textNode = document.createTextNode(preText);
 
-            if (cursorData.endNodeIdx < i) {
-                if (node.constructor.name === "Text") {
-                    nextStructure += node.textContent;
-                } else {
-                    nextStructure += (node as Element).outerHTML;
-                }
-            } else if (cursorData.endNodeIdx === i) {
-                if (node.constructor.name === "Text") {
-                    nextStructure += node.textContent.slice(cursorData.endOffset);
-                } else {
-                    const originalClassList = [...(node as Element).classList];
-                    const text = node.textContent.slice(cursorData.endOffset);
+                            preStructure.push(textNode);
+                        }
 
-                    if (text !== "") {
-                        nextStructure += `<span class="${originalClassList.join(" ")}">${text.slice(cursorData.endOffset)}</span>`;
+                        if (nextText !== "") {
+                            const textNode = document.createTextNode(nextText);
+
+                            nextStructure.push(textNode);
+                        }
+                    } else {
+                        const originalClassList = [...(node as Element).classList];
+                        const preText = node.textContent.slice(0, cursorData.startOffset);
+                        const nextText = node.textContent.slice(cursorData.endOffset);
+
+
+                        if (preText !== "") {
+                            const $span = document.createElement("span");
+
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = preText;
+                            preStructure.push($span);
+                        }
+
+                        if (nextText !== "") {
+                            const $span = document.createElement("span");
+
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = nextText;
+                            nextStructure.push($span);
+                        }
                     }
                 }
-            }
-        });
+            });
+        } else {
+            // 다른 노드의 경우
+            childNodeList.forEach((node: ChildNode, i: number) => {
+                if (cursorData.startNodeIdx > i) {
+                    preStructure.push(node);
+                } else if (cursorData.startNodeIdx === i) {
+                    if (node.constructor.name === "Text") {
+                        const text = node.textContent.slice(0, cursorData.startOffset);
+
+                        if (text !== "") {
+                            const textNode = document.createTextNode(text);
+
+                            preStructure.push(textNode);
+                        }
+                    } else {
+                        const originalClassList = [...(node as Element).classList];
+                        const text = node.textContent.slice(0, cursorData.startOffset);
+
+                        if (text !== "") {
+                            const $span = document.createElement("span");
+
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = text;
+                            preStructure.push($span);
+                        }
+                    }
+                }
+
+                if (cursorData.endNodeIdx < i) {
+                    nextStructure.push(node);
+                } else if (cursorData.endNodeIdx === i) {
+                    if (node.constructor.name === "Text") {
+                        const text = node.textContent.slice(cursorData.endOffset);
+
+                        if (text !== "") {
+                            const textNode = document.createTextNode(text);
+
+                            nextStructure.push(textNode);
+                        }
+                    } else {
+                        const originalClassList = [...(node as Element).classList];
+                        const text = node.textContent.slice(cursorData.endOffset);
+                        const $span = document.createElement("span");
+
+                        if (text !== "") {
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = text;
+                            nextStructure.push($span);
+                        }
+                    }
+                }
+            });
+        }
+
+        const $nextBlock = createTextBlock(store);
 
         // 텍스트 블럭 삽입
-        const nextBlockStructure = createTextBlock(store, nextStructure);
-        $textBlock.insertAdjacentHTML("afterend", nextBlockStructure);
-        $textBlock.innerHTML = preStructure;
+        $textBlock.insertAdjacentElement("afterend", $nextBlock);
+        $textBlock.replaceChildren(...preStructure);
+        $nextBlock.replaceChildren(...nextStructure);
 
         // 커서 위치 지정
-        const $nextBlock = $textBlock.nextElementSibling;
-        setCursor($nextBlock, 0);
+        if (nextStructure.length === 0) {
+            $nextBlock.focus();
+        } else {
+            setCursor($nextBlock.childNodes[0], 0);
+        }
     }
 }
 
