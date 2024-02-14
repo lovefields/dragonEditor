@@ -14,61 +14,44 @@ export function createTextBlock(store: EditorInit): HTMLParagraphElement {
 }
 
 // 해딩 블럭 생성
-export function createHeadingBlock(store: EditorInit, type: string, childString?: string): string {
+// TODO : 엘리먼트 방식으로 변경
+export function createHeadingBlock(store: EditorInit, type: string): HTMLElement {
     const level: number = parseInt(type.replace("heading", ""));
-    let structure: string = "";
+    const $headingBlock = document.createElement(`h${level}`);
 
-    structure += `<h${level} `;
-    structure += ` class="de-block de-heading-block" id="${generateId()}" data-level="${level}"`;
-    structure += setContentEditableAttr(store.mode);
-    structure += `>`;
+    $headingBlock.classList.add("de-block", "de-heading-block");
+    $headingBlock.id = generateId();
+    $headingBlock.dataset["level"] = String(level);
 
-    if (childString !== undefined) {
-        structure += childString;
+    if (store.mode === "edit") {
+        $headingBlock.setAttribute("contenteditable", "true");
     }
 
-    structure += `</h${level}>`;
-
-    return structure;
+    return $headingBlock;
 }
 
 // 리스트 블럭 생성
-export function createListBlock(store: EditorInit, type: string, childString?: string[]): string {
-    let structure: string = "";
+// TODO : 엘리먼트 방식으로 변경
+export function createListBlock(store: EditorInit, type: string): HTMLElement {
+    const $block = document.createElement(type);
 
-    structure += `<${type} class="de-block de-list-block">`;
+    $block.classList.add("de-block", "de-list-block");
+    $block.appendChild(createListItemBlock(store));
 
-    if (childString !== undefined) {
-        // TODO : 리스트 아이템 넣기
-    } else {
-        structure += `<li class="de-item" `;
-        structure += setContentEditableAttr(store.mode);
-        structure += `></li>`;
-    }
-
-    structure += `</${type}>`;
-
-    return structure;
+    return $block;
 }
 
 // 리스트 아이템 블럭 생성
-export function createListItemBlock(childString?: string): string {
-    let structure: string = "";
+export function createListItemBlock(store: EditorInit): HTMLLIElement {
+    const $li = document.createElement("li");
 
-    structure += `<li class="de-item" contenteditable>`;
+    $li.classList.add("de-item");
 
-    if (childString !== undefined) {
-        structure += childString;
+    if (store.mode === "edit") {
+        $li.setAttribute("contenteditable", "true");
     }
 
-    structure += `</li>`;
-
-    return structure;
-}
-
-// 에디트 속성
-function setContentEditableAttr(mode: string): string {
-    return mode === "edit" ? " contenteditable " : "";
+    return $li;
 }
 
 // 블럭 타입 추출
