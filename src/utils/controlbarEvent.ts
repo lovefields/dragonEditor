@@ -52,7 +52,7 @@ export function setControlbarEvetn(store: EditorInit) {
     $controlBar.querySelectorAll(".de-add-block").forEach(($btn) => {
         $btn.addEventListener("click", function () {
             const type = this.dataset["type"];
-            let blockStructure: string = "";
+            let blockStructure: HTMLElement;
 
             switch (type) {
                 case "text":
@@ -70,8 +70,7 @@ export function setControlbarEvetn(store: EditorInit) {
             }
 
             if (store.cursorData === null) {
-                store.wrap.querySelector(".de-block-list").insertAdjacentHTML("beforeend", blockStructure);
-                // TODO : 커서 셋 하기
+                store.wrap.querySelector(".de-block-list").insertAdjacentElement("beforeend", blockStructure);
             } else {
                 let $target = store.cursorData.startNode;
 
@@ -81,11 +80,19 @@ export function setControlbarEvetn(store: EditorInit) {
 
                 const $block = ($target as HTMLElement).closest(".de-block");
 
-                $block.insertAdjacentHTML("afterend", blockStructure);
-                // TODO : 커서 셋 하기
+                $block.insertAdjacentElement("afterend", blockStructure);
             }
 
             $controlBar.querySelector(".de-block-menu-area").classList.remove("--active");
+
+            switch (type) {
+                case "ul":
+                case "ol":
+                    (blockStructure.childNodes[0] as HTMLElement).focus();
+                    break;
+                default:
+                    blockStructure.focus();
+            }
         });
     });
 
