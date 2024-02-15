@@ -33,12 +33,6 @@ function setContentEditorbleElementEvent(store: EditorInit) {
         }
     });
 
-    store.wrap.addEventListener("keyup", function (e: KeyboardEvent) {
-        if ((e.target as HTMLElement).isContentEditable === true) {
-            elementKeyAfterEvent(e, store);
-        }
-    });
-
     // 복사 이벤트
     store.wrap.addEventListener("copy", function (e: KeyboardEvent) {
         e.preventDefault();
