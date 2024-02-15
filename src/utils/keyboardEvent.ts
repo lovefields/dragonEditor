@@ -317,7 +317,6 @@ function defaultBlockEnterEvent(store: EditorInit, $element: Element) {
 }
 
 // 리스트 블럭 엔터 이벤트
-// TODO : 엘리먼트 방식으로 변경
 function listBlockEnterEvent(event: KeyboardEvent, store: EditorInit, $element: Element) {
     const $listBlock = $element as HTMLElement;
     const $editableElement = findContentEditableElement(event.target as Node) as HTMLLIElement;
@@ -431,54 +430,74 @@ function listBlockEnterEvent(event: KeyboardEvent, store: EditorInit, $element: 
         // 셀렉트 커서인 경우
         const childNodeList = $editableElement.childNodes;
         const cursorData = soltingCursorDataOnElement(store.cursorData, $editableElement);
-        let preStructure = "";
-        let nextStructure = "";
+        const preStructure: Node[] = [];
+        const nextStructure: Node[] = [];
 
         childNodeList.forEach((node: ChildNode, i: number) => {
             if (cursorData.startNodeIdx > i) {
-                if (node.constructor.name === "Text") {
-                    preStructure += node.textContent;
-                } else {
-                    preStructure += (node as Element).outerHTML;
-                }
+                preStructure.push(node);
             } else if (cursorData.startNodeIdx === i) {
                 if (node.constructor.name === "Text") {
-                    preStructure += node.textContent.slice(0, cursorData.startOffset);
+                    const text = node.textContent.slice(0, cursorData.startOffset);
+
+                    if (text !== "") {
+                        const $textNode = document.createTextNode(text);
+
+                        preStructure.push($textNode);
+                    }
                 } else {
                     const originalClassList = [...(node as Element).classList];
-                    const text = node.textContent;
+                    const text = node.textContent.slice(0, cursorData.startOffset);
 
-                    preStructure += `<span class="${originalClassList.join(" ")}">${text.slice(0, cursorData.startOffset)}</span>`;
+                    if (text !== "") {
+                        const $span = document.createElement("span");
+
+                        $span.classList.add(...originalClassList);
+                        $span.textContent = text;
+                        preStructure.push($span);
+                    }
                 }
             }
 
             if (cursorData.endNodeIdx < i) {
-                if (node.constructor.name === "Text") {
-                    nextStructure += node.textContent;
-                } else {
-                    nextStructure += (node as Element).outerHTML;
-                }
+                nextStructure.push(node);
             } else if (cursorData.endNodeIdx === i) {
                 if (node.constructor.name === "Text") {
-                    nextStructure += node.textContent.slice(cursorData.endOffset);
+                    const text = node.textContent.slice(cursorData.endOffset);
+
+                    if (text !== "") {
+                        const $textNode = document.createTextNode(text);
+
+                        nextStructure.push($textNode);
+                    }
                 } else {
                     const originalClassList = [...(node as Element).classList];
                     const text = node.textContent.slice(cursorData.endOffset);
 
                     if (text !== "") {
-                        nextStructure += `<span class="${originalClassList.join(" ")}">${text.slice(cursorData.endOffset)}</span>`;
+                        const $span = document.createElement("span");
+
+                        $span.classList.add(...originalClassList);
+                        $span.textContent = text;
+                        nextStructure.push($span);
                     }
                 }
             }
         });
 
+        const $liBlock = createListItemBlock(store);
+
         // 리스트 블럭 삽입
-        $editableElement.insertAdjacentHTML("afterend", createListItemBlock(nextStructure));
-        $editableElement.innerHTML = preStructure;
+        $editableElement.insertAdjacentElement("afterend", $liBlock);
+        $editableElement.replaceChildren(...preStructure);
 
         // 커서 위치 지정
-        const $nextBlock = $editableElement.nextElementSibling;
-        setCursor($nextBlock, 0);
+        if (nextStructure.length === 0) {
+            $liBlock.focus();
+        } else {
+            $liBlock.replaceChildren(...nextStructure);
+            setCursor(nextStructure[0], 0);
+        }
     }
 }
 
@@ -886,24 +905,6 @@ function defaultTabEvent(useShiftKey: boolean, $element: Element) {
         delete $target.dataset["depth"];
     } else {
         $target.dataset["depth"] = String(value);
-    }
-}
-
-// FIXME : 후처리 방식 변경 필요.
-export function elementKeyAfterEvent(e: KeyboardEvent, store: EditorInit) {
-    setCursorData(store);
-    const $target: HTMLElement = getParentElementIfNodeIsText(store.cursorData.startNode);
-
-    switch (preKeyEvent.code) {
-        case "Backspace":
-            if ($target.textContent === "" && $target.querySelectorAll("br").length === 1) {
-                // 브라우저 잔여 스타일 제거를 위한 처리
-                $target.insertAdjacentHTML("afterend", createTextBlock(store));
-                const $nextBlock = $target.nextElementSibling;
-                setCursor($nextBlock, 0);
-                $target.remove();
-            }
-            break;
     }
 }
 
