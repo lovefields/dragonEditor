@@ -15,10 +15,10 @@
 [license-src]: https://img.shields.io/npm/l/dragon-editor
 
 [![stars-src]](stars-href)
-[![issues-src]](issues-href)
 [![forks-src]](forks-href)
 [![language-src]](language-href)
 [![hits-src]](hits-href)
+[![issues-src]](issues-href)
 [![npm-version-src]][npm-version-href]
 [![npm-downloads-src]][npm-downloads-href]
 ![NPM][license-src]

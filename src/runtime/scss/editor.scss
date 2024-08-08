@@ -1,5 +1,16 @@
 @import "./base";
 
 .dragon-editor {
+    .de-text-block {
+        min-height: 1.6em;
+        outline: 0;
 
+        &:empty:hover::before,
+        &:empty:focus::before {
+            display: inline;
+            content: "Type a paragraph";
+            color: #ccc;
+            cursor: text;
+        }
+    }
 }
