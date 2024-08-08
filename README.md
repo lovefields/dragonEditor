@@ -14,13 +14,13 @@
 [npm-downloads-href]: https://www.npmjs.com/package/dragon-editor
 [license-src]: https://img.shields.io/npm/l/dragon-editor
 
-[![Github stars][stars-src]](stars-href)
-[![Github issues][issues-src]](issues-href)
-[![Github forks][forks-src]](forks-href)
-[![Github top language][language-src]](language-href)
-[![Hits][hits-src]](hits-href)
-[![npm version][npm-version-src]][npm-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
+[![stars-src]](stars-href)
+[![issues-src]](issues-href)
+[![forks-src]](forks-href)
+[![language-src]](language-href)
+[![hits-src]](hits-href)
+[![npm-version-src]][npm-version-href]
+[![npm-downloads-src]][npm-downloads-href]
 ![NPM][license-src]
 
 # DragonEditor
@@ -48,3 +48,21 @@ export default defineNuxtConfig({
     modules: ["dragon-editor"],
 });
 ```
+
+Second. Use Component
+
+```html
+<template>
+    <div class="editor-area">
+        <ClientOnly>
+            <DragonEditor ref="$editor" />
+        </ClientOnly>
+    </div>
+</template>
+
+<script setup lang="ts">
+const $editor = ref<any>();
+</script>
+```
+
+Done! More information is here [Document](123)
