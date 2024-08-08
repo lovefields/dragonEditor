@@ -1,9 +1,11 @@
 <template>
     <div>
         editor!
-        <ClientOnly>
-            <DragonEditor />
-        </ClientOnly>
+        <div class="editor-area">
+            <ClientOnly>
+                <DragonEditor />
+            </ClientOnly>
+        </div>
     </div>
 </template>
 
@@ -12,3 +14,10 @@ import { ref, onMounted } from "#imports";
 
 const test = ref<MyModuleNitroRulesss>({});
 </script>
+
+<style lang="scss">
+.editor-area {
+    max-width: 800px;
+    margin: 0 auto;
+}
+</style>
