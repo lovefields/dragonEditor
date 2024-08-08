@@ -25,7 +25,9 @@
 
 # DragonEditor
 
-I just made the DragonEditor because I needed the WYSIWYG Editor to write on my blog.
+I just made the DragonEditor because I needed the WYSIWYG Editor to write on my [blog](https://dico.me).
+
+This module support Nuxt3 only.
 
 ## Install
 
@@ -38,3 +40,11 @@ bun add dragon-editor
 ```
 
 ## Using
+
+First. Set module
+
+```typescript
+export default defineNuxtConfig({
+    modules: ["dragon-editor"],
+});
+```
