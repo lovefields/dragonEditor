@@ -10,25 +10,39 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./.output/types.d.ts",
-      "import": "./.output/index.js",
-      "require": "./.output/index.cjs"
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
     }
   },
-  "main": "./.output/index.cjs",
-  "types": "./.output/types.d.ts",
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
   "files": [
-    ".output"
+    "dist"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build"
+    "prepack": "nuxt-module-build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
+    "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.5.0"
   },
   "devDependencies": {
-    "sass": "^1.69.5",
-    "typescript": "^5.3.3",
-    "vite": "^5.0.8",
-    "vite-plugin-dts": "^3.6.4"
+    "@types/node": "^18",
+    "@nuxt/eslint-config": "^0.1.1",
+    "@nuxt/module-builder": "^0.3.1",
+    "@nuxt/schema": "^3.5.0",
+    "@nuxt/test-utils": "^3.5.0",
+    "changelogen": "^0.5.3",
+    "eslint": "^8.40.0",
+    "nuxt": "^3.5.0",
+    "vitest": "^0.31.0"
   },
   "keywords": [
     "editor",

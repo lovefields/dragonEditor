@@ -1,0 +1,3 @@
+interface MyModuleNitroRules {
+    myModule: string;
+}
