@@ -76,4 +76,13 @@ $font-size-list: 1.15, 1.25, 1.5, 1.75, 1.9, 2, 2.15, 2.25;
         border: 0;
         vertical-align: top;
     }
+
+    // block depth
+    .de-block {
+        @for $i from 1 through 5 {
+            &[data-depth="#{$i}"] {
+                padding-left: $i * 30px;
+            }
+        }
+    }
 }
