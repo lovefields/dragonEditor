@@ -163,100 +163,103 @@ function defaultBlockEnterEvent(store: any, $element: Element) {
         const preStructure: Node[] = [];
         const nextStructure: Node[] = [];
 
-        //         if (cursorData.startNodeIdx === cursorData.endNodeIdx) {
-        //             // 같은 노드의 경우
-        //             childNodeList.forEach((node: ChildNode, i: number) => {
-        //                 if (cursorData.startNodeIdx > i) {
-        //                     preStructure.push(node);
-        //                 } else if (cursorData.endNodeIdx < i) {
-        //                     nextStructure.push(node);
-        //                 } else if (cursorData.startNodeIdx === i) {
-        //                     if (node.constructor.name === "Text") {
-        //                         const preText = node.textContent.slice(0, cursorData.startOffset);
-        //                         const nextText = node.textContent.slice(cursorData.endOffset);
-        //                         if (preText !== "") {
-        //                             const textNode = document.createTextNode(preText);
-        //                             preStructure.push(textNode);
-        //                         }
-        //                         if (nextText !== "") {
-        //                             const textNode = document.createTextNode(nextText);
-        //                             nextStructure.push(textNode);
-        //                         }
-        //                     } else {
-        //                         const originalClassList = [...(node as Element).classList];
-        //                         const preText = node.textContent.slice(0, cursorData.startOffset);
-        //                         const nextText = node.textContent.slice(cursorData.endOffset);
-        //                         if (preText !== "") {
-        //                             const $span = document.createElement("span");
-        //                             $span.classList.add(...originalClassList);
-        //                             $span.textContent = preText;
-        //                             preStructure.push($span);
-        //                         }
-        //                         if (nextText !== "") {
-        //                             const $span = document.createElement("span");
-        //                             $span.classList.add(...originalClassList);
-        //                             $span.textContent = nextText;
-        //                             nextStructure.push($span);
-        //                         }
-        //                     }
-        //                 }
-        //             });
-        //         } else {
-        //             // 다른 노드의 경우
-        //             childNodeList.forEach((node: ChildNode, i: number) => {
-        //                 if (cursorData.startNodeIdx > i) {
-        //                     preStructure.push(node);
-        //                 } else if (cursorData.startNodeIdx === i) {
-        //                     if (node.constructor.name === "Text") {
-        //                         const text = node.textContent.slice(0, cursorData.startOffset);
-        //                         if (text !== "") {
-        //                             const textNode = document.createTextNode(text);
-        //                             preStructure.push(textNode);
-        //                         }
-        //                     } else {
-        //                         const originalClassList = [...(node as Element).classList];
-        //                         const text = node.textContent.slice(0, cursorData.startOffset);
-        //                         if (text !== "") {
-        //                             const $span = document.createElement("span");
-        //                             $span.classList.add(...originalClassList);
-        //                             $span.textContent = text;
-        //                             preStructure.push($span);
-        //                         }
-        //                     }
-        //                 }
-        //                 if (cursorData.endNodeIdx < i) {
-        //                     nextStructure.push(node);
-        //                 } else if (cursorData.endNodeIdx === i) {
-        //                     if (node.constructor.name === "Text") {
-        //                         const text = node.textContent.slice(cursorData.endOffset);
-        //                         if (text !== "") {
-        //                             const textNode = document.createTextNode(text);
-        //                             nextStructure.push(textNode);
-        //                         }
-        //                     } else {
-        //                         const originalClassList = [...(node as Element).classList];
-        //                         const text = node.textContent.slice(cursorData.endOffset);
-        //                         const $span = document.createElement("span");
-        //                         if (text !== "") {
-        //                             $span.classList.add(...originalClassList);
-        //                             $span.textContent = text;
-        //                             nextStructure.push($span);
-        //                         }
-        //                     }
-        //                 }
-        //             });
-        //         }
-        //         const $nextBlock = createTextBlock(store);
-        //         // 텍스트 블럭 삽입
-        //         $textBlock.insertAdjacentElement("afterend", $nextBlock);
-        //         $textBlock.replaceChildren(...preStructure);
-        //         $nextBlock.replaceChildren(...nextStructure);
-        //         // 커서 위치 지정
-        //         if (nextStructure.length === 0) {
-        //             $nextBlock.focus();
-        //         } else {
-        //             setCursor($nextBlock.childNodes[0], 0);
-        //         }
+        if (cursorData.startNodeIdx === cursorData.endNodeIdx) {
+            // 같은 노드의 경우
+            childNodeList.forEach((node: ChildNode, i: number) => {
+                if (cursorData.startNodeIdx > i) {
+                    preStructure.push(node);
+                } else if (cursorData.endNodeIdx < i) {
+                    nextStructure.push(node);
+                } else if (cursorData.startNodeIdx === i) {
+                    if (node.constructor.name === "Text") {
+                        const preText = (node.textContent as string).slice(0, cursorData.startOffset);
+                        const nextText = (node.textContent as string).slice(cursorData.endOffset);
+                        if (preText !== "") {
+                            const textNode = document.createTextNode(preText);
+                            preStructure.push(textNode);
+                        }
+                        if (nextText !== "") {
+                            const textNode = document.createTextNode(nextText);
+                            nextStructure.push(textNode);
+                        }
+                    } else {
+                        const originalClassList = [...(node as Element).classList];
+                        const preText = (node.textContent as string).slice(0, cursorData.startOffset);
+                        const nextText = (node.textContent as string).slice(cursorData.endOffset);
+                        if (preText !== "") {
+                            const $span = document.createElement("span");
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = preText;
+                            preStructure.push($span);
+                        }
+                        if (nextText !== "") {
+                            const $span = document.createElement("span");
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = nextText;
+                            nextStructure.push($span);
+                        }
+                    }
+                }
+            });
+        } else {
+            // 다른 노드의 경우
+            childNodeList.forEach((node: ChildNode, i: number) => {
+                if (cursorData.startNodeIdx > i) {
+                    preStructure.push(node);
+                } else if (cursorData.startNodeIdx === i) {
+                    if (node.constructor.name === "Text") {
+                        const text = (node.textContent as string).slice(0, cursorData.startOffset);
+                        if (text !== "") {
+                            const textNode = document.createTextNode(text);
+                            preStructure.push(textNode);
+                        }
+                    } else {
+                        const originalClassList = [...(node as Element).classList];
+                        const text = (node.textContent as string).slice(0, cursorData.startOffset);
+                        if (text !== "") {
+                            const $span = document.createElement("span");
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = text;
+                            preStructure.push($span);
+                        }
+                    }
+                }
+                if (cursorData.endNodeIdx < i) {
+                    nextStructure.push(node);
+                } else if (cursorData.endNodeIdx === i) {
+                    if (node.constructor.name === "Text") {
+                        const text = (node.textContent as string).slice(cursorData.endOffset);
+                        if (text !== "") {
+                            const textNode = document.createTextNode(text);
+                            nextStructure.push(textNode);
+                        }
+                    } else {
+                        const originalClassList = [...(node as Element).classList];
+                        const text = (node.textContent as string).slice(cursorData.endOffset);
+                        const $span = document.createElement("span");
+                        if (text !== "") {
+                            $span.classList.add(...originalClassList);
+                            $span.textContent = text;
+                            nextStructure.push($span);
+                        }
+                    }
+                }
+            });
+        }
+
+        const $nextBlock = _createTextBlock(store);
+
+        // 텍스트 블럭 삽입
+        $textBlock.insertAdjacentElement("afterend", $nextBlock);
+        $textBlock.replaceChildren(...preStructure);
+        $nextBlock.replaceChildren(...nextStructure);
+
+        // 커서 위치 지정
+        if (nextStructure.length === 0) {
+            $nextBlock.focus();
+        } else {
+            _setCursor($nextBlock.childNodes[0], 0);
+        }
     }
 }
 
