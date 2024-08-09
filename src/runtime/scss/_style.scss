@@ -1,0 +1,35 @@
+/**
+* 노드 스타일
+*/
+@mixin NodeStyle {
+    .de-bold {
+        font-weight: 700;
+    }
+
+    .de-italic {
+        font-style: italic;
+    }
+
+    .de-underline {
+        text-decoration: underline;
+
+        &.de-strikethrough {
+            text-decoration: underline line-through;
+        }
+    }
+
+    .de-strikethrough {
+        text-decoration: line-through;
+
+        &.de-underline {
+            text-decoration: line-through underline;
+        }
+    }
+
+    .de-code {
+        padding: 2px 4px;
+        background: #f1f1f1;
+        color: #ff0000;
+        border-radius: 5px;
+    }
+}

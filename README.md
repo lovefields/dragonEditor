@@ -8,9 +8,9 @@
 [language-href]: https://github.com/lovefields/dragonEditor/
 [hits-src]: https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Flovefields%2FdragonEditor&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false
 [hits-href]: https://hits.seeyoufarm.com
-[npm-version-src]: https://img.shields.io/npm/v/my-module/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-version-src]: https://img.shields.io/npm/v/dragon-editor/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
 [npm-version-href]: https://www.npmjs.com/package/dragon-editor
-[npm-downloads-src]: https://img.shields.io/npm/dm/my-module.svg?style=flat&colorA=18181B&colorB=28CF8D
+[npm-downloads-src]: https://img.shields.io/npm/dm/dragon-editor.svg?style=flat&colorA=18181B&colorB=28CF8D
 [npm-downloads-href]: https://www.npmjs.com/package/dragon-editor
 [license-src]: https://img.shields.io/npm/l/dragon-editor
 
