@@ -1,5 +1,6 @@
 interface EditorStore {
     cursorData: DEditorCursor | null;
+    message: { [key: string]: string };
     $editor: HTMLDivElement | null;
     $content: HTMLDivElement | null;
     $parentWrap: HTMLElement | Window | null;

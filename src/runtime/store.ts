@@ -4,6 +4,9 @@ import "./type.d.ts";
 export const useEditorStore = defineStore("editorStore", {
     state: (): EditorStore => ({
         cursorData: null,
+        message: {
+            linkTextNoStyle: "Link text can't set any style.",
+        },
         $editor: null,
         $content: null,
         $parentWrap: null,
