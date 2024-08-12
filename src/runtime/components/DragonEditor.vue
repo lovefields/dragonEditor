@@ -62,10 +62,10 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
-import { _elementKeyEvent } from "../utils/keyboardEvent";
+import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
 import { _createTextBlock, _createHeadingBlock, _createListBlock } from "../utils/block";
 import { _setNodeStyle } from "../utils/style";
-import { _setCursorData } from "../utils/cursor";
+import { _setCursorData, _clenupCursor } from "../utils/cursor";
 import "../type.d.ts";
 
 const props = defineProps({
@@ -86,6 +86,7 @@ const $content = ref<HTMLDivElement>();
 
 function contentKeyboardEvent(e: KeyboardEvent) {
     _elementKeyEvent(e, editorStore);
+    _hotKeyEvent(e, editorStore);
 }
 
 function updateCursorData(e: MouseEvent) {
@@ -104,6 +105,7 @@ function updateCursorData(e: MouseEvent) {
  */
 
 function addBlock(type: string) {
+    _clenupCursor(editorStore);
     isActiveAddBlockMenu.value = false;
 
     let blockStructure: HTMLElement | null = null;
