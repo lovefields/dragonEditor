@@ -27,3 +27,22 @@ export function _getParentElementIfNodeIsText($target: Node, $block: HTMLElement
 
     return $target as Node;
 }
+
+// 에디팅 요소 찾기
+export function _findContentEditableElement($target: Node): HTMLElement | null {
+    if ($target.constructor.name === "Text") {
+        $target = $target.parentNode as Node;
+    }
+
+    const $baseElement = $target as HTMLElement;
+
+    if (($baseElement.parentElement as HTMLElement).tagName === "BODY") {
+        return null;
+    } else {
+        if ($baseElement.getAttribute("contentEditable") === null) {
+            return _findContentEditableElement($baseElement.parentNode as Node);
+        } else {
+            return $baseElement;
+        }
+    }
+}
