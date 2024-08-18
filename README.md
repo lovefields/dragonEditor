@@ -29,6 +29,10 @@ I just made the DragonEditor because I needed the WYSIWYG Editor to write on my 
 
 This module support Nuxt3 only.
 
+# Dependencies
+
+- @pinia/nuxt
+
 ## Install
 
 ```shell
