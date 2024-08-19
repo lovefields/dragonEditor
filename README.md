@@ -84,7 +84,7 @@ Done!
 </template>
 
 <script setup lang="ts">
-    const content = ref([]); // content data
+    const data = ref([]); // content data
 </script>
 ```
 
