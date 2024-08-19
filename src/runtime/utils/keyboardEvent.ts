@@ -986,6 +986,6 @@ export function _hotKeyEvent(event: KeyboardEvent, store: any) {
  * 복사 & 붙여넣기 이벤트
  */
 
-export function copyEvent(event: KeyboardEvent, store: any) {}
+export function copyEvent(event: KeyboardEvent, store: any) { }
 
-export function pasteEvent(event: KeyboardEvent, store: any) {}
+export function pasteEvent(event: KeyboardEvent, store: any) { }
