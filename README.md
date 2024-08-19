@@ -69,4 +69,6 @@ const $editor = ref<any>();
 </script>
 ```
 
-Done! More information is here [Document](123)
+Done! 
+
+<!-- More information is here [Document](123) -->
