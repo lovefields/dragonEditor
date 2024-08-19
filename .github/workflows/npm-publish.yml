@@ -19,6 +19,6 @@ jobs:
             - run: bun install --frozen-lockfile
             - run: bun run dev:prepare
             - run: bun run prepack
-            - run: bun publish
+            - run: bun run publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
