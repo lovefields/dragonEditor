@@ -32,7 +32,8 @@
     },
     "dependencies": {
         "@nuxt/kit": "^3.5.0",
-        "@pinia/nuxt": "^0.5.3"
+        "@pinia/nuxt": "^0.5.3",
+        "sass": "^1.77.8"
     },
     "devDependencies": {
         "@nuxt/eslint-config": "^0.1.1",
