@@ -15,14 +15,10 @@ jobs:
             packages: write
         steps:
             - uses: actions/checkout@v3
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: "18.x"
-                  registry-url: https://npm.pkg.github.com
-                  scope: "@octocat"
-            - run: yarn install
-            - run: yarn run dev:prepare
-            - run: yarn run prepack
-            - run: yarn publish
+            - uses: oven-sh/setup-bun@v2
+            - run: bun install --frozen-lockfile
+            - run: bun run dev:prepare
+            - run: bun run prepack
+            - run: bun publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
