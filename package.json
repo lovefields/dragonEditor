@@ -1,7 +1,7 @@
 {
     "name": "dragon-editor",
-    "version": "3.0.0-beta",
-    "description": "Javascript WYSIWYG editor!",
+    "version": "3.0.0",
+    "description": "Javascript WYSIWYG editor in Nuxt3!",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/lovefields/dragonEditor.git"

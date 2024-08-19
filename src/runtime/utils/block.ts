@@ -24,14 +24,11 @@ export function _getBlockType(element: HTMLElement) {
 }
 
 // 문단 블럭 생성
-export function _createTextBlock(content: string = "", isEdit: boolean = true): HTMLParagraphElement {
+export function _createTextBlock(content: string = ""): HTMLParagraphElement {
     const $paragraph = document.createElement("p");
 
     $paragraph.classList.add("de-block", "de-text-block");
-
-    if (isEdit === true) {
-        $paragraph.setAttribute("contenteditable", "true");
-    }
+    $paragraph.setAttribute("contenteditable", "true");
 
     if (content !== "") {
         $paragraph.innerHTML = content;
@@ -41,17 +38,14 @@ export function _createTextBlock(content: string = "", isEdit: boolean = true): 
 }
 
 // 해딩 블럭 생성
-export function _createHeadingBlock(type: string, content: string = "", isEdit: boolean = true): HTMLElement {
+export function _createHeadingBlock(type: string, content: string = ""): HTMLElement {
     const level: number = parseInt(type.replace("heading", ""));
     const $headingBlock = document.createElement(`h${level}`);
 
     $headingBlock.classList.add("de-block", "de-heading-block");
     $headingBlock.id = generateId();
     $headingBlock.dataset["level"] = String(level);
-
-    if (isEdit === true) {
-        $headingBlock.setAttribute("contenteditable", "true");
-    }
+    $headingBlock.setAttribute("contenteditable", "true");
 
     if (content !== "") {
         $headingBlock.innerHTML = content;
@@ -61,25 +55,31 @@ export function _createHeadingBlock(type: string, content: string = "", isEdit: 
 }
 
 // 리스트 블럭 생성
-export function _createListBlock(type: string, content: string[] = [""], isEdit: boolean = true): HTMLElement {
+export function _createListBlock(type: string, content: string[] = [""], pattern?: string): HTMLElement {
     const $block = document.createElement(type);
 
     $block.classList.add("de-block", "de-list-block");
+
+    if (type === "ol") {
+        ($block as HTMLOListElement).type = pattern ?? "1";
+    }
+
     content.forEach((text: string) => {
-        $block.appendChild(_createListItemBlock(text, isEdit));
+        $block.appendChild(_createListItemBlock(text));
     });
 
     return $block;
 }
 
 // 리스트 아이템 블럭 생성
-export function _createListItemBlock(content: string = "", isEdit: boolean = true): HTMLLIElement {
+export function _createListItemBlock(content: string = ""): HTMLLIElement {
     const $li = document.createElement("li");
 
     $li.classList.add("de-item");
+    $li.setAttribute("contenteditable", "true");
 
-    if (isEdit === true) {
-        $li.setAttribute("contenteditable", "true");
+    if (content !== "") {
+        $li.innerHTML = content;
     }
 
     return $li;

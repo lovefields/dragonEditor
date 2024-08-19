@@ -66,6 +66,7 @@ import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
 import { _createTextBlock, _createHeadingBlock, _createListBlock } from "../utils/block";
 import { _setNodeStyle } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
+import { _getContentData, _setContentData } from "../utils/convertor";
 import "../type.d.ts";
 
 const props = defineProps({
@@ -105,7 +106,6 @@ function updateCursorData(e: MouseEvent) {
  */
 
 function addBlock(type: string) {
-    _clenupCursor(editorStore);
     isActiveAddBlockMenu.value = false;
 
     let blockStructure: HTMLElement | null = null;
@@ -129,6 +129,7 @@ function addBlock(type: string) {
         if (editorStore.cursorData === null) {
             (editorStore.$content as HTMLDivElement).insertAdjacentElement("beforeend", blockStructure);
         } else {
+            _clenupCursor(editorStore);
             let $target = editorStore.cursorData.startNode;
 
             if ($target.constructor.name === "Text") {
@@ -155,6 +156,18 @@ function setDecoration(type: string) {
     _setNodeStyle(`de-${type}`, editorStore);
 }
 
+function getContentData() {
+    if (editorStore.$content !== null) {
+        return _getContentData(editorStore.$content);
+    } else {
+        console.error("[DragonEditor] Con't find content Element.");
+    }
+}
+
+function setContentData(data: any[]) {
+    _setContentData(data, editorStore);
+}
+
 onMounted(() => {
     if ($editor.value !== undefined) {
         editorStore.setWrapElement($editor.value);
@@ -168,10 +181,14 @@ onMounted(() => {
     // TODO : set scroll event
 });
 
-onUnmounted(() => {});
+onUnmounted(() => {
+    // TODO : remove scroll event
+});
 
 defineExpose({
     addBlock,
+    getContentData,
+    setContentData,
 });
 </script>
 

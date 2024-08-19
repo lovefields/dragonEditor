@@ -1,1 +1,15 @@
 @import "./base";
+@import "./block";
+@import "./style";
+
+.dragon-editor-viewer {
+    display: grid;
+    gap: 4px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    line-height: 1.6;
+
+    @include blockStyle("false");
+    @include NodeStyle;
+}

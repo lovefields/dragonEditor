@@ -13,6 +13,8 @@
 [npm-downloads-src]: https://img.shields.io/npm/dm/dragon-editor.svg?style=flat&colorA=18181B&colorB=28CF8D
 [npm-downloads-href]: https://www.npmjs.com/package/dragon-editor
 [license-src]: https://img.shields.io/npm/l/dragon-editor
+[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
+[nuxt-href]: https://nuxt.com
 
 [![stars-src]](stars-href)
 [![forks-src]](forks-href)
@@ -22,6 +24,7 @@
 [![npm-version-src]][npm-version-href]
 [![npm-downloads-src]][npm-downloads-href]
 ![NPM][license-src]
+[![Nuxt][nuxt-src]][nuxt-href]
 
 # DragonEditor
 
@@ -31,7 +34,7 @@ This module support Nuxt3 only.
 
 # Dependencies
 
-- @pinia/nuxt
+-   @pinia/nuxt
 
 ## Install
 
@@ -65,10 +68,68 @@ Second. Use Component
 </template>
 
 <script setup lang="ts">
-const $editor = ref<any>();
+    const $editor = ref<any>();
 </script>
 ```
 
-Done! 
+Done!
+
+## View Page
+
+```html
+<template>
+    <div class="view-area">
+        <DragonEditorViewer :content="data" />
+    </div>
+</template>
+
+<script setup lang="ts">
+    const content = ref([]); // content data
+</script>
+```
+
+## Method
+
+### getContentData
+
+```html
+<template>
+    <div class="editor-area">
+        <ClientOnly>
+            <DragonEditor ref="$editor" />
+        </ClientOnly>
+        <button @click="getData()">Get Data</button>
+    </div>
+</template>
+
+<script setup lang="ts">
+    const $editor = ref<any>();
+
+    function getData() {
+        console.log($editor.value.getContentData());
+    }
+</script>
+```
+
+### setContentData
+
+```html
+<template>
+    <div class="editor-area">
+        <ClientOnly>
+            <DragonEditor ref="$editor" />
+        </ClientOnly>
+        <button @click="setData()">Set Data</button>
+    </div>
+</template>
+
+<script setup lang="ts">
+    const $editor = ref<any>();
+
+    function setData() {
+        $editor.value.getContentData([...]);
+    }
+</script>
+```
 
 <!-- More information is here [Document](123) -->
