@@ -786,6 +786,7 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
             // 내용이 없는 경우
 
             e.preventDefault();
+            // arrangeCursorAndContentInBackspaceEvent($textBlock, $textBlock);
             const $preBlock = $textBlock.previousElementSibling as HTMLElement;
             const { type: preBlockType } = _getBlockType($preBlock);
 
@@ -867,18 +868,9 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
 function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element) {
     const $listBlock = $element as HTMLElement;
     const $targetItem = _findContentEditableElement(store.cursorData.startNode as HTMLElement) as HTMLLIElement;
-    const childList = store.$content.querySelectorAll(".de-block");
     const liList = $listBlock.querySelectorAll(".de-item");
     const $target: HTMLElement = _getParentElementIfNodeIsText(store.cursorData.startNode, $targetItem) as HTMLElement;
-    let elementIdx: number = -1;
     let liIdx: number = -1;
-
-    for (let i = 0; childList.length > i; i += 1) {
-        if (childList[i] === $element) {
-            elementIdx = i;
-            break;
-        }
-    }
 
     for (let i = 0; liList.length > i; i += 1) {
         if (liList[i] === $targetItem) {
@@ -937,6 +929,7 @@ function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element
                     }
 
                     $targetItem.remove();
+                    $listBlock.remove();
                 }
             }
         }
