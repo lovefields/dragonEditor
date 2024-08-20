@@ -127,7 +127,7 @@ Done!
     const $editor = ref<any>();
 
     function setData() {
-        $editor.value.getContentData([...]);
+        $editor.value.setContentData([...]);
     }
 </script>
 ```
