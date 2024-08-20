@@ -113,8 +113,22 @@ function elementBackspaceEvent(e: KeyboardEvent, store: any) {
         case "heading":
             defaultBlockBackspaceEvent(e, store, $element);
             break;
+        case "list":
+            listBlockBackspaceEvent(e, store, $element);
+            break;
         default:
             console.log("// TODO : 다른 타입 블럭 백스페이스 이벤트", type);
+    }
+}
+
+// 탭 이벤트
+function elementTabEvent(e: KeyboardEvent, store: any) {
+    const { $element, type } = _getBlockType(e.target as HTMLElement);
+
+    switch (type) {
+        case "text":
+            defaultTabEvent(e.shiftKey, $element);
+            break;
     }
 }
 
@@ -724,26 +738,14 @@ function defaultBlockShiftEnterEvent(store: any, $element: Element) {
     }
 }
 
-// 탭 이벤트
-function elementTabEvent(e: KeyboardEvent, store: any) {
-    const { $element, type } = _getBlockType(e.target as HTMLElement);
-
-    switch (type) {
-        case "text":
-            defaultTabEvent(e.shiftKey, $element);
-            break;
-    }
-}
-
 // 기본 블럭 백스페이스 이벤트
 function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element) {
     const $textBlock = $element as HTMLElement;
-    const childList = store.wrap.querySelectorAll(".de-block");
-    const childLength: number = childList.length;
+    const childList = store.$content.querySelectorAll(".de-block");
     const $target: HTMLElement = _getParentElementIfNodeIsText(store.cursorData.startNode, $textBlock) as HTMLElement;
     let elementIdx: number = -1;
 
-    for (let i = 0; childLength > i; i += 1) {
+    for (let i = 0; childList.length > i; i += 1) {
         if (childList[i] === $element) {
             elementIdx = i;
             break;
@@ -784,21 +786,19 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
             // 내용이 없는 경우
 
             e.preventDefault();
-            const $preBlock = $textBlock.previousElementSibling;
+            const $preBlock = $textBlock.previousElementSibling as HTMLElement;
+            const { type: preBlockType } = _getBlockType($preBlock);
 
-            if ($preBlock !== null) {
-                const { type: preBlockType } = _getBlockType($textBlock);
+            $textBlock.remove();
 
-                $textBlock.remove();
+            if (preBlockType === "text" || preBlockType === "heading") {
+                if ($preBlock.hasChildNodes() === true) {
+                    const textBlockChildList = $preBlock.childNodes;
+                    const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
 
-                if (preBlockType === "text") {
-                    if ($preBlock.hasChildNodes() === true) {
-                        const textBlockChildList = $preBlock.childNodes;
-                        const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
-                        _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
-                    } else {
-                        _setCursor($preBlock as Element, 0);
-                    }
+                    _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                } else {
+                    _setCursor($preBlock as Element, 0);
                 }
             }
         } else {
@@ -808,28 +808,26 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
                 // 커서가 첫번째에 있는 경우
 
                 e.preventDefault();
-                const $preBlock = $textBlock.previousElementSibling;
+                const $preBlock = $textBlock.previousElementSibling as HTMLElement;
+                const { type: preBlockType } = _getBlockType($preBlock);
 
-                if ($preBlock !== null) {
-                    const { type: preBlockType } = _getBlockType($preBlock as HTMLElement);
+                if (preBlockType === "text" || preBlockType === "heading") {
+                    if ($preBlock.hasChildNodes() === true) {
+                        const textBlockChildList = $preBlock.childNodes;
+                        const textBlockTargetChildIdx = textBlockChildList.length - 1;
+                        const textBlockTargetCursorIdx = ((textBlockChildList[textBlockTargetChildIdx] as ChildNode).textContent as string).length;
+                        const thisBlockHTML = $textBlock.innerHTML;
 
-                    if (preBlockType === "text") {
-                        if ($preBlock.hasChildNodes() === true) {
-                            const textBlockChildList = $preBlock.childNodes;
-                            const textBlockTargetChildIdx = textBlockChildList.length - 1;
-                            const textBlockTargetCursorIdx = ((textBlockChildList[textBlockTargetChildIdx] as ChildNode).textContent as string).length;
-                            const thisBlockHTML = $textBlock.innerHTML;
+                        $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
 
-                            $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
+                        _setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
+                    } else {
+                        $preBlock.innerHTML = $textBlock.innerHTML;
 
-                            _setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
-                        } else {
-                            $preBlock.innerHTML = $textBlock.innerHTML;
-
-                            _setCursor($preBlock as Element, 0);
-                        }
-                        $textBlock.remove();
+                        _setCursor($preBlock as Element, 0);
                     }
+
+                    $textBlock.remove();
                 }
             }
         }
@@ -839,14 +837,18 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
     if (store.cursorData.startOffset === 1 && $target !== $textBlock) {
         if (($target.textContent as string).length === 1) {
             // 삭제될 노드의 경우
+
             e.preventDefault();
             const preNode = $target.previousSibling;
+
             if (preNode !== null) {
                 // 이전 노드가 있는 경우
+
                 $target.remove();
                 _setCursor(preNode as Element, (preNode.textContent as string).length);
             } else {
                 // 이전 노드가 없는 경우
+
                 if ($textBlock.childNodes[1] === undefined) {
                     $textBlock.innerHTML = "";
                     _setCursor($textBlock, 0);
@@ -859,6 +861,188 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
     }
 
     _setCursorData(store);
+}
+
+// 리스트 블럭 백스페이스 이벤트
+function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element) {
+    const $listBlock = $element as HTMLElement;
+    const $targetItem = _findContentEditableElement(store.cursorData.startNode as HTMLElement) as HTMLLIElement;
+    const childList = store.$content.querySelectorAll(".de-block");
+    const liList = $listBlock.querySelectorAll(".de-item");
+    const $target: HTMLElement = _getParentElementIfNodeIsText(store.cursorData.startNode, $targetItem) as HTMLElement;
+    let elementIdx: number = -1;
+    let liIdx: number = -1;
+
+    for (let i = 0; childList.length > i; i += 1) {
+        if (childList[i] === $element) {
+            elementIdx = i;
+            break;
+        }
+    }
+
+    for (let i = 0; liList.length > i; i += 1) {
+        if (liList[i] === $targetItem) {
+            liIdx = i;
+            break;
+        }
+    }
+
+    // 블럭의 경우
+    if (liList.length === 1) {
+        // 자식이 하나인 경우
+
+        if ($targetItem.textContent === "") {
+            // 텍스트가 없는 경우
+
+            e.preventDefault();
+            const $preBlock = $listBlock.previousElementSibling as HTMLElement;
+            const { type: preBlockType } = _getBlockType($preBlock);
+
+            $listBlock.remove();
+
+            if (preBlockType === "text" || preBlockType === "heading") {
+                if ($preBlock.hasChildNodes() === true) {
+                    const textBlockChildList = $preBlock.childNodes;
+                    const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+
+                    _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                } else {
+                    _setCursor($preBlock as Element, 0);
+                }
+            }
+        } else {
+            // 텍스트가 있는 경우
+
+            if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                // 커서가 첫번째에 있는 경우
+
+                e.preventDefault();
+                const $preBlock = $listBlock.previousElementSibling as HTMLElement;
+                const { type: preBlockType } = _getBlockType($preBlock);
+
+                if (preBlockType === "text" || preBlockType === "heading") {
+                    if ($preBlock.hasChildNodes() === true) {
+                        const textBlockChildList = $preBlock.childNodes;
+                        const textBlockTargetChildIdx = textBlockChildList.length - 1;
+                        const textBlockTargetCursorIdx = ((textBlockChildList[textBlockTargetChildIdx] as ChildNode).textContent as string).length;
+                        const thisBlockHTML = $targetItem.innerHTML;
+
+                        $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
+
+                        _setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
+                    } else {
+                        $preBlock.innerHTML = $targetItem.innerHTML;
+
+                        _setCursor($preBlock as Element, 0);
+                    }
+
+                    $targetItem.remove();
+                }
+            }
+        }
+    } else {
+        // 자식이 여러개인 경우
+
+        if (liIdx === 0) {
+            // 첫번째 자식인 경우
+
+            if ($targetItem.textContent === "") {
+                // 텍스트가 없는 경우
+
+                e.preventDefault();
+                const $preBlock = $listBlock.previousElementSibling as HTMLElement;
+                const { type: preBlockType } = _getBlockType($preBlock);
+
+                $targetItem.remove();
+
+                if (preBlockType === "text" || preBlockType === "heading") {
+                    if ($preBlock.hasChildNodes() === true) {
+                        const textBlockChildList = $preBlock.childNodes;
+                        const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+
+                        _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                    } else {
+                        _setCursor($preBlock as Element, 0);
+                    }
+                }
+            } else {
+                // 텍스트가 있는 경우
+
+                if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                    // 커서가 첫번째에 있는 경우
+
+                    e.preventDefault();
+                    const $preBlock = $listBlock.previousElementSibling as HTMLElement;
+                    const { type: preBlockType } = _getBlockType($preBlock);
+
+                    if (preBlockType === "text" || preBlockType === "heading") {
+                        if ($preBlock.hasChildNodes() === true) {
+                            const textBlockChildList = $preBlock.childNodes;
+                            const textBlockTargetChildIdx = textBlockChildList.length - 1;
+                            const textBlockTargetCursorIdx = ((textBlockChildList[textBlockTargetChildIdx] as ChildNode).textContent as string).length;
+                            const thisBlockHTML = $targetItem.innerHTML;
+
+                            $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
+
+                            _setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
+                        } else {
+                            $preBlock.innerHTML = $targetItem.innerHTML;
+
+                            _setCursor($preBlock as Element, 0);
+                        }
+
+                        $targetItem.remove();
+                    }
+                }
+            }
+        } else {
+            // 첫번째 자식이 아닌 경우
+
+            if ($targetItem.textContent === "") {
+                // 텍스트가 없는 경우
+
+                e.preventDefault();
+                const $preBlock = liList[liIdx - 1] as HTMLLIElement;
+
+                $targetItem.remove();
+
+                if ($preBlock.hasChildNodes() === true) {
+                    const textBlockChildList = $preBlock.childNodes;
+                    const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+
+                    _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                } else {
+                    _setCursor($preBlock as Element, 0);
+                }
+            } else {
+                // 텍스트가 있는 경우
+
+                if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                    // 커서가 첫번째에 있는 경우
+
+                    e.preventDefault();
+                    const $preBlock = liList[liIdx - 1] as HTMLLIElement;
+
+                    if ($preBlock.hasChildNodes() === true) {
+                        const textBlockChildList = $preBlock.childNodes;
+                        const textBlockTargetChildIdx = textBlockChildList.length - 1;
+                        const textBlockTargetCursorIdx = ((textBlockChildList[textBlockTargetChildIdx] as ChildNode).textContent as string).length;
+                        const thisBlockHTML = $targetItem.innerHTML;
+
+                        $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
+
+                        _setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
+                    } else {
+                        $preBlock.innerHTML = $targetItem.innerHTML;
+
+                        _setCursor($preBlock as Element, 0);
+                    }
+
+                    $targetItem.remove();
+                }
+            }
+        }
+    }
 }
 
 // 기본 탭 이벤트
@@ -986,6 +1170,6 @@ export function _hotKeyEvent(event: KeyboardEvent, store: any) {
  * 복사 & 붙여넣기 이벤트
  */
 
-export function copyEvent(event: KeyboardEvent, store: any) { }
+export function copyEvent(event: KeyboardEvent, store: any) {}
 
-export function pasteEvent(event: KeyboardEvent, store: any) { }
+export function pasteEvent(event: KeyboardEvent, store: any) {}
