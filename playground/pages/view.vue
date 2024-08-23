@@ -7,7 +7,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "#imports";
 
-const data = ref([
+const data = ref<DEContentData>([
     { type: "text", textContent: "123" },
     { type: "text", textContent: "123" },
     { type: "heading", level: 1, id: "Sgdaow", textContent: "123" },

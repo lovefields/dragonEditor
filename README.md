@@ -84,7 +84,7 @@ Done!
 </template>
 
 <script setup lang="ts">
-    const data = ref([]); // content data
+    const data = ref<DEContentData>([]); // content data
 </script>
 ```
 
