@@ -1,8 +1,9 @@
 import { _createTextBlock, _createHeadingBlock, _createListBlock } from "./block";
 
-export function _getContentData($content: HTMLDivElement): any[] {
+// 화면을 데이터로 변환
+export function _getContentData($content: HTMLDivElement): DEContentData {
     const childList: HTMLCollection = $content.children;
-    const data: any[] = [];
+    const data: DEContentData = [];
 
     [...childList].forEach(($child: Element) => {
         const tagName: string = $child.tagName;
@@ -64,7 +65,7 @@ export function _setContentData(data: any[], store: any) {
 }
 
 // 일반 텍스트 변환
-function converteParagraphToData($child: HTMLParagraphElement) {
+function converteParagraphToData($child: HTMLParagraphElement): DETextBlock {
     return {
         type: "text",
         textContent: $child.innerHTML,
@@ -72,7 +73,7 @@ function converteParagraphToData($child: HTMLParagraphElement) {
 }
 
 // 제목 텍스트 변환
-function converteHeadingToData($child: HTMLHeadingElement, level: number) {
+function converteHeadingToData($child: HTMLHeadingElement, level: number): DEHeadingBlock {
     return {
         type: "heading",
         level: level,
@@ -82,7 +83,7 @@ function converteHeadingToData($child: HTMLHeadingElement, level: number) {
 }
 
 // 순서 없는 리스트 변환
-function converteUListToData($child: HTMLUListElement) {
+function converteUListToData($child: HTMLUListElement): DEUListBlock {
     return {
         type: "ul",
         child: [...$child.children].map(($li: Element) => {
@@ -92,10 +93,10 @@ function converteUListToData($child: HTMLUListElement) {
 }
 
 // 순서 있는 리스트 변환
-function converteOListToData($child: HTMLOListElement) {
+function converteOListToData($child: HTMLOListElement): DEOListBlock {
     return {
         type: "ol",
-        pattern: $child.type,
+        pattern: $child.type as "a" | "i" | "1" | "A" | "I",
         child: [...$child.children].map(($li: Element) => {
             return $li.innerHTML;
         }),

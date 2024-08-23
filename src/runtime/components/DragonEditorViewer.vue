@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-    content: any[];
+    content: DEContentData;
 }>();
 </script>
 
