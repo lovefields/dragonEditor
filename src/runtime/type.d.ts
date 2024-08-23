@@ -46,6 +46,4 @@ interface DEOListBlock {
     child: string[];
 }
 
-type DEContent = DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock;
-
-type DEContentData = DEContent[];
+type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock)[];
