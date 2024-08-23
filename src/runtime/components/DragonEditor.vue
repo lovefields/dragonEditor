@@ -156,15 +156,16 @@ function setDecoration(type: string) {
     _setNodeStyle(`de-${type}`, editorStore);
 }
 
-function getContentData() {
+function getContentData(): DEContentData {
     if (editorStore.$content !== null) {
         return _getContentData(editorStore.$content);
     } else {
         console.error("[DragonEditor] Con't find content Element.");
+        return [];
     }
 }
 
-function setContentData(data: any[]) {
+function setContentData(data: DEContentData) {
     _setContentData(data, editorStore);
 }
 

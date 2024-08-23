@@ -12,11 +12,6 @@ export default defineNuxtModule({
             filePath: resolver.resolve("./runtime/components/DragonEditor"),
         });
 
-        // addComponent({
-        //     name: 'DragonEditorComment',
-        //     filePath: resolver.resolve('./runtime/components/DragonEditorComment')
-        // });
-
         addComponent({
             name: "DragonEditorViewer",
             filePath: resolver.resolve("./runtime/components/DragonEditorViewer"),

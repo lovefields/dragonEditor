@@ -22,3 +22,30 @@ interface DEArrangeCursorData {
     endNodeIdx: number;
     endOffset: number;
 }
+
+interface DETextBlock {
+    type: "text";
+    textContent: string;
+}
+
+interface DEHeadingBlock {
+    type: "heading";
+    level: number;
+    id: string;
+    textContent: string;
+}
+
+interface DEUListBlock {
+    type: "ul";
+    child: string[];
+}
+
+interface DEOListBlock {
+    type: "ol";
+    pattern: "a" | "i" | "1" | "A" | "I";
+    child: string[];
+}
+
+type DEContent = DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock;
+
+type DEContentData = DEContent[];
