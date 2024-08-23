@@ -554,9 +554,9 @@ function defaultBlockShiftEnterEvent(store: any, $element: Element) {
             // 자식 노드가 있고 br로만 이루어지지 않은 경우
 
             const childList = $textBlock.childNodes;
-            let $target = store.cursorData.startNode;
             let targetIdx = -1;
             let structure: string = "";
+            let $target = store.cursorData.startNode;
 
             if ($target.constructor.name === "Text") {
                 if ($target.parentNode !== $textBlock) {
@@ -612,8 +612,10 @@ function defaultBlockShiftEnterEvent(store: any, $element: Element) {
                             structure += `<br><br>`;
                         } else {
                             // span 태그인 경우
-                            // TODO : 스타일 태그 분리 작업
-                            console.log("TODO: 스타일 태그 분리 작업");
+                            structure += `<span class="${[...(child as HTMLSpanElement).classList].join(" ")}">${(child.textContent as string).slice(0, store.cursorData.startOffset)}</span>`;
+                            structure += `<br>`;
+                            structure += `<span class="${[...(child as HTMLSpanElement).classList].join(" ")}">${(child.textContent as string).slice(store.cursorData.startOffset)}</span>`;
+                            curruntIdx += 1;
                         }
                     }
                 } else {
