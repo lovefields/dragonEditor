@@ -1,5 +1,5 @@
 <template>
-    <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" @mousemove="resizeEvent" @touchmove="resizeEvent" @mouseup="resizeEventEnd" @touchend="resizeEventEnd" ref="$editor">
+    <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" @mousemove="resizeEvent" @touchmove="resizeEvent" @mouseup="resizeEventEnd" @touchend="resizeEventEnd" @mouseleave="resizeEventEnd" ref="$editor">
         <div v-if="props.useMenuBar === true" class="de-control-bar">
             <button class="de-menu de-menu-add" @click="isActiveAddBlockMenu = !isActiveAddBlockMenu">
                 <svg class="de-icon" viewBox="0 0 64 64">
@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchStart="resizeEventStart">
+        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchstart="resizeEventStart">
             <p class="de-block de-text-block" contenteditable="true"></p>
         </div>
     </div>
@@ -80,6 +80,12 @@ const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
+const minImageWidth = 25;
+let resizeEventActive: boolean = false;
+let resizeStartX: number = 0;
+let resizeType: string = "right";
+let resizeEndX: number = 0;
+let resizeCurruntWidth: number = 0;
 
 /**
  * 이벤트 관련 영역 시작
@@ -110,18 +116,75 @@ function updateCursorData(e: MouseEvent) {
 }
 
 // 사이즈 조정 이벤트 시작
-function resizeEventStart(e: Event) {
-    console.log("start", e);
+function resizeEventStart(event: Event) {
+    const $target = event.target as HTMLElement;
+
+    if ($target !== null) {
+        const $block = $target.closest(".de-block");
+
+        if ($block?.classList.contains("de-image-block") === true && $target.classList.contains("de-btn") === true) {
+            editorStore.setCurrentBlock($block as HTMLElement);
+            resizeEventActive = true;
+
+            if (event.type === "touchstart") {
+                resizeStartX = (event as TouchEvent).touches[0].clientX;
+            } else {
+                resizeStartX = (event as MouseEvent).clientX;
+            }
+
+            if ($target.classList.contains("de-btn-left") === true) {
+                resizeType = "left";
+            } else {
+                resizeType = "right";
+            }
+
+            resizeEndX = resizeStartX;
+
+            const $imgArea = (editorStore.$currentBlock as HTMLElement).querySelector(".de-image-area") as HTMLDivElement;
+            resizeCurruntWidth = parseInt($imgArea.dataset["maxwidth"] ?? "25");
+        }
+    }
 }
 
 // 사이즈 조정 이벤트
-function resizeEvent(e: Event) {
-    console.log("move", e);
+function resizeEvent(event: Event) {
+    if (resizeEventActive === true) {
+        const $imgArea = (editorStore.$currentBlock as HTMLElement).querySelector(".de-image-area") as HTMLDivElement;
+        const contentWidth = (editorStore.$content?.offsetWidth ?? 0) / 2;
+        let gap: number = 0;
+
+        if (event.type === "touchmove") {
+            resizeEndX = (event as TouchEvent).touches[0].clientX;
+        } else {
+            resizeEndX = (event as MouseEvent).clientX;
+        }
+
+        if (resizeType === "right") {
+            gap = Math.floor(resizeStartX - resizeEndX);
+        } else {
+            gap = Math.floor(resizeEndX - resizeStartX);
+        }
+
+        const percent = (100 / contentWidth) * gap;
+        let value = Math.floor(resizeCurruntWidth - percent);
+
+        if (value < 25) {
+            value = 25;
+        }
+
+        if (value > 100) {
+            value = 100;
+        }
+
+        $imgArea.dataset["maxwidth"] = String(value);
+    }
 }
 
 // 사이즈 조정 이벤트 종료
-function resizeEventEnd(e: Event) {
-    console.log("end", e);
+function resizeEventEnd() {
+    if (resizeEventActive === true) {
+        resizeEventActive = false;
+    }
 }
 
 /**
