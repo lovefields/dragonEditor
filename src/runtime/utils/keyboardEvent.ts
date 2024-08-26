@@ -4,7 +4,8 @@ import { _getBlockType, _createTextBlock, _createListItemBlock } from "./block";
 import { _setNodeStyle } from "./style";
 
 // 에디팅 요소 키 이벤트
-let ketEventCount: number = 0;
+let keyEventCount: number = 0;
+let keyEventFn: NodeJS.Timeout;
 export function _elementKeyEvent(event: KeyboardEvent, store: any) {
     _setCursorData(store);
 
@@ -12,7 +13,7 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
         case "Enter":
             event.preventDefault();
 
-            if (ketEventCount === 0) {
+            if (keyEventCount === 0) {
                 // 문자 조합에 의한 중복 제거 처리
 
                 _clenupCursor(store);
@@ -27,9 +28,9 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
             }
 
             // 문자 조합에 의한 중복 이벤트 막는 처리
-            ketEventCount += 1;
+            keyEventCount += 1;
             setTimeout(() => {
-                ketEventCount = 0;
+                keyEventCount = 0;
             }, 150);
             break;
         case "Backspace":
@@ -38,7 +39,7 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
         case "Tab":
             event.preventDefault();
 
-            if (ketEventCount === 0) {
+            if (keyEventCount === 0) {
                 // 문자 조합에 의한 중복 제거 처리
                 _clenupCursor(store);
 
@@ -49,9 +50,9 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
             }
 
             // 문자 조합에 의한 중복 이벤트 막는 처리
-            ketEventCount += 1;
+            keyEventCount += 1;
             setTimeout(() => {
-                ketEventCount = 0;
+                keyEventCount = 0;
             }, 150);
             break;
         case "Space":
@@ -67,6 +68,16 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
         //         // default:
         //         //     console.log("e.code", e.code);
     }
+
+    clearTimeout(keyEventFn);
+    keyEventFn = setTimeout(() => {
+        _clenupCursor(store);
+        const $block = _findContentEditableElement(store.cursorData.startNode);
+
+        if ($block !== null) {
+            store.setCurrentBlock($block.closest(".de-block"));
+        }
+    }, 250);
 }
 
 // 엔터 이벤트

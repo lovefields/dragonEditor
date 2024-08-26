@@ -1,4 +1,4 @@
-import { _createTextBlock, _createHeadingBlock, _createListBlock } from "./block";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock } from "./block";
 
 // 화면을 데이터로 변환
 export function _getContentData($content: HTMLDivElement): DEContentData {
@@ -30,7 +30,8 @@ export function _getContentData($content: HTMLDivElement): DEContentData {
             case "PRE":
                 break;
             case "DIV":
-                // 대부분 DIV임
+                // NOTE : 대부분 DIV임
+                data.push(converteDivToData($child as HTMLDivElement));
                 break;
         }
     });
@@ -39,8 +40,8 @@ export function _getContentData($content: HTMLDivElement): DEContentData {
 }
 
 // 데이터를 화면으로 변환
-export function _setContentData(data: any[], store: any) {
-    const childList: any[] = [];
+export function _setContentData(data: DEContentData, store: any) {
+    const childList: HTMLElement[] = [];
 
     data.forEach((item) => {
         switch (item.type) {
@@ -56,7 +57,17 @@ export function _setContentData(data: any[], store: any) {
             case "ol":
                 childList.push(_createListBlock("ol", item.child, item.pattern));
                 break;
-            case "":
+            case "image":
+                childList.push(
+                    _createImageBlock({
+                        type: item.type,
+                        src: item.src,
+                        maxWidth: item.maxWidth,
+                        width: item.width,
+                        height: item.height,
+                        caption: item.caption,
+                    })
+                );
                 break;
         }
     });
@@ -100,5 +111,35 @@ function converteOListToData($child: HTMLOListElement): DEOListBlock {
         child: [...$child.children].map(($li: Element) => {
             return $li.innerHTML;
         }),
+    };
+}
+
+// Div 인 경우 변환
+function converteDivToData($child: HTMLDivElement) {
+    let data: DEImageBlock;
+
+    switch (true) {
+        case $child.classList.contains("de-image-block"):
+            data = convertImageBlock($child) as DEImageBlock;
+            break;
+    }
+
+    // @ts-ignore : IDE 인식 에러
+    return data;
+}
+
+// 이미지 블럭 변환
+function convertImageBlock($child: HTMLDivElement): DEImageBlock {
+    const $imgArea = $child.querySelector(".de-image-area") as HTMLImageElement;
+    const $img = $child.querySelector(".de-img") as HTMLImageElement;
+    const $caption = $child.querySelector(".de-caption") as HTMLParagraphElement;
+
+    return {
+        type: "image",
+        src: $img.src,
+        maxWidth: parseFloat($imgArea.dataset["maxwidth"] as string),
+        width: $img.width,
+        height: $img.height,
+        caption: $caption.textContent ?? "",
     };
 }

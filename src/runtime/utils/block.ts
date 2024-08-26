@@ -38,9 +38,9 @@ export function _createTextBlock(content: string = ""): HTMLParagraphElement {
 }
 
 // 해딩 블럭 생성
-export function _createHeadingBlock(type: string, content: string = ""): HTMLElement {
+export function _createHeadingBlock(type: string, content: string = ""): HTMLHeadingElement {
     const level: number = parseInt(type.replace("heading", ""));
-    const $headingBlock = document.createElement(`h${level}`);
+    const $headingBlock = document.createElement(`h${level}`) as HTMLHeadingElement;
 
     $headingBlock.classList.add("de-block", "de-heading-block");
     $headingBlock.id = generateId();
@@ -56,7 +56,7 @@ export function _createHeadingBlock(type: string, content: string = ""): HTMLEle
 
 // 리스트 블럭 생성
 export function _createListBlock(type: string, content: string[] = [""], pattern?: string): HTMLElement {
-    const $block = document.createElement(type);
+    const $block = document.createElement(type) as HTMLElement;
 
     $block.classList.add("de-block", "de-list-block");
 
@@ -73,7 +73,7 @@ export function _createListBlock(type: string, content: string[] = [""], pattern
 
 // 리스트 아이템 블럭 생성
 export function _createListItemBlock(content: string = ""): HTMLLIElement {
-    const $li = document.createElement("li");
+    const $li = document.createElement("li") as HTMLLIElement;
 
     $li.classList.add("de-item");
     $li.setAttribute("contenteditable", "true");
@@ -83,6 +83,42 @@ export function _createListItemBlock(content: string = ""): HTMLLIElement {
     }
 
     return $li;
+}
+
+// 이미지 블럭 생성
+export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
+    const $wrap = document.createElement("div") as HTMLDivElement;
+    const $div = document.createElement("div") as HTMLDivElement;
+    const $leftBtn = document.createElement("button") as HTMLButtonElement;
+    const $rightBtn = document.createElement("button") as HTMLButtonElement;
+    const $image = document.createElement("img") as HTMLImageElement;
+    const $p = document.createElement("p") as HTMLParagraphElement;
+
+    $wrap.classList.add("de-block", "de-image-block");
+    $div.classList.add("de-image-area");
+    $div.dataset["maxwidth"] = String(data.maxWidth);
+    $leftBtn.classList.add("de-btn", "de-btn-left");
+    $rightBtn.classList.add("de-btn", "de-btn-right");
+    $image.classList.add("de-img");
+    $p.contentEditable = "true";
+    $p.classList.add("de-caption");
+
+    $image.src = data.src;
+    $image.width = data.width;
+    $image.height = data.height;
+    $image.draggable = false;
+
+    if (data.caption !== undefined) {
+        $p.textContent = data.caption;
+    }
+
+    $div.appendChild($image);
+    $div.appendChild($leftBtn);
+    $div.appendChild($rightBtn);
+    $wrap.appendChild($div);
+    $wrap.appendChild($p);
+
+    return $wrap;
 }
 
 // 난수 아이디 생성
