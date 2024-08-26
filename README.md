@@ -68,7 +68,7 @@ Second. Use Component
 </template>
 
 <script setup lang="ts">
-    const $editor = ref<any>();
+    const $editor = ref<DragonEditor>();
 </script>
 ```
 

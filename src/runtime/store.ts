@@ -7,6 +7,7 @@ export const useEditorStore = defineStore("editorStore", {
         message: {
             linkTextNoStyle: "Link text can't set any style.",
         },
+        $currentBlock: null,
         $editor: null,
         $content: null,
         $parentWrap: null,
@@ -23,6 +24,9 @@ export const useEditorStore = defineStore("editorStore", {
         },
         setCursorData(data: DEditorCursor) {
             this.cursorData = data;
+        },
+        setCurrentBlock(block: HTMLElement) {
+            this.$currentBlock = block;
         },
     },
 });

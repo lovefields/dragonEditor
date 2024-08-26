@@ -16,6 +16,14 @@
             <ol v-if="item.type === 'ol'" class="de-block de-list-block" :type="item.pattern">
                 <li v-for="li in item.child" class="de-item" v-html="li"></li>
             </ol>
+
+            <div v-if="item.type === 'image'" class="de-block de-image-block">
+                <div class="de-image-area">
+                    <img :src="item.src" alt="" class="de-img" :width="item.width" :height="item.height" loading="lazy" />
+                </div>
+
+                <p class="de-caption">{{ item.caption }}</p>
+            </div>
         </template>
     </div>
 </template>

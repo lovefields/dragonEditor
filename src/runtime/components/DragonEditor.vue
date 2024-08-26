@@ -1,5 +1,5 @@
 <template>
-    <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" ref="$editor">
+    <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" @mousemove="resizeEvent" @touchmove="resizeEvent" @mouseup="resizeEventEnd" @touchend="resizeEventEnd" ref="$editor">
         <div v-if="props.useMenuBar === true" class="de-control-bar">
             <button class="de-menu de-menu-add" @click="isActiveAddBlockMenu = !isActiveAddBlockMenu">
                 <svg class="de-icon" viewBox="0 0 64 64">
@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData">
+        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchStart="resizeEventStart">
             <p class="de-block de-text-block" contenteditable="true"></p>
         </div>
     </div>
@@ -63,7 +63,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
-import { _createTextBlock, _createHeadingBlock, _createListBlock } from "../utils/block";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock } from "../utils/block";
 import { _setNodeStyle } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
@@ -99,6 +99,29 @@ function updateCursorData(e: MouseEvent) {
         // 비정상 커서 값일 경우 초기화
         editorStore.cursorData = originalCursorData;
     }
+
+    if (e.target !== null) {
+        const $block = (e.target as HTMLElement).closest(".de-block");
+
+        if ($block !== null) {
+            editorStore.setCurrentBlock($block as HTMLElement);
+        }
+    }
+}
+
+// 사이즈 조정 이벤트 시작
+function resizeEventStart(e: Event) {
+    console.log("start", e);
+}
+
+// 사이즈 조정 이벤트
+function resizeEvent(e: Event) {
+    console.log("move", e);
+}
+
+// 사이즈 조정 이벤트 종료
+function resizeEventEnd(e: Event) {
+    console.log("end", e);
 }
 
 /**
@@ -152,6 +175,29 @@ function addBlock(type: string) {
     }
 }
 
+function addImageBlock(data: DEImage) {
+    const blockStructure = _createImageBlock({
+        ...data,
+        type: "image",
+        maxWidth: 100,
+    } as DEImageBlock);
+
+    if (editorStore.cursorData === null) {
+        (editorStore.$content as HTMLDivElement).insertAdjacentElement("beforeend", blockStructure);
+    } else {
+        _clenupCursor(editorStore);
+        let $target = editorStore.cursorData.startNode;
+
+        if ($target.constructor.name === "Text") {
+            $target = $target.parentNode as Node;
+        }
+
+        const $block = ($target as HTMLElement).closest(".de-block") as Element;
+
+        $block.insertAdjacentElement("afterend", blockStructure);
+    }
+}
+
 function setDecoration(type: string) {
     _setNodeStyle(`de-${type}`, editorStore);
 }
@@ -188,6 +234,7 @@ onUnmounted(() => {
 
 defineExpose({
     addBlock,
+    addImageBlock,
     getContentData,
     setContentData,
 });

@@ -15,6 +15,7 @@ const data = ref<DEContentData>([
     { type: "heading", level: 3, id: "D0ZRSP", textContent: "123" },
     { type: "ul", child: ["123"] },
     { type: "ol", pattern: "1", child: ["123"] },
+    { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", width: 758, height: 499, maxWidth: 100, caption: "" },
 ]);
 </script>
 

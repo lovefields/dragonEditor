@@ -3,6 +3,7 @@ interface EditorStore {
     message: { [key: string]: string };
     $editor: HTMLDivElement | null;
     $content: HTMLDivElement | null;
+    $currentBlock: HTMLElement | null;
     $parentWrap: HTMLElement | Window | null;
 }
 
@@ -22,6 +23,24 @@ interface DEArrangeCursorData {
     endNodeIdx: number;
     endOffset: number;
 }
+
+interface DEImage {
+    src: string;
+    width: number;
+    height: number;
+    caption?: string;
+}
+
+// 컴포넌트 메서드용 타입
+interface DragonEditor {
+    addBlock: (type: DEBlock) => void;
+    addImageBlock: (data: DEImage) => void;
+    getContentData: () => DEContentData;
+    setContentData: (data: DEContentData) => void;
+}
+
+// Block type
+type DEBlock = "text" | "heading" | "ul" | "ol" | "image";
 
 interface DETextBlock {
     type: "text";
@@ -46,4 +65,13 @@ interface DEOListBlock {
     child: string[];
 }
 
-type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock)[];
+interface DEImageBlock {
+    type: "image";
+    maxWidth: number;
+    src: string;
+    width: number;
+    height: number;
+    caption: string;
+}
+
+type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock | DEImageBlock)[];

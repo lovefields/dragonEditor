@@ -71,4 +71,68 @@
     ol.de-list-block {
         list-style: decimal;
     }
+
+    // 이미지 블럭
+    .de-image-block {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        row-gap: 8px;
+
+        .de-image-area {
+            position: relative;
+            max-width: 25%;
+
+            @for $i from 25 to 101 {
+                &[data-maxwidth="#{$i}"] {
+                    max-width: $i * 1%;
+                }
+            }
+
+            .de-img {
+                width: 100%;
+                height: auto;
+            }
+
+            .de-btn {
+                position: absolute;
+                top: 50%;
+                width: 8px;
+                height: 100px;
+                background: #ccc;
+                border: 1px solid #333;
+                transform: translate(-50%, -50%);
+                cursor: col-resize;
+                z-index: 100;
+
+                &.de-btn-left {
+                    left: 0;
+                }
+
+                &.de-btn-right {
+                    left: 100%;
+                }
+            }
+
+            // TODO : image scontroll css
+        }
+
+        .de-caption {
+            width: 100%;
+            min-height: 1.6em;
+            color: #909090;
+            text-align: center;
+            outline: 0;
+
+            @if $isEdit == "true" {
+                &:empty:hover::before,
+                &:empty:focus::before {
+                    display: inline;
+                    content: "Type a caption";
+                    color: #ccc;
+                    cursor: text;
+                }
+            }
+        }
+    }
 }
