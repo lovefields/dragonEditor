@@ -28,6 +28,7 @@ interface DEImage {
     src: string;
     width: number;
     height: number;
+    classList?: string[];
     caption?: string;
 }
 
@@ -50,6 +51,7 @@ type DEBlock = "text" | "heading" | "ul" | "ol" | "image";
 
 interface DETextBlock {
     type: "text";
+    classList: string[];
     textContent: string;
 }
 
@@ -57,18 +59,24 @@ interface DEHeadingBlock {
     type: "heading";
     level: number;
     id: string;
+    classList: string[];
+    textContent: string;
+}
+
+interface DEListItem {
+    classList: string[];
     textContent: string;
 }
 
 interface DEUListBlock {
     type: "ul";
-    child: string[];
+    child: DEListItem[];
 }
 
 interface DEOListBlock {
     type: "ol";
     pattern: "a" | "i" | "1" | "A" | "I";
-    child: string[];
+    child: DEListItem[];
 }
 
 interface DEImageBlock {
@@ -78,6 +86,7 @@ interface DEImageBlock {
     width: number;
     height: number;
     caption: string;
+    classList: string[];
 }
 
 type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock | DEImageBlock)[];

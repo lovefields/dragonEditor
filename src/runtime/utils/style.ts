@@ -466,24 +466,33 @@ export function _setNodeStyle(className: string, store: any) {
 }
 
 export function _setTextAlign(type: DETextalign, store: any) {
-    if (store.cursorData !== null) {
-        const $element = _findContentEditableElement(store.cursorData.startNode as HTMLElement);
+    const alignClassList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];
+    const className: string = `de-align-${type}`;
+    let $element: HTMLElement | null = null;
 
-        if ($element !== null) {
-            const alignClassList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];
-            const className: string = `de-align-${type}`;
+    if (store.$currentBlock.classList.contains("de-image-block") === true) {
+        // 이미지 블럭의 경우
 
-            if ($element.classList.contains(className) === true) {
-                $element.classList.remove(className);
-            } else {
-                const curruntClassname: string | undefined = alignClassList.filter((text) => [...$element.classList].includes(text) === true)[0];
+        $element = store.$currentBlock;
+    } else {
+        // 이미지 블럭 외의 경우
 
-                if (curruntClassname !== undefined) {
-                    $element.classList.remove(curruntClassname);
-                }
+        if (store.cursorData !== null) {
+            $element = _findContentEditableElement(store.cursorData.startNode as HTMLElement);
+        }
+    }
 
-                $element.classList.add(className);
+    if ($element !== null) {
+        if ($element.classList.contains(className) === true) {
+            $element.classList.remove(className);
+        } else {
+            const curruntClassname: string | undefined = alignClassList.filter((text) => [...$element.classList].includes(text) === true)[0];
+
+            if (curruntClassname !== undefined) {
+                $element.classList.remove(curruntClassname);
             }
+
+            $element.classList.add(className);
         }
     }
 }

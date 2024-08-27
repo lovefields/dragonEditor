@@ -1,4 +1,5 @@
 import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock } from "./block";
+import "../type.d.ts";
 
 // 화면을 데이터로 변환
 export function _getContentData($content: HTMLDivElement): DEContentData {
@@ -46,16 +47,14 @@ export function _setContentData(data: DEContentData, store: any) {
     data.forEach((item) => {
         switch (item.type) {
             case "text":
-                childList.push(_createTextBlock(item.textContent));
+                childList.push(_createTextBlock(item));
                 break;
             case "heading":
-                childList.push(_createHeadingBlock(`heading${item.level}`, item.textContent));
+                childList.push(_createHeadingBlock(item));
                 break;
             case "ul":
-                childList.push(_createListBlock("ul", item.child));
-                break;
             case "ol":
-                childList.push(_createListBlock("ol", item.child, item.pattern));
+                childList.push(_createListBlock(item));
                 break;
             case "image":
                 childList.push(
@@ -66,6 +65,7 @@ export function _setContentData(data: DEContentData, store: any) {
                         width: item.width,
                         height: item.height,
                         caption: item.caption,
+                        classList: item.classList,
                     })
                 );
                 break;
@@ -79,6 +79,7 @@ export function _setContentData(data: DEContentData, store: any) {
 function converteParagraphToData($child: HTMLParagraphElement): DETextBlock {
     return {
         type: "text",
+        classList: getClassListWithoutDefaultClass($child),
         textContent: $child.innerHTML,
     };
 }
@@ -89,6 +90,7 @@ function converteHeadingToData($child: HTMLHeadingElement, level: number): DEHea
         type: "heading",
         level: level,
         id: $child.id,
+        classList: getClassListWithoutDefaultClass($child),
         textContent: $child.innerHTML,
     };
 }
@@ -98,7 +100,10 @@ function converteUListToData($child: HTMLUListElement): DEUListBlock {
     return {
         type: "ul",
         child: [...$child.children].map(($li: Element) => {
-            return $li.innerHTML;
+            return {
+                classList: getClassListWithoutDefaultClass($li as HTMLElement),
+                textContent: $li.innerHTML,
+            };
         }),
     };
 }
@@ -109,7 +114,10 @@ function converteOListToData($child: HTMLOListElement): DEOListBlock {
         type: "ol",
         pattern: $child.type as "a" | "i" | "1" | "A" | "I",
         child: [...$child.children].map(($li: Element) => {
-            return $li.innerHTML;
+            return {
+                classList: getClassListWithoutDefaultClass($li as HTMLElement),
+                textContent: $li.innerHTML,
+            };
         }),
     };
 }
@@ -129,17 +137,24 @@ function converteDivToData($child: HTMLDivElement) {
 }
 
 // 이미지 블럭 변환
-function convertImageBlock($child: HTMLDivElement): DEImageBlock {
-    const $imgArea = $child.querySelector(".de-image-area") as HTMLImageElement;
-    const $img = $child.querySelector(".de-img") as HTMLImageElement;
-    const $caption = $child.querySelector(".de-caption") as HTMLParagraphElement;
+function convertImageBlock($imageBlock: HTMLDivElement): DEImageBlock {
+    const $imgArea = $imageBlock.querySelector(".de-image-area") as HTMLImageElement;
+    const $img = $imageBlock.querySelector(".de-img") as HTMLImageElement;
+    const $caption = $imageBlock.querySelector(".de-caption") as HTMLParagraphElement;
 
     return {
         type: "image",
         src: $img.src,
-        maxWidth: parseFloat($imgArea.dataset["maxwidth"] as string),
+        maxWidth: parseInt($imgArea.dataset["maxwidth"] as string),
         width: $img.width,
         height: $img.height,
         caption: $caption.textContent ?? "",
+        classList: getClassListWithoutDefaultClass($imageBlock),
     };
+}
+
+function getClassListWithoutDefaultClass($element: HTMLElement): string[] {
+    const defaultClassList: string[] = ["de-block", "de-text-block", "de-heading-block", "de-list-block", "de-image-block"];
+
+    return [...$element.classList].filter((className) => defaultClassList.includes(className) === false);
 }

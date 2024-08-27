@@ -226,11 +226,38 @@ function addBlock(type: string) {
         case "heading1":
         case "heading2":
         case "heading3":
-            blockStructure = _createHeadingBlock(type);
+            const level: number = parseInt(type.replace("heading", ""));
+
+            blockStructure = _createHeadingBlock({
+                type: "heading",
+                classList: [],
+                id: "",
+                level: level,
+                textContent: "",
+            });
             break;
         case "ul":
+            blockStructure = _createListBlock({
+                type: type,
+                child: [
+                    {
+                        classList: [],
+                        textContent: "",
+                    },
+                ],
+            });
+            break;
         case "ol":
-            blockStructure = _createListBlock(type);
+            blockStructure = _createListBlock({
+                type: type,
+                pattern: "1",
+                child: [
+                    {
+                        classList: [],
+                        textContent: "",
+                    },
+                ],
+            });
             break;
     }
 
@@ -270,6 +297,7 @@ function addImageBlock(data: DEImage) {
         ...data,
         type: "image",
         maxWidth: 100,
+        classList: [],
     } as DEImageBlock);
 
     if (editorStore.cursorData === null) {

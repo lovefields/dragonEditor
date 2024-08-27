@@ -79,6 +79,22 @@
         flex-direction: column;
         row-gap: 8px;
 
+        &.de-align-left {
+            align-items: flex-start;
+
+            .de-caption {
+                text-align: left;
+            }
+        }
+
+        &.de-align-right {
+            align-items: flex-end;
+
+            .de-caption {
+                text-align: right;
+            }
+        }
+
         .de-image-area {
             position: relative;
             max-width: 25%;
