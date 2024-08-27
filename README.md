@@ -39,7 +39,7 @@ This module support Nuxt3 only.
 ## Install
 
 ```shell
-mpm i dragon-edtior
+npm i dragon-edtior
 # or
 yarn add dragon-editor
 # or
