@@ -15,6 +15,7 @@ const data = ref<DEContentData>([
     { type: "ul", child: [{ classList: ["de-item"], textContent: "5" }] },
     { type: "ol", pattern: "1", child: [{ classList: ["de-item"], textContent: "6" }] },
     { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 758, height: 499, caption: "", classList: [] },
+    { type: "custom", classList: ["de-custom-block", "new-data"], textContent: "<div class='my-custom-block'>123</div>" },
 ]);
 </script>
 

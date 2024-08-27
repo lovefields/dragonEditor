@@ -1,4 +1,4 @@
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock } from "./block";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock } from "./block";
 import "../type.d.ts";
 
 // 화면을 데이터로 변환
@@ -69,6 +69,9 @@ export function _setContentData(data: DEContentData, store: any) {
                     })
                 );
                 break;
+            case "custom":
+                childList.push(_createCustomBlock(item));
+                break;
         }
     });
 
@@ -124,11 +127,14 @@ function converteOListToData($child: HTMLOListElement): DEOListBlock {
 
 // Div 인 경우 변환
 function converteDivToData($child: HTMLDivElement) {
-    let data: DEImageBlock;
+    let data: DEImageBlock | DECustomBlock;
 
     switch (true) {
         case $child.classList.contains("de-image-block"):
-            data = convertImageBlock($child) as DEImageBlock;
+            data = convertImageBlock($child);
+            break;
+        case $child.classList.contains("de-custom-block"):
+            data = convertCustomBlock($child);
             break;
     }
 
@@ -150,6 +156,15 @@ function convertImageBlock($imageBlock: HTMLDivElement): DEImageBlock {
         height: $img.height,
         caption: $caption.textContent ?? "",
         classList: getClassListWithoutDefaultClass($imageBlock),
+    };
+}
+
+// 커스텀 블럭 변환
+function convertCustomBlock($block: HTMLDivElement): DECustomBlock {
+    return {
+        type: "custom",
+        classList: getClassListWithoutDefaultClass($block),
+        textContent: $block.innerHTML,
     };
 }
 
