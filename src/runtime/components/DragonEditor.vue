@@ -40,6 +40,30 @@
                 </svg>
             </button>
 
+            <button class="de-menu" @click="setTextAlign('left')">
+                <svg class="de-icon" viewBox="0 0 64 64">
+                    <path class="de-path" d="M11 9C9.89543 9 9 9.89543 9 11C9 12.1046 9.89543 13 11 13H23C24.1046 13 25 12.1046 25 11C25 9.89543 24.1046 9 23 9H11Z M11 51C9.89543 51 9 51.8954 9 53C9 54.1046 9.89543 55 11 55H53C54.1046 55 55 54.1046 55 53C55 51.8954 54.1046 51 53 51H11Z M9 39C9 37.8954 9.89543 37 11 37H37C38.1046 37 39 37.8954 39 39C39 40.1046 38.1046 41 37 41H11C9.89543 41 9 40.1046 9 39Z M11 23C9.89543 23 9 23.8954 9 25C9 26.1046 9.89543 27 11 27H53C54.1046 27 55 26.1046 55 25C55 23.8954 54.1046 23 53 23H11Z"></path>
+                </svg>
+            </button>
+
+            <button class="de-menu" @click="setTextAlign('center')">
+                <svg class="de-icon" viewBox="0 0 64 64">
+                    <path class="de-path" d="M24 11C24 9.89543 24.8954 9 26 9H38C39.1046 9 40 9.89543 40 11C40 12.1046 39.1046 13 38 13H26C24.8954 13 24 12.1046 24 11Z M9 53C9 51.8954 9.89543 51 11 51H53C54.1046 51 55 51.8954 55 53C55 54.1046 54.1046 55 53 55H11C9.89543 55 9 54.1046 9 53Z M17 39C17 37.8954 17.8954 37 19 37H45C46.1046 37 47 37.8954 47 39C47 40.1046 46.1046 41 45 41H19C17.8954 41 17 40.1046 17 39Z M9 25C9 23.8954 9.89543 23 11 23H53C54.1046 23 55 23.8954 55 25C55 26.1046 54.1046 27 53 27H11C9.89543 27 9 26.1046 9 25Z"></path>
+                </svg>
+            </button>
+
+            <button class="de-menu" @click="setTextAlign('right')">
+                <svg class="de-icon" viewBox="0 0 64 64">
+                    <path class="de-path" d="M39 11C39 9.89543 39.8954 9 41 9H53C54.1046 9 55 9.89543 55 11C55 12.1046 54.1046 13 53 13H41C39.8954 13 39 12.1046 39 11Z M9 53C9 51.8954 9.89543 51 11 51H53C54.1046 51 55 51.8954 55 53C55 54.1046 54.1046 55 53 55H11C9.89543 55 9 54.1046 9 53Z M25 39C25 37.8954 25.8954 37 27 37H53C54.1046 37 55 37.8954 55 39C55 40.1046 54.1046 41 53 41H27C25.8954 41 25 40.1046 25 39Z M9 25C9 23.8954 9.89543 23 11 23H53C54.1046 23 55 23.8954 55 25C55 26.1046 54.1046 27 53 27H11C9.89543 27 9 26.1046 9 25Z"></path>
+                </svg>
+            </button>
+
+            <button class="de-menu" @click="setTextAlign('justify')">
+                <svg class="de-icon" viewBox="0 0 64 64">
+                    <path class="de-path" d="M9 53C9 51.8954 9.89543 51 11 51H53C54.1046 51 55 51.8954 55 53C55 54.1046 54.1046 55 53 55H11C9.89543 55 9 54.1046 9 53Z M9 39C9 37.8954 9.89543 37 11 37H53C54.1046 37 55 37.8954 55 39C55 40.1046 54.1046 41 53 41H11C9.89543 41 9 40.1046 9 39Z M9 11C9 9.89543 9.89543 9 11 9H53C54.1046 9 55 9.89543 55 11C55 12.1046 54.1046 13 53 13H11C9.89543 13 9 12.1046 9 11Z M9 25C9 23.8954 9.89543 23 11 23H53C54.1046 23 55 23.8954 55 25C55 26.1046 54.1046 27 53 27H11C9.89543 27 9 26.1046 9 25Z"></path>
+                </svg>
+            </button>
+
             <div class="de-block-menu-area" :class="{ '--active': isActiveAddBlockMenu }">
                 <div class="de-list">
                     <button class="de-add-block" @click="addBlock('text')">Text</button>
@@ -64,7 +88,7 @@ import { useEditorStore } from "../store";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
 import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock } from "../utils/block";
-import { _setNodeStyle } from "../utils/style";
+import { _setNodeStyle, _setTextAlign } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
 import "../type.d.ts";
@@ -80,7 +104,6 @@ const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
-const minImageWidth = 25;
 let resizeEventActive: boolean = false;
 let resizeStartX: number = 0;
 let resizeType: string = "right";
@@ -222,9 +245,13 @@ function addBlock(type: string) {
                 $target = $target.parentNode as Node;
             }
 
-            const $block = ($target as HTMLElement).closest(".de-block") as Element;
+            const $block = ($target as HTMLElement).closest(".de-block");
 
-            $block.insertAdjacentElement("afterend", blockStructure);
+            if ($block === null) {
+                (editorStore.$content as HTMLDivElement).insertAdjacentElement("beforeend", blockStructure);
+            } else {
+                $block.insertAdjacentElement("afterend", blockStructure);
+            }
         }
 
         switch (type) {
@@ -261,8 +288,12 @@ function addImageBlock(data: DEImage) {
     }
 }
 
-function setDecoration(type: string) {
+function setDecoration(type: DEDecoration) {
     _setNodeStyle(`de-${type}`, editorStore);
+}
+
+function setTextAlign(type: DETextalign) {
+    _setTextAlign(type, editorStore);
 }
 
 function getContentData(): DEContentData {
@@ -298,6 +329,8 @@ onUnmounted(() => {
 defineExpose({
     addBlock,
     addImageBlock,
+    setDecoration,
+    setTextAlign,
     getContentData,
     setContentData,
 });

@@ -103,7 +103,7 @@ Done!
 </template>
 
 <script setup lang="ts">
-    const $editor = ref<any>();
+    const $editor = ref<DragonEditor>();
 
     function getData() {
         console.log($editor.value.getContentData());
@@ -124,7 +124,7 @@ Done!
 </template>
 
 <script setup lang="ts">
-    const $editor = ref<any>();
+    const $editor = ref<DragonEditor>();
 
     function setData() {
         $editor.value.setContentData([...]);
