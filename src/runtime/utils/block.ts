@@ -13,6 +13,9 @@ export function _getBlockType(element: HTMLElement) {
         case $block.classList.contains("de-list-block"):
             typeName = "list";
             break;
+        case $block.classList.contains("de-image-block"):
+            typeName = "image";
+            break;
         default:
             typeName = "other";
     }
@@ -24,62 +27,66 @@ export function _getBlockType(element: HTMLElement) {
 }
 
 // 문단 블럭 생성
-export function _createTextBlock(content: string = ""): HTMLParagraphElement {
+export function _createTextBlock(data: DETextBlock = { type: "text", classList: [], textContent: "" }): HTMLParagraphElement {
     const $paragraph = document.createElement("p");
 
-    $paragraph.classList.add("de-block", "de-text-block");
+    $paragraph.classList.add("de-block", "de-text-block", ...data.classList);
     $paragraph.setAttribute("contenteditable", "true");
 
-    if (content !== "") {
-        $paragraph.innerHTML = content;
+    if (data.textContent !== "") {
+        $paragraph.innerHTML = data.textContent;
     }
 
     return $paragraph;
 }
 
 // 해딩 블럭 생성
-export function _createHeadingBlock(type: string, content: string = ""): HTMLHeadingElement {
-    const level: number = parseInt(type.replace("heading", ""));
-    const $headingBlock = document.createElement(`h${level}`) as HTMLHeadingElement;
+export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
+    const $headingBlock = document.createElement(`h${data.level}`) as HTMLHeadingElement;
 
-    $headingBlock.classList.add("de-block", "de-heading-block");
-    $headingBlock.id = generateId();
-    $headingBlock.dataset["level"] = String(level);
+    if (data.id === "") {
+        $headingBlock.id = generateId();
+    } else {
+        $headingBlock.id = data.id;
+    }
+
+    $headingBlock.classList.add("de-block", "de-heading-block", ...data.classList);
+    $headingBlock.dataset["level"] = String(data.level);
     $headingBlock.setAttribute("contenteditable", "true");
 
-    if (content !== "") {
-        $headingBlock.innerHTML = content;
+    if (data.textContent !== "") {
+        $headingBlock.innerHTML = data.textContent;
     }
 
     return $headingBlock;
 }
 
 // 리스트 블럭 생성
-export function _createListBlock(type: string, content: string[] = [""], pattern?: string): HTMLElement {
-    const $block = document.createElement(type) as HTMLElement;
+export function _createListBlock(data: DEUListBlock | DEOListBlock): HTMLElement {
+    const $block = document.createElement(data.type) as HTMLElement;
 
     $block.classList.add("de-block", "de-list-block");
 
-    if (type === "ol") {
-        ($block as HTMLOListElement).type = pattern ?? "1";
+    if (data.type === "ol") {
+        ($block as HTMLOListElement).type = data.pattern ?? "1";
     }
 
-    content.forEach((text: string) => {
-        $block.appendChild(_createListItemBlock(text));
+    data.child.forEach((child: DEListItem) => {
+        $block.appendChild(_createListItemBlock(child));
     });
 
     return $block;
 }
 
 // 리스트 아이템 블럭 생성
-export function _createListItemBlock(content: string = ""): HTMLLIElement {
+export function _createListItemBlock(child: DEListItem): HTMLLIElement {
     const $li = document.createElement("li") as HTMLLIElement;
 
-    $li.classList.add("de-item");
+    $li.classList.add("de-item", ...child.classList);
     $li.setAttribute("contenteditable", "true");
 
-    if (content !== "") {
-        $li.innerHTML = content;
+    if (child.textContent !== "") {
+        $li.innerHTML = child.textContent;
     }
 
     return $li;
@@ -94,7 +101,7 @@ export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
     const $image = document.createElement("img") as HTMLImageElement;
     const $p = document.createElement("p") as HTMLParagraphElement;
 
-    $wrap.classList.add("de-block", "de-image-block");
+    $wrap.classList.add("de-block", "de-image-block", ...data.classList);
     $div.classList.add("de-image-area");
     $div.dataset["maxwidth"] = String(data.maxWidth);
     $leftBtn.classList.add("de-btn", "de-btn-left");
