@@ -139,3 +139,13 @@ export function generateId() {
 
     return str;
 }
+
+// 커스텀 블럭 생성
+export function _createCustomBlock(data: DECustomBlock): HTMLDivElement {
+    const $block = document.createElement("div") as HTMLDivElement;
+
+    $block.classList.add("de-block", "de-custom-block", ...data.classList);
+    $block.innerHTML = data.textContent;
+
+    return $block;
+}

@@ -89,10 +89,11 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock } from "../utils/block";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock } from "../utils/block";
 import { _setNodeStyle, _setTextAlign } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
+import { _addBlockToContent } from "../utils/content";
 import "../type.d.ts";
 
 const props = defineProps({
@@ -272,27 +273,16 @@ function addBlock(type: string) {
                 ],
             });
             break;
+        case "table":
+            // TODO : table block
+            break;
+        case "codeblock":
+            // TODO : Code Block
+            break;
     }
 
     if (blockStructure !== null) {
-        if (editorStore.cursorData === null) {
-            (editorStore.$content as HTMLDivElement).insertAdjacentElement("beforeend", blockStructure);
-        } else {
-            _clenupCursor(editorStore);
-            let $target = editorStore.cursorData.startNode;
-
-            if ($target.constructor.name === "Text") {
-                $target = $target.parentNode as Node;
-            }
-
-            const $block = ($target as HTMLElement).closest(".de-block");
-
-            if ($block === null) {
-                (editorStore.$content as HTMLDivElement).insertAdjacentElement("beforeend", blockStructure);
-            } else {
-                $block.insertAdjacentElement("afterend", blockStructure);
-            }
-        }
+        _addBlockToContent(blockStructure, editorStore);
 
         switch (type) {
             case "ul":
@@ -305,6 +295,16 @@ function addBlock(type: string) {
     }
 }
 
+function addCustomBlock(HTML: string, classList: string[] = []) {
+    const blockStructure = _createCustomBlock({
+        type: "custom",
+        classList: classList,
+        textContent: HTML,
+    });
+
+    _addBlockToContent(blockStructure, editorStore);
+}
+
 function addImageBlock(data: DEImage) {
     const blockStructure = _createImageBlock({
         ...data,
@@ -313,20 +313,7 @@ function addImageBlock(data: DEImage) {
         classList: [],
     } as DEImageBlock);
 
-    if (editorStore.cursorData === null) {
-        (editorStore.$content as HTMLDivElement).insertAdjacentElement("beforeend", blockStructure);
-    } else {
-        _clenupCursor(editorStore);
-        let $target = editorStore.cursorData.startNode;
-
-        if ($target.constructor.name === "Text") {
-            $target = $target.parentNode as Node;
-        }
-
-        const $block = ($target as HTMLElement).closest(".de-block") as Element;
-
-        $block.insertAdjacentElement("afterend", blockStructure);
-    }
+    _addBlockToContent(blockStructure, editorStore);
 }
 
 function setDecoration(type: DEDecoration) {
@@ -378,6 +365,7 @@ defineExpose({
     setTextAlign,
     getContentData,
     setContentData,
+    addCustomBlock,
 });
 </script>
 

@@ -36,6 +36,8 @@ type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
 
 type DETextalign = "left" | "right" | "center" | "justify";
 
+type DEBlock = "text" | "heading" | "ul" | "ol" | "image";
+
 // 컴포넌트 메서드용 타입
 interface DragonEditor {
     addBlock: (type: DEBlock) => void;
@@ -44,10 +46,8 @@ interface DragonEditor {
     setTextAlign: (type: DETextalign) => void;
     getContentData: () => DEContentData;
     setContentData: (data: DEContentData) => void;
+    addCustomBlock: (HTML: string, classList: string[]) => void;
 }
-
-// Block type
-type DEBlock = "text" | "heading" | "ul" | "ol" | "image";
 
 interface DETextBlock {
     type: "text";
@@ -89,4 +89,10 @@ interface DEImageBlock {
     classList: string[];
 }
 
-type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock | DEImageBlock)[];
+interface DECustomBlock {
+    type: "custom";
+    classList: string[];
+    textContent: string;
+}
+
+type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock | DEImageBlock | DECustomBlock)[];
