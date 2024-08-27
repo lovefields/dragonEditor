@@ -128,7 +128,7 @@ function elementBackspaceEvent(e: KeyboardEvent, store: any) {
             listBlockBackspaceEvent(e, store, $element);
             break;
         default:
-            console.log("// TODO : 다른 타입 블럭 백스페이스 이벤트", type);
+        // console.log("// TODO : 다른 타입 블럭 백스페이스 이벤트", type);
     }
 }
 
@@ -786,7 +786,14 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
                 if ($textBlock.tagName !== "P") {
                     // 해딩 태그인 경우
 
-                    $textBlock.insertAdjacentElement("afterend", _createTextBlock($textBlock.textContent as string));
+                    $textBlock.insertAdjacentElement(
+                        "afterend",
+                        _createTextBlock({
+                            type: "text",
+                            classList: [],
+                            textContent: $textBlock.textContent ?? "",
+                        })
+                    );
                     _setCursor($textBlock.nextElementSibling as Node, 0);
                     $textBlock.remove();
                 }
