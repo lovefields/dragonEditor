@@ -36,6 +36,10 @@
             &.--lastchild {
                 border-right: 0;
             }
+
+            .de-path.--red {
+                fill: #dd0000;
+            }
         }
 
         .de-block-menu-area {

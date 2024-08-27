@@ -64,6 +64,12 @@
                 </svg>
             </button>
 
+            <button class="de-menu" @click="deleteBlock">
+                <svg class="de-icon" viewBox="0 0 64 64">
+                    <path class="de-path --red" fill-rule="evenodd" clip-rule="evenodd" d="M32 51C42.4934 51 51 42.4934 51 32C51 21.5066 42.4934 13 32 13C21.5066 13 13 21.5066 13 32C13 42.4934 21.5066 51 32 51ZM32 55C44.7026 55 55 44.7026 55 32C55 19.2974 44.7026 9 32 9C19.2974 9 9 19.2974 9 32C9 44.7026 19.2974 55 32 55ZM21.4142 42.6274C20.6332 41.8462 20.6332 40.5801 21.4142 39.7988L29.1715 32.0415L21.5858 24.4558C20.8047 23.6748 20.8047 22.4084 21.5858 21.6274C22.3668 20.8462 23.6332 20.8462 24.4142 21.6274L31.9999 29.2131L39.799 21.4141C40.58 20.6331 41.8464 20.6331 42.6274 21.4141C43.4084 22.1953 43.4084 23.4614 42.6274 24.2427L34.8284 32.0417L42.799 40.0122C43.58 40.7932 43.58 42.0596 42.799 42.8406C42.0179 43.6216 40.7516 43.6216 39.9706 42.8406L32.0001 34.8701L24.2426 42.6274C23.4616 43.4084 22.1953 43.4084 21.4142 42.6274Z"></path>
+                </svg>
+            </button>
+
             <div class="de-block-menu-area" :class="{ '--active': isActiveAddBlockMenu }">
                 <div class="de-list">
                     <button class="de-add-block" @click="addBlock('text')">Text</button>
@@ -221,6 +227,13 @@ function checkOthersideClick(event: MouseEvent) {
         if ($controlBar === null) {
             isActiveAddBlockMenu.value = false;
         }
+    }
+}
+
+// 블럭 삭제
+function deleteBlock() {
+    if (editorStore.$currentBlock !== null) {
+        editorStore.$currentBlock.remove();
     }
 }
 
