@@ -72,6 +72,8 @@
                     <button class="de-add-block" @click="addBlock('heading3')">Heading-3</button>
                     <button class="de-add-block" @click="addBlock('ul')">Unodered List</button>
                     <button class="de-add-block" @click="addBlock('ol')">Odered List</button>
+                    <!-- <button class="de-add-block" @click="addBlock('codeblock')">Code Block</button> -->
+                    <!-- <button class="de-add-block" @click="addBlock('video')">Video</button> -->
                 </div>
             </div>
         </div>
@@ -207,6 +209,17 @@ function resizeEvent(event: Event) {
 function resizeEventEnd() {
     if (resizeEventActive === true) {
         resizeEventActive = false;
+    }
+}
+
+// 메뉴 외부 클릭시 닫기
+function checkOthersideClick(event: MouseEvent) {
+    if (event.target !== null) {
+        const $controlBar = (event.target as HTMLElement).closest(".de-control-bar");
+
+        if ($controlBar === null) {
+            isActiveAddBlockMenu.value = false;
+        }
     }
 }
 
@@ -347,10 +360,14 @@ onMounted(() => {
         editorStore.setContentElement($content.value);
     }
 
+    window.addEventListener("click", checkOthersideClick, true);
+
     // TODO : set scroll event
 });
 
 onUnmounted(() => {
+    window.removeEventListener("click", checkOthersideClick, true);
+
     // TODO : remove scroll event
 });
 
