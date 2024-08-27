@@ -31,10 +31,16 @@ interface DEImage {
     caption?: string;
 }
 
+type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
+
+type DETextalign = "left" | "right" | "center" | "justify";
+
 // 컴포넌트 메서드용 타입
 interface DragonEditor {
     addBlock: (type: DEBlock) => void;
     addImageBlock: (data: DEImage) => void;
+    setDecoration: (data: DEDecoration) => void;
+    setTextAlign: (type: DETextalign) => void;
     getContentData: () => DEContentData;
     setContentData: (data: DEContentData) => void;
 }
