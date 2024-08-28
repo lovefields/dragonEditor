@@ -12,8 +12,8 @@ export function _addBlockToContent($block: HTMLElement, store: any) {
             $target = $target.parentNode as Node;
         }
 
-        const $block = ($target as HTMLElement).closest(".de-block") as Element;
+        const $targetBlock = ($target as HTMLElement).closest(".de-block") as Element;
 
-        $block.insertAdjacentElement("afterend", $block);
+        $targetBlock.insertAdjacentElement("afterend", $block);
     }
 }
