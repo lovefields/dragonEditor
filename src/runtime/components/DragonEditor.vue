@@ -1,6 +1,6 @@
 <template>
     <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" @mousemove="resizeEvent" @touchmove="resizeEvent" @mouseup="resizeEventEnd" @touchend="resizeEventEnd" @mouseleave="resizeEventEnd" ref="$editor">
-        <div v-if="props.useMenuBar === true" class="de-control-bar">
+        <div v-if="props.useMenuBar === true" class="de-control-bar" :style="{ top: `${controlBarTop}px` }">
             <button class="de-menu de-menu-add" @click="isActiveAddBlockMenu = !isActiveAddBlockMenu">
                 <svg class="de-icon" viewBox="0 0 64 64">
                     <path class="de-path" d="M32 9C30.3431 9 29 10.3431 29 12V29H12C10.3431 29 9 30.3431 9 32C9 33.6569 10.3431 35 12 35H29V52C29 53.6569 30.3431 55 32 55C33.6569 55 35 53.6569 35 52V35H52C53.6569 35 55 33.6569 55 32C55 30.3431 53.6569 29 52 29H35V12C35 10.3431 33.6569 9 32 9Z"></path>
@@ -111,6 +111,7 @@ const props = defineProps({
 });
 const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
+const controlBarTop = ref<number>(0);
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
 let resizeEventActive: boolean = false;
@@ -234,6 +235,38 @@ function checkOthersideClick(event: MouseEvent) {
 function deleteBlock() {
     if (editorStore.$currentBlock !== null) {
         editorStore.$currentBlock.remove();
+    }
+}
+
+// 부모 요소 스크롤 이벤트 발생시 컨트롤 바 고정
+function parentWrapScollEvent() {
+    editorStore.setParentWrapElement(_findScrollingElement($editor.value as HTMLElement));
+
+    if (props.useMenuBar === true && editorStore.$parentWrap !== null && editorStore.$editor !== null) {
+        // 메뉴바를 사용하는 경우만
+
+        const editorReac = editorStore.$editor.getBoundingClientRect();
+        let scrollY: number = 0;
+
+        if (editorStore.$parentWrap.constructor.name === "Window") {
+            scrollY = (editorStore.$parentWrap as Window).scrollY;
+        } else {
+            scrollY = (editorStore.$parentWrap as HTMLElement).scrollTop;
+        }
+
+        let realElementY = editorReac.y + scrollY;
+
+        if (editorStore.$parentWrap.constructor.name !== "Window") {
+            const parentRect = (editorStore.$parentWrap as HTMLElement).getBoundingClientRect();
+
+            realElementY -= parentRect.y;
+        }
+
+        if (scrollY > realElementY) {
+            controlBarTop.value = scrollY - realElementY - 1;
+        } else {
+            controlBarTop.value = 0;
+        }
     }
 }
 
@@ -361,14 +394,12 @@ onMounted(() => {
     }
 
     window.addEventListener("click", checkOthersideClick, true);
-
-    // TODO : set scroll event
+    editorStore.$parentWrap?.addEventListener("scroll", parentWrapScollEvent, true);
 });
 
 onUnmounted(() => {
     window.removeEventListener("click", checkOthersideClick, true);
-
-    // TODO : remove scroll event
+    editorStore.$parentWrap?.removeEventListener("scroll", parentWrapScollEvent, true);
 });
 
 defineExpose({
