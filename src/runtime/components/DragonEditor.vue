@@ -78,7 +78,7 @@
                     <button class="de-add-block" @click="addBlock('heading3')">Heading-3</button>
                     <button class="de-add-block" @click="addBlock('ul')">Unodered List</button>
                     <button class="de-add-block" @click="addBlock('ol')">Odered List</button>
-                    <!-- <button class="de-add-block" @click="addBlock('codeblock')">Code Block</button> -->
+                    <button class="de-add-block" @click="addBlock('codeblock')">Code Block</button>
                     <!-- <button class="de-add-block" @click="addBlock('video')">Video</button> -->
                 </div>
             </div>
@@ -95,7 +95,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock } from "../utils/block";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
 import { _setNodeStyle, _setTextAlign } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
@@ -323,7 +323,13 @@ function addBlock(type: string) {
             // TODO : table block
             break;
         case "codeblock":
-            // TODO : Code Block
+            blockStructure = _createCodeBlock({
+                type: "code",
+                theme: "github",
+                filename: "",
+                language: "text",
+                textContent: "",
+            });
             break;
     }
 
@@ -334,6 +340,9 @@ function addBlock(type: string) {
             case "ul":
             case "ol":
                 (blockStructure.childNodes[0] as HTMLElement).focus();
+                break;
+            case "codeblock":
+                blockStructure.querySelector("code")?.focus();
                 break;
             default:
                 blockStructure.focus();
