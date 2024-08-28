@@ -29,8 +29,9 @@ function setContent() {
         { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
         { type: "ul", child: [{ classList: ["de-item"], textContent: "5" }] },
         { type: "ol", pattern: "1", child: [{ classList: ["de-item"], textContent: "6" }] },
-        { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 758, height: 499, caption: "", classList: [] },
-        { type: "custom", classList: ["de-custom-block", "new-data"], textContent: "<div class='my-custom-block'>123</div>" },
+        { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [] },
+        { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
+        { type: "code", theme: "github", filename: "123", language: "text", textContent: "332213231232132131313" },
     ]);
 }
 

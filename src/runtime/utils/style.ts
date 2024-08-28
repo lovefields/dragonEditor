@@ -5,7 +5,7 @@ import { _getBlockType } from "./block";
 export function _setNodeStyle(className: string, store: any) {
     if (store.cursorData !== null) {
         const { type } = _getBlockType(store.$currentBlock);
-        const typeIgnoreList: string[] = ["image", "codeblock", "other"];
+        const typeIgnoreList: string[] = ["image", "code", "other"];
 
         if (typeIgnoreList.includes(type) === false) {
             const $element = _findContentEditableElement(store.cursorData.startNode as HTMLElement);
@@ -473,7 +473,7 @@ export function _setNodeStyle(className: string, store: any) {
 
 export function _setTextAlign(type: DETextalign, store: any) {
     const { type: blockType } = _getBlockType(store.$currentBlock);
-    const typeIgnoreList: string[] = ["codeblock", "other"];
+    const typeIgnoreList: string[] = ["code", "other"];
 
     if (typeIgnoreList.includes(blockType) === false) {
         const alignClassList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];

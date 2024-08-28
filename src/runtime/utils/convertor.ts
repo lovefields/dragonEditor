@@ -127,11 +127,14 @@ function converteOListToData($child: HTMLOListElement): DEOListBlock {
 
 // Div 인 경우 변환
 function converteDivToData($child: HTMLDivElement) {
-    let data: DEImageBlock | DECustomBlock;
+    let data: DEImageBlock | DECodeBlock | DECustomBlock;
 
     switch (true) {
         case $child.classList.contains("de-image-block"):
             data = convertImageBlock($child);
+            break;
+        case $child.classList.contains("de-code-block"):
+            data = convertCodeBlock($child);
             break;
         case $child.classList.contains("de-custom-block"):
             data = convertCustomBlock($child);
@@ -156,6 +159,21 @@ function convertImageBlock($imageBlock: HTMLDivElement): DEImageBlock {
         height: $img.height,
         caption: $caption.textContent ?? "",
         classList: getClassListWithoutDefaultClass($imageBlock),
+    };
+}
+
+// 코드블럭 변환
+function convertCodeBlock($codeBlock: HTMLDivElement): DECodeBlock {
+    const $code = $codeBlock.querySelector(".de-code-content");
+    const $file = $codeBlock.querySelector(".de-filename");
+    const $lang = $codeBlock.querySelector(".de-language");
+
+    return {
+        type: "code",
+        theme: $codeBlock.dataset["theme"] as string,
+        filename: $file?.textContent ?? "",
+        language: $lang?.textContent ?? "text",
+        textContent: $code?.innerHTML ?? "",
     };
 }
 

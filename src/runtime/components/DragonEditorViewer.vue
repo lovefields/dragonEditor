@@ -25,6 +25,12 @@
                 <p v-if="item.caption" class="de-caption">{{ item.caption }}</p>
             </div>
 
+            <div v-if="item.type === 'code'" class="de-block de-code-block" :data-theme="item.theme">
+                <p class="de-filename">{{ item.filename }}</p>
+                <p class="de-language">{{ item.language }}</p>
+                <pre class="de-pre"><code class="de-code-content" v-html="item.textContent"></code></pre>
+            </div>
+
             <div v-if="item.type === 'custom'" class="de-block de-custom-block" :class="item.classList" v-html="item.textContent"></div>
         </template>
     </div>

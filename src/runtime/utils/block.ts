@@ -19,7 +19,7 @@ export function _getBlockType(element: HTMLElement) {
             typeName = "image";
             break;
         case $block.classList.contains("de-code-block"):
-            typeName = "codeblock";
+            typeName = "code";
             break;
         default:
             typeName = "other";
@@ -153,6 +153,10 @@ export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
 
     if (data.filename !== "") {
         $file.textContent = data.filename;
+    }
+
+    if (data.textContent !== "") {
+        $code.innerHTML = data.textContent;
     }
 
     $pre.appendChild($code);
