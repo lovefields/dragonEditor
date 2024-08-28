@@ -1,6 +1,12 @@
 interface EditorStore {
     cursorData: DEditorCursor | null;
     message: { [key: string]: string };
+    controlBar: {
+        active: boolean;
+        x: number;
+        y: number;
+        $element: HTMLDivElement | null;
+    };
     $editor: HTMLDivElement | null;
     $content: HTMLDivElement | null;
     $currentBlock: HTMLElement | null;

@@ -17,7 +17,7 @@
         line-height: 1.6;
     }
 
-    // 컨트롤 메뉴 스타일
+    // 메뉴 바 스타일
     .de-menu-bar {
         position: absolute;
         top: 0;
@@ -26,6 +26,7 @@
         height: 38px;
         background: #fff;
         border-bottom: 1px solid #ccc;
+        z-index: 10;
 
         .de-menu {
             min-width: 38px;
@@ -67,6 +68,20 @@
             .de-add-block {
                 line-height: 1.6;
             }
+        }
+    }
+
+    // 컨트롤 바 스타일
+    .de-control-bar {
+        display: none;
+        position: absolute;
+        height: 38px;
+        background: #fff;
+        border: 1px solid #ccc;
+        z-index: 20;
+
+        &.--active {
+            display: flex;
         }
     }
 

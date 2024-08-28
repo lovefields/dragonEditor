@@ -1,4 +1,4 @@
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock } from "./block";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCodeBlock, _createCustomBlock } from "./block";
 import "../type.d.ts";
 
 // 화면을 데이터로 변환
@@ -57,17 +57,10 @@ export function _setContentData(data: DEContentData, store: any) {
                 childList.push(_createListBlock(item));
                 break;
             case "image":
-                childList.push(
-                    _createImageBlock({
-                        type: item.type,
-                        src: item.src,
-                        maxWidth: item.maxWidth,
-                        width: item.width,
-                        height: item.height,
-                        caption: item.caption,
-                        classList: item.classList,
-                    })
-                );
+                childList.push(_createImageBlock(item));
+                break;
+            case "code":
+                childList.push(_createCodeBlock(item));
                 break;
             case "custom":
                 childList.push(_createCustomBlock(item));

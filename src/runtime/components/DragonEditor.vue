@@ -1,6 +1,6 @@
 <template>
     <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" @mousemove="resizeEvent" @touchmove="resizeEvent" @mouseup="resizeEventEnd" @touchend="resizeEventEnd" @mouseleave="resizeEventEnd" ref="$editor">
-        <div v-if="props.useMenuBar === true" class="de-menu-bar" :style="{ top: `${controlBarTop}px` }">
+        <div v-if="props.useMenuBar === true" class="de-menu-bar" :style="{ top: `${menuBarTop}px` }">
             <button class="de-menu de-menu-add" @click="isActiveAddBlockMenu = !isActiveAddBlockMenu">
                 <svg class="de-icon" viewBox="0 0 64 64">
                     <path class="de-path" d="M32 9C30.3431 9 29 10.3431 29 12V29H12C10.3431 29 9 30.3431 9 32C9 33.6569 10.3431 35 12 35H29V52C29 53.6569 30.3431 55 32 55C33.6569 55 35 53.6569 35 52V35H52C53.6569 35 55 33.6569 55 32C55 30.3431 53.6569 29 52 29H35V12C35 10.3431 33.6569 9 32 9Z"></path>
@@ -84,6 +84,22 @@
             </div>
         </div>
 
+        <div class="de-control-bar" :class="{ '--active': editorStore.controlBar.active === true }" ref="$controlBar">
+            <div v-if="['code'].includes(curruntType) === true" class="de-col">
+                <p class="de-name">Theme :</p>
+                <select class="de-selector">
+                    <option value=""></option>
+                </select>
+            </div>
+
+            <div v-if="['code'].includes(curruntType) === true" class="de-col">
+                <p class="de-name">Language :</p>
+                <select class="de-selector">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+
         <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchstart="resizeEventStart">
             <p class="de-block de-text-block" contenteditable="true"></p>
         </div>
@@ -95,7 +111,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
+import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
 import { _setNodeStyle, _setTextAlign } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
@@ -111,9 +127,11 @@ const props = defineProps({
 });
 const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
-const controlBarTop = ref<number>(0);
+const menuBarTop = ref<number>(0);
+const curruntType = ref<string>("");
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
+const $controlBar = ref<HTMLDivElement>();
 let resizeEventActive: boolean = false;
 let resizeStartX: number = 0;
 let resizeType: string = "right";
@@ -139,12 +157,27 @@ function updateCursorData(e: MouseEvent) {
         editorStore.cursorData = originalCursorData;
     }
 
+    // 선택 블럭 업데이트
     if (e.target !== null) {
         const $block = (e.target as HTMLElement).closest(".de-block");
 
         if ($block !== null) {
             editorStore.setCurrentBlock($block as HTMLElement);
         }
+    }
+
+    controlBarStatusUpdate();
+}
+// 컨트롤 바 상태 업데이트
+function controlBarStatusUpdate() {
+    if (editorStore.$currentBlock !== null) {
+        const { type } = _getBlockType(editorStore.$currentBlock);
+
+        curruntType.value = type;
+        editorStore.controlBarActive();
+        console.log("type", type);
+        console.log("editorStore.$currentBlock", editorStore.$currentBlock);
+        console.log("editorStore.controlBar.$element", editorStore.controlBar.$element);
     }
 }
 
@@ -263,9 +296,9 @@ function parentWrapScollEvent() {
         }
 
         if (scrollY > realElementY) {
-            controlBarTop.value = scrollY - realElementY - 1;
+            menuBarTop.value = scrollY - realElementY - 1;
         } else {
-            controlBarTop.value = 0;
+            menuBarTop.value = 0;
         }
     }
 }
@@ -347,6 +380,9 @@ function addBlock(type: string) {
             default:
                 blockStructure.focus();
         }
+
+        editorStore.setCurrentBlock(blockStructure as HTMLElement);
+        controlBarStatusUpdate();
     }
 }
 
@@ -400,6 +436,10 @@ onMounted(() => {
 
     if ($content.value !== undefined) {
         editorStore.setContentElement($content.value);
+    }
+
+    if ($controlBar.value !== undefined) {
+        editorStore.setContrulBar($controlBar.value);
     }
 
     window.addEventListener("click", checkOthersideClick, true);
