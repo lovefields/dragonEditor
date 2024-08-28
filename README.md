@@ -35,6 +35,11 @@ This module support only Nuxt3.
 # Dependencies
 
 -   @pinia/nuxt
+-   highlight.js
+
+# Font
+
+If you use Codeblock. I recommented use `Inconsolata` font. [(link)](https://fonts.google.com/specimen/Inconsolata?query=Inconsolata)
 
 ## Install
 

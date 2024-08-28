@@ -1,3 +1,5 @@
+import "../type.d.ts";
+
 // 블럭 타입 추출
 export function _getBlockType(element: HTMLElement) {
     const $block = element.closest(".de-block") as Element;
@@ -15,6 +17,9 @@ export function _getBlockType(element: HTMLElement) {
             break;
         case $block.classList.contains("de-image-block"):
             typeName = "image";
+            break;
+        case $block.classList.contains("de-code-block"):
+            typeName = "codeblock";
             break;
         default:
             typeName = "other";
@@ -124,6 +129,36 @@ export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
     $div.appendChild($rightBtn);
     $wrap.appendChild($div);
     $wrap.appendChild($p);
+
+    return $wrap;
+}
+
+// 코드 블럭 생성
+export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
+    const $wrap = document.createElement("div") as HTMLDivElement;
+    const $file = document.createElement("p") as HTMLParagraphElement;
+    const $lang = document.createElement("p") as HTMLParagraphElement;
+    const $pre = document.createElement("pre") as HTMLPreElement;
+    const $code = document.createElement("code") as HTMLElement;
+
+    $wrap.classList.add("de-block", "de-code-block");
+    $wrap.dataset["theme"] = data.theme;
+    $file.contentEditable = "true";
+    $file.classList.add("de-filename");
+    $lang.textContent = data.language;
+    $lang.classList.add("de-language");
+    $pre.classList.add("de-pre");
+    $code.contentEditable = "true";
+    $code.classList.add("de-code-content");
+
+    if (data.filename !== "") {
+        $file.textContent = data.filename;
+    }
+
+    $pre.appendChild($code);
+    $wrap.appendChild($file);
+    $wrap.appendChild($lang);
+    $wrap.appendChild($pre);
 
     return $wrap;
 }
