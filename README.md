@@ -30,7 +30,7 @@
 
 I just made the DragonEditor because I needed the WYSIWYG Editor to write on my [blog](https://dico.me).
 
-This module support Nuxt3 only.
+This module support only Nuxt3.
 
 # Dependencies
 
@@ -88,48 +88,4 @@ Done!
 </script>
 ```
 
-## Method
-
-### getContentData
-
-```html
-<template>
-    <div class="editor-area">
-        <ClientOnly>
-            <DragonEditor ref="$editor" />
-        </ClientOnly>
-        <button @click="getData()">Get Data</button>
-    </div>
-</template>
-
-<script setup lang="ts">
-    const $editor = ref<DragonEditor>();
-
-    function getData() {
-        console.log($editor.value.getContentData());
-    }
-</script>
-```
-
-### setContentData
-
-```html
-<template>
-    <div class="editor-area">
-        <ClientOnly>
-            <DragonEditor ref="$editor" />
-        </ClientOnly>
-        <button @click="setData()">Set Data</button>
-    </div>
-</template>
-
-<script setup lang="ts">
-    const $editor = ref<DragonEditor>();
-
-    function setData() {
-        $editor.value.setContentData([...]);
-    }
-</script>
-```
-
-<!-- More information is here [Document](123) -->
+More information is here [Document](https://lovefields.github.io/dragonEditor-doc/)
