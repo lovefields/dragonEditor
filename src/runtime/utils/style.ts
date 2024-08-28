@@ -12,6 +12,8 @@ export function _setNodeStyle(className: string, store: any) {
 
             if ($element !== null) {
                 // 에디팅이 가능한 상태가 아닐시 실행하지 않음
+
+                // TODO : 링크 태그인 경우 분기
                 if (store.cursorData.type === "Caret") {
                     // 단일 커서인 경우
                     if ($element.hasChildNodes() === true) {
