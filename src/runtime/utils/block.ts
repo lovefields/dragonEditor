@@ -50,7 +50,7 @@ export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
     const $headingBlock = document.createElement(`h${data.level}`) as HTMLHeadingElement;
 
     if (data.id === "") {
-        $headingBlock.id = generateId();
+        $headingBlock.id = _generateId();
     } else {
         $headingBlock.id = data.id;
     }
@@ -168,7 +168,7 @@ export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
 }
 
 // 난수 아이디 생성
-export function generateId() {
+export function _generateId() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let str = "";
 

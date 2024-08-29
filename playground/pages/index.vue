@@ -3,7 +3,7 @@
         editor!
         <div class="editor-area">
             <ClientOnly>
-                <DragonEditor ref="$editor" />
+                <DragonEditor ref="$editor" @addPasteImage="pasteImageProcess" />
             </ClientOnly>
         </div>
         <button @click="getContent">get data</button>
@@ -45,6 +45,16 @@ function addImage() {
 
 function addCustomBlock() {
     $editor.value?.addCustomBlock(`<div class="my-custom-block">123</div>`, ["new-data"]);
+}
+
+function pasteImageProcess(file: File) {
+    console.log("file! : ", file);
+
+    $editor.value?.addImageBlock({
+        src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg",
+        width: 1365,
+        height: 899,
+    });
 }
 </script>
 
