@@ -1,6 +1,6 @@
 import { _setCursor, _setCursorData, _clenupCursor, _soltingCursorDataOnElement } from "./cursor";
 import { _getParentElementIfNodeIsText, _findContentEditableElement } from "./element";
-import { _getBlockType, _createTextBlock, _createListItemBlock } from "./block";
+import { _getBlockType, _createTextBlock, _createListItemBlock, _generateId } from "./block";
 import { _setNodeStyle } from "./style";
 
 // 에디팅 요소 키 이벤트
@@ -1212,7 +1212,7 @@ export function _copyEvent(event: ClipboardEvent, store: any) {
     // TODO : 멀티 블럭 셀렉트 기능 추가 시 카피 기능 구성
 }
 
-export async function _pasteEvent(event: ClipboardEvent, store: any) {
+export async function _pasteEvent(event: ClipboardEvent, store: any, emit: any) {
     event.preventDefault();
 
     const text = await navigator.clipboard.readText();
@@ -1227,8 +1227,9 @@ export async function _pasteEvent(event: ClipboardEvent, store: any) {
 
             if (imageItem !== undefined) {
                 const blob = await clipboardItems[0].getType(imageItem);
+                const file = new File([blob], `${_generateId()}.${imageItem.split("/")[1]}`);
 
-                // TODO : 이미지 붙여넣기
+                emit("addPasteImage", file);
             }
         } else {
             // 텍스트인 경우

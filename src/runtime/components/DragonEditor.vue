@@ -126,6 +126,9 @@ const props = defineProps({
         default: () => true,
     },
 });
+const emit = defineEmits<{
+    (e: "addPasteImage", file: File): DEImage;
+}>();
 const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
 const menuBarTop = ref<number>(0);
@@ -317,7 +320,7 @@ function parentWrapScollEvent() {
 
 // 붙여넣기 이벤트
 function contentPasteEvent(event: ClipboardEvent) {
-    _pasteEvent(event, editorStore);
+    _pasteEvent(event, editorStore, emit);
 }
 
 /**
