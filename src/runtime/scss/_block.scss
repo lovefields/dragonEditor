@@ -188,7 +188,7 @@
                 display: block;
                 min-height: 1.6em;
                 width: 100%;
-                font-family: Inconsolata, sans-serif;
+                font-family: Inconsolata, monospace, sans-serif;
                 outline: 0;
 
                 @if $isEdit == "true" {
