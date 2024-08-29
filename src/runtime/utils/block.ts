@@ -108,12 +108,17 @@ export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
 
     $wrap.classList.add("de-block", "de-image-block", ...data.classList);
     $div.classList.add("de-image-area");
-    $div.dataset["maxwidth"] = String(data.maxWidth);
     $leftBtn.classList.add("de-btn", "de-btn-left");
     $rightBtn.classList.add("de-btn", "de-btn-right");
     $image.classList.add("de-img");
     $p.contentEditable = "true";
     $p.classList.add("de-caption");
+
+    if (data.width / data.height < 1) {
+        $div.dataset["maxwidth"] = "40";
+    } else {
+        $div.dataset["maxwidth"] = String(data.maxWidth);
+    }
 
     $image.src = data.src;
     $image.width = data.width;

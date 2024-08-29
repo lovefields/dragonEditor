@@ -48,13 +48,17 @@ function addCustomBlock() {
 }
 
 function pasteImageProcess(file: File) {
-    console.log("file! : ", file);
+    const url = URL.createObjectURL(file);
+    const $img = document.createElement("img");
 
-    $editor.value?.addImageBlock({
-        src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg",
-        width: 1365,
-        height: 899,
-    });
+    $img.src = url;
+    $img.onload = () => {
+        $editor.value?.addImageBlock({
+            src: url,
+            width: $img.width,
+            height: $img.height,
+        });
+    };
 }
 </script>
 
