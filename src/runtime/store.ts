@@ -38,10 +38,14 @@ export const useEditorStore = defineStore("editorStore", {
             this.controlBar.$element = value;
         },
         controlBarActive() {
-            this.controlBar.actions = true;
+            const currentRect = this.$currentBlock.getBoundingClientRect();
+
+            this.controlBar.active = true;
+            this.controlBar.x = Math.floor(currentRect.x + currentRect.width / 2);
+            this.controlBar.y = Math.floor(currentRect.y - 50);
         },
         controlBarDeactive() {
-            this.controlBar.actions = false;
+            this.controlBar.active = false;
         },
     },
 });
