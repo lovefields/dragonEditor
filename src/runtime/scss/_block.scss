@@ -1,4 +1,8 @@
 @mixin blockStyle($isEdit: "false") {
+    .de-block {
+        width: 100%;
+    }
+
     // 텍스트 블럭
     .de-text-block {
         min-height: 1.6em;
@@ -183,12 +187,14 @@
             width: 100%;
             padding: 10px;
             box-sizing: border-box;
+            white-space: pre-wrap;
 
             .de-code-content {
                 display: block;
                 min-height: 1.6em;
                 width: 100%;
                 font-family: Inconsolata, monospace, sans-serif;
+                word-break: break-word;
                 outline: 0;
 
                 @if $isEdit == "true" {

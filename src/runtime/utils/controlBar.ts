@@ -73,6 +73,10 @@ export function _getCodeBlockLanguage(): DECodeItem[] {
             code: "js",
         },
         {
+            text: "TypeScript",
+            code: "ts",
+        },
+        {
             text: "Kotlin",
             code: "kotlin",
         },
@@ -158,10 +162,10 @@ export function _updateCodeBlockStyle(store: any, themeRef: Ref<string>, langRef
         if (type === "code") {
             const theme = ($element as HTMLElement).dataset["theme"] ?? "github";
             const $langText = ($element as HTMLElement).querySelector(".de-language")!.textContent;
-            const langItem = _getCodeBlockLanguage().filter((item) => item.text === $langText)[0];
+            const langItem = _getCodeBlockLanguage().find((item) => item.text === $langText);
 
             themeRef.value = theme;
-            langRef.value = langItem.code;
+            langRef.value = langItem?.code ?? "Plain Text";
         }
     }
 }
