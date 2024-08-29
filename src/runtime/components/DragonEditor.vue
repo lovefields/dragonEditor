@@ -84,18 +84,18 @@
             </div>
         </div>
 
-        <div class="de-control-bar" :class="{ '--active': editorStore.controlBar.active === true }" ref="$controlBar">
+        <div class="de-control-bar" :class="{ '--active': editorStore.controlBar.active === true }" :style="{ top: `${editorStore.controlBar.y}px`, left: `${editorStore.controlBar.x}px` }" ref="$controlBar">
             <div v-if="['code'].includes(curruntType) === true" class="de-col">
                 <p class="de-name">Theme :</p>
-                <select class="de-selector">
-                    <option value=""></option>
+                <select class="de-selector" v-model="codeBlockTheme" @change="codeBlockThemeChangeEvent">
+                    <option v-for="(item, i) in _getCodeBlockTheme()" :value="item.code" :key="`codeBlockTheme-${i}`">{{ item.text }}</option>
                 </select>
             </div>
 
             <div v-if="['code'].includes(curruntType) === true" class="de-col">
                 <p class="de-name">Language :</p>
-                <select class="de-selector">
-                    <option value=""></option>
+                <select class="de-selector" v-model="codeblockLanguage" @change="codeblockLanguageChangeEvent">
+                    <option v-for="(item, i) in _getCodeBlockLanguage()" :value="item.code" :key="`codeBlockLanuage-${i}`">{{ item.text }}</option>
                 </select>
             </div>
         </div>
@@ -109,6 +109,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
+import { _getCodeBlockTheme, _getCodeBlockLanguage, _setCodeBlockTheme, _setCodeBlockLanguage, _updateCodeBlockStyle } from "../utils/controlBar";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
 import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
@@ -129,6 +130,8 @@ const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
 const menuBarTop = ref<number>(0);
 const curruntType = ref<string>("");
+const codeBlockTheme = ref<string>("github");
+const codeblockLanguage = ref<string>("text");
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
 const $controlBar = ref<HTMLDivElement>();
@@ -172,12 +175,21 @@ function updateCursorData(e: MouseEvent) {
 function controlBarStatusUpdate() {
     if (editorStore.$currentBlock !== null) {
         const { type } = _getBlockType(editorStore.$currentBlock);
+        const activeList = ["code"];
 
         curruntType.value = type;
-        editorStore.controlBarActive();
-        console.log("type", type);
-        console.log("editorStore.$currentBlock", editorStore.$currentBlock);
-        console.log("editorStore.controlBar.$element", editorStore.controlBar.$element);
+
+        if (activeList.includes(curruntType.value) === true) {
+            editorStore.controlBarActive();
+
+            switch (type) {
+                case "code":
+                    _updateCodeBlockStyle(editorStore, codeBlockTheme, codeblockLanguage);
+                    break;
+            }
+        } else {
+            editorStore.controlBarDeactive();
+        }
     }
 }
 
@@ -307,6 +319,24 @@ function parentWrapScollEvent() {
  * 이벤트 관련 영역 종료
  */
 
+/**
+ * 컨트롤 바 이벤트 관련 영역 시작
+ */
+
+// 코드 블럭 테마 적용
+function codeBlockThemeChangeEvent() {
+    _setCodeBlockTheme(editorStore, codeBlockTheme.value);
+}
+
+// 코드 블럭 언어 적용
+function codeblockLanguageChangeEvent() {
+    _setCodeBlockLanguage(editorStore, codeblockLanguage.value);
+}
+
+/**
+ * 컨트롤 바 이벤트 관련 영역 종료
+ */
+
 function addBlock(type: string) {
     isActiveAddBlockMenu.value = false;
 
@@ -360,7 +390,7 @@ function addBlock(type: string) {
                 type: "code",
                 theme: "github",
                 filename: "",
-                language: "text",
+                language: "Plain Text",
                 textContent: "",
             });
             break;

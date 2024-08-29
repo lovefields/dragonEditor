@@ -24,5 +24,6 @@ export default defineNuxtModule({
         });
 
         await installModule("@pinia/nuxt");
+        await installModule("highlight.js");
     },
 });

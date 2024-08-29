@@ -38,6 +38,11 @@ interface DEImage {
     caption?: string;
 }
 
+interface DECodeItem {
+    text: string;
+    code: string;
+}
+
 type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
 
 type DETextalign = "left" | "right" | "center" | "justify";
