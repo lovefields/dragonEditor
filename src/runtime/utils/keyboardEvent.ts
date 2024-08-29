@@ -9,9 +9,18 @@ let keyEventFn: NodeJS.Timeout;
 export function _elementKeyEvent(event: KeyboardEvent, store: any) {
     _setCursorData(store);
 
+    const { type: blockType } = _getBlockType(event.target as HTMLElement);
+
     switch (event.code) {
         case "Enter":
-            event.preventDefault();
+            // 코드 블럭 예외 처리
+            if (blockType !== "code") {
+                event.preventDefault();
+            }
+
+            if (blockType === "code" && event.shiftKey === true) {
+                event.preventDefault();
+            }
 
             if (keyEventCount === 0) {
                 // 문자 조합에 의한 중복 제거 처리
@@ -92,7 +101,9 @@ function elementEnterEvent(event: KeyboardEvent, store: any) {
         case "list":
             listBlockEnterEvent(event, store, $element);
             break;
-        default:
+        case "code":
+            // NOTE : code 는 시스템 에디팅 사용
+            break;
         // TODO : 다른 타입 블럭 엔터 이벤트
     }
 }
@@ -110,7 +121,9 @@ function elementShiftEnterEvent(event: KeyboardEvent, store: any) {
             // NOTE: 리스트 블럭은 쉬프트 엔터 비허용
             listBlockEnterEvent(event, store, $element);
             break;
-        default:
+        case "code":
+            codeBlockShiftEnterEvent($element);
+            break;
         // TODO : 다른 타입 블럭 쉬프트 이벤트
     }
 }
@@ -751,6 +764,14 @@ function defaultBlockShiftEnterEvent(store: any, $element: Element) {
     }
 }
 
+// 코드 블럭 쉬프트 엔터 이벤트
+function codeBlockShiftEnterEvent($element: Element) {
+    const $newTextBlock = _createTextBlock();
+
+    $element.insertAdjacentElement("afterend", $newTextBlock);
+    $newTextBlock.focus();
+}
+
 // 기본 블럭 백스페이스 이벤트
 function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element) {
     const $textBlock = $element as HTMLElement;
@@ -1086,7 +1107,7 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
 
     if ($editableElement !== null) {
         const { $element, type } = _getBlockType($editableElement);
-        let $target: HTMLElement;
+        let $target: HTMLElement | null;
 
         switch (type) {
             case "list":
@@ -1103,6 +1124,10 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
                         $target = $element.nextElementSibling as HTMLElement;
                     }
                 }
+                break;
+            case "code":
+                $target = null;
+                // NOTE : 코드 블럭은 이동 사용 안함
                 break;
             default:
                 if (keyType === "up") {
@@ -1183,6 +1208,37 @@ export function _hotKeyEvent(event: KeyboardEvent, store: any) {
  * 복사 & 붙여넣기 이벤트
  */
 
-export function copyEvent(event: KeyboardEvent, store: any) {}
+export function _copyEvent(event: ClipboardEvent, store: any) {
+    // TODO : 멀티 블럭 셀렉트 기능 추가 시 카피 기능 구성
+}
 
-export function pasteEvent(event: KeyboardEvent, store: any) {}
+export async function _pasteEvent(event: ClipboardEvent, store: any) {
+    event.preventDefault();
+
+    const text = await navigator.clipboard.readText();
+    const $block = (event.target as HTMLElement).closest(".de-block");
+
+    if ($block !== null) {
+        if (text === "") {
+            // 이미지인 경우
+
+            const clipboardItems = await navigator.clipboard.read();
+            const imageItem = clipboardItems[0].types.find((type) => type.startsWith("image/"));
+
+            if (imageItem !== undefined) {
+                const blob = await clipboardItems[0].getType(imageItem);
+
+                // TODO : 이미지 붙여넣기
+            }
+        } else {
+            // 텍스트인 경우
+
+            const selection = window.getSelection() as Selection;
+            const textNode = document.createTextNode(text);
+
+            selection.deleteFromDocument();
+            selection.getRangeAt(0).insertNode(textNode);
+            _setCursor(textNode, textNode.length);
+        }
+    }
+}

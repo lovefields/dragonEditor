@@ -100,7 +100,7 @@
             </div>
         </div>
 
-        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchstart="resizeEventStart">
+        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchstart="resizeEventStart" @paste="contentPasteEvent">
             <p class="de-block de-text-block" contenteditable="true"></p>
         </div>
     </div>
@@ -111,7 +111,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
 import { _getCodeBlockTheme, _getCodeBlockLanguage, _setCodeBlockTheme, _setCodeBlockLanguage, _updateCodeBlockStyle } from "../utils/controlBar";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
-import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
+import { _elementKeyEvent, _hotKeyEvent, _copyEvent, _pasteEvent } from "../utils/keyboardEvent";
 import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
 import { _setNodeStyle, _setTextAlign } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
@@ -313,6 +313,11 @@ function parentWrapScollEvent() {
             menuBarTop.value = 0;
         }
     }
+}
+
+// 붙여넣기 이벤트
+function contentPasteEvent(event: ClipboardEvent) {
+    _pasteEvent(event, editorStore);
 }
 
 /**
