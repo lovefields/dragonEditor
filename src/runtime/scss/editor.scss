@@ -86,6 +86,10 @@
             display: flex;
         }
 
+        &:empty {
+            display: none;
+        }
+
         .de-col {
             display: flex;
             align-items: center;

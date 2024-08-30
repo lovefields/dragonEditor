@@ -67,14 +67,11 @@ export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
 }
 
 // 리스트 블럭 생성
-export function _createListBlock(data: DEUListBlock | DEOListBlock): HTMLElement {
-    const $block = document.createElement(data.type) as HTMLElement;
+export function _createListBlock(data: DEListBlock): HTMLElement {
+    const $block = document.createElement(data.element) as HTMLElement;
 
     $block.classList.add("de-block", "de-list-block");
-
-    if (data.type === "ol") {
-        ($block as HTMLOListElement).type = data.pattern ?? "1";
-    }
+    $block.dataset["style"] = data.style;
 
     data.child.forEach((child: DEListItem) => {
         $block.appendChild(_createListItemBlock(child));
