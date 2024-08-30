@@ -69,10 +69,30 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
             // console.log("space");
             break;
         case "ArrowUp":
-            moveToBlockEvent(event, store, "up");
+            if (keyEventCount === 0) {
+                // 문자 조합에 의한 중복 제거 처리
+
+                moveToBlockEvent(event, store, "up");
+            }
+
+            // 문자 조합에 의한 중복 이벤트 막는 처리
+            keyEventCount += 1;
+            setTimeout(() => {
+                keyEventCount = 0;
+            }, 250);
             break;
         case "ArrowDown":
-            moveToBlockEvent(event, store, "down");
+            if (keyEventCount === 0) {
+                // 문자 조합에 의한 중복 제거 처리
+
+                moveToBlockEvent(event, store, "down");
+            }
+
+            // 문자 조합에 의한 중복 이벤트 막는 처리
+            keyEventCount += 1;
+            setTimeout(() => {
+                keyEventCount = 0;
+            }, 250);
             break;
         //         // default:
         //         //     console.log("e.code", e.code);
@@ -1109,8 +1129,17 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
         const { $element, type } = _getBlockType($editableElement);
         let $target: HTMLElement | null;
 
+        // 문자 조합에 의한 텍스트 복사 방지
+        if (store.cursorData.startIdx > store.cursorData.endIdx) {
+            _setCursor(store.cursorData.startNode, store.cursorData.endIdx);
+        } else {
+            _setCursor(store.cursorData.startNode, store.cursorData.startIdx);
+        }
+
         switch (type) {
             case "list":
+                e.preventDefault();
+
                 if (keyType === "up") {
                     $target = $editableElement.previousElementSibling as HTMLElement;
                 } else {
@@ -1130,6 +1159,8 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
                 // NOTE : 코드 블럭은 이동 사용 안함
                 break;
             default:
+                e.preventDefault();
+
                 if (keyType === "up") {
                     $target = $element.previousElementSibling as HTMLElement;
                 } else {
@@ -1138,31 +1169,36 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
         }
 
         if ($target !== null) {
-            if ($target.classList.contains("de-block") == true) {
-                // 타겟이 블럭인 경우
-                const { $element, type: targetType } = _getBlockType($target);
+            _clenupCursor(store);
 
-                switch (targetType) {
-                    case "list":
-                        const $targetItem = $element.querySelectorAll(".de-item");
-                        let $item: Element;
+            // 커서 인식용 딜레이
+            setTimeout(() => {
+                if ($target.classList.contains("de-block") == true) {
+                    // 타겟이 블럭인 경우
+                    const { $element, type: targetType } = _getBlockType($target);
 
-                        if (keyType === "up") {
-                            $item = $targetItem[$targetItem.length - 1];
-                        } else {
-                            $item = $targetItem[0];
-                        }
+                    switch (targetType) {
+                        case "list":
+                            const $targetItem = $element.querySelectorAll(".de-item");
+                            let $item: Element;
 
-                        _setCursor($item, 0);
-                        break;
-                    default:
-                        _setCursor($element, 0);
+                            if (keyType === "up") {
+                                $item = $targetItem[$targetItem.length - 1];
+                            } else {
+                                $item = $targetItem[0];
+                            }
+
+                            _setCursor($item, 0);
+                            break;
+                        default:
+                            _setCursor($element, 0);
+                    }
+                } else {
+                    // 블럭이 아닌 경우
+
+                    _setCursor($target, 0);
                 }
-            } else {
-                // 블럭이 아닌 경우
-
-                _setCursor($target, 0);
-            }
+            });
         }
     }
 }
