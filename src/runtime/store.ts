@@ -7,6 +7,12 @@ export const useEditorStore = defineStore("editorStore", {
         message: {
             linkTextNoStyle: "Link text can't set any style.",
         },
+        controlBar: {
+            active: false,
+            x: 0,
+            y: 0,
+            $element: null,
+        },
         $currentBlock: null,
         $editor: null,
         $content: null,
@@ -27,6 +33,19 @@ export const useEditorStore = defineStore("editorStore", {
         },
         setCurrentBlock(block: HTMLElement) {
             this.$currentBlock = block;
+        },
+        setContrulBar(value: HTMLDivElement) {
+            this.controlBar.$element = value;
+        },
+        controlBarActive() {
+            const currentRect = this.$currentBlock.getBoundingClientRect();
+
+            this.controlBar.active = true;
+            this.controlBar.x = Math.floor(currentRect.x + currentRect.width / 2);
+            this.controlBar.y = Math.floor(currentRect.y - 50);
+        },
+        controlBarDeactive() {
+            this.controlBar.active = false;
         },
     },
 });

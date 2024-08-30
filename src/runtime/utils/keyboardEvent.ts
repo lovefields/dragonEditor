@@ -1,6 +1,6 @@
 import { _setCursor, _setCursorData, _clenupCursor, _soltingCursorDataOnElement } from "./cursor";
 import { _getParentElementIfNodeIsText, _findContentEditableElement } from "./element";
-import { _getBlockType, _createTextBlock, _createListItemBlock } from "./block";
+import { _getBlockType, _createTextBlock, _createListItemBlock, _generateId } from "./block";
 import { _setNodeStyle } from "./style";
 
 // 에디팅 요소 키 이벤트
@@ -9,9 +9,18 @@ let keyEventFn: NodeJS.Timeout;
 export function _elementKeyEvent(event: KeyboardEvent, store: any) {
     _setCursorData(store);
 
+    const { type: blockType } = _getBlockType(event.target as HTMLElement);
+
     switch (event.code) {
         case "Enter":
-            event.preventDefault();
+            // 코드 블럭 예외 처리
+            if (blockType !== "code") {
+                event.preventDefault();
+            }
+
+            if (blockType === "code" && event.shiftKey === true) {
+                event.preventDefault();
+            }
 
             if (keyEventCount === 0) {
                 // 문자 조합에 의한 중복 제거 처리
@@ -60,10 +69,30 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
             // console.log("space");
             break;
         case "ArrowUp":
-            moveToBlockEvent(event, store, "up");
+            if (keyEventCount === 0) {
+                // 문자 조합에 의한 중복 제거 처리
+
+                moveToBlockEvent(event, store, "up");
+            }
+
+            // 문자 조합에 의한 중복 이벤트 막는 처리
+            keyEventCount += 1;
+            setTimeout(() => {
+                keyEventCount = 0;
+            }, 250);
             break;
         case "ArrowDown":
-            moveToBlockEvent(event, store, "down");
+            if (keyEventCount === 0) {
+                // 문자 조합에 의한 중복 제거 처리
+
+                moveToBlockEvent(event, store, "down");
+            }
+
+            // 문자 조합에 의한 중복 이벤트 막는 처리
+            keyEventCount += 1;
+            setTimeout(() => {
+                keyEventCount = 0;
+            }, 250);
             break;
         //         // default:
         //         //     console.log("e.code", e.code);
@@ -92,7 +121,9 @@ function elementEnterEvent(event: KeyboardEvent, store: any) {
         case "list":
             listBlockEnterEvent(event, store, $element);
             break;
-        default:
+        case "code":
+            // NOTE : code 는 시스템 에디팅 사용
+            break;
         // TODO : 다른 타입 블럭 엔터 이벤트
     }
 }
@@ -110,7 +141,9 @@ function elementShiftEnterEvent(event: KeyboardEvent, store: any) {
             // NOTE: 리스트 블럭은 쉬프트 엔터 비허용
             listBlockEnterEvent(event, store, $element);
             break;
-        default:
+        case "code":
+            codeBlockShiftEnterEvent($element);
+            break;
         // TODO : 다른 타입 블럭 쉬프트 이벤트
     }
 }
@@ -751,6 +784,14 @@ function defaultBlockShiftEnterEvent(store: any, $element: Element) {
     }
 }
 
+// 코드 블럭 쉬프트 엔터 이벤트
+function codeBlockShiftEnterEvent($element: Element) {
+    const $newTextBlock = _createTextBlock();
+
+    $element.insertAdjacentElement("afterend", $newTextBlock);
+    $newTextBlock.focus();
+}
+
 // 기본 블럭 백스페이스 이벤트
 function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element) {
     const $textBlock = $element as HTMLElement;
@@ -825,7 +866,7 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
         } else {
             // 내용이 있는 경우
 
-            if (store.cursorData.startOffset === 0 && ($textBlock.childNodes[0] === store.cursorData.startNode || $textBlock.childNodes[0] === $target)) {
+            if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($textBlock.childNodes[0] === store.cursorData.startNode || $textBlock.childNodes[0] === $target)) {
                 // 커서가 첫번째에 있는 경우
 
                 e.preventDefault();
@@ -925,7 +966,7 @@ function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element
         } else {
             // 텍스트가 있는 경우
 
-            if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+            if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
                 // 커서가 첫번째에 있는 경우
 
                 e.preventDefault();
@@ -981,7 +1022,7 @@ function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element
             } else {
                 // 텍스트가 있는 경우
 
-                if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
                     // 커서가 첫번째에 있는 경우
 
                     e.preventDefault();
@@ -1030,7 +1071,7 @@ function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element
             } else {
                 // 텍스트가 있는 경우
 
-                if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
                     // 커서가 첫번째에 있는 경우
 
                     e.preventDefault();
@@ -1086,10 +1127,19 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
 
     if ($editableElement !== null) {
         const { $element, type } = _getBlockType($editableElement);
-        let $target: HTMLElement;
+        let $target: HTMLElement | null;
+
+        // 문자 조합에 의한 텍스트 복사 방지
+        if (store.cursorData.startIdx > store.cursorData.endIdx) {
+            _setCursor(store.cursorData.startNode, store.cursorData.endIdx);
+        } else {
+            _setCursor(store.cursorData.startNode, store.cursorData.startIdx);
+        }
 
         switch (type) {
             case "list":
+                e.preventDefault();
+
                 if (keyType === "up") {
                     $target = $editableElement.previousElementSibling as HTMLElement;
                 } else {
@@ -1104,7 +1154,13 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
                     }
                 }
                 break;
+            case "code":
+                $target = null;
+                // NOTE : 코드 블럭은 이동 사용 안함
+                break;
             default:
+                e.preventDefault();
+
                 if (keyType === "up") {
                     $target = $element.previousElementSibling as HTMLElement;
                 } else {
@@ -1113,31 +1169,36 @@ function moveToBlockEvent(e: KeyboardEvent, store: any, keyType: "up" | "down") 
         }
 
         if ($target !== null) {
-            if ($target.classList.contains("de-block") == true) {
-                // 타겟이 블럭인 경우
-                const { $element, type: targetType } = _getBlockType($target);
+            _clenupCursor(store);
 
-                switch (targetType) {
-                    case "list":
-                        const $targetItem = $element.querySelectorAll(".de-item");
-                        let $item: Element;
+            // 커서 인식용 딜레이
+            setTimeout(() => {
+                if ($target.classList.contains("de-block") == true) {
+                    // 타겟이 블럭인 경우
+                    const { $element, type: targetType } = _getBlockType($target);
 
-                        if (keyType === "up") {
-                            $item = $targetItem[$targetItem.length - 1];
-                        } else {
-                            $item = $targetItem[0];
-                        }
+                    switch (targetType) {
+                        case "list":
+                            const $targetItem = $element.querySelectorAll(".de-item");
+                            let $item: Element;
 
-                        _setCursor($item, 0);
-                        break;
-                    default:
-                        _setCursor($element, 0);
+                            if (keyType === "up") {
+                                $item = $targetItem[$targetItem.length - 1];
+                            } else {
+                                $item = $targetItem[0];
+                            }
+
+                            _setCursor($item, 0);
+                            break;
+                        default:
+                            _setCursor($element, 0);
+                    }
+                } else {
+                    // 블럭이 아닌 경우
+
+                    _setCursor($target, 0);
                 }
-            } else {
-                // 블럭이 아닌 경우
-
-                _setCursor($target, 0);
-            }
+            });
         }
     }
 }
@@ -1183,6 +1244,38 @@ export function _hotKeyEvent(event: KeyboardEvent, store: any) {
  * 복사 & 붙여넣기 이벤트
  */
 
-export function copyEvent(event: KeyboardEvent, store: any) {}
+export function _copyEvent(event: ClipboardEvent, store: any) {
+    // TODO : 멀티 블럭 셀렉트 기능 추가 시 카피 기능 구성
+}
 
-export function pasteEvent(event: KeyboardEvent, store: any) {}
+export async function _pasteEvent(event: ClipboardEvent, store: any, emit: any) {
+    event.preventDefault();
+
+    const text = await navigator.clipboard.readText();
+    const $block = (event.target as HTMLElement).closest(".de-block");
+
+    if ($block !== null) {
+        if (text === "") {
+            // 이미지인 경우
+
+            const clipboardItems = await navigator.clipboard.read();
+            const imageItem = clipboardItems[0].types.find((type) => type.startsWith("image/"));
+
+            if (imageItem !== undefined) {
+                const blob = await clipboardItems[0].getType(imageItem);
+                const file = new File([blob], `${_generateId()}.${imageItem.split("/")[1]}`);
+
+                emit("addPasteImage", file);
+            }
+        } else {
+            // 텍스트인 경우
+
+            const selection = window.getSelection() as Selection;
+            const textNode = document.createTextNode(text);
+
+            selection.deleteFromDocument();
+            selection.getRangeAt(0).insertNode(textNode);
+            _setCursor(textNode, textNode.length);
+        }
+    }
+}

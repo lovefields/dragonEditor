@@ -1,4 +1,4 @@
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock } from "./block";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCodeBlock, _createCustomBlock } from "./block";
 import "../type.d.ts";
 
 // 화면을 데이터로 변환
@@ -23,12 +23,8 @@ export function _getContentData($content: HTMLDivElement): DEContentData {
                 data.push(converteHeadingToData($child as HTMLHeadingElement, 3));
                 break;
             case "UL":
-                data.push(converteUListToData($child as HTMLUListElement));
-                break;
             case "OL":
-                data.push(converteOListToData($child as HTMLOListElement));
-                break;
-            case "PRE":
+                data.push(converteListToData($child as HTMLElement));
                 break;
             case "DIV":
                 // NOTE : 대부분 DIV임
@@ -52,22 +48,14 @@ export function _setContentData(data: DEContentData, store: any) {
             case "heading":
                 childList.push(_createHeadingBlock(item));
                 break;
-            case "ul":
-            case "ol":
+            case "list":
                 childList.push(_createListBlock(item));
                 break;
             case "image":
-                childList.push(
-                    _createImageBlock({
-                        type: item.type,
-                        src: item.src,
-                        maxWidth: item.maxWidth,
-                        width: item.width,
-                        height: item.height,
-                        caption: item.caption,
-                        classList: item.classList,
-                    })
-                );
+                childList.push(_createImageBlock(item));
+                break;
+            case "code":
+                childList.push(_createCodeBlock(item));
                 break;
             case "custom":
                 childList.push(_createCustomBlock(item));
@@ -98,24 +86,12 @@ function converteHeadingToData($child: HTMLHeadingElement, level: number): DEHea
     };
 }
 
-// 순서 없는 리스트 변환
-function converteUListToData($child: HTMLUListElement): DEUListBlock {
+// 리스트 변환
+function converteListToData($child: HTMLElement): DEListBlock {
     return {
-        type: "ul",
-        child: [...$child.children].map(($li: Element) => {
-            return {
-                classList: getClassListWithoutDefaultClass($li as HTMLElement),
-                textContent: $li.innerHTML,
-            };
-        }),
-    };
-}
-
-// 순서 있는 리스트 변환
-function converteOListToData($child: HTMLOListElement): DEOListBlock {
-    return {
-        type: "ol",
-        pattern: $child.type as "a" | "i" | "1" | "A" | "I",
+        type: "list",
+        element: $child.tagName.toLowerCase() as "ol" | "ul",
+        style: $child.dataset["style"] as DEListStyle,
         child: [...$child.children].map(($li: Element) => {
             return {
                 classList: getClassListWithoutDefaultClass($li as HTMLElement),
@@ -127,11 +103,14 @@ function converteOListToData($child: HTMLOListElement): DEOListBlock {
 
 // Div 인 경우 변환
 function converteDivToData($child: HTMLDivElement) {
-    let data: DEImageBlock | DECustomBlock;
+    let data: DEImageBlock | DECodeBlock | DECustomBlock;
 
     switch (true) {
         case $child.classList.contains("de-image-block"):
             data = convertImageBlock($child);
+            break;
+        case $child.classList.contains("de-code-block"):
+            data = convertCodeBlock($child);
             break;
         case $child.classList.contains("de-custom-block"):
             data = convertCustomBlock($child);
@@ -156,6 +135,21 @@ function convertImageBlock($imageBlock: HTMLDivElement): DEImageBlock {
         height: $img.height,
         caption: $caption.textContent ?? "",
         classList: getClassListWithoutDefaultClass($imageBlock),
+    };
+}
+
+// 코드블럭 변환
+function convertCodeBlock($codeBlock: HTMLDivElement): DECodeBlock {
+    const $code = $codeBlock.querySelector(".de-code-content");
+    const $file = $codeBlock.querySelector(".de-filename");
+    const $lang = $codeBlock.querySelector(".de-language");
+
+    return {
+        type: "code",
+        theme: $codeBlock.dataset["theme"] as string,
+        filename: $file?.textContent ?? "",
+        language: $lang?.textContent ?? "text",
+        textContent: $code?.innerHTML ?? "",
     };
 }
 

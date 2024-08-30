@@ -1,3 +1,5 @@
+import "../type.d.ts";
+
 // 블럭 타입 추출
 export function _getBlockType(element: HTMLElement) {
     const $block = element.closest(".de-block") as Element;
@@ -15,6 +17,9 @@ export function _getBlockType(element: HTMLElement) {
             break;
         case $block.classList.contains("de-image-block"):
             typeName = "image";
+            break;
+        case $block.classList.contains("de-code-block"):
+            typeName = "code";
             break;
         default:
             typeName = "other";
@@ -45,7 +50,7 @@ export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
     const $headingBlock = document.createElement(`h${data.level}`) as HTMLHeadingElement;
 
     if (data.id === "") {
-        $headingBlock.id = generateId();
+        $headingBlock.id = _generateId();
     } else {
         $headingBlock.id = data.id;
     }
@@ -62,14 +67,11 @@ export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
 }
 
 // 리스트 블럭 생성
-export function _createListBlock(data: DEUListBlock | DEOListBlock): HTMLElement {
-    const $block = document.createElement(data.type) as HTMLElement;
+export function _createListBlock(data: DEListBlock): HTMLElement {
+    const $block = document.createElement(data.element) as HTMLElement;
 
     $block.classList.add("de-block", "de-list-block");
-
-    if (data.type === "ol") {
-        ($block as HTMLOListElement).type = data.pattern ?? "1";
-    }
+    $block.dataset["style"] = data.style;
 
     data.child.forEach((child: DEListItem) => {
         $block.appendChild(_createListItemBlock(child));
@@ -103,12 +105,17 @@ export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
 
     $wrap.classList.add("de-block", "de-image-block", ...data.classList);
     $div.classList.add("de-image-area");
-    $div.dataset["maxwidth"] = String(data.maxWidth);
     $leftBtn.classList.add("de-btn", "de-btn-left");
     $rightBtn.classList.add("de-btn", "de-btn-right");
     $image.classList.add("de-img");
     $p.contentEditable = "true";
     $p.classList.add("de-caption");
+
+    if (data.width / data.height < 1) {
+        $div.dataset["maxwidth"] = "40";
+    } else {
+        $div.dataset["maxwidth"] = String(data.maxWidth);
+    }
 
     $image.src = data.src;
     $image.width = data.width;
@@ -128,8 +135,42 @@ export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
     return $wrap;
 }
 
+// 코드 블럭 생성
+export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
+    const $wrap = document.createElement("div") as HTMLDivElement;
+    const $file = document.createElement("p") as HTMLParagraphElement;
+    const $lang = document.createElement("p") as HTMLParagraphElement;
+    const $pre = document.createElement("pre") as HTMLPreElement;
+    const $code = document.createElement("code") as HTMLElement;
+
+    $wrap.classList.add("de-block", "de-code-block");
+    $wrap.dataset["theme"] = data.theme;
+    $file.contentEditable = "true";
+    $file.classList.add("de-filename");
+    $lang.textContent = data.language;
+    $lang.classList.add("de-language");
+    $pre.classList.add("de-pre");
+    $code.contentEditable = "true";
+    $code.classList.add("de-code-content");
+
+    if (data.filename !== "") {
+        $file.textContent = data.filename;
+    }
+
+    if (data.textContent !== "") {
+        $code.innerHTML = data.textContent;
+    }
+
+    $pre.appendChild($code);
+    $wrap.appendChild($file);
+    $wrap.appendChild($lang);
+    $wrap.appendChild($pre);
+
+    return $wrap;
+}
+
 // 난수 아이디 생성
-export function generateId() {
+export function _generateId() {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let str = "";
 

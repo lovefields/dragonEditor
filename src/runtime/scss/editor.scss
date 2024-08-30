@@ -17,14 +17,16 @@
         line-height: 1.6;
     }
 
-    // 컨트롤 메뉴 스타일
-    .de-control-bar {
+    // 메뉴 바 스타일
+    .de-menu-bar {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 38px;
+        background: #fff;
         border-bottom: 1px solid #ccc;
+        z-index: 10;
 
         .de-menu {
             min-width: 38px;
@@ -65,6 +67,40 @@
 
             .de-add-block {
                 line-height: 1.6;
+            }
+        }
+    }
+
+    // 컨트롤 바 스타일
+    .de-control-bar {
+        display: none;
+        position: fixed;
+        height: 38px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-width: 1px 0 0 1px;
+        transform: translateX(-50%);
+        z-index: 20;
+
+        &.--active {
+            display: flex;
+        }
+
+        &:empty {
+            display: none;
+        }
+
+        .de-col {
+            display: flex;
+            align-items: center;
+            column-gap: 6px;
+            padding: 0 10px;
+            border: 1px solid #ccc;
+            border-width: 0 1px 1px 0;
+
+            .de-selector {
+                height: 100%;
+                border: 0;
             }
         }
     }

@@ -1,6 +1,12 @@
 interface EditorStore {
     cursorData: DEditorCursor | null;
     message: { [key: string]: string };
+    controlBar: {
+        active: boolean;
+        x: number;
+        y: number;
+        $element: HTMLDivElement | null;
+    };
     $editor: HTMLDivElement | null;
     $content: HTMLDivElement | null;
     $currentBlock: HTMLElement | null;
@@ -32,11 +38,16 @@ interface DEImage {
     caption?: string;
 }
 
+interface DECodeItem {
+    text: string;
+    code: string;
+}
+
 type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
 
 type DETextalign = "left" | "right" | "center" | "justify";
 
-type DEBlock = "text" | "heading" | "ul" | "ol" | "image";
+type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code";
 
 // 컴포넌트 메서드용 타입
 interface DragonEditor {
@@ -68,14 +79,12 @@ interface DEListItem {
     textContent: string;
 }
 
-interface DEUListBlock {
-    type: "ul";
-    child: DEListItem[];
-}
+type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
-interface DEOListBlock {
-    type: "ol";
-    pattern: "a" | "i" | "1" | "A" | "I";
+interface DEListBlock {
+    type: "list";
+    element: "ul" | "ol";
+    style: DEListStyle;
     child: DEListItem[];
 }
 
@@ -89,10 +98,18 @@ interface DEImageBlock {
     classList: string[];
 }
 
+interface DECodeBlock {
+    type: "code";
+    language: string;
+    theme: string;
+    filename: string;
+    textContent: string;
+}
+
 interface DECustomBlock {
     type: "custom";
     classList: string[];
     textContent: string;
 }
 
-type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock | DEImageBlock | DECustomBlock)[];
+type DEContentData = (DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECustomBlock | DECodeBlock)[];

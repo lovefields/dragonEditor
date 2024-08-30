@@ -9,13 +9,15 @@
                 <h3 v-if="item.level === 3" class="de-block de-heading-block" :class="item.classList" :data-level="item.level" v-html="item.textContent"></h3>
             </template>
 
-            <ul v-if="item.type === 'ul'" class="de-block de-list-block">
-                <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
-            </ul>
+            <template v-if="item.type === 'list'">
+                <ul v-if="item.element === 'ul'" class="de-block de-list-block" :data-style="item.style">
+                    <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
+                </ul>
 
-            <ol v-if="item.type === 'ol'" class="de-block de-list-block" :type="item.pattern">
-                <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
-            </ol>
+                <ol v-if="item.element === 'ol'" class="de-block de-list-block" :data-style="item.style">
+                    <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
+                </ol>
+            </template>
 
             <div v-if="item.type === 'image'" class="de-block de-image-block" :class="item.classList">
                 <div class="de-image-area" :data-maxwidth="item.maxWidth">
@@ -23,6 +25,12 @@
                 </div>
 
                 <p v-if="item.caption" class="de-caption">{{ item.caption }}</p>
+            </div>
+
+            <div v-if="item.type === 'code'" class="de-block de-code-block" :data-theme="item.theme">
+                <p class="de-filename">{{ item.filename }}</p>
+                <p class="de-language">{{ item.language }}</p>
+                <pre class="de-pre"><code class="de-code-content" v-html="item.textContent"></code></pre>
             </div>
 
             <div v-if="item.type === 'custom'" class="de-block de-custom-block" :class="item.classList" v-html="item.textContent"></div>

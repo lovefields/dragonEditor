@@ -1,6 +1,6 @@
 <template>
     <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" @mousemove="resizeEvent" @touchmove="resizeEvent" @mouseup="resizeEventEnd" @touchend="resizeEventEnd" @mouseleave="resizeEventEnd" ref="$editor">
-        <div v-if="props.useMenuBar === true" class="de-control-bar">
+        <div v-if="props.useMenuBar === true" class="de-menu-bar" :style="{ top: `${menuBarTop}px` }">
             <button class="de-menu de-menu-add" @click="isActiveAddBlockMenu = !isActiveAddBlockMenu">
                 <svg class="de-icon" viewBox="0 0 64 64">
                     <path class="de-path" d="M32 9C30.3431 9 29 10.3431 29 12V29H12C10.3431 29 9 30.3431 9 32C9 33.6569 10.3431 35 12 35H29V52C29 53.6569 30.3431 55 32 55C33.6569 55 35 53.6569 35 52V35H52C53.6569 35 55 33.6569 55 32C55 30.3431 53.6569 29 52 29H35V12C35 10.3431 33.6569 9 32 9Z"></path>
@@ -78,13 +78,48 @@
                     <button class="de-add-block" @click="addBlock('heading3')">Heading-3</button>
                     <button class="de-add-block" @click="addBlock('ul')">Unodered List</button>
                     <button class="de-add-block" @click="addBlock('ol')">Odered List</button>
-                    <!-- <button class="de-add-block" @click="addBlock('codeblock')">Code Block</button> -->
-                    <!-- <button class="de-add-block" @click="addBlock('video')">Video</button> -->
+                    <button class="de-add-block" @click="addBlock('code')">Code Block</button>
+                    <!-- <button class="de-add-block" @click="addBlock('table')">Table Block</button> -->
+                    <!-- <button class="de-add-block" @click="addBlock('video')">Video</button> youtube | vimeo -->
                 </div>
             </div>
         </div>
 
-        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchstart="resizeEventStart">
+        <div class="de-control-bar" :class="{ '--active': editorStore.controlBar.active === true }" :style="{ top: `${editorStore.controlBar.y}px`, left: `${editorStore.controlBar.x}px` }" ref="$controlBar">
+            <div v-if="['code'].includes(curruntType) === true" class="de-col">
+                <p class="de-name">Theme :</p>
+                <select class="de-selector" v-model="codeBlockTheme" @change="codeBlockThemeChangeEvent">
+                    <option v-for="(item, i) in _getCodeBlockTheme()" :value="item.code" :key="`codeBlockTheme-${i}`">{{ item.text }}</option>
+                </select>
+            </div>
+
+            <div v-if="['code'].includes(curruntType) === true" class="de-col">
+                <p class="de-name">Language :</p>
+                <select class="de-selector" v-model="codeblockLanguage" @change="codeblockLanguageChangeEvent">
+                    <option v-for="(item, i) in _getCodeBlockLanguage()" :value="item.code" :key="`codeBlockLanuage-${i}`">{{ item.text }}</option>
+                </select>
+            </div>
+
+            <div v-if="['list'].includes(curruntType) === true" class="de-col">
+                <p class="de-name">List Style :</p>
+                <select class="de-selector" v-model="listBlockStyle" @change="listBlockStyleChangeEvent">
+                    <template v-if="editorStore.$currentBlock.tagName === 'UL'">
+                        <option value="disc">Disc</option>
+                        <option value="square">Square</option>
+                    </template>
+
+                    <template v-else>
+                        <option value="decimal">Decimal</option>
+                        <option value="lower-alpha">Lower-Alpha</option>
+                        <option value="upper-alpha">Upper-Alpha</option>
+                        <option value="lower-roman">Lower-Roman</option>
+                        <option value="upper-roman">Upper-Roman</option>
+                    </template>
+                </select>
+            </div>
+        </div>
+
+        <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchstart="resizeEventStart" @paste="contentPasteEvent">
             <p class="de-block de-text-block" contenteditable="true"></p>
         </div>
     </div>
@@ -93,9 +128,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
+import { _getCodeBlockTheme, _getCodeBlockLanguage, _setCodeBlockTheme, _setCodeBlockLanguage, _updateCodeBlockStyle, _setListBlockStyle, _updateListBlockStyle } from "../utils/controlBar";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
-import { _elementKeyEvent, _hotKeyEvent } from "../utils/keyboardEvent";
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock } from "../utils/block";
+import { _elementKeyEvent, _hotKeyEvent, _copyEvent, _pasteEvent } from "../utils/keyboardEvent";
+import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
 import { _setNodeStyle, _setTextAlign } from "../utils/style";
 import { _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
@@ -109,10 +145,20 @@ const props = defineProps({
         default: () => true,
     },
 });
+const emit = defineEmits<{
+    (e: "addPasteImage", file: File): DEImage;
+}>();
 const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
+const menuBarTop = ref<number>(0);
+const curruntType = ref<string>("");
+const codeBlockTheme = ref<string>("github");
+const codeblockLanguage = ref<string>("text");
+const listBlockStyle = ref<DEListStyle>("disc");
+const anchorTagValue = ref<string>("");
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
+const $controlBar = ref<HTMLDivElement>();
 let resizeEventActive: boolean = false;
 let resizeStartX: number = 0;
 let resizeType: string = "right";
@@ -138,11 +184,38 @@ function updateCursorData(e: MouseEvent) {
         editorStore.cursorData = originalCursorData;
     }
 
+    // 선택 블럭 업데이트
     if (e.target !== null) {
         const $block = (e.target as HTMLElement).closest(".de-block");
 
         if ($block !== null) {
             editorStore.setCurrentBlock($block as HTMLElement);
+        }
+    }
+
+    controlBarStatusUpdate();
+}
+// 컨트롤 바 상태 업데이트
+function controlBarStatusUpdate() {
+    if (editorStore.$currentBlock !== null) {
+        const { type } = _getBlockType(editorStore.$currentBlock);
+        const activeList = ["code", "list"];
+
+        curruntType.value = type;
+
+        if (activeList.includes(curruntType.value) === true) {
+            editorStore.controlBarActive();
+
+            switch (type) {
+                case "code":
+                    _updateCodeBlockStyle(editorStore, codeBlockTheme, codeblockLanguage);
+                    break;
+                case "list":
+                    _updateListBlockStyle(editorStore, listBlockStyle);
+                    break;
+            }
+        } else {
+            editorStore.controlBarDeactive();
         }
     }
 }
@@ -222,7 +295,7 @@ function resizeEventEnd() {
 // 메뉴 외부 클릭시 닫기
 function checkOthersideClick(event: MouseEvent) {
     if (event.target !== null) {
-        const $controlBar = (event.target as HTMLElement).closest(".de-control-bar");
+        const $controlBar = (event.target as HTMLElement).closest(".de-menu-bar");
 
         if ($controlBar === null) {
             isActiveAddBlockMenu.value = false;
@@ -237,8 +310,68 @@ function deleteBlock() {
     }
 }
 
+// 부모 요소 스크롤 이벤트 발생시 컨트롤 바 고정
+function parentWrapScollEvent() {
+    editorStore.setParentWrapElement(_findScrollingElement($editor.value as HTMLElement));
+
+    if (props.useMenuBar === true && editorStore.$parentWrap !== null && editorStore.$editor !== null) {
+        // 메뉴바를 사용하는 경우만
+
+        const editorReac = editorStore.$editor.getBoundingClientRect();
+        let scrollY: number = 0;
+
+        if (editorStore.$parentWrap.constructor.name === "Window") {
+            scrollY = (editorStore.$parentWrap as Window).scrollY;
+        } else {
+            scrollY = (editorStore.$parentWrap as HTMLElement).scrollTop;
+        }
+
+        let realElementY = editorReac.y + scrollY;
+
+        if (editorStore.$parentWrap.constructor.name !== "Window") {
+            const parentRect = (editorStore.$parentWrap as HTMLElement).getBoundingClientRect();
+
+            realElementY -= parentRect.y;
+        }
+
+        if (scrollY > realElementY) {
+            menuBarTop.value = scrollY - realElementY - 1;
+        } else {
+            menuBarTop.value = 0;
+        }
+    }
+}
+
+// 붙여넣기 이벤트
+function contentPasteEvent(event: ClipboardEvent) {
+    _pasteEvent(event, editorStore, emit);
+}
+
 /**
  * 이벤트 관련 영역 종료
+ */
+
+/**
+ * 컨트롤 바 이벤트 관련 영역 시작
+ */
+
+// 코드 블럭 테마 적용
+function codeBlockThemeChangeEvent() {
+    _setCodeBlockTheme(editorStore, codeBlockTheme.value);
+}
+
+// 코드 블럭 언어 적용
+function codeblockLanguageChangeEvent() {
+    _setCodeBlockLanguage(editorStore, codeblockLanguage.value);
+}
+
+// 리스트 스타일 적용
+function listBlockStyleChangeEvent() {
+    _setListBlockStyle(editorStore, listBlockStyle.value);
+}
+
+/**
+ * 컨트롤 바 이벤트 관련 영역 종료
  */
 
 function addBlock(type: string) {
@@ -264,20 +397,11 @@ function addBlock(type: string) {
             });
             break;
         case "ul":
-            blockStructure = _createListBlock({
-                type: type,
-                child: [
-                    {
-                        classList: [],
-                        textContent: "",
-                    },
-                ],
-            });
-            break;
         case "ol":
             blockStructure = _createListBlock({
-                type: type,
-                pattern: "1",
+                type: "list",
+                element: type,
+                style: type === "ul" ? "disc" : "decimal",
                 child: [
                     {
                         classList: [],
@@ -289,8 +413,14 @@ function addBlock(type: string) {
         case "table":
             // TODO : table block
             break;
-        case "codeblock":
-            // TODO : Code Block
+        case "code":
+            blockStructure = _createCodeBlock({
+                type: "code",
+                theme: "github",
+                filename: "",
+                language: "Plain Text",
+                textContent: "",
+            });
             break;
     }
 
@@ -302,9 +432,15 @@ function addBlock(type: string) {
             case "ol":
                 (blockStructure.childNodes[0] as HTMLElement).focus();
                 break;
+            case "codeblock":
+                blockStructure.querySelector("code")?.focus();
+                break;
             default:
                 blockStructure.focus();
         }
+
+        editorStore.setCurrentBlock(blockStructure as HTMLElement);
+        controlBarStatusUpdate();
     }
 }
 
@@ -360,15 +496,17 @@ onMounted(() => {
         editorStore.setContentElement($content.value);
     }
 
-    window.addEventListener("click", checkOthersideClick, true);
+    if ($controlBar.value !== undefined) {
+        editorStore.setContrulBar($controlBar.value);
+    }
 
-    // TODO : set scroll event
+    window.addEventListener("click", checkOthersideClick, true);
+    editorStore.$parentWrap?.addEventListener("scroll", parentWrapScollEvent, true);
 });
 
 onUnmounted(() => {
     window.removeEventListener("click", checkOthersideClick, true);
-
-    // TODO : remove scroll event
+    editorStore.$parentWrap?.removeEventListener("scroll", parentWrapScollEvent, true);
 });
 
 defineExpose({
