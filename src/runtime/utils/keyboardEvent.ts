@@ -866,7 +866,7 @@ function defaultBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Elem
         } else {
             // 내용이 있는 경우
 
-            if (store.cursorData.startOffset === 0 && ($textBlock.childNodes[0] === store.cursorData.startNode || $textBlock.childNodes[0] === $target)) {
+            if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($textBlock.childNodes[0] === store.cursorData.startNode || $textBlock.childNodes[0] === $target)) {
                 // 커서가 첫번째에 있는 경우
 
                 e.preventDefault();
@@ -966,7 +966,7 @@ function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element
         } else {
             // 텍스트가 있는 경우
 
-            if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+            if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
                 // 커서가 첫번째에 있는 경우
 
                 e.preventDefault();
@@ -1022,7 +1022,7 @@ function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element
             } else {
                 // 텍스트가 있는 경우
 
-                if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
                     // 커서가 첫번째에 있는 경우
 
                     e.preventDefault();
@@ -1071,7 +1071,7 @@ function listBlockBackspaceEvent(e: KeyboardEvent, store: any, $element: Element
             } else {
                 // 텍스트가 있는 경우
 
-                if (store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($targetItem.childNodes[0] === store.cursorData.startNode || $targetItem.childNodes[0] === $target)) {
                     // 커서가 첫번째에 있는 경우
 
                     e.preventDefault();
