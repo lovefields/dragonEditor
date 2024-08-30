@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addComponent, addTypeTemplate, installModule } from "@nuxt/kit";
+import { defineNuxtModule, createResolver, addComponent, addTypeTemplate, installModule, addPlugin, addPluginTemplate } from "@nuxt/kit";
 
 export default defineNuxtModule({
     meta: {
@@ -24,5 +24,12 @@ export default defineNuxtModule({
         });
 
         await installModule("@pinia/nuxt");
+
+        addPluginTemplate({
+            src: resolver.resolve("./runtime/plugin.mjs"),
+            filename: "hljs.plugin.mjs",
+        });
+
+        nuxt.options.build.transpile.push("highlight.js");
     },
 });

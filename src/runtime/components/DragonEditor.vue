@@ -92,14 +92,14 @@
                     <option v-for="(item, i) in _getCodeBlockTheme()" :value="item.code" :key="`codeBlockTheme-${i}`">{{ item.text }}</option>
                 </select>
             </div>
-<!--
+
             <div v-if="['code'].includes(curruntType) === true" class="de-col">
                 <p class="de-name">Language :</p>
                 <select class="de-selector" v-model="codeblockLanguage" @change="codeblockLanguageChangeEvent">
                     <option v-for="(item, i) in _getCodeBlockLanguage()" :value="item.code" :key="`codeBlockLanuage-${i}`">{{ item.text }}</option>
                 </select>
             </div>
--->
+
             <div v-if="['list'].includes(curruntType) === true" class="de-col">
                 <p class="de-name">List Style :</p>
                 <select class="de-selector" v-model="listBlockStyle" @change="listBlockStyleChangeEvent">

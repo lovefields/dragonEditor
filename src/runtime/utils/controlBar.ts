@@ -1,7 +1,8 @@
 import { _getBlockType } from "./block";
 import type { Ref } from "vue";
-// import hljs from "highlight.js";
+import hljs from "highlight.js";
 import "../type.d.ts";
+
 
 // 코드블럭 테마 리스트
 export function _getCodeBlockTheme(): DECodeItem[] {
@@ -146,10 +147,10 @@ export function _setCodeBlockLanguage(store: any, lang: string): void {
         if (type === "code") {
             const $langText = $element.querySelector(".de-language");
             const $code = $element.querySelector(".de-code-content");
-            // const convert = hljs.highlight($code!.textContent ?? "", { language: lang });
+            const convert = hljs.highlight($code!.textContent ?? "", { language: lang });
 
-            // $langText!.textContent = (convert._top as any).name ?? "";
-            // $code!.innerHTML = convert.value;
+            $langText!.textContent = (convert._top as any).name ?? "";
+            $code!.innerHTML = convert.value;
         }
     }
 }
