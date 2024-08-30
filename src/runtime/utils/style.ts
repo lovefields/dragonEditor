@@ -1,5 +1,5 @@
 import { _findContentEditableElement } from "./element";
-import { _soltingCursorDataOnElement, _setCursor, _setRangeCursor } from "./cursor";
+import { _soltingCursorDataOnElement, _setCursor, _setRangeCursor, _clenupCursor } from "./cursor";
 import { _getBlockType } from "./block";
 
 export function _setNodeStyle(className: string, store: any) {
@@ -13,7 +13,6 @@ export function _setNodeStyle(className: string, store: any) {
             if ($element !== null) {
                 // 에디팅이 가능한 상태가 아닐시 실행하지 않음
 
-                // TODO : 링크 태그인 경우 분기
                 if (store.cursorData.type === "Caret") {
                     // 단일 커서인 경우
                     if ($element.hasChildNodes() === true) {
@@ -58,11 +57,6 @@ export function _setNodeStyle(className: string, store: any) {
                                 _setCursor($element.childNodes[targetIdx] as Element, cursorOffset);
                             } else {
                                 // 부모가 최상위 노드가 아닌 경우
-
-                                if ($parentElement.tagName === "A") {
-                                    // 링크 태그는 스타일 불허
-                                    alert(store.message.linkTextNoStyle);
-                                }
 
                                 if ($parentElement.tagName === "SPAN") {
                                     // 일반 태그인 경우만 허용
@@ -469,6 +463,8 @@ export function _setNodeStyle(className: string, store: any) {
                     }
                 }
             }
+
+            _clenupCursor(store);
         }
     }
 }
