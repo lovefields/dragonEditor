@@ -78,8 +78,9 @@
                     <button class="de-add-block" @click="addBlock('heading3')">Heading-3</button>
                     <button class="de-add-block" @click="addBlock('ul')">Unodered List</button>
                     <button class="de-add-block" @click="addBlock('ol')">Odered List</button>
-                    <button class="de-add-block" @click="addBlock('codeblock')">Code Block</button>
-                    <!-- <button class="de-add-block" @click="addBlock('video')">Video</button> -->
+                    <button class="de-add-block" @click="addBlock('code')">Code Block</button>
+                    <!-- <button class="de-add-block" @click="addBlock('table')">Table Block</button> -->
+                    <!-- <button class="de-add-block" @click="addBlock('video')">Video</button> youtube | vimeo -->
                 </div>
             </div>
         </div>
@@ -98,6 +99,24 @@
                     <option v-for="(item, i) in _getCodeBlockLanguage()" :value="item.code" :key="`codeBlockLanuage-${i}`">{{ item.text }}</option>
                 </select>
             </div>
+
+            <div v-if="['list'].includes(curruntType) === true" class="de-col">
+                <p class="de-name">List Style :</p>
+                <select class="de-selector" v-model="listBlockStyle" @change="listBlockStyleChangeEvent">
+                    <template v-if="editorStore.$currentBlock.tagName === 'UL'">
+                        <option value="disc">Disc</option>
+                        <option value="square">Square</option>
+                    </template>
+
+                    <template v-else>
+                        <option value="decimal">Decimal</option>
+                        <option value="lower-alpha">Lower-Alpha</option>
+                        <option value="upper-alpha">Upper-Alpha</option>
+                        <option value="lower-roman">Lower-Roman</option>
+                        <option value="upper-roman">Upper-Roman</option>
+                    </template>
+                </select>
+            </div>
         </div>
 
         <div class="de-body" ref="$content" @keydown="contentKeyboardEvent" @mouseup="updateCursorData" @mousedown="resizeEventStart" @touchstart="resizeEventStart" @paste="contentPasteEvent">
@@ -109,7 +128,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
 import { useEditorStore } from "../store";
-import { _getCodeBlockTheme, _getCodeBlockLanguage, _setCodeBlockTheme, _setCodeBlockLanguage, _updateCodeBlockStyle } from "../utils/controlBar";
+import { _getCodeBlockTheme, _getCodeBlockLanguage, _setCodeBlockTheme, _setCodeBlockLanguage, _updateCodeBlockStyle, _setListBlockStyle, _updateListBlockStyle } from "../utils/controlBar";
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent, _copyEvent, _pasteEvent } from "../utils/keyboardEvent";
 import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
@@ -135,6 +154,8 @@ const menuBarTop = ref<number>(0);
 const curruntType = ref<string>("");
 const codeBlockTheme = ref<string>("github");
 const codeblockLanguage = ref<string>("text");
+const listBlockStyle = ref<DEListStyle>("disc");
+const anchorTagValue = ref<string>("");
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
 const $controlBar = ref<HTMLDivElement>();
@@ -178,7 +199,7 @@ function updateCursorData(e: MouseEvent) {
 function controlBarStatusUpdate() {
     if (editorStore.$currentBlock !== null) {
         const { type } = _getBlockType(editorStore.$currentBlock);
-        const activeList = ["code"];
+        const activeList = ["code", "list"];
 
         curruntType.value = type;
 
@@ -188,6 +209,9 @@ function controlBarStatusUpdate() {
             switch (type) {
                 case "code":
                     _updateCodeBlockStyle(editorStore, codeBlockTheme, codeblockLanguage);
+                    break;
+                case "list":
+                    _updateListBlockStyle(editorStore, listBlockStyle);
                     break;
             }
         } else {
@@ -341,6 +365,11 @@ function codeblockLanguageChangeEvent() {
     _setCodeBlockLanguage(editorStore, codeblockLanguage.value);
 }
 
+// 리스트 스타일 적용
+function listBlockStyleChangeEvent() {
+    _setListBlockStyle(editorStore, listBlockStyle.value);
+}
+
 /**
  * 컨트롤 바 이벤트 관련 영역 종료
  */
@@ -368,20 +397,11 @@ function addBlock(type: string) {
             });
             break;
         case "ul":
-            blockStructure = _createListBlock({
-                type: type,
-                child: [
-                    {
-                        classList: [],
-                        textContent: "",
-                    },
-                ],
-            });
-            break;
         case "ol":
             blockStructure = _createListBlock({
-                type: type,
-                pattern: "1",
+                type: "list",
+                element: type,
+                style: type === "ul" ? "disc" : "decimal",
                 child: [
                     {
                         classList: [],
@@ -393,7 +413,7 @@ function addBlock(type: string) {
         case "table":
             // TODO : table block
             break;
-        case "codeblock":
+        case "code":
             blockStructure = _createCodeBlock({
                 type: "code",
                 theme: "github",

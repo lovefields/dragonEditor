@@ -154,7 +154,7 @@ export function _setCodeBlockLanguage(store: any, lang: string): void {
     }
 }
 
-// 코드블럭 스타일 컨틀로 바에 적용
+// 코드블럭 스타일 컨트롤 바에 적용
 export function _updateCodeBlockStyle(store: any, themeRef: Ref<string>, langRef: Ref<string>) {
     if (store.$currentBlock !== null) {
         const { $element, type } = _getBlockType(store.$currentBlock);
@@ -166,6 +166,30 @@ export function _updateCodeBlockStyle(store: any, themeRef: Ref<string>, langRef
 
             themeRef.value = theme;
             langRef.value = langItem?.code ?? "Plain Text";
+        }
+    }
+}
+
+// 리스트 스타일 적용
+export function _setListBlockStyle(store: any, style: DEListStyle) {
+    if (store.$currentBlock !== null) {
+        const { $element, type } = _getBlockType(store.$currentBlock);
+
+        if (type === "list") {
+            ($element as HTMLElement).dataset["style"] = style;
+        }
+    }
+}
+
+// 리스트 스타일 컨트롤 바에 적용
+export function _updateListBlockStyle(store: any, styleRef: Ref<DEListStyle>) {
+    if (store.$currentBlock !== null) {
+        const { $element, type } = _getBlockType(store.$currentBlock);
+
+        if (type === "list") {
+            const style = ($element as HTMLElement).dataset["style"] as DEListStyle;
+
+            styleRef.value = style;
         }
     }
 }

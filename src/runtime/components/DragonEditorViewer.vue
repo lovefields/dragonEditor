@@ -9,13 +9,15 @@
                 <h3 v-if="item.level === 3" class="de-block de-heading-block" :class="item.classList" :data-level="item.level" v-html="item.textContent"></h3>
             </template>
 
-            <ul v-if="item.type === 'ul'" class="de-block de-list-block">
-                <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
-            </ul>
+            <template v-if="item.type === 'list'">
+                <ul v-if="item.element === 'ul'" class="de-block de-list-block" :data-style="item.style">
+                    <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
+                </ul>
 
-            <ol v-if="item.type === 'ol'" class="de-block de-list-block" :type="item.pattern">
-                <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
-            </ol>
+                <ol v-if="item.element === 'ol'" class="de-block de-list-block" :data-style="item.style">
+                    <li v-for="li in item.child" class="de-item" :class="li.classList" v-html="li.textContent"></li>
+                </ol>
+            </template>
 
             <div v-if="item.type === 'image'" class="de-block de-image-block" :class="item.classList">
                 <div class="de-image-area" :data-maxwidth="item.maxWidth">

@@ -79,14 +79,12 @@ interface DEListItem {
     textContent: string;
 }
 
-interface DEUListBlock {
-    type: "ul";
-    child: DEListItem[];
-}
+type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
-interface DEOListBlock {
-    type: "ol";
-    pattern: "a" | "i" | "1" | "A" | "I";
+interface DEListBlock {
+    type: "list";
+    element: "ul" | "ol";
+    style: DEListStyle;
     child: DEListItem[];
 }
 
@@ -114,4 +112,4 @@ interface DECustomBlock {
     textContent: string;
 }
 
-type DEContentData = (DETextBlock | DEHeadingBlock | DEUListBlock | DEOListBlock | DEImageBlock | DECustomBlock | DECodeBlock)[];
+type DEContentData = (DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECustomBlock | DECodeBlock)[];

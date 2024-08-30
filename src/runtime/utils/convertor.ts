@@ -23,12 +23,8 @@ export function _getContentData($content: HTMLDivElement): DEContentData {
                 data.push(converteHeadingToData($child as HTMLHeadingElement, 3));
                 break;
             case "UL":
-                data.push(converteUListToData($child as HTMLUListElement));
-                break;
             case "OL":
-                data.push(converteOListToData($child as HTMLOListElement));
-                break;
-            case "PRE":
+                data.push(converteListToData($child as HTMLElement));
                 break;
             case "DIV":
                 // NOTE : 대부분 DIV임
@@ -52,8 +48,7 @@ export function _setContentData(data: DEContentData, store: any) {
             case "heading":
                 childList.push(_createHeadingBlock(item));
                 break;
-            case "ul":
-            case "ol":
+            case "list":
                 childList.push(_createListBlock(item));
                 break;
             case "image":
@@ -91,24 +86,12 @@ function converteHeadingToData($child: HTMLHeadingElement, level: number): DEHea
     };
 }
 
-// 순서 없는 리스트 변환
-function converteUListToData($child: HTMLUListElement): DEUListBlock {
+// 리스트 변환
+function converteListToData($child: HTMLElement): DEListBlock {
     return {
-        type: "ul",
-        child: [...$child.children].map(($li: Element) => {
-            return {
-                classList: getClassListWithoutDefaultClass($li as HTMLElement),
-                textContent: $li.innerHTML,
-            };
-        }),
-    };
-}
-
-// 순서 있는 리스트 변환
-function converteOListToData($child: HTMLOListElement): DEOListBlock {
-    return {
-        type: "ol",
-        pattern: $child.type as "a" | "i" | "1" | "A" | "I",
+        type: "list",
+        element: $child.tagName.toLowerCase() as "ol" | "ul",
+        style: $child.dataset["style"] as DEListStyle,
         child: [...$child.children].map(($li: Element) => {
             return {
                 classList: getClassListWithoutDefaultClass($li as HTMLElement),

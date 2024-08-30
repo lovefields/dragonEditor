@@ -53,7 +53,34 @@
         flex-direction: column;
         row-gap: 4px;
         padding-left: 24px;
-        list-style: disc;
+
+        &[data-style="disc"] {
+            list-style: disc;
+        }
+
+        &[data-style="square"] {
+            list-style: square;
+        }
+
+        &[data-style="decimal"] {
+            list-style: decimal;
+        }
+
+        &[data-style="lower-alpha"] {
+            list-style: lower-alpha;
+        }
+
+        &[data-style="upper-alpha"] {
+            list-style: upper-alpha;
+        }
+
+        &[data-style="lower-roman"] {
+            list-style: lower-roman;
+        }
+
+        &[data-style="upper-roman"] {
+            list-style: upper-roman;
+        }
 
         .de-item {
             min-height: 1.6em;
@@ -70,10 +97,6 @@
                 }
             }
         }
-    }
-
-    ol.de-list-block {
-        list-style: decimal;
     }
 
     // 이미지 블럭
