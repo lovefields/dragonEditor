@@ -60,7 +60,7 @@ export function _setNodeStyle(className: string, store: any) {
 
                                 if ($parentElement.tagName === "SPAN") {
                                     // 일반 태그인 경우만 허용
-                                    const classList: string[] = [...$parentElement.classList];
+                                    const classList: string[] = $parentElement.classList.value.split(" ");
                                     const classIdx: number = classList.indexOf(className);
 
                                     if (classIdx === -1) {
@@ -140,7 +140,7 @@ export function _setNodeStyle(className: string, store: any) {
 
                             if ($target.tagName !== "A") {
                                 // 일반 태그의 경우만 허용
-                                const classList = [...$target.classList];
+                                const classList = $target.classList.value.split(" ");
                                 const classIdx = classList.indexOf(className);
 
                                 if (classIdx === -1) {
@@ -228,7 +228,7 @@ export function _setNodeStyle(className: string, store: any) {
                                         isDuble = true;
                                     }
                                 } else {
-                                    const classList = [...$elementNode.classList];
+                                    const classList = $elementNode.classList.value.split(" ");
                                     const classIdx = classList.indexOf(className);
 
                                     if ($elementNode.tagName === "SPAN") {
@@ -283,7 +283,7 @@ export function _setNodeStyle(className: string, store: any) {
                                         structureArray.push(childNode.textContent as string);
                                     }
                                 } else {
-                                    const classList = [...$elementNode.classList];
+                                    const classList = $elementNode.classList.value.split(" ");
                                     const classIdx = classList.indexOf(className);
 
                                     if ($elementNode.tagName === "SPAN") {
@@ -338,7 +338,7 @@ export function _setNodeStyle(className: string, store: any) {
                                         structureArray.push(childNode.textContent as string);
                                     }
                                 } else {
-                                    const classList = [...$elementNode.classList];
+                                    const classList = $elementNode.classList.value.split(" ");
                                     const classIdx = classList.indexOf(className);
 
                                     if ($elementNode.tagName === "SPAN") {
@@ -494,13 +494,19 @@ export function _setTextAlign(type: DETextalign, store: any) {
             if ($element.classList.contains(className) === true) {
                 $element.classList.remove(className);
             } else {
-                const curruntClassname: string | undefined = alignClassList.filter((text) => [...$element.classList].includes(text) === true)[0];
+                const curruntClassname: string | undefined = alignClassList.filter((text) => $element.classList.contains(text) === true)[0];
 
                 if (curruntClassname !== undefined) {
                     $element.classList.remove(curruntClassname);
                 }
 
                 $element.classList.add(className);
+            }
+
+            if (store.$currentBlock.classList.contains("de-image-block") !== true) {
+                // 이미지 블럭이 아닌 경우
+
+                _setCursor($element, 0);
             }
         }
     }
