@@ -40,7 +40,7 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
             keyEventCount += 1;
             setTimeout(() => {
                 keyEventCount = 0;
-            }, 150);
+            }, 200);
             break;
         case "Backspace":
             elementBackspaceEvent(event, store);
@@ -62,7 +62,7 @@ export function _elementKeyEvent(event: KeyboardEvent, store: any) {
             keyEventCount += 1;
             setTimeout(() => {
                 keyEventCount = 0;
-            }, 150);
+            }, 200);
             break;
         case "Space":
             // TODO: 자동 변환 설정 - list,heading,code,etc
