@@ -31,7 +31,7 @@ export const useEditorStore = defineStore("editorStore", {
         setCursorData(data: DEditorCursor) {
             this.cursorData = data;
         },
-        setCurrentBlock(block: HTMLElement) {
+        setCurrentBlock(block: HTMLElement | null) {
             this.$currentBlock = block;
         },
         setContrulBar(value: HTMLDivElement) {
