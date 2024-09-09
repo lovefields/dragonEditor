@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <div class="de-control-bar" :class="{ '--active': editorStore.controlBar.active === true }" :style="{ top: `${editorStore.controlBar.y}px`, left: `${editorStore.controlBar.x}px` }" ref="$controlBar">
+        <div v-if="editorStore.$currentBlock !== null" class="de-control-bar" :class="{ '--active': editorStore.controlBar.active === true }" :style="{ top: `${editorStore.controlBar.y}px`, left: `${editorStore.controlBar.x}px` }" ref="$controlBar">
             <div v-if="['code'].includes(curruntType) === true" class="de-col">
                 <p class="de-name">Theme :</p>
                 <select class="de-selector" v-model="codeBlockTheme" @change="codeBlockThemeChangeEvent">
@@ -133,7 +133,7 @@ import { _findScrollingElement, _findContentEditableElement } from "../utils/ele
 import { _elementKeyEvent, _hotKeyEvent, _copyEvent, _pasteEvent } from "../utils/keyboardEvent";
 import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
 import { _setNodeStyle, _setTextAlign } from "../utils/style";
-import { _setCursorData, _clenupCursor } from "../utils/cursor";
+import { _setCursor, _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
 import { _addBlockToContent } from "../utils/content";
 import "../type.d.ts";
@@ -306,7 +306,18 @@ function checkOthersideClick(event: MouseEvent) {
 // 블럭 삭제
 function deleteBlock() {
     if (editorStore.$currentBlock !== null) {
+        const childCount: number = editorStore.$content?.childElementCount ?? 1;
+
         editorStore.$currentBlock.remove();
+        editorStore.setCurrentBlock(null);
+
+        if (childCount < 2) {
+            // 모든 엘리먼트를 지우려는 경우
+            const $block = _createTextBlock();
+
+            editorStore.$content?.insertAdjacentElement("beforeend", $block);
+            _setCursor($block, 0);
+        }
     }
 }
 
