@@ -253,13 +253,17 @@ function defaultBlockEnterEvent(store: any, $element: Element) {
                         const text = node.textContent as string;
                         const preSpan = document.createElement("span");
                         const nextSpan = document.createElement("span");
+                        const nextText = text.slice(store.cursorData.startOffset);
 
                         preSpan.classList.add(...originalClassList);
                         preSpan.textContent = text.slice(0, store.cursorData.startOffset);
                         preStructure.push(preSpan);
-                        nextSpan.classList.add(...originalClassList);
-                        nextSpan.textContent = text.slice(store.cursorData.startOffset);
-                        nextStructure.push(nextSpan);
+
+                        if (nextText !== "") {
+                            nextSpan.classList.add(...originalClassList);
+                            nextSpan.textContent = nextText;
+                            nextStructure.push(nextSpan);
+                        }
                     }
                 }
             });
@@ -369,7 +373,7 @@ function defaultBlockEnterEvent(store: any, $element: Element) {
             });
         }
 
-        const $nextBlock = _createTextBlock(store);
+        const $nextBlock = _createTextBlock({ type: "text", classList: [], textContent: "" });
 
         // 텍스트 블럭 삽입
         $textBlock.insertAdjacentElement("afterend", $nextBlock);
