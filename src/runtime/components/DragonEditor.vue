@@ -144,6 +144,11 @@ const props = defineProps({
         requiard: false,
         default: () => true,
     },
+    imageHostURL: {
+        type: String,
+        requiard: false,
+        default: () => "",
+    },
 });
 const emit = defineEmits<{
     (e: "addPasteImage", file: File): DEImage;
@@ -466,6 +471,10 @@ function addCustomBlock(HTML: string, classList: string[] = []) {
 }
 
 function addImageBlock(data: DEImage) {
+    if (props.imageHostURL !== "") {
+        data.src = props.imageHostURL + data.src;
+    }
+
     const blockStructure = _createImageBlock({
         ...data,
         type: "image",
@@ -486,7 +495,7 @@ function setTextAlign(type: DETextalign) {
 
 function getContentData(): DEContentData {
     if (editorStore.$content !== null) {
-        return _getContentData(editorStore.$content);
+        return _getContentData(editorStore.$content, props.imageHostURL);
     } else {
         console.error("[DragonEditor] Con't find content Element.");
         return [];
