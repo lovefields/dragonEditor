@@ -2,7 +2,7 @@ import { _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBl
 import "../type.d.ts";
 
 // 화면을 데이터로 변환
-export function _getContentData($content: HTMLDivElement): DEContentData {
+export function _getContentData($content: HTMLDivElement, imageHostURL: string): DEContentData {
     const childList: HTMLCollection = $content.children;
     const data: DEContentData = [];
 
@@ -28,7 +28,7 @@ export function _getContentData($content: HTMLDivElement): DEContentData {
                 break;
             case "DIV":
                 // NOTE : 대부분 DIV임
-                data.push(converteDivToData($child as HTMLDivElement));
+                data.push(converteDivToData($child as HTMLDivElement, imageHostURL));
                 break;
         }
     });
@@ -102,12 +102,12 @@ function converteListToData($child: HTMLElement): DEListBlock {
 }
 
 // Div 인 경우 변환
-function converteDivToData($child: HTMLDivElement) {
+function converteDivToData($child: HTMLDivElement, imageHostURL: string) {
     let data: DEImageBlock | DECodeBlock | DECustomBlock;
 
     switch (true) {
         case $child.classList.contains("de-image-block"):
-            data = convertImageBlock($child);
+            data = convertImageBlock($child, imageHostURL);
             break;
         case $child.classList.contains("de-code-block"):
             data = convertCodeBlock($child);
@@ -122,14 +122,14 @@ function converteDivToData($child: HTMLDivElement) {
 }
 
 // 이미지 블럭 변환
-function convertImageBlock($imageBlock: HTMLDivElement): DEImageBlock {
+function convertImageBlock($imageBlock: HTMLDivElement, imageHostURL: string): DEImageBlock {
     const $imgArea = $imageBlock.querySelector(".de-image-area") as HTMLImageElement;
     const $img = $imageBlock.querySelector(".de-img") as HTMLImageElement;
     const $caption = $imageBlock.querySelector(".de-caption") as HTMLParagraphElement;
 
     return {
         type: "image",
-        src: $img.src,
+        src: imageHostURL === "" ? $img.src : $img.src.replace(imageHostURL, ""),
         maxWidth: parseInt($imgArea.dataset["maxwidth"] as string),
         width: $img.width,
         height: $img.height,
