@@ -62,6 +62,18 @@
                     </svg>
                 </button>
 
+                <button class="de-menu" @click="moveBlock('up')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path d="M9.33333 35.9999C9.33333 29.4666 14.0267 24.0799 20.2133 22.9066L16.24 26.9066L20 30.6666L30.6667 19.9733L20 9.33325L16.24 13.0933L20.4533 17.3066V17.4666C11.2 18.5599 4 26.4533 4 35.9999C4 46.3199 12.3467 54.6666 22.6667 54.6666H30.6667V49.3333H22.6667C15.3067 49.3333 9.33333 43.3599 9.33333 35.9999Z M36 35.9999V54.6666H60V35.9999H36ZM54.6667 49.3333H41.3333V41.3333H54.6667V49.3333Z M60 11.9999H36V30.6666H60V11.9999Z"></path>
+                    </svg>
+                </button>
+
+                <button class="de-menu" @click="moveBlock('down')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path d="M9.33333 27.9999C9.33333 34.5333 14.0267 39.9199 20.2133 41.0933L16.24 37.1199L20 33.3333L30.6667 44.0266L20 54.6666L16.24 50.9066L20.4533 46.6933V46.5333C11.2 45.4399 4 37.5466 4 27.9999C4 17.6799 12.3467 9.33325 22.6667 9.33325H30.6667V14.6666H22.6667C15.3067 14.6666 9.33333 20.6399 9.33333 27.9999Z M60 27.9999V9.33325H36V27.9999H60ZM54.6667 22.6666H41.3333V14.6666H54.6667V22.6666Z M60 33.3333H36V51.9999H60V33.3333Z"></path>
+                    </svg>
+                </button>
+
                 <button class="de-menu" @click="deleteBlock">
                     <svg class="de-icon" viewBox="0 0 64 64">
                         <path class="de-path --red" fill-rule="evenodd" clip-rule="evenodd" d="M42.6667 24V50.6667H21.3334V24H42.6667ZM38.6667 8H25.3334L22.6667 10.6667H13.3334V16H50.6667V10.6667H41.3334L38.6667 8ZM48 18.6667H16V50.6667C16 53.6 18.4 56 21.3334 56H42.6667C45.6 56 48 53.6 48 50.6667V18.6667Z"></path>
@@ -389,6 +401,9 @@ function listBlockStyleChangeEvent() {
  * 컨트롤 바 이벤트 관련 영역 종료
  */
 
+/**
+ * 메뉴 이벤트 관련 영역
+ */
 function addBlock(type: string) {
     isActiveAddBlockMenu.value = false;
 
@@ -504,6 +519,33 @@ function getContentData(): DEContentData {
 function setContentData(data: DEContentData) {
     _setContentData(data, editorStore);
 }
+
+function moveBlock(type: "up" | "down") {
+    if (editorStore.$currentBlock !== null) {
+        let $target: Element | null;
+
+        if (type === "up") {
+            $target = editorStore.$currentBlock.previousElementSibling;
+        } else {
+            $target = editorStore.$currentBlock.nextElementSibling;
+        }
+
+        if ($target !== null) {
+            ($target as HTMLElement).insertAdjacentHTML(type === "up" ? "beforebegin" : "afterend", editorStore.$currentBlock.outerHTML);
+            editorStore.$currentBlock.remove();
+            
+            if (type === "up") {
+                editorStore.setCurrentBlock(($target as HTMLElement).previousElementSibling as HTMLElement | null);
+            } else {
+                editorStore.setCurrentBlock(($target as HTMLElement).nextElementSibling as HTMLElement | null);
+            }
+        }
+    }
+}
+
+/**
+ * 메뉴 이벤트 관련 영역 종료
+ */
 
 onMounted(() => {
     if ($editor.value !== undefined) {
