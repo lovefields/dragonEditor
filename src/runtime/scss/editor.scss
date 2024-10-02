@@ -11,7 +11,8 @@
     }
 
     .de-body {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         gap: 4px;
         padding: 20px;
         line-height: 1.6;
@@ -28,12 +29,24 @@
         border-bottom: 1px solid #ccc;
         z-index: 10;
 
+        .de-menu-wrap {
+            display: flex;
+            overflow-x: auto;
+        }
+
         .de-menu {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-width: 38px;
             height: 38px;
-            padding: 0 8px;
             border-right: 1px solid #ccc;
             box-sizing: border-box;
+
+            .de-icon {
+                width: 24px;
+                height: 24px;
+            }
 
             &.--lastchild {
                 border-right: 0;
