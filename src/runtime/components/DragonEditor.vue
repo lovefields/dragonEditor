@@ -1,74 +1,92 @@
 <template>
     <div class="dragon-editor" :class="{ '--hasMenu': props.useMenuBar === true }" @mousemove="resizeEvent" @touchmove="resizeEvent" @mouseup="resizeEventEnd" @touchend="resizeEventEnd" @mouseleave="resizeEventEnd" ref="$editor">
         <div v-if="props.useMenuBar === true" class="de-menu-bar" :style="{ top: `${menuBarTop}px` }">
-            <button class="de-menu de-menu-add" @click="isActiveAddBlockMenu = !isActiveAddBlockMenu">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M32 9C30.3431 9 29 10.3431 29 12V29H12C10.3431 29 9 30.3431 9 32C9 33.6569 10.3431 35 12 35H29V52C29 53.6569 30.3431 55 32 55C33.6569 55 35 53.6569 35 52V35H52C53.6569 35 55 33.6569 55 32C55 30.3431 53.6569 29 52 29H35V12C35 10.3431 33.6569 9 32 9Z"></path>
-                </svg>
-            </button>
+            <div class="de-menu-wrap">
+                <button class="de-menu de-menu-add" @click="isActiveAddBlockMenu = !isActiveAddBlockMenu">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M50.6667 34.6668H34.6667V50.6668H29.3334V34.6668H13.3334V29.3335H29.3334V13.3335H34.6667V29.3335H50.6667V34.6668Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setDecoration('bold')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M15 50C15 52.7614 17.2386 55 20 55H32.9922C44.0389 55 49 49.3673 49 41.8571C49 35.1933 45.4069 31.9731 39.714 30.9461C39.6526 30.935 39.607 30.8816 39.607 30.8192C39.607 30.7636 39.6438 30.714 39.6966 30.6965C44.9893 28.9442 47.1479 25.5349 47.1479 20.6006C47.1479 13.1574 42.3191 9 32 9H20C17.2386 9 15 11.2386 15 14V50ZM29.3268 48.2274C26.5654 48.2274 24.3268 45.9888 24.3268 43.2274V39.3469C24.3268 36.5855 26.5654 34.3469 29.3268 34.3469H31.0078C36.3658 34.3469 39.3424 36.3586 39.3424 41.1195C39.3424 45.9475 36.4981 48.2274 31.3385 48.2274H29.3268ZM29.3268 28.4461C26.5654 28.4461 24.3268 26.2075 24.3268 23.4461V20.7055C24.3268 17.9441 26.5654 15.7055 29.3268 15.7055H30.4125C35.3074 15.7055 37.821 17.3149 37.821 22.0087C37.821 26.8367 34.5798 28.4461 30.1479 28.4461H29.3268Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setDecoration('bold')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M40.6 31.4402C43.1866 29.6535 45 26.7202 45 24.0002C45 17.9735 40.3333 13.3335 34.3333 13.3335H17.6666V50.6668H36.44C42.0133 50.6668 46.3333 46.1335 46.3333 40.5602C46.3333 36.5068 44.04 33.0402 40.6 31.4402ZM25.6666 20.0002H33.6666C35.88 20.0002 37.6666 21.7868 37.6666 24.0002C37.6666 26.2135 35.88 28.0002 33.6666 28.0002H25.6666V20.0002ZM35 44.0002H25.6666V36.0002H35C37.2133 36.0002 39 37.7868 39 40.0002C39 42.2135 37.2133 44.0002 35 44.0002Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setDecoration('italic')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M25 11C25 9.89543 25.8954 9 27 9H34H40H46C47.1046 9 48 9.89543 48 11C48 12.1046 47.1046 13 46 13H39.0435L29.9565 51H36C37.1046 51 38 51.8954 38 53C38 54.1046 37.1046 55 36 55H29H23H17C15.8954 55 15 54.1046 15 53C15 51.8954 15.8954 51 17 51H23.9565L33.0435 13H27C25.8954 13 25 12.1046 25 11Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setDecoration('italic')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M26.6667 13.3335V21.3335H32.56L23.44 42.6668H16V50.6668H37.3333V42.6668H31.44L40.56 21.3335H48V13.3335H26.6667Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setDecoration('underline')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M21 13C21 11.8954 20.1046 11 19 11C17.8954 11 17 11.8954 17 13V28C17 36.2843 23.7157 43 32 43C40.2843 43 47 36.2843 47 28V13C47 11.8954 46.1046 11 45 11C43.8954 11 43 11.8954 43 13V28C43 34.0751 38.0751 39 32 39C25.9249 39 21 34.0751 21 28V13ZM13 49C11.8954 49 11 49.8954 11 51C11 52.1046 11.8954 53 13 53H51C52.1046 53 53 52.1046 53 51C53 49.8954 52.1046 49 51 49H13Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setDecoration('underline')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M32 45.3333C40.8267 45.3333 48 38.16 48 29.3333V8H41.3334V29.3333C41.3334 34.48 37.1467 38.6667 32 38.6667C26.8534 38.6667 22.6667 34.48 22.6667 29.3333V8H16V29.3333C16 38.16 23.1734 45.3333 32 45.3333ZM13.3334 50.6667V56H50.6667V50.6667H13.3334Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setDecoration('strikethrough')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path
-                        class="de-path"
-                        d="M49 42.0827C49 46.213 47.3861 49.3985 44.1583 51.6391C40.9305 53.8797 36.4003 55 30.5676 55C25.2609 55 20.9589 54.3116 17.6613 52.9349C16.6952 52.5315 16.1274 51.5533 16.1274 50.5064C16.1274 48.407 18.3376 47.0078 20.3303 47.6687C21.2971 47.9893 22.2887 48.2735 23.305 48.5211C25.8816 49.142 28.3591 49.4525 30.7375 49.4525C34.4183 49.4525 37.2497 48.8991 39.2317 47.7923C41.2136 46.6585 42.2046 44.9442 42.2046 42.6496C42.2046 40.9219 41.4118 39.4507 39.8263 38.2359C38.9729 37.5555 37.669 36.8102 35.9145 36H47.1393C48.3798 37.7105 49 39.7381 49 42.0827ZM32.2534 28H19.0141C18.3351 27.3458 17.7693 26.6544 17.3166 25.9261C16.4389 24.4683 16 22.7271 16 20.7025C16 17.0851 17.5431 14.2371 20.6293 12.1585C23.7156 10.0528 27.9485 9 33.3282 9C37.3092 9 41.2187 9.61323 45.0567 10.8397C46.6953 11.3633 47.4248 13.2208 46.708 14.7845C46.04 16.2418 44.353 16.9113 42.8299 16.4114C39.2086 15.2228 35.8715 14.6285 32.8185 14.6285C29.4775 14.6285 26.9575 15.1279 25.2587 16.1268C23.5598 17.1256 22.7104 18.5023 22.7104 20.257C22.7104 21.4448 23.0219 22.4572 23.6448 23.294C24.296 24.1309 25.3295 24.9272 26.7452 25.6831C27.8244 26.2593 29.6605 27.0316 32.2534 28ZM11 30C9.89543 30 9 30.8954 9 32C9 33.1046 9.89543 34 11 34H53C54.1046 34 55 33.1046 55 32C55 30.8954 54.1046 30 53 30H11Z"
-                    ></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setDecoration('strikethrough')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M26.6667 52H37.3333V44H26.6667V52ZM13.3333 12V20H26.6667V28H37.3333V20H50.6667V12H13.3333ZM8 38.6667H56V33.3333H8V38.6667Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setDecoration('code')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M35.2981 20C34.5175 20 33.8188 20.4842 33.5447 21.2151L25.9492 41.4698C25.4901 42.6941 26.3951 44 27.7026 44C28.4832 44 29.182 43.5158 29.4561 42.7849L37.0516 22.5302C37.5107 21.3059 36.6056 20 35.2981 20ZM11.013 35.0376C8.34071 33.499 8.34073 29.643 11.013 28.1045L18.8813 23.5745C19.8385 23.0234 21.0613 23.3526 21.6124 24.3098C22.1635 25.2671 21.8343 26.4899 20.8771 27.041L13.0088 31.571L20.8771 36.1011C21.8343 36.6522 22.1635 37.875 21.6124 38.8322C21.0613 39.7895 19.8385 40.1187 18.8813 39.5676L11.013 35.0376ZM53.1299 35.0376C55.8022 33.499 55.8022 29.643 53.1299 28.1045L45.2616 23.5745C44.3044 23.0234 43.0816 23.3526 42.5305 24.3098C41.9794 25.2671 42.3086 26.4899 43.2658 27.041L51.1341 31.571L43.2658 36.1011C42.3086 36.6522 41.9794 37.875 42.5305 38.8322C43.0816 39.7895 44.3044 40.1187 45.2616 39.5676L53.1299 35.0376Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setDecoration('code')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M25.0667 44.2667L12.8 32L25.0667 19.7333L21.3334 16L5.33337 32L21.3334 48L25.0667 44.2667ZM38.9334 44.2667L51.2 32L38.9334 19.7333L42.6667 16L58.6667 32L42.6667 48L38.9334 44.2667Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setTextAlign('left')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M11 9C9.89543 9 9 9.89543 9 11C9 12.1046 9.89543 13 11 13H23C24.1046 13 25 12.1046 25 11C25 9.89543 24.1046 9 23 9H11Z M11 51C9.89543 51 9 51.8954 9 53C9 54.1046 9.89543 55 11 55H53C54.1046 55 55 54.1046 55 53C55 51.8954 54.1046 51 53 51H11Z M9 39C9 37.8954 9.89543 37 11 37H37C38.1046 37 39 37.8954 39 39C39 40.1046 38.1046 41 37 41H11C9.89543 41 9 40.1046 9 39Z M11 23C9.89543 23 9 23.8954 9 25C9 26.1046 9.89543 27 11 27H53C54.1046 27 55 26.1046 55 25C55 23.8954 54.1046 23 53 23H11Z"></path>
-                </svg>
-            </button>
+                <label class="de-menu">
+                    <input type="file" hidden accept=".jpg,.jpeg,.png,.webp,.gif" @change="chooseMediaEvent" />
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path d="M50.6667 13.3333V50.6667H13.3333V13.3333H50.6667ZM50.6667 8H13.3333C10.4 8 8 10.4 8 13.3333V50.6667C8 53.6 10.4 56 13.3333 56H50.6667C53.6 56 56 53.6 56 50.6667V13.3333C56 10.4 53.6 8 50.6667 8ZM37.7067 31.6267L29.7067 41.9467L24 35.04L16 45.3333H48L37.7067 31.6267Z"></path>
+                    </svg>
+                </label>
 
-            <button class="de-menu" @click="setTextAlign('center')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M24 11C24 9.89543 24.8954 9 26 9H38C39.1046 9 40 9.89543 40 11C40 12.1046 39.1046 13 38 13H26C24.8954 13 24 12.1046 24 11Z M9 53C9 51.8954 9.89543 51 11 51H53C54.1046 51 55 51.8954 55 53C55 54.1046 54.1046 55 53 55H11C9.89543 55 9 54.1046 9 53Z M17 39C17 37.8954 17.8954 37 19 37H45C46.1046 37 47 37.8954 47 39C47 40.1046 46.1046 41 45 41H19C17.8954 41 17 40.1046 17 39Z M9 25C9 23.8954 9.89543 23 11 23H53C54.1046 23 55 23.8954 55 25C55 26.1046 54.1046 27 53 27H11C9.89543 27 9 26.1046 9 25Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setTextAlign('left')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M40 40H8V45.3333H40V40ZM40 18.6667H8V24H40V18.6667ZM8 34.6667H56V29.3333H8V34.6667ZM8 56H56V50.6667H8V56ZM8 8V13.3333H56V8H8Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setTextAlign('right')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M39 11C39 9.89543 39.8954 9 41 9H53C54.1046 9 55 9.89543 55 11C55 12.1046 54.1046 13 53 13H41C39.8954 13 39 12.1046 39 11Z M9 53C9 51.8954 9.89543 51 11 51H53C54.1046 51 55 51.8954 55 53C55 54.1046 54.1046 55 53 55H11C9.89543 55 9 54.1046 9 53Z M25 39C25 37.8954 25.8954 37 27 37H53C54.1046 37 55 37.8954 55 39C55 40.1046 54.1046 41 53 41H27C25.8954 41 25 40.1046 25 39Z M9 25C9 23.8954 9.89543 23 11 23H53C54.1046 23 55 23.8954 55 25C55 26.1046 54.1046 27 53 27H11C9.89543 27 9 26.1046 9 25Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setTextAlign('center')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M18.6667 40V45.3333H45.3333V40H18.6667ZM8 56H56V50.6667H8V56ZM8 34.6667H56V29.3333H8V34.6667ZM18.6667 18.6667V24H45.3333V18.6667H18.6667ZM8 8V13.3333H56V8H8Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="setTextAlign('justify')">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path" d="M9 53C9 51.8954 9.89543 51 11 51H53C54.1046 51 55 51.8954 55 53C55 54.1046 54.1046 55 53 55H11C9.89543 55 9 54.1046 9 53Z M9 39C9 37.8954 9.89543 37 11 37H53C54.1046 37 55 37.8954 55 39C55 40.1046 54.1046 41 53 41H11C9.89543 41 9 40.1046 9 39Z M9 11C9 9.89543 9.89543 9 11 9H53C54.1046 9 55 9.89543 55 11C55 12.1046 54.1046 13 53 13H11C9.89543 13 9 12.1046 9 11Z M9 25C9 23.8954 9.89543 23 11 23H53C54.1046 23 55 23.8954 55 25C55 26.1046 54.1046 27 53 27H11C9.89543 27 9 26.1046 9 25Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setTextAlign('right')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M8 56H56V50.6667H8V56ZM24 45.3333H56V40H24V45.3333ZM8 34.6667H56V29.3333H8V34.6667ZM24 24H56V18.6667H24V24ZM8 8V13.3333H56V8H8Z"></path>
+                    </svg>
+                </button>
 
-            <button class="de-menu" @click="deleteBlock">
-                <svg class="de-icon" viewBox="0 0 64 64">
-                    <path class="de-path --red" fill-rule="evenodd" clip-rule="evenodd" d="M32 51C42.4934 51 51 42.4934 51 32C51 21.5066 42.4934 13 32 13C21.5066 13 13 21.5066 13 32C13 42.4934 21.5066 51 32 51ZM32 55C44.7026 55 55 44.7026 55 32C55 19.2974 44.7026 9 32 9C19.2974 9 9 19.2974 9 32C9 44.7026 19.2974 55 32 55ZM21.4142 42.6274C20.6332 41.8462 20.6332 40.5801 21.4142 39.7988L29.1715 32.0415L21.5858 24.4558C20.8047 23.6748 20.8047 22.4084 21.5858 21.6274C22.3668 20.8462 23.6332 20.8462 24.4142 21.6274L31.9999 29.2131L39.799 21.4141C40.58 20.6331 41.8464 20.6331 42.6274 21.4141C43.4084 22.1953 43.4084 23.4614 42.6274 24.2427L34.8284 32.0417L42.799 40.0122C43.58 40.7932 43.58 42.0596 42.799 42.8406C42.0179 43.6216 40.7516 43.6216 39.9706 42.8406L32.0001 34.8701L24.2426 42.6274C23.4616 43.4084 22.1953 43.4084 21.4142 42.6274Z"></path>
-                </svg>
-            </button>
+                <button class="de-menu" @click="setTextAlign('justify')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M8 56H56V50.6667H8V56ZM8 45.3333H56V40H8V45.3333ZM8 34.6667H56V29.3333H8V34.6667ZM8 24H56V18.6667H8V24ZM8 8V13.3333H56V8H8Z"></path>
+                    </svg>
+                </button>
+
+                <button class="de-menu" @click="moveBlock('up')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path d="M9.33333 35.9999C9.33333 29.4666 14.0267 24.0799 20.2133 22.9066L16.24 26.9066L20 30.6666L30.6667 19.9733L20 9.33325L16.24 13.0933L20.4533 17.3066V17.4666C11.2 18.5599 4 26.4533 4 35.9999C4 46.3199 12.3467 54.6666 22.6667 54.6666H30.6667V49.3333H22.6667C15.3067 49.3333 9.33333 43.3599 9.33333 35.9999Z M36 35.9999V54.6666H60V35.9999H36ZM54.6667 49.3333H41.3333V41.3333H54.6667V49.3333Z M60 11.9999H36V30.6666H60V11.9999Z"></path>
+                    </svg>
+                </button>
+
+                <button class="de-menu" @click="moveBlock('down')">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path d="M9.33333 27.9999C9.33333 34.5333 14.0267 39.9199 20.2133 41.0933L16.24 37.1199L20 33.3333L30.6667 44.0266L20 54.6666L16.24 50.9066L20.4533 46.6933V46.5333C11.2 45.4399 4 37.5466 4 27.9999C4 17.6799 12.3467 9.33325 22.6667 9.33325H30.6667V14.6666H22.6667C15.3067 14.6666 9.33333 20.6399 9.33333 27.9999Z M60 27.9999V9.33325H36V27.9999H60ZM54.6667 22.6666H41.3333V14.6666H54.6667V22.6666Z M60 33.3333H36V51.9999H60V33.3333Z"></path>
+                    </svg>
+                </button>
+
+                <button class="de-menu" @click="deleteBlock">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path --red" fill-rule="evenodd" clip-rule="evenodd" d="M42.6667 24V50.6667H21.3334V24H42.6667ZM38.6667 8H25.3334L22.6667 10.6667H13.3334V16H50.6667V10.6667H41.3334L38.6667 8ZM48 18.6667H16V50.6667C16 53.6 18.4 56 21.3334 56H42.6667C45.6 56 48 53.6 48 50.6667V18.6667Z"></path>
+                    </svg>
+                </button>
+            </div>
 
             <div class="de-block-menu-area" :class="{ '--active': isActiveAddBlockMenu }">
                 <div class="de-list">
@@ -144,9 +162,14 @@ const props = defineProps({
         requiard: false,
         default: () => true,
     },
+    imageHostURL: {
+        type: String,
+        requiard: false,
+        default: () => "",
+    },
 });
 const emit = defineEmits<{
-    (e: "addPasteImage", file: File): DEImage;
+    (e: "uploadImageEvent", file: File): DEImage;
 }>();
 const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
@@ -385,6 +408,9 @@ function listBlockStyleChangeEvent() {
  * 컨트롤 바 이벤트 관련 영역 종료
  */
 
+/**
+ * 메뉴 이벤트 관련 영역
+ */
 function addBlock(type: string) {
     isActiveAddBlockMenu.value = false;
 
@@ -466,6 +492,10 @@ function addCustomBlock(HTML: string, classList: string[] = []) {
 }
 
 function addImageBlock(data: DEImage) {
+    if (props.imageHostURL !== "") {
+        data.src = props.imageHostURL + data.src;
+    }
+
     const blockStructure = _createImageBlock({
         ...data,
         type: "image",
@@ -486,7 +516,7 @@ function setTextAlign(type: DETextalign) {
 
 function getContentData(): DEContentData {
     if (editorStore.$content !== null) {
-        return _getContentData(editorStore.$content);
+        return _getContentData(editorStore.$content, props.imageHostURL);
     } else {
         console.error("[DragonEditor] Con't find content Element.");
         return [];
@@ -496,6 +526,41 @@ function getContentData(): DEContentData {
 function setContentData(data: DEContentData) {
     _setContentData(data, editorStore);
 }
+
+function moveBlock(type: "up" | "down") {
+    if (editorStore.$currentBlock !== null) {
+        let $target: Element | null;
+
+        if (type === "up") {
+            $target = editorStore.$currentBlock.previousElementSibling;
+        } else {
+            $target = editorStore.$currentBlock.nextElementSibling;
+        }
+
+        if ($target !== null) {
+            ($target as HTMLElement).insertAdjacentHTML(type === "up" ? "beforebegin" : "afterend", editorStore.$currentBlock.outerHTML);
+            editorStore.$currentBlock.remove();
+
+            if (type === "up") {
+                editorStore.setCurrentBlock(($target as HTMLElement).previousElementSibling as HTMLElement | null);
+            } else {
+                editorStore.setCurrentBlock(($target as HTMLElement).nextElementSibling as HTMLElement | null);
+            }
+        }
+    }
+}
+
+function chooseMediaEvent(event: Event) {
+    const $target = event.target as HTMLInputElement;
+    const file = $target.files![0];
+
+    emit("uploadImageEvent", file);
+    $target.value = "";
+}
+
+/**
+ * 메뉴 이벤트 관련 영역 종료
+ */
 
 onMounted(() => {
     if ($editor.value !== undefined) {

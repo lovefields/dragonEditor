@@ -21,7 +21,7 @@
 
             <div v-if="item.type === 'image'" class="de-block de-image-block" :class="item.classList">
                 <div class="de-image-area" :data-maxwidth="item.maxWidth">
-                    <img :src="item.src" alt="" class="de-img" :width="item.width" :height="item.height" loading="lazy" />
+                    <img :src="props.imageHostURL === undefined ? item.src : props.imageHostURL + item.src" alt="" class="de-img" :width="item.width" :height="item.height" loading="lazy" />
                 </div>
 
                 <p v-if="item.caption" class="de-caption">{{ item.caption }}</p>
@@ -41,6 +41,7 @@
 <script setup lang="ts">
 const props = defineProps<{
     content: DEContentData;
+    imageHostURL?: string;
 }>();
 </script>
 
