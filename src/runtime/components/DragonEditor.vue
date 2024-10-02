@@ -38,6 +38,13 @@
                     </svg>
                 </button>
 
+                <label class="de-menu">
+                    <input type="file" hidden accept=".jpg,.jpeg,.png,.webp,.gif" @change="chooseMediaEvent" />
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path d="M50.6667 13.3333V50.6667H13.3333V13.3333H50.6667ZM50.6667 8H13.3333C10.4 8 8 10.4 8 13.3333V50.6667C8 53.6 10.4 56 13.3333 56H50.6667C53.6 56 56 53.6 56 50.6667V13.3333C56 10.4 53.6 8 50.6667 8ZM37.7067 31.6267L29.7067 41.9467L24 35.04L16 45.3333H48L37.7067 31.6267Z"></path>
+                    </svg>
+                </label>
+
                 <button class="de-menu" @click="setTextAlign('left')">
                     <svg class="de-icon" viewBox="0 0 64 64">
                         <path class="de-path" d="M40 40H8V45.3333H40V40ZM40 18.6667H8V24H40V18.6667ZM8 34.6667H56V29.3333H8V34.6667ZM8 56H56V50.6667H8V56ZM8 8V13.3333H56V8H8Z"></path>
@@ -162,7 +169,7 @@ const props = defineProps({
     },
 });
 const emit = defineEmits<{
-    (e: "addPasteImage", file: File): DEImage;
+    (e: "uploadImageEvent", file: File): DEImage;
 }>();
 const editorStore = useEditorStore();
 const isActiveAddBlockMenu = ref<boolean>(false);
@@ -533,7 +540,7 @@ function moveBlock(type: "up" | "down") {
         if ($target !== null) {
             ($target as HTMLElement).insertAdjacentHTML(type === "up" ? "beforebegin" : "afterend", editorStore.$currentBlock.outerHTML);
             editorStore.$currentBlock.remove();
-            
+
             if (type === "up") {
                 editorStore.setCurrentBlock(($target as HTMLElement).previousElementSibling as HTMLElement | null);
             } else {
@@ -541,6 +548,14 @@ function moveBlock(type: "up" | "down") {
             }
         }
     }
+}
+
+function chooseMediaEvent(event: Event) {
+    const $target = event.target as HTMLInputElement;
+    const file = $target.files![0];
+
+    emit("uploadImageEvent", file);
+    $target.value = "";
 }
 
 /**

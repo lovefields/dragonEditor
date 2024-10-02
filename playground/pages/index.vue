@@ -3,7 +3,7 @@
         editor!
         <div class="editor-area">
             <ClientOnly>
-                <DragonEditor ref="$editor" @addPasteImage="pasteImageProcess" />
+                <DragonEditor ref="$editor" @uploadImageEvent="pasteImageProcess" />
             </ClientOnly>
         </div>
         <button @click="getContent">get data</button>
