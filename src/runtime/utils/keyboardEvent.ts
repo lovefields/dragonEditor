@@ -1269,7 +1269,7 @@ export async function _pasteEvent(event: ClipboardEvent, store: any, emit: any) 
                 const blob = await clipboardItems[0].getType(imageItem);
                 const file = new File([blob], `${_generateId()}.${imageItem.split("/")[1]}`);
 
-                emit("addPasteImage", file);
+                emit("uploadImageEvent", file);
             }
         } else {
             // 텍스트인 경우
