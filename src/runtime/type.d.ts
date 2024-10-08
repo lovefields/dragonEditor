@@ -43,6 +43,11 @@ interface DECodeItem {
     code: string;
 }
 
+interface DEHeadingItem {
+    name: string;
+    id: string;
+}
+
 type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
 
 type DETextalign = "left" | "right" | "center" | "justify";

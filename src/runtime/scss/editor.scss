@@ -83,6 +83,77 @@
                 line-height: 1.6;
             }
         }
+
+        .de-link-exit-area {
+            display: none;
+            position: absolute;
+            top: 39px;
+            left: 228px;
+            width: 200px;
+            background: #fff;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+            z-index: 1000;
+
+            &.--active {
+                display: block;
+            }
+
+            .de-btn-area {
+                display: flex;
+                border-bottom: 1px solid #ccc;
+
+                .de-btn {
+                    flex: 1;
+                    height: 24px;
+
+                    &.--active {
+                        background: #f1f1f1;
+                    }
+                }
+            }
+
+            .de-link-text-area {
+                display: flex;
+                column-gap: 10px;
+                padding: 4px;
+
+                .de-input {
+                    flex: 1;
+                    min-width: 0;
+                    height: 20px;
+                    padding: 0 8px;
+                    border: 1px solid #ccc;
+                    box-sizing: border-box;
+
+                    &.--red {
+                        border-color: red;
+                    }
+                }
+
+                .de-btn {
+                    min-width: 50px;
+                    height: 20px;
+                }
+            }
+
+            .de-link-heading-area {
+                display: flex;
+                flex-direction: column;
+                max-height: 150px;
+                padding: 8px;
+                box-sizing: border-box;
+                overflow-y: auto;
+
+                .de-btn {
+                    min-height: 20px;
+                    text-align: left;
+
+                    &:hover {
+                        background: #f1f1f1;
+                    }
+                }
+            }
+        }
     }
 
     // 컨트롤 바 스타일
