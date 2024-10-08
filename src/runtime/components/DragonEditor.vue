@@ -38,6 +38,26 @@
                     </svg>
                 </button>
 
+                <button
+                    class="de-menu de-link-add"
+                    @click="
+                        () => {
+                            isActiveLinkArea = !isActiveLinkArea;
+                            openLinkArea();
+                        }
+                    "
+                >
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M45.3334 18.6665H34.6667V23.9998H45.3334C49.7334 23.9998 53.3334 27.5998 53.3334 31.9998C53.3334 36.3998 49.7334 39.9998 45.3334 39.9998H34.6667V45.3332H45.3334C52.6934 45.3332 58.6667 39.3598 58.6667 31.9998C58.6667 24.6398 52.6934 18.6665 45.3334 18.6665ZM29.3334 39.9998H18.6667C14.2667 39.9998 10.6667 36.3998 10.6667 31.9998C10.6667 27.5998 14.2667 23.9998 18.6667 23.9998H29.3334V18.6665H18.6667C11.3067 18.6665 5.33337 24.6398 5.33337 31.9998C5.33337 39.3598 11.3067 45.3332 18.6667 45.3332H29.3334V39.9998ZM21.3334 29.3332H42.6667V34.6665H21.3334V29.3332Z"></path>
+                    </svg>
+                </button>
+
+                <button class="de-menu" @click="removeLink">
+                    <svg class="de-icon" viewBox="0 0 64 64">
+                        <path class="de-path" d="M38.3734 29.5065L42.6667 33.7998V29.5065H38.3734ZM45.3334 18.8398H34.6667V23.9065H45.3334C49.8934 23.9065 53.6 27.6131 53.6 32.1731C53.6 35.5598 51.5467 38.4931 48.6134 39.7465L52.3467 43.4798C56.1334 41.1331 58.6667 36.9465 58.6667 32.1731C58.6667 24.8131 52.6934 18.8398 45.3334 18.8398ZM5.33337 11.5598L13.6267 19.8531C8.77337 21.8265 5.33337 26.5998 5.33337 32.1731C5.33337 39.5331 11.3067 45.5065 18.6667 45.5065H29.3334V40.4398H18.6667C14.1067 40.4398 10.4 36.7331 10.4 32.1731C10.4 27.9331 13.6267 24.4398 17.76 23.9865L23.28 29.5065H21.3334V34.8398H28.6134L34.6667 40.8931V45.5065H39.28L49.9734 56.1998L53.7334 52.4398L9.09337 7.7998L5.33337 11.5598Z"></path>
+                    </svg>
+                </button>
+
                 <label class="de-menu">
                     <input type="file" hidden accept=".jpg,.jpeg,.png,.webp,.gif" @change="chooseMediaEvent" />
                     <svg class="de-icon" viewBox="0 0 64 64">
@@ -101,6 +121,22 @@
                     <!-- <button class="de-add-block" @click="addBlock('video')">Video</button> youtube | vimeo -->
                 </div>
             </div>
+
+            <div class="de-link-exit-area" :class="{ '--active': isActiveLinkArea }">
+                <div class="de-btn-area">
+                    <button class="de-btn" :class="{ '--active': activeLinkTabType === 'url' }" @click="openLinkArea"> Text </button>
+                    <button class="de-btn" :class="{ '--active': activeLinkTabType === 'heading' }" @click="listUpHeading">Heading</button>
+                </div>
+
+                <div v-if="activeLinkTabType === 'url'" class="de-link-text-area">
+                    <input v-model="anchorTagValue" class="de-input" :class="{ '--red': anchorValueError }" type="url" ref="$linkInput" />
+                    <button class="de-btn" @click="setLink">Add</button>
+                </div>
+
+                <div v-if="activeLinkTabType === 'heading'" class="de-link-heading-area">
+                    <button v-for="item in anchorHeadingList" class="de-btn" @click="setHeadingLink(item.id)">{{ item.name }}</button>
+                </div>
+            </div>
         </div>
 
         <div v-if="editorStore.$currentBlock !== null" class="de-control-bar" :class="{ '--active': editorStore.controlBar.active === true }" :style="{ top: `${editorStore.controlBar.y}px`, left: `${editorStore.controlBar.x}px` }" ref="$controlBar">
@@ -150,7 +186,7 @@ import { _getCodeBlockTheme, _getCodeBlockLanguage, _setCodeBlockTheme, _setCode
 import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
 import { _elementKeyEvent, _hotKeyEvent, _copyEvent, _pasteEvent } from "../utils/keyboardEvent";
 import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
-import { _setNodeStyle, _setTextAlign } from "../utils/style";
+import { _setNodeStyle, _setTextAlign, _setAnchorTag, _unsetAnchorTag, _getAnchorTagValue } from "../utils/style";
 import { _setCursor, _setCursorData, _clenupCursor } from "../utils/cursor";
 import { _getContentData, _setContentData } from "../utils/convertor";
 import { _addBlockToContent } from "../utils/content";
@@ -178,10 +214,15 @@ const curruntType = ref<string>("");
 const codeBlockTheme = ref<string>("github");
 const codeblockLanguage = ref<string>("text");
 const listBlockStyle = ref<DEListStyle>("disc");
+const isActiveLinkArea = ref<boolean>(false);
+const anchorValueError = ref<boolean>(false);
+const activeLinkTabType = ref<"url" | "heading">("url");
+const anchorHeadingList = ref<DEHeadingItem[]>([]);
 const anchorTagValue = ref<string>("");
 const $editor = ref<HTMLDivElement>();
 const $content = ref<HTMLDivElement>();
 const $controlBar = ref<HTMLDivElement>();
+const $linkInput = ref<HTMLInputElement>();
 let resizeEventActive: boolean = false;
 let resizeStartX: number = 0;
 let resizeType: string = "right";
@@ -200,7 +241,7 @@ function contentKeyboardEvent(e: KeyboardEvent) {
 function updateCursorData(e: MouseEvent) {
     const originalCursorData = editorStore.cursorData;
 
-    _setCursorData(editorStore);
+    _clenupCursor(editorStore);
 
     if (editorStore.cursorData !== null && _findContentEditableElement(editorStore.cursorData.startNode) === null) {
         // 비정상 커서 값일 경우 초기화
@@ -217,7 +258,9 @@ function updateCursorData(e: MouseEvent) {
     }
 
     controlBarStatusUpdate();
+    anchorTagValueUpdate();
 }
+
 // 컨트롤 바 상태 업데이트
 function controlBarStatusUpdate() {
     if (editorStore.$currentBlock !== null) {
@@ -319,9 +362,33 @@ function resizeEventEnd() {
 function checkOthersideClick(event: MouseEvent) {
     if (event.target !== null) {
         const $controlBar = (event.target as HTMLElement).closest(".de-menu-bar");
+        const $btnMenu = (event.target as HTMLElement).closest(".de-menu-add");
+        const $menuArea = (event.target as HTMLElement).closest(".de-block-menu-area");
+        const $btnLink = (event.target as HTMLElement).closest(".de-link-add");
+        const $linkArea = (event.target as HTMLElement).closest(".de-link-exit-area");
+        let closeMenu: boolean = false;
+        let closeLink: boolean = false;
 
         if ($controlBar === null) {
+            closeMenu = true;
+            closeLink = true;
+        } else {
+            if ($btnMenu === null && $menuArea === null) {
+                closeMenu = true;
+            }
+
+            if ($btnLink === null && $linkArea === null) {
+                closeLink = true;
+            }
+        }
+
+        if (closeMenu === true) {
             isActiveAddBlockMenu.value = false;
+        }
+
+        if (closeLink === true) {
+            isActiveLinkArea.value = false;
+            anchorTagValue.value = "";
         }
     }
 }
@@ -346,8 +413,6 @@ function deleteBlock() {
 
 // 부모 요소 스크롤 이벤트 발생시 컨트롤 바 고정
 function parentWrapScollEvent() {
-    editorStore.setParentWrapElement(_findScrollingElement($editor.value as HTMLElement));
-
     if (props.useMenuBar === true && editorStore.$parentWrap !== null && editorStore.$editor !== null) {
         // 메뉴바를 사용하는 경우만
 
@@ -368,17 +433,32 @@ function parentWrapScollEvent() {
             realElementY -= parentRect.y;
         }
 
+        let value: number = 0;
+
         if (scrollY > realElementY) {
-            menuBarTop.value = scrollY - realElementY - 1;
+            value = scrollY - realElementY - 1;
         } else {
-            menuBarTop.value = 0;
+            value = 0;
         }
+
+        if (value > editorReac.height - 39) {
+            value = editorReac.height - 39;
+        }
+
+        menuBarTop.value = Math.floor(value);
     }
 }
 
 // 붙여넣기 이벤트
 function contentPasteEvent(event: ClipboardEvent) {
     _pasteEvent(event, editorStore, emit);
+}
+
+function anchorTagValueUpdate() {
+    // 다른 이벤트 순서에 의한 딜레이
+    setTimeout(() => {
+        anchorTagValue.value = _getAnchorTagValue(editorStore);
+    }, 500);
 }
 
 /**
@@ -550,12 +630,61 @@ function moveBlock(type: "up" | "down") {
     }
 }
 
+function openLinkArea() {
+    activeLinkTabType.value = "url";
+    anchorValueError.value = false;
+}
+
 function chooseMediaEvent(event: Event) {
     const $target = event.target as HTMLInputElement;
     const file = $target.files![0];
 
     emit("uploadImageEvent", file);
     $target.value = "";
+}
+
+// 링크 삽입
+function setLink() {
+    if ($linkInput.value !== null && $linkInput.value?.checkValidity() === true && anchorTagValue.value !== "") {
+        _setAnchorTag(anchorTagValue.value, true, editorStore);
+        isActiveLinkArea.value = false;
+        anchorValueError.value = false;
+        anchorTagValue.value = "";
+    } else {
+        anchorValueError.value = true;
+    }
+}
+
+function setHeadingLink(id: string) {
+    _setAnchorTag(id, false, editorStore);
+    isActiveLinkArea.value = false;
+    anchorValueError.value = false;
+    anchorTagValue.value = "";
+}
+
+// 헤딩 리스트 업데이트
+function listUpHeading() {
+    activeLinkTabType.value = "heading";
+
+    if (editorStore.$content !== null) {
+        const $blockList = editorStore.$content.querySelectorAll(".de-heading-block");
+        let headingList: DEHeadingItem[] = [];
+
+        $blockList.forEach(($headingTag) => {
+            if ($headingTag.textContent !== null) {
+                headingList.push({
+                    name: $headingTag.textContent,
+                    id: $headingTag.id,
+                });
+            }
+        });
+
+        anchorHeadingList.value = headingList;
+    }
+}
+
+function removeLink() {
+    _unsetAnchorTag(editorStore);
 }
 
 /**
