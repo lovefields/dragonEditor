@@ -37,7 +37,7 @@ export function _getContentData($content: HTMLDivElement, imageHostURL: string):
 }
 
 // 데이터를 화면으로 변환
-export function _setContentData(data: DEContentData, store: any) {
+export function _setContentData(data: DEContentData, store: any, imageHostURL: string) {
     const childList: HTMLElement[] = [];
 
     data.forEach((item) => {
@@ -52,7 +52,7 @@ export function _setContentData(data: DEContentData, store: any) {
                 childList.push(_createListBlock(item));
                 break;
             case "image":
-                childList.push(_createImageBlock(item));
+                childList.push(_createImageBlock(item,imageHostURL));
                 break;
             case "code":
                 childList.push(_createCodeBlock(item));
