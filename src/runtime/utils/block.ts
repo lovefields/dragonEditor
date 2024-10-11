@@ -95,7 +95,7 @@ export function _createListItemBlock(child: DEListItem = { textContent: "", clas
 }
 
 // 이미지 블럭 생성
-export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
+export function _createImageBlock(data: DEImageBlock, imageHostURL: string): HTMLDivElement {
     const $wrap = document.createElement("div") as HTMLDivElement;
     const $div = document.createElement("div") as HTMLDivElement;
     const $leftBtn = document.createElement("button") as HTMLButtonElement;
@@ -117,7 +117,7 @@ export function _createImageBlock(data: DEImageBlock): HTMLDivElement {
         $div.dataset["maxwidth"] = String(data.maxWidth);
     }
 
-    $image.src = data.src;
+    $image.src = imageHostURL + data.src;
     $image.width = data.width;
     $image.height = data.height;
     $image.draggable = false;
