@@ -604,7 +604,7 @@ function getContentData(): DEContentData {
 }
 
 function setContentData(data: DEContentData) {
-    _setContentData(data, editorStore);
+    _setContentData(data, editorStore, props.imageHostURL);
 }
 
 function moveBlock(type: "up" | "down") {
