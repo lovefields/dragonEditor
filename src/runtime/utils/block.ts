@@ -104,7 +104,7 @@ export function _createImageBlock(data: DEImageBlock, imageHostURL: string = "")
     const $p = document.createElement("p") as HTMLParagraphElement;
 
     $wrap.classList.add("de-block", "de-image-block", ...data.classList);
-    $div.classList.add("de-image-area");ƒ
+    $div.classList.add("de-image-area");
     $leftBtn.classList.add("de-btn", "de-btn-left");
     $rightBtn.classList.add("de-btn", "de-btn-right");
     $image.classList.add("de-img");
