@@ -95,7 +95,7 @@ export function _createListItemBlock(child: DEListItem = { textContent: "", clas
 }
 
 // 이미지 블럭 생성
-export function _createImageBlock(data: DEImageBlock, imageHostURL: string): HTMLDivElement {
+export function _createImageBlock(data: DEImageBlock, imageHostURL: string = ""): HTMLDivElement {
     const $wrap = document.createElement("div") as HTMLDivElement;
     const $div = document.createElement("div") as HTMLDivElement;
     const $leftBtn = document.createElement("button") as HTMLButtonElement;
@@ -104,7 +104,7 @@ export function _createImageBlock(data: DEImageBlock, imageHostURL: string): HTM
     const $p = document.createElement("p") as HTMLParagraphElement;
 
     $wrap.classList.add("de-block", "de-image-block", ...data.classList);
-    $div.classList.add("de-image-area");
+    $div.classList.add("de-image-area");ƒ
     $leftBtn.classList.add("de-btn", "de-btn-left");
     $rightBtn.classList.add("de-btn", "de-btn-right");
     $image.classList.add("de-img");
