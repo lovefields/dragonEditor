@@ -397,9 +397,23 @@ function checkOthersideClick(event: MouseEvent) {
 function deleteBlock() {
     if (editorStore.$currentBlock !== null) {
         const childCount: number = editorStore.$content?.childElementCount ?? 1;
+        const preElement = editorStore.$currentBlock.previousElementSibling;
 
         editorStore.$currentBlock.remove();
-        editorStore.setCurrentBlock(null);
+
+        if (preElement === null) {
+            editorStore.setCurrentBlock(null);
+        } else {
+            const { type } = _getBlockType(editorStore.$currentBlock);
+            const activeList = ["text", "heading"];
+
+            if (activeList.includes(type) === true) {
+                editorStore.setCurrentBlock(preElement as HTMLElement);
+                _setCursor(preElement, 0);
+            } else {
+                editorStore.setCurrentBlock(null);
+            }
+        }
 
         if (childCount < 2) {
             // 모든 엘리먼트를 지우려는 경우
