@@ -192,37 +192,31 @@ function defaultBlockEnterEvent(store: any, $element: Element) {
                 $newTextBlock.focus();
             } else {
                 // br로 이루어진 경우
+                const brList = $textBlock.querySelectorAll("br");
                 let preStructure: HTMLBRElement[] = [];
                 let nextStructure: HTMLBRElement[] = [];
 
-                if ($textBlock.childNodes.length === 1) {
-                    const $newTextBlock = _createTextBlock();
-
-                    $textBlock.insertAdjacentElement("afterend", $newTextBlock);
-                    $newTextBlock.focus();
-                } else {
-                    $textBlock.childNodes.forEach((_, i) => {
-                        const $br = document.createElement("br");
-                        if (store.cursorData.startOffset < i) {
-                            preStructure.push($br);
-                        } else {
-                            nextStructure.push($br);
-                        }
-                    });
-
-                    $textBlock.replaceChildren(...preStructure);
-                    $textBlock.insertAdjacentElement("afterend", _createTextBlock());
-                    const $nextBlock = $textBlock.nextElementSibling as HTMLParagraphElement;
-
-                    if (nextStructure.length === 0) {
-                        $nextBlock.focus();
+                brList.forEach((_, i) => {
+                    const $br = document.createElement("br");
+                    if (store.cursorData.startOffset < i) {
+                        preStructure.push($br);
                     } else {
-                        if (nextStructure.length === 1) {
-                            nextStructure.push(document.createElement("br"));
-                        }
-                        $nextBlock.replaceChildren(...nextStructure);
-                        _setCursor(nextStructure[0], 0);
+                        nextStructure.push($br);
                     }
+                });
+
+                $textBlock.replaceChildren(...preStructure);
+                $textBlock.insertAdjacentElement("afterend", _createTextBlock());
+                const $nextBlock = $textBlock.nextElementSibling as HTMLParagraphElement;
+
+                if (nextStructure.length === 0) {
+                    $nextBlock.focus();
+                } else {
+                    if (nextStructure.length === 1) {
+                        nextStructure.push(document.createElement("br"));
+                    }
+                    $nextBlock.replaceChildren(...nextStructure);
+                    _setCursor(nextStructure[0], 0);
                 }
             }
         } else {
