@@ -36,13 +36,17 @@ export function _findContentEditableElement($target: Node): HTMLElement | null {
 
     const $baseElement = $target as HTMLElement;
 
-    if (($baseElement.parentElement as HTMLElement).tagName === "BODY") {
+    if ($baseElement.parentElement === null) {
         return null;
     } else {
-        if ($baseElement.getAttribute("contentEditable") === null) {
-            return _findContentEditableElement($baseElement.parentNode as Node);
+        if (($baseElement.parentElement as HTMLElement).tagName === "BODY") {
+            return null;
         } else {
-            return $baseElement;
+            if ($baseElement.getAttribute("contentEditable") === null) {
+                return _findContentEditableElement($baseElement.parentNode as Node);
+            } else {
+                return $baseElement;
+            }
         }
     }
 }
