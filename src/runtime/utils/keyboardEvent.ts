@@ -192,10 +192,11 @@ function defaultBlockEnterEvent(store: any, $element: Element) {
                 $newTextBlock.focus();
             } else {
                 // br로 이루어진 경우
+                const brList = $textBlock.querySelectorAll("br");
                 let preStructure: HTMLBRElement[] = [];
                 let nextStructure: HTMLBRElement[] = [];
 
-                $textBlock.childNodes.forEach((_, i) => {
+                brList.forEach((_, i) => {
                     const $br = document.createElement("br");
                     if (store.cursorData.startOffset < i) {
                         preStructure.push($br);
