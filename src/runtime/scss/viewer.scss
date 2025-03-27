@@ -1,6 +1,6 @@
-@import "./base";
-@import "./block";
-@import "./style";
+@use "./base";
+@use "./block" as *;
+@use "./style" as *;
 
 .dragon-editor-viewer {
     display: flex;
