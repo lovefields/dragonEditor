@@ -1,20 +1,21 @@
 <template>
     <div>
-        editor!
         <div class="editor-area">
             <ClientOnly>
-                <DragonEditor ref="$editor" @uploadImageEvent="pasteImageProcess" />
+                <DragonEditor v-model="contentData" ref="$editor" @uploadImageEvent="pasteImageProcess" />
             </ClientOnly>
         </div>
-        <button @click="getContent">get data</button>
+
+        <!-- <button @click="getContent">get data</button>
         <button @click="setContent">set data</button>
         <button @click="addImage">Add Image</button>
-        <button @click="addCustomBlock">Add Custom Block</button>
+        <button @click="addCustomBlock">Add Custom Block</button> -->
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "#imports";
+import { ref } from "#imports";
+const contentData = ref<DEContentData>([]);
 const $editor = ref<DragonEditor>();
 
 function getContent() {
@@ -71,5 +72,6 @@ function pasteImageProcess(file: File) {
 .editor-area {
     max-width: 800px;
     margin: 0 auto;
+    font-size: 15px;
 }
 </style>

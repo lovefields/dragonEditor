@@ -1,4 +1,6 @@
-interface EditorStore {
+type DEContentData = (DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECustomBlock | DECodeBlock)[];
+
+interface DragonEditorStore {
     cursorData: DEditorCursor | null;
     message: { [key: string]: string };
     controlBar: {
@@ -6,6 +8,13 @@ interface EditorStore {
         x: number;
         y: number;
         $element: HTMLDivElement | null;
+    };
+    useMenuBar: boolean;
+    imageHostURL: string;
+    firstData: DEContentData;
+    emit: {
+        (e: "update:modelValue", data: DEContentData): void;
+        (e: "uploadImageEvent", file: File): void;
     };
     $editor: HTMLDivElement | null;
     $content: HTMLDivElement | null;
@@ -116,5 +125,3 @@ interface DECustomBlock {
     classList: string[];
     textContent: string;
 }
-
-type DEContentData = (DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECustomBlock | DECodeBlock)[];

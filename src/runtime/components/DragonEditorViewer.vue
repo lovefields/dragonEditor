@@ -6,10 +6,15 @@
 import { h } from "vue";
 import type { VNode } from "vue";
 
-const props = defineProps<{
-    content: DEContentData;
-    imageHostURL?: string;
-}>();
+const props = withDefaults(
+    defineProps<{
+        content: DEContentData;
+        imageHostURL?: string;
+    }>(),
+    {
+        imageHostURL: "",
+    }
+);
 
 function structure(): VNode {
     const childList: VNode[] = [];
@@ -43,7 +48,7 @@ function structure(): VNode {
                         { class: ["de-image-area"], "data-maxwidth": item.maxWidth },
                         h("img", {
                             class: ["de-img"],
-                            src: props.imageHostURL === undefined ? item.src : props.imageHostURL + item.src,
+                            src: props.imageHostURL + item.src,
                             alt: "",
                             width: item.width,
                             height: item.height,
