@@ -5,6 +5,7 @@
 .dragon-editor {
     position: relative;
     border: 1px solid #ccc;
+    border-radius: var(--radius-default);
 
     &.--hasMenu {
         padding-top: 38px;

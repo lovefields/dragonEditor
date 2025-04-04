@@ -26,8 +26,6 @@ export default defineNuxtModule({
             write: true,
         });
 
-        // await installModule("@pinia/nuxt");
-
         addPluginTemplate({
             src: resolver.resolve("./runtime/plugin.mjs"),
             filename: "hljs.plugin.mjs",
