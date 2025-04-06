@@ -20,7 +20,23 @@ export function _editorMouseleaveEvent(event: MouseEvent, store: Ref<DragonEdito
     console.log("_editorMouseleaveEvent");
 }
 
+// 에디터 영역 이외 클릭시 처리 이벤트
 export function _checkOthersideClick(event: MouseEvent, store: Ref<DragonEditorStore>): void {
-    console.log(store);
-    console.log("_checkOthersideClick");
+    __blockAddOthersideEvent(event, store);
 }
+
+// 메뉴 추가 이외 영역 클릭 이벤트
+function __blockAddOthersideEvent(event: MouseEvent, store: Ref<DragonEditorStore>) {
+    const $target = event.target as HTMLElement;
+
+    if ($target !== null) {
+        const $menuBtn = $target.closest(".js-de-menu-add");
+        const $menuArea = $target.closest(".js-de-block-menu-area");
+
+        if ($menuBtn === null && $menuArea === null) {
+            store.value.activeStatus.addBlockMenu = false;
+        }
+    }
+}
+
+export function _editorContextMenuEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {}

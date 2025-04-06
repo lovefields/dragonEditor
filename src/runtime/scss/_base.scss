@@ -61,6 +61,7 @@ $color-list: #fff, #efefef, #ccc, #999, #777, #555, #333, #e6b8af, #dd7e6b, #cc4
         padding: 0;
         border-radius: 0;
         outline: 0;
+        font-size: inherit;
         vertical-align: middle;
     }
 
@@ -71,6 +72,7 @@ $color-list: #fff, #efefef, #ccc, #999, #777, #555, #333, #e6b8af, #dd7e6b, #cc4
     input[type="reset"] {
         border: 0;
         background: transparent;
+        font-size: inherit;
         cursor: pointer;
     }
 

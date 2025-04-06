@@ -3,9 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h, onMounted, onUnmounted, defineExpose } from "vue";
+import { ref, h, onMounted, onUnmounted } from "vue";
 import { _getBodyVNodeStructure, _getMenuBarVNodeStructure } from "../utils/layout";
-import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent } from "../utils/event";
+import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent } from "../utils/event";
 import type { VNode } from "vue";
 import "../type.d.ts";
 
@@ -38,7 +38,29 @@ const editorStore = ref<DragonEditorStore>({
     imageHostURL: props.imageHostURL,
     firstData: props.modelValue,
     menuBarTop: 0,
-    preComposingStatus: false,
+    activeStatus: {
+        addBlockMenu: false,
+        anchorInputArea: false,
+        resizeEvent: false,
+    },
+    eventStatus: {
+        preComposing: false,
+        resizeEventStartX: 0,
+        resizeEventType: "left",
+        resizeEventEndX: 0,
+        resizeCurruntWidth: 0,
+    },
+    controlStatus: {
+        curruntblockType: "text",
+        codeBlockTheme: "github",
+        codeBlockLang: "",
+        listBlockStyle: "disc",
+        anchorTabType: "url",
+        anchorHeadingList: [],
+        anchorHref: "",
+        $anchorInput: null,
+        $curruntblock: null,
+    },
     $currentBlock: null,
     $editor: null,
     $body: null,
@@ -52,23 +74,6 @@ const editorStore = ref<DragonEditorStore>({
         _parentWrapScollEvent(event, editorStore);
     },
 });
-
-// const isActiveAddBlockMenu = ref<boolean>(false);
-// const isActiveLinkArea = ref<boolean>(false);
-// const curruntType = ref<string>("");
-// const codeBlockTheme = ref<string>("github");
-// const codeblockLanguage = ref<string>("text");
-// const listBlockStyle = ref<DEListStyle>("disc");
-// const anchorValueError = ref<boolean>(false);
-// const activeLinkTabType = ref<"url" | "heading">("url");
-// const anchorHeadingList = ref<DEHeadingItem[]>([]);
-// const anchorTagValue = ref<string>("");
-// const $linkInput = ref<HTMLInputElement>();
-// let resizeEventActive: boolean = false;
-// let resizeStartX: number = 0;
-// let resizeType: string = "right";
-// let resizeEndX: number = 0;
-// let resizeCurruntWidth: number = 0;
 
 function mainStrucutre(): VNode {
     const childList: VNode[] = [];
@@ -88,10 +93,13 @@ function mainStrucutre(): VNode {
             onMouseleave: (event: MouseEvent) => _editorMouseleaveEvent(event, editorStore),
             onTouchmove: (event: TouchEvent) => _editorTouchmoveEvent(event, editorStore),
             onTouchend: (event: TouchEvent) => _editorTouchendEvent(event, editorStore),
+            onContextmenu: (event: MouseEvent) => _editorContextMenuEvent(event, editorStore),
         },
         childList
     );
 }
+
+function addBlock(data: DEBlockData): void {}
 
 onMounted(() => {
     _eidtorMountEvent(editorStore);
@@ -101,11 +109,11 @@ onUnmounted(() => {
     _eidtorUnmountEvent(editorStore);
 });
 
-// defineExpose({
-//     addBlock,
-//     setDecoration,
-//     setAlign,
-// });
+defineExpose({
+    //     addBlock,
+    //     setDecoration,
+    //     setAlign,
+});
 </script>
 
 <style lang="scss">
