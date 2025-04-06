@@ -31,8 +31,7 @@ This module support only Nuxt3.
 
 # Dependencies
 
--   @pinia/nuxt
--   highlight.js
+- highlight.js
 
 # Font
 
@@ -63,9 +62,7 @@ Second. Use Component
 ```html
 <template>
     <div class="editor-area">
-        <ClientOnly>
-            <DragonEditor v-model="contentData" />
-        </ClientOnly>
+        <DragonEditor v-model="contentData" />
     </div>
 </template>
 
