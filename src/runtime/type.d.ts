@@ -2,7 +2,17 @@ type DEContentData = DEBlockData[];
 
 type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock;
 
-type DEIconKind = "";
+type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down";
+
+type DECodeTheme = "github";
+
+type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
+
+type DETextalign = "left" | "right" | "center" | "justify";
+
+type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "custom";
+
+type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
 interface DragonEditorStore {
     cursorData: DEditorCursor | null;
@@ -17,7 +27,29 @@ interface DragonEditorStore {
     imageHostURL: string;
     firstData: DEContentData;
     menuBarTop: number;
-    preComposingStatus: boolean;
+    activeStatus: {
+        addBlockMenu: boolean;
+        anchorInputArea: boolean;
+        resizeEvent: boolean;
+    };
+    eventStatus: {
+        preComposing: boolean;
+        resizeEventStartX: number;
+        resizeEventType: "right" | "left";
+        resizeEventEndX: number;
+        resizeCurruntWidth: number;
+    };
+    controlStatus: {
+        curruntblockType: DEBlock;
+        codeBlockTheme: DECodeTheme;
+        codeBlockLang: string;
+        listBlockStyle: DEListStyle;
+        anchorTabType: "url" | "heading";
+        anchorHeadingList: DEHeadingItem[];
+        anchorHref: string;
+        $anchorInput: HTMLInputElement | null;
+        $curruntblock: HTMLDivElement | null;
+    };
     $editor: HTMLDivElement | null;
     $body: HTMLDivElement | null;
     $controlbar: HTMLDivElement | null;
@@ -66,12 +98,6 @@ interface DEHeadingItem {
     id: string;
 }
 
-type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
-
-type DETextalign = "left" | "right" | "center" | "justify";
-
-type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code";
-
 // 컴포넌트 메서드용 타입
 interface DragonEditor {
     addBlock: (type: DEBlock) => void;
@@ -101,8 +127,6 @@ interface DEListItem {
     classList: string[];
     textContent: string;
 }
-
-type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
 interface DEListBlock {
     type: "list";

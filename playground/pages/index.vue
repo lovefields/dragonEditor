@@ -10,12 +10,13 @@
         <button @click="setContent">set data</button>
         <button @click="addImage">Add Image</button>
         <button @click="addCustomBlock">Add Custom Block</button> -->
+        <p>{{ contentData }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "#imports";
-const contentData = ref<DEContentData[]>([]);
+const contentData = ref<DEContentData>([]);
 const $editor = ref<DragonEditor>();
 
 function getContent() {

@@ -37,38 +37,58 @@
             overflow-x: auto;
         }
 
+        .de-col {
+            display: flex;
+            border-right: 1px solid #ccc;
+
+            &:last-child {
+                border-right: 0;
+            }
+        }
+
         .de-menu {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-width: 38px;
-            height: 38px;
-            border-right: 1px solid #ccc;
-            box-sizing: border-box;
+            min-width: 34px;
+            height: 34px;
             cursor: pointer;
 
+            &.--disabled {
+                .de-path {
+                    fill: #ccc;
+                }
+            }
+
             .de-icon {
-                width: 24px;
-                height: 24px;
+                width: 16px;
+                height: 16px;
             }
 
             &.--lastchild {
                 border-right: 0;
             }
 
-            .de-path.--red {
-                fill: #dd0000;
+            .de-path {
+                fill: #333;
+
+                &.--red {
+                    fill: #dd0000;
+                }
             }
         }
 
         .de-block-menu-area {
             display: none;
             position: absolute;
-            top: 39px;
+            top: 35px;
             left: 0;
             width: 120px;
             background: #fff;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+            border-width: 0 1px 1px 0;
+            border-style: solid;
+            border-color: #ccc;
+            border-bottom-right-radius: var(--radius-default);
             z-index: 1000;
 
             &.--active {

@@ -6,7 +6,7 @@ export function _createBlockList({ blockList, isEditable, imageHostURL }: { bloc
     const blockArray: VNode[] = [];
 
     if (blockList.length === 0 && isEditable === true) {
-        blockArray.push(__createTextBlock(__getDefaultBlockData("text") as DETextBlock, isEditable));
+        blockArray.push(__createTextBlock(_getDefaultBlockData("text") as DETextBlock, isEditable));
     } else {
         blockList.forEach((block) => {
             switch (block.type) {
@@ -145,7 +145,7 @@ function __createCustomBlock(data: DECustomBlock): VNode {
 }
 
 // 기본 블럭 데이터 생성
-function __getDefaultBlockData(type: DEBlock): DEBlockData {
+export function _getDefaultBlockData(type: DEBlock): DEBlockData {
     let data: DEBlockData = { type: "text", classList: [], textContent: "" };
 
     switch (type) {
