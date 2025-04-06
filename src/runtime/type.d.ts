@@ -1,4 +1,8 @@
-type DEContentData = (DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECustomBlock | DECodeBlock)[];
+type DEContentData = DEBlockData[];
+
+type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock;
+
+type DEIconKind = "";
 
 interface DragonEditorStore {
     cursorData: DEditorCursor | null;
@@ -12,14 +16,19 @@ interface DragonEditorStore {
     useMenuBar: boolean;
     imageHostURL: string;
     firstData: DEContentData;
+    menuBarTop: number;
+    preComposingStatus: boolean;
+    $editor: HTMLDivElement | null;
+    $body: HTMLDivElement | null;
+    $controlbar: HTMLDivElement | null;
+    $currentBlock: HTMLElement | null;
+    $parentWrap: HTMLElement | Window | null;
+    windowClickEvent(event: MouseEvent): void;
+    parentWrapScollEvent(event: Event): void;
     emit: {
         (e: "update:modelValue", data: DEContentData): void;
         (e: "uploadImageEvent", file: File): void;
     };
-    $editor: HTMLDivElement | null;
-    $content: HTMLDivElement | null;
-    $currentBlock: HTMLElement | null;
-    $parentWrap: HTMLElement | Window | null;
 }
 
 interface DEditorCursor {

@@ -3,8 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h, onMounted } from "vue";
-import { _getBodyVNodeStructure } from "../utils/layout/body";
+import { ref, h, onMounted, onUnmounted, defineExpose } from "vue";
+import { _getBodyVNodeStructure, _getMenuBarVNodeStructure } from "../utils/layout";
+import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent } from "../utils/event";
 import type { VNode } from "vue";
 import "../type.d.ts";
 
@@ -36,46 +37,32 @@ const editorStore = ref<DragonEditorStore>({
     useMenuBar: props.useMenuBar,
     imageHostURL: props.imageHostURL,
     firstData: props.modelValue,
-    emit: emit,
+    menuBarTop: 0,
+    preComposingStatus: false,
     $currentBlock: null,
     $editor: null,
-    $content: null,
+    $body: null,
+    $controlbar: null,
     $parentWrap: null,
+    emit: emit,
+    windowClickEvent: function (event: MouseEvent) {
+        _checkOthersideClick(event, editorStore);
+    },
+    parentWrapScollEvent: function (event: Event) {
+        _parentWrapScollEvent(event, editorStore);
+    },
 });
 
-console.log(editorStore.value);
-
-function mainStrucutre(): VNode {
-    return h("div", { class: ["dragon-editor"] }, [_getBodyVNodeStructure(editorStore)]);
-}
-
-// import { ref, onMounted, onUnmounted } from "vue";
-// import { useEditorStore } from "../store";
-// import { _getCodeBlockTheme, _getCodeBlockLanguage, _setCodeBlockTheme, _setCodeBlockLanguage, _updateCodeBlockStyle, _setListBlockStyle, _updateListBlockStyle } from "../utils/controlBar";
-// import { _findScrollingElement, _findContentEditableElement } from "../utils/element";
-// import { _elementKeyEvent, _hotKeyEvent, _copyEvent, _pasteEvent } from "../utils/keyboardEvent";
-// import { _getBlockType, _createTextBlock, _createHeadingBlock, _createListBlock, _createImageBlock, _createCustomBlock, _createCodeBlock } from "../utils/block";
-// import { _setNodeStyle, _setTextAlign, _setAnchorTag, _unsetAnchorTag, _getAnchorTagValue } from "../utils/style";
-// import { _setCursor, _setCursorData, _clenupCursor } from "../utils/cursor";
-// import { _getContentData, _setContentData } from "../utils/convertor";
-// import { _addBlockToContent } from "../utils/content";
-// import "../type.d.ts";
-
-// const editorStore = useEditorStore();
 // const isActiveAddBlockMenu = ref<boolean>(false);
-// const menuBarTop = ref<number>(0);
+// const isActiveLinkArea = ref<boolean>(false);
 // const curruntType = ref<string>("");
 // const codeBlockTheme = ref<string>("github");
 // const codeblockLanguage = ref<string>("text");
 // const listBlockStyle = ref<DEListStyle>("disc");
-// const isActiveLinkArea = ref<boolean>(false);
 // const anchorValueError = ref<boolean>(false);
 // const activeLinkTabType = ref<"url" | "heading">("url");
 // const anchorHeadingList = ref<DEHeadingItem[]>([]);
 // const anchorTagValue = ref<string>("");
-// const $editor = ref<HTMLDivElement>();
-// const $content = ref<HTMLDivElement>();
-// const $controlBar = ref<HTMLDivElement>();
 // const $linkInput = ref<HTMLInputElement>();
 // let resizeEventActive: boolean = false;
 // let resizeStartX: number = 0;
@@ -83,514 +70,41 @@ function mainStrucutre(): VNode {
 // let resizeEndX: number = 0;
 // let resizeCurruntWidth: number = 0;
 
-// /**
-//  * 이벤트 관련 영역 시작
-//  */
-
-// function contentKeyboardEvent(e: KeyboardEvent) {
-//     _elementKeyEvent(e, editorStore);
-//     _hotKeyEvent(e, editorStore);
-// }
-
-// function updateCursorData(e: MouseEvent) {
-//     const originalCursorData = editorStore.cursorData;
-
-//     _clenupCursor(editorStore);
-
-//     if (editorStore.cursorData !== null && _findContentEditableElement(editorStore.cursorData.startNode) === null) {
-//         // 비정상 커서 값일 경우 초기화
-//         editorStore.cursorData = originalCursorData;
-//     }
-
-//     // 선택 블럭 업데이트
-//     if (e.target !== null) {
-//         const $block = (e.target as HTMLElement).closest(".de-block");
-
-//         if ($block !== null) {
-//             editorStore.setCurrentBlock($block as HTMLElement);
-//         }
-//     }
-
-//     controlBarStatusUpdate();
-//     anchorTagValueUpdate();
-// }
-
-// // 컨트롤 바 상태 업데이트
-// function controlBarStatusUpdate() {
-//     if (editorStore.$currentBlock !== null) {
-//         const { type } = _getBlockType(editorStore.$currentBlock);
-//         const activeList = ["code", "list"];
-
-//         curruntType.value = type;
-
-//         if (activeList.includes(curruntType.value) === true) {
-//             editorStore.controlBarActive();
-
-//             switch (type) {
-//                 case "code":
-//                     _updateCodeBlockStyle(editorStore, codeBlockTheme, codeblockLanguage);
-//                     break;
-//                 case "list":
-//                     _updateListBlockStyle(editorStore, listBlockStyle);
-//                     break;
-//             }
-//         } else {
-//             editorStore.controlBarDeactive();
-//         }
-//     }
-// }
-
-// // 사이즈 조정 이벤트 시작
-// function resizeEventStart(event: Event) {
-//     const $target = event.target as HTMLElement;
-
-//     if ($target !== null) {
-//         const $block = $target.closest(".de-block");
-
-//         if ($block?.classList.contains("de-image-block") === true && $target.classList.contains("de-btn") === true) {
-//             editorStore.setCurrentBlock($block as HTMLElement);
-//             resizeEventActive = true;
-
-//             if (event.type === "touchstart") {
-//                 resizeStartX = (event as TouchEvent).touches[0].clientX;
-//             } else {
-//                 resizeStartX = (event as MouseEvent).clientX;
-//             }
-
-//             if ($target.classList.contains("de-btn-left") === true) {
-//                 resizeType = "left";
-//             } else {
-//                 resizeType = "right";
-//             }
-
-//             resizeEndX = resizeStartX;
-
-//             const $imgArea = (editorStore.$currentBlock as HTMLElement).querySelector(".de-image-area") as HTMLDivElement;
-//             resizeCurruntWidth = parseInt($imgArea.dataset["maxwidth"] ?? "25");
-//         }
-//     }
-// }
-
-// // 사이즈 조정 이벤트
-// function resizeEvent(event: Event) {
-//     if (resizeEventActive === true) {
-//         const $imgArea = (editorStore.$currentBlock as HTMLElement).querySelector(".de-image-area") as HTMLDivElement;
-//         const contentWidth = (editorStore.$content?.offsetWidth ?? 0) / 2;
-//         let gap: number = 0;
-
-//         if (event.type === "touchmove") {
-//             resizeEndX = (event as TouchEvent).touches[0].clientX;
-//         } else {
-//             resizeEndX = (event as MouseEvent).clientX;
-//         }
-
-//         if (resizeType === "right") {
-//             gap = Math.floor(resizeStartX - resizeEndX);
-//         } else {
-//             gap = Math.floor(resizeEndX - resizeStartX);
-//         }
-
-//         const percent = (100 / contentWidth) * gap;
-//         let value = Math.floor(resizeCurruntWidth - percent);
-
-//         if (value < 25) {
-//             value = 25;
-//         }
-
-//         if (value > 100) {
-//             value = 100;
-//         }
-
-//         $imgArea.dataset["maxwidth"] = String(value);
-//     }
-// }
-
-// // 사이즈 조정 이벤트 종료
-// function resizeEventEnd() {
-//     if (resizeEventActive === true) {
-//         resizeEventActive = false;
-//     }
-// }
-
-// // 메뉴 외부 클릭시 닫기
-// function checkOthersideClick(event: MouseEvent) {
-//     if (event.target !== null) {
-//         const $controlBar = (event.target as HTMLElement).closest(".de-menu-bar");
-//         const $btnMenu = (event.target as HTMLElement).closest(".de-menu-add");
-//         const $menuArea = (event.target as HTMLElement).closest(".de-block-menu-area");
-//         const $btnLink = (event.target as HTMLElement).closest(".de-link-add");
-//         const $linkArea = (event.target as HTMLElement).closest(".de-link-exit-area");
-//         let closeMenu: boolean = false;
-//         let closeLink: boolean = false;
-
-//         if ($controlBar === null) {
-//             closeMenu = true;
-//             closeLink = true;
-//         } else {
-//             if ($btnMenu === null && $menuArea === null) {
-//                 closeMenu = true;
-//             }
-
-//             if ($btnLink === null && $linkArea === null) {
-//                 closeLink = true;
-//             }
-//         }
-
-//         if (closeMenu === true) {
-//             isActiveAddBlockMenu.value = false;
-//         }
-
-//         if (closeLink === true) {
-//             isActiveLinkArea.value = false;
-//             anchorTagValue.value = "";
-//         }
-//     }
-// }
-
-// // 블럭 삭제
-// function deleteBlock() {
-//     if (editorStore.$currentBlock !== null) {
-//         const childCount: number = editorStore.$content?.childElementCount ?? 1;
-//         const preElement = editorStore.$currentBlock.previousElementSibling;
-
-//         editorStore.$currentBlock.remove();
-
-//         if (preElement === null) {
-//             editorStore.setCurrentBlock(null);
-//         } else {
-//             const { type } = _getBlockType(editorStore.$currentBlock);
-//             const activeList = ["text", "heading"];
-
-//             if (activeList.includes(type) === true) {
-//                 editorStore.setCurrentBlock(preElement as HTMLElement);
-//                 _setCursor(preElement, 0);
-//             } else {
-//                 editorStore.setCurrentBlock(null);
-//             }
-//         }
-
-//         if (childCount < 2) {
-//             // 모든 엘리먼트를 지우려는 경우
-//             const $block = _createTextBlock();
-
-//             editorStore.$content?.insertAdjacentElement("beforeend", $block);
-//             _setCursor($block, 0);
-//         }
-//     }
-// }
-
-// // 부모 요소 스크롤 이벤트 발생시 컨트롤 바 고정
-// function parentWrapScollEvent() {
-//     if (props.useMenuBar === true && editorStore.$parentWrap !== null && editorStore.$editor !== null) {
-//         // 메뉴바를 사용하는 경우만
-
-//         const editorReac = editorStore.$editor.getBoundingClientRect();
-//         let scrollY: number = 0;
-
-//         if (editorStore.$parentWrap.constructor.name === "Window") {
-//             scrollY = (editorStore.$parentWrap as Window).scrollY;
-//         } else {
-//             scrollY = (editorStore.$parentWrap as HTMLElement).scrollTop;
-//         }
-
-//         let realElementY = editorReac.y + scrollY;
-
-//         if (editorStore.$parentWrap.constructor.name !== "Window") {
-//             const parentRect = (editorStore.$parentWrap as HTMLElement).getBoundingClientRect();
-
-//             realElementY -= parentRect.y;
-//         }
-
-//         let value: number = 0;
-
-//         if (scrollY > realElementY) {
-//             value = scrollY - realElementY - 1;
-//         } else {
-//             value = 0;
-//         }
-
-//         if (value > editorReac.height - 39) {
-//             value = editorReac.height - 39;
-//         }
-
-//         menuBarTop.value = Math.floor(value);
-//     }
-// }
-
-// // 붙여넣기 이벤트
-// function contentPasteEvent(event: ClipboardEvent) {
-//     _pasteEvent(event, editorStore, emit);
-// }
-
-// function anchorTagValueUpdate() {
-//     // 다른 이벤트 순서에 의한 딜레이
-//     setTimeout(() => {
-//         anchorTagValue.value = _getAnchorTagValue(editorStore);
-//     }, 500);
-// }
-
-// /**
-//  * 이벤트 관련 영역 종료
-//  */
-
-// /**
-//  * 컨트롤 바 이벤트 관련 영역 시작
-//  */
-
-// // 코드 블럭 테마 적용
-// function codeBlockThemeChangeEvent() {
-//     _setCodeBlockTheme(editorStore, codeBlockTheme.value);
-// }
-
-// // 코드 블럭 언어 적용
-// function codeblockLanguageChangeEvent() {
-//     _setCodeBlockLanguage(editorStore, codeblockLanguage.value);
-// }
-
-// // 리스트 스타일 적용
-// function listBlockStyleChangeEvent() {
-//     _setListBlockStyle(editorStore, listBlockStyle.value);
-// }
-
-// /**
-//  * 컨트롤 바 이벤트 관련 영역 종료
-//  */
-
-// /**
-//  * 메뉴 이벤트 관련 영역
-//  */
-// function addBlock(type: string) {
-//     isActiveAddBlockMenu.value = false;
-
-//     let blockStructure: HTMLElement | null = null;
-
-//     switch (type) {
-//         case "text":
-//             blockStructure = _createTextBlock();
-//             break;
-//         case "heading1":
-//         case "heading2":
-//         case "heading3":
-//             const level: number = parseInt(type.replace("heading", ""));
-
-//             blockStructure = _createHeadingBlock({
-//                 type: "heading",
-//                 classList: [],
-//                 id: "",
-//                 level: level,
-//                 textContent: "",
-//             });
-//             break;
-//         case "ul":
-//         case "ol":
-//             blockStructure = _createListBlock({
-//                 type: "list",
-//                 element: type,
-//                 style: type === "ul" ? "disc" : "decimal",
-//                 child: [
-//                     {
-//                         classList: [],
-//                         textContent: "",
-//                     },
-//                 ],
-//             });
-//             break;
-//         case "table":
-//             // TODO : table block
-//             break;
-//         case "code":
-//             blockStructure = _createCodeBlock({
-//                 type: "code",
-//                 theme: "github",
-//                 filename: "",
-//                 language: "Plain Text",
-//                 textContent: "",
-//             });
-//             break;
-//     }
-
-//     if (blockStructure !== null) {
-//         _addBlockToContent(blockStructure, editorStore);
-
-//         switch (type) {
-//             case "ul":
-//             case "ol":
-//                 (blockStructure.childNodes[0] as HTMLElement).focus();
-//                 break;
-//             case "codeblock":
-//                 blockStructure.querySelector("code")?.focus();
-//                 break;
-//             default:
-//                 blockStructure.focus();
-//         }
-
-//         editorStore.setCurrentBlock(blockStructure as HTMLElement);
-//         controlBarStatusUpdate();
-//     }
-// }
-
-// function addCustomBlock(HTML: string, classList: string[] = []) {
-//     const blockStructure = _createCustomBlock({
-//         type: "custom",
-//         classList: classList,
-//         textContent: HTML,
-//     });
-
-//     _addBlockToContent(blockStructure, editorStore);
-// }
-
-// function addImageBlock(data: DEImage) {
-//     if (props.imageHostURL !== "") {
-//         data.src = props.imageHostURL + data.src;
-//     }
-
-//     const blockStructure = _createImageBlock({
-//         ...data,
-//         type: "image",
-//         maxWidth: 100,
-//         classList: [],
-//     } as DEImageBlock);
-
-//     _addBlockToContent(blockStructure, editorStore);
-// }
-
-// function setDecoration(type: DEDecoration) {
-//     _setNodeStyle(`de-${type}`, editorStore);
-// }
-
-// function setTextAlign(type: DETextalign) {
-//     _setTextAlign(type, editorStore);
-// }
-
-// function getContentData(): DEContentData {
-//     if (editorStore.$content !== null) {
-//         return _getContentData(editorStore.$content, props.imageHostURL);
-//     } else {
-//         console.error("[DragonEditor] Con't find content Element.");
-//         return [];
-//     }
-// }
-
-// function setContentData(data: DEContentData) {
-//     _setContentData(data, editorStore, props.imageHostURL);
-// }
-
-// function moveBlock(type: "up" | "down") {
-//     if (editorStore.$currentBlock !== null) {
-//         let $target: Element | null;
-
-//         if (type === "up") {
-//             $target = editorStore.$currentBlock.previousElementSibling;
-//         } else {
-//             $target = editorStore.$currentBlock.nextElementSibling;
-//         }
-
-//         if ($target !== null) {
-//             ($target as HTMLElement).insertAdjacentHTML(type === "up" ? "beforebegin" : "afterend", editorStore.$currentBlock.outerHTML);
-//             editorStore.$currentBlock.remove();
-
-//             if (type === "up") {
-//                 editorStore.setCurrentBlock(($target as HTMLElement).previousElementSibling as HTMLElement | null);
-//             } else {
-//                 editorStore.setCurrentBlock(($target as HTMLElement).nextElementSibling as HTMLElement | null);
-//             }
-//         }
-//     }
-// }
-
-// function openLinkArea() {
-//     activeLinkTabType.value = "url";
-//     anchorValueError.value = false;
-// }
-
-// function chooseMediaEvent(event: Event) {
-//     const $target = event.target as HTMLInputElement;
-//     const file = $target.files![0];
-
-//     emit("uploadImageEvent", file);
-//     $target.value = "";
-// }
-
-// // 링크 삽입
-// function setLink() {
-//     if ($linkInput.value !== null && $linkInput.value?.checkValidity() === true && anchorTagValue.value !== "") {
-//         _setAnchorTag(anchorTagValue.value, true, editorStore);
-//         isActiveLinkArea.value = false;
-//         anchorValueError.value = false;
-//         anchorTagValue.value = "";
-//     } else {
-//         anchorValueError.value = true;
-//     }
-// }
-
-// function setHeadingLink(id: string) {
-//     _setAnchorTag(id, false, editorStore);
-//     isActiveLinkArea.value = false;
-//     anchorValueError.value = false;
-//     anchorTagValue.value = "";
-// }
-
-// // 헤딩 리스트 업데이트
-// function listUpHeading() {
-//     activeLinkTabType.value = "heading";
-
-//     if (editorStore.$content !== null) {
-//         const $blockList = editorStore.$content.querySelectorAll(".de-heading-block");
-//         let headingList: DEHeadingItem[] = [];
-
-//         $blockList.forEach(($headingTag) => {
-//             if ($headingTag.textContent !== null) {
-//                 headingList.push({
-//                     name: $headingTag.textContent,
-//                     id: $headingTag.id,
-//                 });
-//             }
-//         });
-
-//         anchorHeadingList.value = headingList;
-//     }
-// }
-
-// function removeLink() {
-//     _unsetAnchorTag(editorStore);
-// }
-
-// /**
-//  * 메뉴 이벤트 관련 영역 종료
-//  */
+function mainStrucutre(): VNode {
+    const childList: VNode[] = [];
+
+    if (editorStore.value.useMenuBar === true) {
+        childList.push(_getMenuBarVNodeStructure(editorStore));
+    }
+
+    childList.push(_getBodyVNodeStructure(editorStore));
+
+    return h(
+        "div",
+        {
+            class: ["dragon-editor", "js-dragon-editor", { "--has-menu": editorStore.value.useMenuBar === true }],
+            onMousemove: (event: MouseEvent) => _editorMousemoveEvent(event, editorStore),
+            onMouseup: (event: MouseEvent) => _editorMouseupEvent(event, editorStore),
+            onMouseleave: (event: MouseEvent) => _editorMouseleaveEvent(event, editorStore),
+            onTouchmove: (event: TouchEvent) => _editorTouchmoveEvent(event, editorStore),
+            onTouchend: (event: TouchEvent) => _editorTouchendEvent(event, editorStore),
+        },
+        childList
+    );
+}
 
 onMounted(() => {
-    console.log("editorStore", editorStore.value);
-    //     if ($editor.value !== undefined) {
-    //         editorStore.setWrapElement($editor.value);
-    //         editorStore.setParentWrapElement(_findScrollingElement($editor.value));
-    //     }
-
-    //     if ($content.value !== undefined) {
-    //         editorStore.setContentElement($content.value);
-    //     }
-
-    //     if ($controlBar.value !== undefined) {
-    //         editorStore.setContrulBar($controlBar.value);
-    //     }
-
-    //     window.addEventListener("click", checkOthersideClick, true);
-    //     editorStore.$parentWrap?.addEventListener("scroll", parentWrapScollEvent, true);
+    _eidtorMountEvent(editorStore);
 });
 
-// onUnmounted(() => {
-//     window.removeEventListener("click", checkOthersideClick, true);
-//     editorStore.$parentWrap?.removeEventListener("scroll", parentWrapScollEvent, true);
-// });
+onUnmounted(() => {
+    _eidtorUnmountEvent(editorStore);
+});
 
 // defineExpose({
 //     addBlock,
-//     addImageBlock,
 //     setDecoration,
-//     setTextAlign,
-//     getContentData,
-//     setContentData,
-//     addCustomBlock,
+//     setAlign,
 // });
 </script>
 
