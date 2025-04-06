@@ -3,7 +3,7 @@
 [issues-src]: https://img.shields.io/github/issues/lovefields/dragonEditor
 [issues-href]: https://github.com/lovefields/dragonEditor/issues
 [forks-src]: https://img.shields.io/github/forks/lovefields/dragonEditor
-[forks-href]: https://github.com/lovefields/dragonEditor/network/members
+[forks-href]: https://github.com/lovefields/dragonEditor/forks
 [language-src]: https://img.shields.io/github/languages/top/lovefields/dragonEditor
 [language-href]: https://github.com/lovefields/dragonEditor/
 [npm-version-src]: https://img.shields.io/npm/v/dragon-editor/latest.svg?style=flat&colorA=18181B&colorB=28CF8D
