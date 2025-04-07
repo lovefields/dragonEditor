@@ -1,3 +1,7 @@
+export function _addBlock(){
+
+}
+
 export function _getCurruntBlock($target: EventTarget): {
     type: DEBlock;
     $element: HTMLDivElement | null;
@@ -6,11 +10,6 @@ export function _getCurruntBlock($target: EventTarget): {
     let typeName: DEBlock = "text";
 
     if ($block !== null) {
-        switch (true) {
-            case $block.classList.contains("de-text-block") === true:
-                break;
-        }
-
         switch (true) {
             case $block.classList.contains("de-text-block"):
                 typeName = "text";
@@ -57,3 +56,140 @@ export function _createTextBlock(data: DETextBlock): HTMLParagraphElement {
 
     return $paragraph;
 }
+
+
+// // 해딩 블럭 생성
+// export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
+//     const $headingBlock = document.createElement(`h${data.level}`) as HTMLHeadingElement;
+
+//     if (data.id === "") {
+//         $headingBlock.id = _generateId();
+//     } else {
+//         $headingBlock.id = data.id;
+//     }
+
+//     $headingBlock.classList.add("de-block", "de-heading-block", ...data.classList);
+//     $headingBlock.dataset["level"] = String(data.level);
+//     $headingBlock.setAttribute("contenteditable", "true");
+
+//     if (data.textContent !== "") {
+//         $headingBlock.innerHTML = data.textContent;
+//     }
+
+//     return $headingBlock;
+// }
+
+// // 리스트 블럭 생성
+// export function _createListBlock(data: DEListBlock): HTMLElement {
+//     const $block = document.createElement(data.element) as HTMLElement;
+
+//     $block.classList.add("de-block", "de-list-block");
+//     $block.dataset["style"] = data.style;
+
+//     data.child.forEach((child: DEListItem) => {
+//         $block.appendChild(_createListItemBlock(child));
+//     });
+
+//     return $block;
+// }
+
+// // 리스트 아이템 블럭 생성
+// export function _createListItemBlock(child: DEListItem = { textContent: "", classList: [] }): HTMLLIElement {
+//     const $li = document.createElement("li") as HTMLLIElement;
+
+//     $li.classList.add("de-item", ...child.classList);
+//     $li.setAttribute("contenteditable", "true");
+
+//     if (child.textContent !== "") {
+//         $li.innerHTML = child.textContent;
+//     }
+
+//     return $li;
+// }
+
+// // 이미지 블럭 생성
+// export function _createImageBlock(data: DEImageBlock, imageHostURL: string = ""): HTMLDivElement {
+//     const $wrap = document.createElement("div") as HTMLDivElement;
+//     const $div = document.createElement("div") as HTMLDivElement;
+//     const $leftBtn = document.createElement("button") as HTMLButtonElement;
+//     const $rightBtn = document.createElement("button") as HTMLButtonElement;
+//     const $image = document.createElement("img") as HTMLImageElement;
+//     const $p = document.createElement("p") as HTMLParagraphElement;
+
+//     $wrap.classList.add("de-block", "de-image-block", ...data.classList);
+//     $div.classList.add("de-image-area");
+//     $leftBtn.classList.add("de-btn", "de-btn-left");
+//     $rightBtn.classList.add("de-btn", "de-btn-right");
+//     $image.classList.add("de-img");
+//     $p.contentEditable = "true";
+//     $p.classList.add("de-caption");
+
+//     if (data.width / data.height < 1) {
+//         $div.dataset["maxwidth"] = "40";
+//     } else {
+//         $div.dataset["maxwidth"] = String(data.maxWidth);
+//     }
+
+//     $image.src = imageHostURL + data.src;
+//     $image.width = data.width;
+//     $image.height = data.height;
+//     $image.draggable = false;
+
+//     if (data.caption !== undefined) {
+//         $p.textContent = data.caption;
+//     }
+
+//     $div.appendChild($image);
+//     $div.appendChild($leftBtn);
+//     $div.appendChild($rightBtn);
+//     $wrap.appendChild($div);
+//     $wrap.appendChild($p);
+
+//     return $wrap;
+// }
+
+// // 코드 블럭 생성
+// export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
+//     const $wrap = document.createElement("div") as HTMLDivElement;
+//     const $file = document.createElement("p") as HTMLParagraphElement;
+//     const $lang = document.createElement("p") as HTMLParagraphElement;
+//     const $pre = document.createElement("pre") as HTMLPreElement;
+//     const $code = document.createElement("code") as HTMLElement;
+
+//     $wrap.classList.add("de-block", "de-code-block");
+//     $wrap.dataset["theme"] = data.theme;
+//     $file.contentEditable = "true";
+//     $file.classList.add("de-filename");
+//     $lang.textContent = data.language;
+//     $lang.classList.add("de-language");
+//     $pre.classList.add("de-pre");
+//     $code.contentEditable = "true";
+//     $code.classList.add("de-code-content");
+
+//     if (data.filename !== "") {
+//         $file.textContent = data.filename;
+//     }
+
+//     if (data.textContent !== "") {
+//         $code.innerHTML = data.textContent;
+//     }
+
+//     $pre.appendChild($code);
+//     $wrap.appendChild($file);
+//     $wrap.appendChild($lang);
+//     $wrap.appendChild($pre);
+
+//     return $wrap;
+// }
+
+
+
+// // 커스텀 블럭 생성
+// export function _createCustomBlock(data: DECustomBlock): HTMLDivElement {
+//     const $block = document.createElement("div") as HTMLDivElement;
+
+//     $block.classList.add("de-block", "de-custom-block", ...data.classList);
+//     $block.innerHTML = data.textContent;
+
+//     return $block;
+// }

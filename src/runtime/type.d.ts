@@ -12,7 +12,13 @@ type DETextalign = "left" | "right" | "center" | "justify";
 
 type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "custom";
 
+type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom";
+
 type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
+
+type DECodeblockTheme = "github" | "github-dark-dimmed";
+
+type DECodeblockLang = "text" | "bash" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "js" | "ts" | "kotlin" | "lua" | "md" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shell" | "swift" | "yml";
 
 interface DragonEditorStore {
     cursorData: DEditorCursor | null;
@@ -147,8 +153,8 @@ interface DEImageBlock {
 
 interface DECodeBlock {
     type: "code";
-    language: string;
-    theme: string;
+    language: DECodeblockLang;
+    theme: DECodeblockTheme;
     filename: string;
     textContent: string;
 }
