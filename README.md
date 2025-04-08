@@ -14,10 +14,10 @@
 [nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
 [nuxt-href]: https://nuxt.com
 
-[![stars-src]](stars-href)
-[![forks-src]](forks-href)
-[![language-src]](language-href)
-[![issues-src]](issues-href)
+[![stars-src]][stars-href]
+[![forks-src]][forks-href]
+[![language-src]][language-href]
+[![issues-src]][issues-href]
 [![npm-version-src]][npm-version-href]
 [![npm-downloads-src]][npm-downloads-href]
 ![NPM][license-src]
