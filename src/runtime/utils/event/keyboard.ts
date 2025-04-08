@@ -29,24 +29,26 @@ export function _contentPasteEvent(event: ClipboardEvent, store: Ref<DragonEdito
 
 // 키보드 엔터 이벤트 (키 다운)
 function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    if (event.shiftKey === true) {
-        // 쉬프트 엔터 이벤트
+    if (store.value.eventStatus.preComposing === false) {
+        if (event.shiftKey === true) {
+            // 쉬프트 엔터 이벤트
 
-        switch (store.value.controlStatus.curruntblockType) {
-            default:
-                __defaultBlockShiftEnterEvent(event, store);
-        }
-    } else {
-        // 일반 엔터 이벤트
+            switch (store.value.controlStatus.curruntblockType) {
+                default:
+                    __defaultBlockShiftEnterEvent(event, store);
+            }
+        } else {
+            // 일반 엔터 이벤트
 
-        switch (store.value.controlStatus.curruntblockType) {
-            case "ol":
-            case "ul":
-                __listBlockEnterEvent(event, store);
-                break;
+            switch (store.value.controlStatus.curruntblockType) {
+                case "ol":
+                case "ul":
+                    __listBlockEnterEvent(event, store);
+                    break;
 
-            default:
-                __defaultBlockEnterEvent(event, store);
+                default:
+                    __defaultBlockEnterEvent(event, store);
+            }
         }
     }
 }
