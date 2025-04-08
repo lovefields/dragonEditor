@@ -1,6 +1,6 @@
 import { h } from "vue";
 import type { VNode } from "vue";
-import { _generateId } from "../event";
+import { _generateId, _getDefaultBlockData } from "../event";
 
 // 블럭 구조체 생성
 export function _createBlockList({ blockList, isEditable, imageHostURL }: { blockList: DEContentData; isEditable: boolean; imageHostURL: string } = { blockList: [], isEditable: false, imageHostURL: "" }): VNode[] {
@@ -143,50 +143,4 @@ function __createCodeBlock(data: DECodeBlock, isEditable: boolean): VNode {
 // 커스텀 블럭 생성
 function __createCustomBlock(data: DECustomBlock): VNode {
     return h("div", { class: ["de-block", "de-custom-block", ...data.classList], innerHTML: data.textContent });
-}
-
-// 기본 블럭 데이터 생성
-export function _getDefaultBlockData(type: DEBlockMenutype): DEBlockData {
-    let data: DEBlockData = { type: "text", classList: [], textContent: "" };
-
-    switch (type) {
-        case "heading1":
-        case "heading2":
-        case "heading3":
-            data = {
-                type: "heading",
-                level: parseInt(type.replace("heading", "")),
-                id: _generateId(),
-                classList: [],
-                textContent: "",
-            };
-            break;
-
-        case "ol":
-        case "ul":
-            data = {
-                type: "list",
-                element: type,
-                style: type === "ol" ? "decimal" : "disc",
-                child: [
-                    {
-                        classList: [],
-                        textContent: "",
-                    },
-                ],
-            };
-            break;
-
-        case "code":
-            data = {
-                type: "code",
-                language: "text",
-                theme: "github",
-                filename: "",
-                textContent: "",
-            };
-            break;
-    }
-
-    return data;
 }

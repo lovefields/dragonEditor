@@ -1,6 +1,7 @@
 import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _getIconNode } from "./index";
+import { _addBlock } from "../node";
 
 export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
     const childNode: VNode[] = [];
@@ -51,13 +52,90 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
 function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
     const menuList: VNode[] = [];
 
-    menuList.push(h("button", { class: ["de-add-block"], onClick: (evnet: MouseEvent) => {} }, "Text"));
-    menuList.push(h("button", { class: ["de-add-block"], onClick: (evnet: MouseEvent) => {} }, "Heading-1"));
-    menuList.push(h("button", { class: ["de-add-block"], onClick: (evnet: MouseEvent) => {} }, "Heading-2"));
-    menuList.push(h("button", { class: ["de-add-block"], onClick: (evnet: MouseEvent) => {} }, "Heading-3"));
-    menuList.push(h("button", { class: ["de-add-block"], onClick: (evnet: MouseEvent) => {} }, "Unodered List"));
-    menuList.push(h("button", { class: ["de-add-block"], onClick: (evnet: MouseEvent) => {} }, "Odered List"));
-    menuList.push(h("button", { class: ["de-add-block"], onClick: (evnet: MouseEvent) => {} }, "Code Block"));
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("text", store);
+                },
+            },
+            "Text"
+        )
+    );
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("heading1", store);
+                },
+            },
+            "Heading-1"
+        )
+    );
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("heading2", store);
+                },
+            },
+            "Heading-2"
+        )
+    );
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("heading3", store);
+                },
+            },
+            "Heading-3"
+        )
+    );
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("ul", store);
+                },
+            },
+            "Unodered List"
+        )
+    );
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("ol", store);
+                },
+            },
+            "Odered List"
+        )
+    );
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("code", store);
+                },
+            },
+            "Code Block"
+        )
+    );
 
     // TODO : 테이블 , 유튜브 및 영상 넣기
 

@@ -20,6 +20,10 @@ type DECodeblockTheme = "github" | "github-dark-dimmed";
 
 type DECodeblockLang = "text" | "bash" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "js" | "ts" | "kotlin" | "lua" | "md" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shell" | "swift" | "yml";
 
+type DEBlockElement = HTMLParagraphElement | HTMLHeadingElement | HTMLElement | HTMLDivElement;
+
+type DEListElementName = "ul" | "ol";
+
 interface DragonEditorStore {
     cursorData: DEditorCursor | null;
     message: { [key: string]: string };
@@ -136,7 +140,7 @@ interface DEListItem {
 
 interface DEListBlock {
     type: "list";
-    element: "ul" | "ol";
+    element: DEListElementName;
     style: DEListStyle;
     child: DEListItem[];
 }
