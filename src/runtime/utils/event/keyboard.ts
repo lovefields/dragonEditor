@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { _updateModelData, _updateCursorData, _setCursor, _sortingCursorDataOnElement } from "./index";
 import { _getCurruntBlock, _createTextBlock, _getParentElementIfNodeIsText } from "../node";
-import { _getDefaultBlockData } from "../layout";
+import { _getDefaultBlockData } from "../event";
 
 // 키 다운 이벤트
 export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
