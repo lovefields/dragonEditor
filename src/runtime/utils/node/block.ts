@@ -132,7 +132,7 @@ export function _createListBlock(data: DEListBlock): HTMLElement {
 }
 
 // 리스트 아이템 블럭 생성
-export function _createListItemBlock(child: DEListItem): HTMLLIElement {
+export function _createListItemBlock(child: DEListItem = { textContent: "", classList: [] }): HTMLLIElement {
     const $li = document.createElement("li") as HTMLLIElement;
 
     $li.classList.add("de-item", ...child.classList);

@@ -48,6 +48,7 @@ interface DragonEditorStore {
         resizeEventType: "right" | "left";
         resizeEventEndX: number;
         resizeCurruntWidth: number;
+        keyboardEnterCount: number;
     };
     controlStatus: {
         curruntblockType: DEBlock;
@@ -63,7 +64,6 @@ interface DragonEditorStore {
     $editor: HTMLDivElement | null;
     $body: HTMLDivElement | null;
     $controlbar: HTMLDivElement | null;
-    $currentBlock: HTMLElement | null;
     $parentWrap: HTMLElement | Window | null;
     windowClickEvent(event: MouseEvent): void;
     parentWrapScollEvent(event: Event): void;
