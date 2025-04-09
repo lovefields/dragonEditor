@@ -49,6 +49,7 @@ const editorStore = ref<DragonEditorStore>({
         resizeEventType: "left",
         resizeEventEndX: 0,
         resizeCurruntWidth: 0,
+        keyboardEnterCount: 0,
     },
     controlStatus: {
         curruntblockType: "text",
@@ -61,7 +62,6 @@ const editorStore = ref<DragonEditorStore>({
         $anchorInput: null,
         $curruntblock: null,
     },
-    $currentBlock: null,
     $editor: null,
     $body: null,
     $controlbar: null,
