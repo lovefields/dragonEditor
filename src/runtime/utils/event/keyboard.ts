@@ -61,6 +61,10 @@ function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
         // 쉬프트 엔터 이벤트
 
         switch (store.value.controlStatus.curruntblockType) {
+            case "image":
+                event.preventDefault();
+                break;
+
             case "code":
                 __codeBlockShiftEnterEvent(event, store);
                 break;
@@ -77,6 +81,18 @@ function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
         // 일반 엔터 이벤트
 
         switch (store.value.controlStatus.curruntblockType) {
+            case "image":
+                event.preventDefault();
+
+                if (store.value.controlStatus.$curruntblock !== null) {
+                    const $block = store.value.controlStatus.$curruntblock;
+                    const $newTextBlock = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
+
+                    $block.insertAdjacentElement("afterend", $newTextBlock);
+                    $newTextBlock.focus();
+                }
+                break;
+
             case "code":
                 // NOTE : 코드블럭은 별도의 조치 없음
                 break;
@@ -909,7 +925,7 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
 }
 
 // 코드블럭 쉬프트 엔터 이벤트
-function __codeBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>) {
+function __codeBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     event.preventDefault();
 
     if (store.value.controlStatus.$curruntblock !== null) {
@@ -922,13 +938,15 @@ function __codeBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
 }
 
 // 키보드 백스페이스 이벤트 (키 다운)
-function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>) {
+function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     switch (store.value.controlStatus.curruntblockType) {
         case "code":
+            __codeBlockBackspaceEvent(event, store);
             break;
 
         case "ol":
         case "ul":
+            __listBlockBackspaceEvent(event, store);
             break;
 
         default:
@@ -937,12 +955,12 @@ function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>) {
 }
 
 // 기본 백스페이스 이벤트
-function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>) {
+function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
         const childList = store.value.$body.querySelectorAll(".de-block");
         const $block = store.value.controlStatus.$curruntblock;
-        const $target: HTMLElement = _getParentElementIfNodeIsText(cursorData.startNode, $block) as HTMLElement;
+        let $target = cursorData.startNode;
         let elementIdx: number = -1;
 
         for (let i = 0; childList.length > i; i += 1) {
@@ -952,19 +970,16 @@ function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdi
             }
         }
 
-        console.log(elementIdx);
+        if ($target.constructor.name === "Text") {
+            $target = $target.parentNode as Node;
+        }
 
         // 블럭의 경우
         if (elementIdx === 0) {
             // 첫번째 블럭인 경우
 
-            console.log($target);
-            console.log($block);
-
             if (cursorData.startOffset === 0 && $target === $block) {
                 // 에디팅 블럭의 첫 커서인 경우
-
-                console.log("?!");
 
                 if ($target.textContent === "") {
                     // 내용이 없는 경우 : 상태 초기화를 위한 교체
@@ -975,8 +990,6 @@ function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdi
                 } else {
                     // 내용이 있는 경우
                     event.preventDefault();
-
-                    console.log(store.value.controlStatus.curruntblockType);
 
                     if (store.value.controlStatus.curruntblockType !== "text") {
                         const $newBlock = _createTextBlock({ type: "text", classList: [], textContent: $block.textContent ?? "" });
@@ -989,81 +1002,321 @@ function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdi
             }
         } else {
             // 첫번째 블럭이 아닌 경우
-            //     if ($textBlock.hasChildNodes() === false) {
-            //         // 내용이 없는 경우
-            //         e.preventDefault();
-            //         // arrangeCursorAndContentInBackspaceEvent($textBlock, $textBlock);
-            //         const $preBlock = $textBlock.previousElementSibling as HTMLElement;
-            //         const { type: preBlockType } = _getBlockType($preBlock);
-            //         $textBlock.remove();
-            //         if (preBlockType === "text" || preBlockType === "heading") {
-            //             if ($preBlock.hasChildNodes() === true) {
-            //                 const textBlockChildList = $preBlock.childNodes;
-            //                 const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
-            //                 _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
-            //             } else {
-            //                 _setCursor($preBlock as Element, 0);
-            //             }
-            //         }
-            //     } else {
-            //         // 내용이 있는 경우
-            //         if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($textBlock.childNodes[0] === store.cursorData.startNode || $textBlock.childNodes[0] === $target)) {
-            //             // 커서가 첫번째에 있는 경우
-            //             e.preventDefault();
-            //             const $preBlock = $textBlock.previousElementSibling as HTMLElement;
-            //             const { type: preBlockType } = _getBlockType($preBlock);
-            //             if (preBlockType === "text" || preBlockType === "heading") {
-            //                 if ($preBlock.hasChildNodes() === true) {
-            //                     const textBlockChildList = $preBlock.childNodes;
-            //                     const textBlockTargetChildIdx = textBlockChildList.length - 1;
-            //                     const textBlockTargetCursorIdx = ((textBlockChildList[textBlockTargetChildIdx] as ChildNode).textContent as string).length;
-            //                     const thisBlockHTML = $textBlock.innerHTML;
-            //                     $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
-            //                     _setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
-            //                 } else {
-            //                     $preBlock.innerHTML = $textBlock.innerHTML;
-            //                     _setCursor($preBlock as Element, 0);
-            //                 }
-            //                 $textBlock.remove();
-            //             }
-            //         }
-            //     }
+
+            if ($block.textContent === "") {
+                // 내용이 없는 경우
+
+                event.preventDefault();
+
+                let hasChild: boolean = false;
+                let childHTML: string = "";
+
+                if ($block.hasChildNodes() === true) {
+                    // br 만 있는 경우
+
+                    const $brList = $block.querySelectorAll("br");
+
+                    if ($brList.length > 1) {
+                        hasChild = true;
+                        childHTML = $block.innerHTML;
+                    }
+                }
+
+                ___backspackeLogic(hasChild, childHTML, $block, $block);
+            } else {
+                // 내용이 있는 경우
+
+                if (cursorData.type === "Caret" && cursorData.startOffset === 0 && ($block.childNodes[0] === cursorData.startNode || $block.childNodes[0] === $target)) {
+                    // 커서가 첫번째에 있는 경우
+
+                    event.preventDefault();
+
+                    let childHTML: string = $block.innerHTML;
+
+                    ___backspackeLogic(true, childHTML, $block, $block);
+                }
+            }
         }
 
-        // // 노드의 경우
-        // if (store.cursorData.startOffset === 1 && $target !== $textBlock) {
-        //     if (($target.textContent as string).length === 1) {
-        //         // 삭제될 노드의 경우
+        // 노드의 경우
+        ___nodeBackspaceEvent(event, cursorData, $block, $target);
+        _updateCursorData(store);
+    }
+}
 
-        //         e.preventDefault();
-        //         const preNode = $target.previousSibling;
+// 리스트 블럭 백스페이스 이벤트
+function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+        const cursorData = store.value.cursorData;
+        const $listBlock = store.value.controlStatus.$curruntblock;
+        const $targetItem = _findContentEditableElement(cursorData.startNode as HTMLElement) as HTMLLIElement;
+        const $liList = $listBlock.querySelectorAll(".de-item");
+        let $target = cursorData.startNode;
+        let liIdx: number = -1;
 
-        //         if (preNode !== null) {
-        //             // 이전 노드가 있는 경우
+        if ($target.constructor.name === "Text") {
+            $target = $target.parentNode as Node;
+        }
 
-        //             $target.remove();
-        //             _setCursor(preNode as Element, (preNode.textContent as string).length);
-        //         } else {
-        //             // 이전 노드가 없는 경우
+        for (let i = 0; $liList.length > i; i += 1) {
+            if ($liList[i] === $targetItem) {
+                liIdx = i;
+                break;
+            }
+        }
 
-        //             if ($textBlock.childNodes[1] === undefined) {
-        //                 $textBlock.innerHTML = "";
-        //                 _setCursor($textBlock, 0);
-        //             } else {
-        //                 _setCursor($textBlock.childNodes[1] as Element, 0);
-        //                 $target.remove();
-        //             }
-        //         }
-        //     }
-        // }
+        // 블럭의 경우
+        if ($liList.length === 1) {
+            // 자식이 하나인 경우
 
-        // _setCursorData(store);
+            if ($targetItem.textContent === "") {
+                // 텍스트가 없는 경우
+
+                event.preventDefault();
+
+                let hasChild: boolean = false;
+                let childHTML: string = "";
+
+                if ($targetItem.hasChildNodes() === true) {
+                    // br 만 있는 경우
+
+                    const $brList = $targetItem.querySelectorAll("br");
+
+                    if ($brList.length > 1) {
+                        hasChild = true;
+                        childHTML = $targetItem.innerHTML;
+                    }
+                }
+
+                ___backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
+            } else {
+                // 텍스트가 있는 경우
+
+                if (cursorData.type === "Caret" && cursorData.startOffset === 0 && ($targetItem.childNodes[0] === cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                    // 커서가 첫번째에 있는 경우
+
+                    event.preventDefault();
+
+                    let childHTML: string = $targetItem.innerHTML;
+
+                    ___backspackeLogic(true, childHTML, $listBlock, $targetItem);
+                }
+            }
+        } else {
+            // 자식이 여러개인 경우
+
+            if (liIdx === 0) {
+                // 첫번째 자식인 경우
+
+                if ($targetItem.textContent === "") {
+                    // 텍스트가 없는 경우
+
+                    event.preventDefault();
+
+                    let hasChild: boolean = false;
+                    let childHTML: string = "";
+
+                    if ($targetItem.hasChildNodes() === true) {
+                        // br 만 있는 경우
+
+                        const $brList = $targetItem.querySelectorAll("br");
+
+                        if ($brList.length > 1) {
+                            hasChild = true;
+                            childHTML = $targetItem.innerHTML;
+                        }
+                    }
+
+                    ___backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
+                } else {
+                    // 텍스트가 있는 경우
+
+                    if (cursorData.type === "Caret" && cursorData.startOffset === 0 && ($targetItem.childNodes[0] === cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                        // 커서가 첫번째에 있는 경우
+
+                        event.preventDefault();
+
+                        let childHTML: string = $targetItem.innerHTML;
+
+                        ___backspackeLogic(true, childHTML, $listBlock, $targetItem);
+                    }
+                }
+            } else {
+                // 첫번째 자식이 아닌 경우
+
+                if ($targetItem.textContent === "") {
+                    // 텍스트가 없는 경우
+
+                    event.preventDefault();
+
+                    const $preLi = $targetItem.previousElementSibling as HTMLElement;
+                    const hasChild: boolean = $preLi.hasChildNodes();
+                    let childHTML: string = "";
+
+                    if ($targetItem.hasChildNodes() === true) {
+                        // br 만 있는 경우
+
+                        const $brList = $targetItem.querySelectorAll("br");
+
+                        if ($brList.length > 1) {
+                            childHTML = $targetItem.innerHTML;
+                        }
+                    }
+
+                    if ($preLi.hasChildNodes() === true) {
+                        const textBlockChildList = $preLi.childNodes;
+                        const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+
+                        if (hasChild === true) {
+                            $preLi.insertAdjacentHTML("beforeend", childHTML);
+                        }
+
+                        _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                    } else {
+                        if (hasChild === true) {
+                            $preLi.insertAdjacentHTML("beforeend", childHTML);
+                        }
+
+                        _setCursor($preLi as Element, 0);
+                    }
+
+                    $targetItem.remove();
+                } else {
+                    // 텍스트가 있는 경우
+
+                    if (cursorData.type === "Caret" && cursorData.startOffset === 0 && ($targetItem.childNodes[0] === cursorData.startNode || $targetItem.childNodes[0] === $target)) {
+                        // 커서가 첫번째에 있는 경우
+
+                        event.preventDefault();
+
+                        const $preLi = $targetItem.previousElementSibling as HTMLElement;
+                        const hasChild: boolean = $preLi.hasChildNodes();
+                        let childHTML: string = $targetItem.innerHTML;
+
+                        if ($preLi.hasChildNodes() === true) {
+                            const textBlockChildList = $preLi.childNodes;
+                            const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+
+                            if (hasChild === true) {
+                                $preLi.insertAdjacentHTML("beforeend", childHTML);
+                            }
+
+                            _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                        } else {
+                            if (hasChild === true) {
+                                $preLi.insertAdjacentHTML("beforeend", childHTML);
+                            }
+
+                            _setCursor($preLi as Element, 0);
+                        }
+
+                        $targetItem.remove();
+                    }
+                }
+            }
+        }
+
+        // 노드의 경우
+        ___nodeBackspaceEvent(event, cursorData, $listBlock, $target);
+        _updateCursorData(store);
+    }
+}
+
+// 코드 블럭 백스페이스 이벤트
+function __codeBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+        const cursorData = store.value.cursorData;
+        const $block = store.value.controlStatus.$curruntblock;
+    }
+}
+
+// 기본 백스페이스 처리 로직
+function ___backspackeLogic(hasChild: boolean, childHTML: string, $block: HTMLElement, $targetItem: HTMLElement): void {
+    const $preBlock = $block.previousElementSibling as HTMLElement;
+    const { type: preBlockType } = _getCurruntBlock($preBlock);
+    let preDelete: boolean = false;
+    let $targetBlock: HTMLElement = $preBlock;
+
+    switch (preBlockType) {
+        case "custom":
+        case "image":
+            preDelete = true;
+            break;
+
+        case "code":
+            $targetBlock = $preBlock.querySelector(".de-code-content") as HTMLElement;
+            break;
+
+        case "ul":
+        case "ol":
+            const $liList = $preBlock.querySelectorAll(".de-item");
+
+            $targetBlock = $liList[$liList.length - 1] as HTMLElement;
+            break;
+
+        default:
+            $targetBlock = $preBlock;
+    }
+
+    if (preDelete === false) {
+        if ($targetBlock.hasChildNodes() === true) {
+            const textBlockChildList = $targetBlock.childNodes;
+            const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+
+            if (hasChild === true) {
+                $targetBlock.insertAdjacentHTML("beforeend", childHTML);
+            }
+
+            _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+        } else {
+            if (hasChild === true) {
+                $targetBlock.insertAdjacentHTML("beforeend", childHTML);
+            }
+
+            _setCursor($targetBlock as Element, 0);
+        }
+
+        $targetItem.remove();
+    } else {
+        // 이동 안하고 이전 블럭 삭제
+
+        $preBlock.remove();
+    }
+}
+
+// 노드 백스페이스 처리용 이벤트
+function ___nodeBackspaceEvent(event: KeyboardEvent, cursorData: DEditorCursor, $block: HTMLElement, $target: Node): void {
+    if (cursorData.startOffset === 1 && $target !== $block) {
+        if (($target.textContent as string).length === 1) {
+            // 삭제될 노드의 경우
+
+            event.preventDefault();
+            const preNode = $target.previousSibling;
+
+            if (preNode !== null) {
+                // 이전 노드가 있는 경우
+
+                ($target as HTMLElement).remove();
+                _setCursor(preNode as Element, (preNode.textContent as string).length);
+            } else {
+                // 이전 노드가 없는 경우
+
+                if ($block.childNodes[1] === undefined) {
+                    $block.innerHTML = "";
+                    _setCursor($block, 0);
+                } else {
+                    _setCursor($block.childNodes[1] as Element, 0);
+                    ($target as HTMLElement).remove();
+                }
+            }
+        }
     }
 }
 
 // 키 업 이벤트
 let contentKeyupEvent: NodeJS.Timeout;
 export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    _updateCursorData(store);
     clearTimeout(contentKeyupEvent);
     contentKeyupEvent = setTimeout(() => {
         _updateModelData(store);
