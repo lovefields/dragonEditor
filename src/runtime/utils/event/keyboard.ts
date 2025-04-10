@@ -29,6 +29,22 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
                 store.value.eventStatus.keyboardEnterCount = 0;
             }, 1);
             break;
+
+        case "Backspace":
+            __backspaceEvent(event, store);
+            break;
+
+        case "Tab":
+            break;
+
+        case "Space":
+            break;
+
+        case "ArrowUp":
+            break;
+
+        case "ArrowDown":
+            break;
     }
 
     store.value.eventStatus.preComposing = event.isComposing;
@@ -45,6 +61,10 @@ function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
         // 쉬프트 엔터 이벤트
 
         switch (store.value.controlStatus.curruntblockType) {
+            case "code":
+                __codeBlockShiftEnterEvent(event, store);
+                break;
+
             case "ol":
             case "ul":
                 __listBlockShiftEnterEvent(event, store);
@@ -57,6 +77,10 @@ function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
         // 일반 엔터 이벤트
 
         switch (store.value.controlStatus.curruntblockType) {
+            case "code":
+                // NOTE : 코드블럭은 별도의 조치 없음
+                break;
+
             case "ol":
             case "ul":
                 __listBlockEnterEvent(event, store);
@@ -550,124 +574,144 @@ function __listBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStor
                     }
                 } else {
                     // 텍스트가 있는 경우
-                    //         const childNodeList = $editableElement.childNodes;
-                    //         const targetNode = _getParentElementIfNodeIsText(store.cursorData.startNode, $editableElement);
-                    //         const preStructure: Node[] = [];
-                    //         const nextStructure: Node[] = [];
-                    //         let nodeIdx = -1;
-                    //         // 노드 위치 파악
-                    //         for (let i = 0; childNodeList.length > i; i += 1) {
-                    //             if (childNodeList[i] === targetNode) {
-                    //                 nodeIdx = i;
-                    //                 break;
-                    //             }
-                    //         }
-                    //         // 구조 정리
-                    //         childNodeList.forEach((node: ChildNode, i: number) => {
-                    //             if (nodeIdx < i) {
-                    //                 nextStructure.push(node);
-                    //             } else if (nodeIdx > i) {
-                    //                 preStructure.push(node);
-                    //             } else if (nodeIdx === i) {
-                    //                 if (node.constructor.name === "Text") {
-                    //                     const preText = (node.textContent as string).slice(0, store.cursorData.startOffset);
-                    //                     const nextText = (node.textContent as string).slice(store.cursorData.endOffset);
-                    //                     if (preText !== "") {
-                    //                         preStructure.push(document.createTextNode(preText));
-                    //                     }
-                    //                     if (nextText !== "") {
-                    //                         nextStructure.push(document.createTextNode(nextText));
-                    //                     }
-                    //                 } else {
-                    //                     const originalClassList = [...(node as Element).classList];
-                    //                     const preText = (node.textContent as string).slice(0, store.cursorData.startOffset);
-                    //                     const nextText = (node.textContent as string).slice(store.cursorData.endOffset);
-                    //                     if (preText !== "") {
-                    //                         const $span = document.createElement("span");
-                    //                         $span.textContent = preText;
-                    //                         $span.classList.add(...originalClassList);
-                    //                         preStructure.push($span);
-                    //                     }
-                    //                     if (nextText !== "") {
-                    //                         const $span = document.createElement("span");
-                    //                         $span.textContent = nextText;
-                    //                         $span.classList.add(...originalClassList);
-                    //                         nextStructure.push($span);
-                    //                     }
-                    //                 }
-                    //             }
-                    //         });
-                    //         const $liBlock = _createListItemBlock();
-                    //         // 리스트 블럭 삽입
-                    //         $editableElement.insertAdjacentElement("afterend", $liBlock);
-                    //         $editableElement.replaceChildren(...preStructure);
-                    //         $liBlock.replaceChildren(...nextStructure);
-                    //         // 커서 위치 지정
-                    //         if (nextStructure.length === 0) {
-                    //             $liBlock.focus();
-                    //         } else {
-                    //             _setCursor($liBlock.childNodes[0], 0);
-                    //         }
+
+                    const childNodeList = $editableElement.childNodes;
+                    const targetNode = _getParentElementIfNodeIsText(cursorData.startNode, $editableElement);
+                    const preStructure: Node[] = [];
+                    const nextStructure: Node[] = [];
+                    let nodeIdx = -1;
+
+                    // 노드 위치 파악
+                    for (let i = 0; childNodeList.length > i; i += 1) {
+                        if (childNodeList[i] === targetNode) {
+                            nodeIdx = i;
+                            break;
+                        }
+                    }
+
+                    // 구조 정리
+                    childNodeList.forEach((node: ChildNode, i: number) => {
+                        if (nodeIdx < i) {
+                            nextStructure.push(node);
+                        } else if (nodeIdx > i) {
+                            preStructure.push(node);
+                        } else if (nodeIdx === i) {
+                            if (node.constructor.name === "Text") {
+                                const preText = (node.textContent as string).slice(0, cursorData.startOffset);
+                                const nextText = (node.textContent as string).slice(cursorData.endOffset);
+
+                                if (preText !== "") {
+                                    preStructure.push(document.createTextNode(preText));
+                                }
+
+                                if (nextText !== "") {
+                                    nextStructure.push(document.createTextNode(nextText));
+                                }
+                            } else {
+                                const originalClassList = Array.from((node as Element).classList);
+                                const preText = (node.textContent as string).slice(0, cursorData.startOffset);
+                                const nextText = (node.textContent as string).slice(cursorData.endOffset);
+
+                                if (preText !== "") {
+                                    const $span = document.createElement("span");
+                                    $span.textContent = preText;
+                                    $span.classList.add(...originalClassList);
+                                    preStructure.push($span);
+                                }
+
+                                if (nextText !== "") {
+                                    const $span = document.createElement("span");
+                                    $span.textContent = nextText;
+                                    $span.classList.add(...originalClassList);
+                                    nextStructure.push($span);
+                                }
+                            }
+                        }
+                    });
+
+                    const $liBlock = _createListItemBlock();
+
+                    // 리스트 블럭 삽입
+                    $editableElement.insertAdjacentElement("afterend", $liBlock);
+                    $editableElement.replaceChildren(...preStructure);
+                    $liBlock.replaceChildren(...nextStructure);
+
+                    // 커서 위치 지정
+                    if (nextStructure.length === 0) {
+                        $liBlock.focus();
+                    } else {
+                        _setCursor($liBlock.childNodes[0], 0);
+                    }
                 }
             } else {
                 // 셀렉트 커서인 경우
-                //     const childNodeList = $editableElement.childNodes;
-                //     const cursorData = _soltingCursorDataOnElement(store.cursorData, $editableElement);
-                //     const preStructure: Node[] = [];
-                //     const nextStructure: Node[] = [];
-                //     childNodeList.forEach((node: ChildNode, i: number) => {
-                //         if (cursorData.startNodeIdx > i) {
-                //             preStructure.push(node);
-                //         } else if (cursorData.startNodeIdx === i) {
-                //             if (node.constructor.name === "Text") {
-                //                 const text = (node.textContent as string).slice(0, cursorData.startOffset);
-                //                 if (text !== "") {
-                //                     const $textNode = document.createTextNode(text);
-                //                     preStructure.push($textNode);
-                //                 }
-                //             } else {
-                //                 const originalClassList = [...(node as Element).classList];
-                //                 const text = (node.textContent as string).slice(0, cursorData.startOffset);
-                //                 if (text !== "") {
-                //                     const $span = document.createElement("span");
-                //                     $span.classList.add(...originalClassList);
-                //                     $span.textContent = text;
-                //                     preStructure.push($span);
-                //                 }
-                //             }
-                //         }
-                //         if (cursorData.endNodeIdx < i) {
-                //             nextStructure.push(node);
-                //         } else if (cursorData.endNodeIdx === i) {
-                //             if (node.constructor.name === "Text") {
-                //                 const text = (node.textContent as string).slice(cursorData.endOffset);
-                //                 if (text !== "") {
-                //                     const $textNode = document.createTextNode(text);
-                //                     nextStructure.push($textNode);
-                //                 }
-                //             } else {
-                //                 const originalClassList = [...(node as Element).classList];
-                //                 const text = (node.textContent as string).slice(cursorData.endOffset);
-                //                 if (text !== "") {
-                //                     const $span = document.createElement("span");
-                //                     $span.classList.add(...originalClassList);
-                //                     $span.textContent = text;
-                //                     nextStructure.push($span);
-                //                 }
-                //             }
-                //         }
-                //     });
-                //     const $liBlock = _createListItemBlock();
-                //     // 리스트 블럭 삽입
-                //     $editableElement.insertAdjacentElement("afterend", $liBlock);
-                //     $editableElement.replaceChildren(...preStructure);
-                //     // 커서 위치 지정
-                //     if (nextStructure.length === 0) {
-                //         $liBlock.focus();
-                //     } else {
-                //         $liBlock.replaceChildren(...nextStructure);
-                //         _setCursor(nextStructure[0], 0);
-                //     }
+
+                const childNodeList = $editableElement.childNodes;
+                const newCursorData = _sortingCursorDataOnElement(cursorData, $editableElement);
+                const preStructure: Node[] = [];
+                const nextStructure: Node[] = [];
+
+                childNodeList.forEach((node: ChildNode, i: number) => {
+                    if (newCursorData.startNodeIdx > i) {
+                        preStructure.push(node);
+                    } else if (newCursorData.startNodeIdx === i) {
+                        if (node.constructor.name === "Text") {
+                            const text = (node.textContent as string).slice(0, newCursorData.startOffset);
+
+                            if (text !== "") {
+                                const $textNode = document.createTextNode(text);
+                                preStructure.push($textNode);
+                            }
+                        } else {
+                            const originalClassList = Array.from((node as Element).classList);
+                            const text = (node.textContent as string).slice(0, newCursorData.startOffset);
+
+                            if (text !== "") {
+                                const $span = document.createElement("span");
+                                $span.classList.add(...originalClassList);
+                                $span.textContent = text;
+                                preStructure.push($span);
+                            }
+                        }
+                    }
+
+                    if (newCursorData.endNodeIdx < i) {
+                        nextStructure.push(node);
+                    } else if (newCursorData.endNodeIdx === i) {
+                        if (node.constructor.name === "Text") {
+                            const text = (node.textContent as string).slice(newCursorData.endOffset);
+
+                            if (text !== "") {
+                                const $textNode = document.createTextNode(text);
+                                nextStructure.push($textNode);
+                            }
+                        } else {
+                            const originalClassList = Array.from((node as Element).classList);
+                            const text = (node.textContent as string).slice(newCursorData.endOffset);
+
+                            if (text !== "") {
+                                const $span = document.createElement("span");
+                                $span.classList.add(...originalClassList);
+                                $span.textContent = text;
+                                nextStructure.push($span);
+                            }
+                        }
+                    }
+                });
+
+                const $liBlock = _createListItemBlock();
+
+                // 리스트 블럭 삽입
+                $editableElement.insertAdjacentElement("afterend", $liBlock);
+                $editableElement.replaceChildren(...preStructure);
+
+                // 커서 위치 지정
+                if (nextStructure.length === 0) {
+                    $liBlock.focus();
+                } else {
+                    $liBlock.replaceChildren(...nextStructure);
+                    _setCursor(nextStructure[0], 0);
+                }
             }
         }
     }
@@ -861,6 +905,159 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
         }
     } else {
         console.error("[Dragon Editor] : Something wrong.");
+    }
+}
+
+// 코드블럭 쉬프트 엔터 이벤트
+function __codeBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>) {
+    event.preventDefault();
+
+    if (store.value.controlStatus.$curruntblock !== null) {
+        const $block = store.value.controlStatus.$curruntblock;
+        const $newTextBlock = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
+
+        $block.insertAdjacentElement("afterend", $newTextBlock);
+        $newTextBlock.focus();
+    }
+}
+
+// 키보드 백스페이스 이벤트 (키 다운)
+function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>) {
+    switch (store.value.controlStatus.curruntblockType) {
+        case "code":
+            break;
+
+        case "ol":
+        case "ul":
+            break;
+
+        default:
+            __defaultBlockBackspaceEvent(event, store);
+    }
+}
+
+// 기본 백스페이스 이벤트
+function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+        const cursorData = store.value.cursorData;
+        const childList = store.value.$body.querySelectorAll(".de-block");
+        const $block = store.value.controlStatus.$curruntblock;
+        const $target: HTMLElement = _getParentElementIfNodeIsText(cursorData.startNode, $block) as HTMLElement;
+        let elementIdx: number = -1;
+
+        for (let i = 0; childList.length > i; i += 1) {
+            if (childList[i] === $block) {
+                elementIdx = i;
+                break;
+            }
+        }
+
+        console.log(elementIdx);
+
+        // 블럭의 경우
+        if (elementIdx === 0) {
+            // 첫번째 블럭인 경우
+
+            console.log($target);
+            console.log($block);
+
+            if (cursorData.startOffset === 0 && $target === $block) {
+                // 에디팅 블럭의 첫 커서인 경우
+
+                console.log("?!");
+
+                if ($target.textContent === "") {
+                    // 내용이 없는 경우 : 상태 초기화를 위한 교체
+
+                    $block.insertAdjacentElement("afterend", _createTextBlock(_getDefaultBlockData("text") as DETextBlock));
+                    _setCursor($block.nextElementSibling as Node, 0);
+                    $block.remove();
+                } else {
+                    // 내용이 있는 경우
+                    event.preventDefault();
+
+                    console.log(store.value.controlStatus.curruntblockType);
+
+                    if (store.value.controlStatus.curruntblockType !== "text") {
+                        const $newBlock = _createTextBlock({ type: "text", classList: [], textContent: $block.textContent ?? "" });
+
+                        $block.insertAdjacentElement("afterend", $newBlock);
+                        _setCursor($newBlock, 0);
+                        $block.remove();
+                    }
+                }
+            }
+        } else {
+            // 첫번째 블럭이 아닌 경우
+            //     if ($textBlock.hasChildNodes() === false) {
+            //         // 내용이 없는 경우
+            //         e.preventDefault();
+            //         // arrangeCursorAndContentInBackspaceEvent($textBlock, $textBlock);
+            //         const $preBlock = $textBlock.previousElementSibling as HTMLElement;
+            //         const { type: preBlockType } = _getBlockType($preBlock);
+            //         $textBlock.remove();
+            //         if (preBlockType === "text" || preBlockType === "heading") {
+            //             if ($preBlock.hasChildNodes() === true) {
+            //                 const textBlockChildList = $preBlock.childNodes;
+            //                 const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+            //                 _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+            //             } else {
+            //                 _setCursor($preBlock as Element, 0);
+            //             }
+            //         }
+            //     } else {
+            //         // 내용이 있는 경우
+            //         if (store.cursorData.type === "Caret" && store.cursorData.startOffset === 0 && ($textBlock.childNodes[0] === store.cursorData.startNode || $textBlock.childNodes[0] === $target)) {
+            //             // 커서가 첫번째에 있는 경우
+            //             e.preventDefault();
+            //             const $preBlock = $textBlock.previousElementSibling as HTMLElement;
+            //             const { type: preBlockType } = _getBlockType($preBlock);
+            //             if (preBlockType === "text" || preBlockType === "heading") {
+            //                 if ($preBlock.hasChildNodes() === true) {
+            //                     const textBlockChildList = $preBlock.childNodes;
+            //                     const textBlockTargetChildIdx = textBlockChildList.length - 1;
+            //                     const textBlockTargetCursorIdx = ((textBlockChildList[textBlockTargetChildIdx] as ChildNode).textContent as string).length;
+            //                     const thisBlockHTML = $textBlock.innerHTML;
+            //                     $preBlock.innerHTML = $preBlock.innerHTML + thisBlockHTML;
+            //                     _setCursor($preBlock.childNodes[textBlockTargetChildIdx] as Element, textBlockTargetCursorIdx);
+            //                 } else {
+            //                     $preBlock.innerHTML = $textBlock.innerHTML;
+            //                     _setCursor($preBlock as Element, 0);
+            //                 }
+            //                 $textBlock.remove();
+            //             }
+            //         }
+            //     }
+        }
+
+        // // 노드의 경우
+        // if (store.cursorData.startOffset === 1 && $target !== $textBlock) {
+        //     if (($target.textContent as string).length === 1) {
+        //         // 삭제될 노드의 경우
+
+        //         e.preventDefault();
+        //         const preNode = $target.previousSibling;
+
+        //         if (preNode !== null) {
+        //             // 이전 노드가 있는 경우
+
+        //             $target.remove();
+        //             _setCursor(preNode as Element, (preNode.textContent as string).length);
+        //         } else {
+        //             // 이전 노드가 없는 경우
+
+        //             if ($textBlock.childNodes[1] === undefined) {
+        //                 $textBlock.innerHTML = "";
+        //                 _setCursor($textBlock, 0);
+        //             } else {
+        //                 _setCursor($textBlock.childNodes[1] as Element, 0);
+        //                 $target.remove();
+        //             }
+        //         }
+        //     }
+        // }
+
+        // _setCursorData(store);
     }
 }
 
