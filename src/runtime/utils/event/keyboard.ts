@@ -34,7 +34,11 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
             __backspaceEvent(event, store);
             break;
 
+        case "Delete":
+            break;
+
         case "Tab":
+            _tabEvent(event, store);
             break;
 
         case "Space":
@@ -48,6 +52,7 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
     }
 
     store.value.eventStatus.preComposing = event.isComposing;
+    _updateCursorData(store);
 }
 
 // 붙여넣기 이벤트
@@ -940,8 +945,9 @@ function __codeBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
 // 키보드 백스페이스 이벤트 (키 다운)
 function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     switch (store.value.controlStatus.curruntblockType) {
+        case "image":
         case "code":
-            __codeBlockBackspaceEvent(event, store);
+            // NOTE : 별도 처리 불필요
             break;
 
         case "ol":
@@ -1222,65 +1228,67 @@ function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditor
     }
 }
 
-// 코드 블럭 백스페이스 이벤트
-function __codeBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
-        const cursorData = store.value.cursorData;
-        const $block = store.value.controlStatus.$curruntblock;
-    }
-}
-
 // 기본 백스페이스 처리 로직
 function ___backspackeLogic(hasChild: boolean, childHTML: string, $block: HTMLElement, $targetItem: HTMLElement): void {
     const $preBlock = $block.previousElementSibling as HTMLElement;
-    const { type: preBlockType } = _getCurruntBlock($preBlock);
-    let preDelete: boolean = false;
-    let $targetBlock: HTMLElement = $preBlock;
 
-    switch (preBlockType) {
-        case "custom":
-        case "image":
-            preDelete = true;
-            break;
+    if ($preBlock !== null) {
+        const { type: preBlockType } = _getCurruntBlock($preBlock);
+        let preDelete: boolean = false;
+        let $targetBlock: HTMLElement = $preBlock;
 
-        case "code":
-            $targetBlock = $preBlock.querySelector(".de-code-content") as HTMLElement;
-            break;
+        switch (preBlockType) {
+            case "custom":
+            case "image":
+            case "code":
+                preDelete = true;
+                break;
 
-        case "ul":
-        case "ol":
-            const $liList = $preBlock.querySelectorAll(".de-item");
+            case "ul":
+            case "ol":
+                const $liList = $preBlock.querySelectorAll(".de-item");
 
-            $targetBlock = $liList[$liList.length - 1] as HTMLElement;
-            break;
+                $targetBlock = $liList[$liList.length - 1] as HTMLElement;
+                break;
 
-        default:
-            $targetBlock = $preBlock;
-    }
-
-    if (preDelete === false) {
-        if ($targetBlock.hasChildNodes() === true) {
-            const textBlockChildList = $targetBlock.childNodes;
-            const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
-
-            if (hasChild === true) {
-                $targetBlock.insertAdjacentHTML("beforeend", childHTML);
-            }
-
-            _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
-        } else {
-            if (hasChild === true) {
-                $targetBlock.insertAdjacentHTML("beforeend", childHTML);
-            }
-
-            _setCursor($targetBlock as Element, 0);
+            default:
+                $targetBlock = $preBlock;
         }
 
-        $targetItem.remove();
-    } else {
-        // 이동 안하고 이전 블럭 삭제
+        if (preDelete === false) {
+            if ($targetBlock.hasChildNodes() === true) {
+                const textBlockChildList = $targetBlock.childNodes;
+                const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
 
-        $preBlock.remove();
+                if (hasChild === true) {
+                    $targetBlock.insertAdjacentHTML("beforeend", childHTML);
+                }
+
+                _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+            } else {
+                if (hasChild === true) {
+                    $targetBlock.insertAdjacentHTML("beforeend", childHTML);
+                }
+
+                _setCursor($targetBlock as Element, 0);
+            }
+
+            $targetItem.remove();
+        } else {
+            // 이동 안하고 이전 블럭 삭제
+
+            $preBlock.remove();
+        }
+    } else {
+        const newTextBlockData = _getDefaultBlockData("text") as DETextBlock;
+
+        newTextBlockData.textContent = childHTML;
+
+        const $newTextBlock = _createTextBlock(newTextBlockData);
+
+        $block.insertAdjacentElement("afterend", $newTextBlock);
+        $newTextBlock.focus();
+        $block.remove();
     }
 }
 
@@ -1309,6 +1317,42 @@ function ___nodeBackspaceEvent(event: KeyboardEvent, cursorData: DEditorCursor, 
                     ($target as HTMLElement).remove();
                 }
             }
+        }
+    }
+}
+
+// 탭 이벤트
+function _tabEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$curruntblock !== null) {
+        event.preventDefault();
+
+        const $block = store.value.controlStatus.$curruntblock;
+
+        switch (store.value.controlStatus.curruntblockType) {
+            case "code":
+            case "custom":
+            case "image":
+                // NOTE : 뎁스처리 안함
+                break;
+
+            default:
+                let value: number = $block.dataset["depth"] === undefined ? 0 : parseInt($block.dataset["depth"]);
+
+                if (event.shiftKey === true) {
+                    if (value !== 0) {
+                        value -= 1;
+                    }
+                } else {
+                    if (value < 5) {
+                        value += 1;
+                    }
+                }
+
+                if (value === 0) {
+                    delete $block.dataset["depth"];
+                } else {
+                    $block.dataset["depth"] = String(value);
+                }
         }
     }
 }

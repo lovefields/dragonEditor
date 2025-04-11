@@ -15,23 +15,37 @@ export function _updateModelData(store: Ref<DragonEditorStore>): void {
                 case $el.classList.contains("de-text-block"):
                     classList = classListText.replaceAll("de-text-block", "").trim();
 
-                    newData.push({
+                    const textBlockDepth = ($el as HTMLParagraphElement).dataset["depth"];
+                    let textBlockData: DETextBlock = {
                         type: "text",
                         classList: classList === "" ? [] : classList.split(" "),
                         textContent: $el.innerHTML,
-                    });
+                    };
+
+                    if (textBlockDepth !== undefined) {
+                        textBlockData.depth = parseInt(textBlockDepth);
+                    }
+
+                    newData.push(textBlockData);
                     break;
 
                 case $el.classList.contains("de-heading-block"):
                     classList = classListText.replaceAll("de-heading-block", "").trim();
 
-                    newData.push({
+                    const headingBlockDepth = ($el as HTMLHeadingElement).dataset["depth"];
+                    let headingBlockData: DEHeadingBlock = {
                         type: "heading",
                         id: $el.id,
                         level: parseInt(($el as HTMLHeadingElement).dataset["level"] ?? "3"),
                         classList: classList === "" ? [] : classList.split(" "),
                         textContent: $el.innerHTML,
-                    });
+                    };
+
+                    if (headingBlockDepth !== undefined) {
+                        headingBlockData.depth = parseInt(headingBlockDepth);
+                    }
+
+                    newData.push(headingBlockData);
                     break;
 
                 case $el.classList.contains("de-list-block"):
@@ -48,12 +62,19 @@ export function _updateModelData(store: Ref<DragonEditorStore>): void {
                         });
                     });
 
-                    newData.push({
+                    const listBlockDepth = ($el as HTMLElement).dataset["depth"];
+                    let listBlockData: DEListBlock = {
                         type: "list",
                         element: $el.tagName.toLowerCase() as DEListElementName,
                         style: ($el as HTMLElement).dataset["style"] as DEListStyle,
                         child: liList,
-                    });
+                    };
+
+                    if (listBlockDepth !== undefined) {
+                        listBlockData.depth = parseInt(listBlockDepth);
+                    }
+
+                    newData.push(listBlockData);
                     break;
 
                 case $el.classList.contains("de-image-block"):
