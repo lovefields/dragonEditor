@@ -122,6 +122,7 @@ interface DragonEditor {
 interface DETextBlock {
     type: "text";
     classList: string[];
+    depth?: number;
     textContent: string;
 }
 
@@ -129,6 +130,7 @@ interface DEHeadingBlock {
     type: "heading";
     level: number;
     id: string;
+    depth?:number;
     classList: string[];
     textContent: string;
 }
@@ -141,6 +143,7 @@ interface DEListItem {
 interface DEListBlock {
     type: "list";
     element: DEListElementName;
+    depth?:number;
     style: DEListStyle;
     child: DEListItem[];
 }

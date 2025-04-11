@@ -88,5 +88,13 @@ $color-list: #fff, #efefef, #ccc, #999, #777, #555, #333, #e6b8af, #dd7e6b, #cc4
                 padding-left: $i * 30px;
             }
         }
+
+        &.de-list-block {
+            @for $i from 1 through 5 {
+                &[data-depth="#{$i}"] {
+                    padding-left: ($i * 30px) + 24px;
+                }
+            }
+        }
     }
 }

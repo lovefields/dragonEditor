@@ -1,6 +1,7 @@
 @mixin blockStyle($isEdit: "false") {
     .de-block {
         width: 100%;
+        box-sizing: border-box;
     }
 
     // 텍스트 블럭
