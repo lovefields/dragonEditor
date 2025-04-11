@@ -35,10 +35,11 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
             break;
 
         case "Delete":
+            __deleteEvent(event, store);
             break;
 
         case "Tab":
-            _tabEvent(event, store);
+            __tabEvent(event, store);
             break;
 
         case "Space":
@@ -952,16 +953,16 @@ function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): 
 
         case "ol":
         case "ul":
-            __listBlockBackspaceEvent(event, store);
+            ___listBlockBackspaceEvent(event, store);
             break;
 
         default:
-            __defaultBlockBackspaceEvent(event, store);
+            ___defaultBlockBackspaceEvent(event, store);
     }
 }
 
 // 기본 백스페이스 이벤트
-function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+function ___defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
         const childList = store.value.$body.querySelectorAll(".de-block");
@@ -1028,7 +1029,7 @@ function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdi
                     }
                 }
 
-                ___backspackeLogic(hasChild, childHTML, $block, $block);
+                ____backspackeLogic(hasChild, childHTML, $block, $block);
             } else {
                 // 내용이 있는 경우
 
@@ -1039,19 +1040,19 @@ function __defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdi
 
                     let childHTML: string = $block.innerHTML;
 
-                    ___backspackeLogic(true, childHTML, $block, $block);
+                    ____backspackeLogic(true, childHTML, $block, $block);
                 }
             }
         }
 
         // 노드의 경우
-        ___nodeBackspaceEvent(event, cursorData, $block, $target);
+        ____nodeBackspaceEvent(event, cursorData, $block, $target);
         _updateCursorData(store);
     }
 }
 
 // 리스트 블럭 백스페이스 이벤트
-function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+function ___listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
         const $listBlock = store.value.controlStatus.$curruntblock;
@@ -1094,7 +1095,7 @@ function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditor
                     }
                 }
 
-                ___backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
+                ____backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
             } else {
                 // 텍스트가 있는 경우
 
@@ -1105,7 +1106,7 @@ function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditor
 
                     let childHTML: string = $targetItem.innerHTML;
 
-                    ___backspackeLogic(true, childHTML, $listBlock, $targetItem);
+                    ____backspackeLogic(true, childHTML, $listBlock, $targetItem);
                 }
             }
         } else {
@@ -1133,7 +1134,7 @@ function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditor
                         }
                     }
 
-                    ___backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
+                    ____backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
                 } else {
                     // 텍스트가 있는 경우
 
@@ -1144,7 +1145,7 @@ function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditor
 
                         let childHTML: string = $targetItem.innerHTML;
 
-                        ___backspackeLogic(true, childHTML, $listBlock, $targetItem);
+                        ____backspackeLogic(true, childHTML, $listBlock, $targetItem);
                     }
                 }
             } else {
@@ -1223,13 +1224,13 @@ function __listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditor
         }
 
         // 노드의 경우
-        ___nodeBackspaceEvent(event, cursorData, $listBlock, $target);
+        ____nodeBackspaceEvent(event, cursorData, $listBlock, $target);
         _updateCursorData(store);
     }
 }
 
 // 기본 백스페이스 처리 로직
-function ___backspackeLogic(hasChild: boolean, childHTML: string, $block: HTMLElement, $targetItem: HTMLElement): void {
+function ____backspackeLogic(hasChild: boolean, childHTML: string, $block: HTMLElement, $targetItem: HTMLElement): void {
     const $preBlock = $block.previousElementSibling as HTMLElement;
 
     if ($preBlock !== null) {
@@ -1293,7 +1294,7 @@ function ___backspackeLogic(hasChild: boolean, childHTML: string, $block: HTMLEl
 }
 
 // 노드 백스페이스 처리용 이벤트
-function ___nodeBackspaceEvent(event: KeyboardEvent, cursorData: DEditorCursor, $block: HTMLElement, $target: Node): void {
+function ____nodeBackspaceEvent(event: KeyboardEvent, cursorData: DEditorCursor, $block: HTMLElement, $target: Node): void {
     if (cursorData.startOffset === 1 && $target !== $block) {
         if (($target.textContent as string).length === 1) {
             // 삭제될 노드의 경우
@@ -1321,8 +1322,8 @@ function ___nodeBackspaceEvent(event: KeyboardEvent, cursorData: DEditorCursor, 
     }
 }
 
-// 탭 이벤트
-function _tabEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+// 탭 이벤트 (키 다운)
+function __tabEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     if (store.value.controlStatus.$curruntblock !== null) {
         event.preventDefault();
 
@@ -1353,6 +1354,127 @@ function _tabEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
                 } else {
                     $block.dataset["depth"] = String(value);
                 }
+        }
+    }
+}
+
+// 딜리트 이벤트 (키 다운)
+function __deleteEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    switch (store.value.controlStatus.curruntblockType) {
+        case "image":
+        case "code":
+            // NOTE : 별도 처리 불필요
+            break;
+
+        case "ol":
+        case "ul":
+            // ___listBlockDeleteEvent(event, store);
+            break;
+
+        default:
+            ___defaultBlockDeleteEvent(event, store);
+    }
+}
+
+// 기본 딜리트 이벤트
+function ___defaultBlockDeleteEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+        const cursorData = store.value.cursorData;
+        const $block = store.value.controlStatus.$curruntblock;
+        let childNodes = $block.childNodes;
+        let $target = cursorData.startNode;
+
+        if ($target.constructor.name === "Text") {
+            $target = $target.parentNode as Node;
+        }
+
+        // console.log(childNodes);
+
+        // if (cursorData.type === "Caret" && cursorData.startOffset === childNodes[childNodes.length - 1].textContent.length && (childNodes[childNodes.length - 1] === cursorData.startNode || childNodes[childNodes.length - 1] === $target)) {
+        //     console.log("delete!");
+        // }
+
+        // const $nextBlock = $block.nextElementSibling as HTMLElement;
+
+        if ($block.textContent === "") {
+            // 내용이 없는 경우
+
+            event.preventDefault();
+            let hasChild: boolean = false;
+
+            if ($block.hasChildNodes() === true) {
+                // br 만 있는 경우
+
+                const $brList = $block.querySelectorAll("br");
+
+                if ($brList.length === 1) {
+                    // br이 한개만 있는 경우 없는것과 동일 처리
+
+                    $block.innerHTML = "";
+                } else {
+                    hasChild = true;
+                }
+            }
+
+            ____deleteLogic(hasChild, $block);
+        } else {
+            // 내용이 있는 경우
+        }
+
+        // } else {
+        // 내용이 있는 경우
+        //             if (cursorData.type === "Caret" && cursorData.startOffset === 0 && ($block.childNodes[0] === cursorData.startNode || $block.childNodes[0] === $target)) {
+        //                 // 커서가 첫번째에 있는 경우
+        //                 event.preventDefault();
+        //                 let childHTML: string = $block.innerHTML;
+        //                 ____backspackeLogic(true, childHTML, $block, $block);
+        //             }
+        // }
+
+        //     // 노드의 경우
+        //     ____nodeBackspaceEvent(event, cursorData, $block, $target);
+        //     _updateCursorData(store);
+    }
+}
+
+// 딜리트 기본 로직
+function ____deleteLogic(hasChild: boolean, $block: HTMLElement) {
+    const $nextBlock = $block.nextElementSibling as HTMLElement;
+
+    if ($nextBlock !== null) {
+        const { type: nextBlockType } = _getCurruntBlock($nextBlock);
+        let nextDelete: boolean = false;
+
+        switch (nextBlockType) {
+            case "custom":
+            case "image":
+            case "code":
+                nextDelete = true;
+                break;
+            case "ul":
+            case "ol":
+                break;
+        }
+
+        if (nextDelete === false) {
+            //     if ($targetBlock.hasChildNodes() === true) {
+            //         const textBlockChildList = $targetBlock.childNodes;
+            //         const textBlockTargetChild = textBlockChildList[textBlockChildList.length - 1];
+            //         if (hasChild === true) {
+            //             $targetBlock.insertAdjacentHTML("beforeend", childHTML);
+            //         }
+            //         _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+            //     } else {
+            //         if (hasChild === true) {
+            //             $targetBlock.insertAdjacentHTML("beforeend", childHTML);
+            //         }
+            //         _setCursor($targetBlock as Element, 0);
+            //     }
+            //     $targetItem.remove();
+        } else {
+            // 이동 안하고 다음 블럭 삭제
+
+            $nextBlock.remove();
         }
     }
 }
