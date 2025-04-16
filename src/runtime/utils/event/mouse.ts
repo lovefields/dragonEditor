@@ -1,7 +1,10 @@
 import type { Ref } from "vue";
+import { _updateCursorData } from "./index";
+import { _getCurruntBlock, _updateCurruntBlock } from "../node";
 
 export function _contentMouseupEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
-    console.log("_contentMouseupEvent");
+    _updateCurruntBlock(event, store);
+    _updateCursorData(store);
 }
 
 export function _contentMousedownEvnet(event: MouseEvent, store: Ref<DragonEditorStore>): void {

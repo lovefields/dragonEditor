@@ -1,6 +1,7 @@
 import type { Ref } from "vue";
 import { _getDefaultBlockData, _generateId, _updateModelData } from "../event";
 
+// 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>) {
     const blockData = _getDefaultBlockData(type);
     let block: DEBlockElement = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
@@ -44,6 +45,7 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>) 
     _updateModelData(store);
 }
 
+// 현재 활성화된 블럭 찾기
 export function _getCurruntBlock($target: EventTarget): {
     type: DEBlock;
     $element: HTMLDivElement | null;
@@ -220,3 +222,13 @@ export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
 
 //     return $block;
 // }
+
+// 활성화 블럭 업데이트
+export function _updateCurruntBlock(event: Event, store: Ref<DragonEditorStore>): void {
+    if (event.target !== null) {
+        const { type, $element } = _getCurruntBlock(event.target);
+
+        store.value.controlStatus.curruntblockType = type;
+        store.value.controlStatus.$curruntblock = $element;
+    }
+}
