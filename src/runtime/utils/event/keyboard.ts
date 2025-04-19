@@ -753,7 +753,6 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
 
     if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
         const cursorData = store.value.cursorData;
-        const $block = store.value.controlStatus.$curruntblock;
         const $editableElement = _findContentEditableElement(event.target as Node) as HTMLLIElement;
 
         if ($editableElement !== null) {
@@ -1448,19 +1447,7 @@ function ___listBlockDeleteEvent(event: KeyboardEvent, store: Ref<DragonEditorSt
                 // 텍스트가 없는 경우
 
                 event.preventDefault();
-
                 ____deleteLogic($targetItem, $listBlock);
-                // let hasChild: boolean = false;
-                // let childHTML: string = "";
-                // if ($targetItem.hasChildNodes() === true) {
-                //     // br 만 있는 경우
-                //     const $brList = $targetItem.querySelectorAll("br");
-                //     if ($brList.length > 1) {
-                //         hasChild = true;
-                //         childHTML = $targetItem.innerHTML;
-                //     }
-                // }
-                // ____backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
             } else {
                 // 텍스트가 있는 경우
 
@@ -1468,50 +1455,44 @@ function ___listBlockDeleteEvent(event: KeyboardEvent, store: Ref<DragonEditorSt
 
                 if (cursorData.type === "Caret" && lastChild !== undefined && lastChild.textContent && cursorData.startOffset === lastChild.textContent.length && (lastChild === cursorData.startNode || lastChild === $target)) {
                     event.preventDefault();
-                    // ____deleteLogic(true, $targetItem);
+                    ____deleteLogic($targetItem, $listBlock);
                 }
             }
         } else {
             // 자식이 여러개인 경우
+
+            const $nextLi = $targetItem.nextElementSibling;
+
+            if ($nextLi === null) {
+                // 다음 리스트가 없는 경우
+
+                if ($targetItem.textContent === "") {
+                    event.preventDefault();
+                    ____deleteLogic($targetItem, $listBlock);
+                } else {
+                    const lastChild = $targetItem.childNodes[$targetItem.childNodes.length - 1] as Node;
+
+                    if (cursorData.type === "Caret" && lastChild !== undefined && lastChild.textContent && cursorData.startOffset === lastChild.textContent.length && (lastChild === cursorData.startNode || lastChild === $target)) {
+                        event.preventDefault();
+                        ____deleteLogic($targetItem, $listBlock);
+                    }
+                }
+            } else {
+                // 다음 리스트가 있는 경우
+
+                if ($targetItem.textContent === "") {
+                    event.preventDefault();
+                    ____deleteLogic($targetItem, $targetItem);
+                } else {
+                    const lastChild = $targetItem.childNodes[$targetItem.childNodes.length - 1] as Node;
+
+                    if (cursorData.type === "Caret" && lastChild !== undefined && lastChild.textContent && cursorData.startOffset === lastChild.textContent.length && (lastChild === cursorData.startNode || lastChild === $target)) {
+                        event.preventDefault();
+                        ____deleteLogic($targetItem, $targetItem);
+                    }
+                }
+            }
         }
-        // const cursorData = store.value.cursorData;
-        // const $block = store.value.controlStatus.$curruntblock;
-        // let $target = cursorData.startNode;
-
-        // if ($target.constructor.name === "Text") {
-        //     $target = $target.parentNode as Node;
-        // }
-
-        // if ($block.textContent === "") {
-        //     // 내용이 없는 경우
-
-        //     event.preventDefault();
-        //     let hasChild: boolean = false;
-
-        //     if ($block.hasChildNodes() === true) {
-        //         // br 만 있는 경우
-
-        //         const $brList = $block.querySelectorAll("br");
-
-        //         if ($brList.length === 1) {
-        //             // br이 한개만 있는 경우 없는것과 동일 처리
-
-        //             $block.innerHTML = "";
-        //         } else {
-        //             hasChild = true;
-        //         }
-        //     }
-
-        //     ____deleteLogic(hasChild, $block);
-        // } else {
-        //     // 내용이 있는 경우
-        //     const lastChild = $block.childNodes[$block.childNodes.length - 1] as Node;
-
-        //     if (cursorData.type === "Caret" && lastChild !== undefined && lastChild.textContent && cursorData.startOffset === lastChild.textContent.length && (lastChild === cursorData.startNode || lastChild === $target)) {
-        //         event.preventDefault();
-        //         ____deleteLogic(true, $block);
-        //     }
-        // }
 
         // TODO : 노드의 경우 제작
     }
@@ -1534,9 +1515,12 @@ function ____deleteLogic($targetElement: HTMLElement, $block: HTMLElement) {
 
             case "ul":
             case "ol":
-                const $liList = $nextBlock.querySelectorAll(".de-item");
+                if ($block.tagName !== "LI") {
+                    // 리스트 자식이 아닌경우만
+                    const $liList = $nextBlock.querySelectorAll(".de-item");
 
-                $nextBlock = $liList[0] as HTMLElement;
+                    $nextBlock = $liList[0] as HTMLElement;
+                }
                 break;
         }
 
@@ -1563,10 +1547,30 @@ function ____deleteLogic($targetElement: HTMLElement, $block: HTMLElement) {
 // 키 업 이벤트
 let contentKeyupEvent: NodeJS.Timeout;
 export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    _updateCursorData(store);
+    __checkBlock(store);
+
     clearTimeout(contentKeyupEvent);
     contentKeyupEvent = setTimeout(() => {
         _updateModelData(store);
     }, 250);
+}
 
-    _updateCursorData(store);
+function __checkBlock(store: Ref<DragonEditorStore>) {
+    if (store.value.$body !== null) {
+        const blockList = store.value.$body.querySelectorAll(".de-block");
+
+        blockList.forEach(($block) => {
+            const { type } = _getCurruntBlock($block);
+
+            switch (type) {
+                case "ol":
+                case "ul":
+                    if ($block.hasChildNodes() === false) {
+                        $block.remove();
+                    }
+                    break;
+            }
+        });
+    }
 }
