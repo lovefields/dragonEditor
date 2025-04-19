@@ -4,7 +4,7 @@ import { _getDefaultBlockData, _generateId, _updateModelData } from "../event";
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
     const blockData = data === undefined ? _getDefaultBlockData(type) : data;
-    let block: DEBlockElement = _createTextBlock(blockData as DETextBlock);
+    let block: DEBlockElement = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
 
     switch (blockData.type) {
         case "text":

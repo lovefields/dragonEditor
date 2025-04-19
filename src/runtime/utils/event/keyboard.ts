@@ -1681,6 +1681,34 @@ function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, 
             }
 
             if ($targetElement !== null) {
+                const { type, $element } = _getCurruntBlock($targetElement);
+
+                switch (type) {
+                    case "image":
+                        if ($element !== null) {
+                            const $caption = $element.querySelector(".de-caption");
+
+                            if ($caption !== null) {
+                                $targetElement = $caption;
+                            }
+                        }
+                        break;
+
+                    case "ol":
+                    case "ul":
+                        if ($targetElement.tagName !== "LI" && $element !== null) {
+                            const $childList = $element.querySelectorAll(".de-item");
+
+                            if (keyType === "up") {
+                                $targetElement = $childList[$childList.length - 1];
+                            } else {
+                                $targetElement = $childList[0];
+                            }
+                        }
+
+                        break;
+                }
+
                 _setCursor($targetElement, 0);
             }
         }
