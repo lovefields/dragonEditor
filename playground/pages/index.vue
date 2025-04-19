@@ -60,10 +60,14 @@ function pasteImageProcess(file: File) {
 
     $img.src = url;
     $img.onload = () => {
-        $editor.value?.addImageBlock({
+        $editor.value?.addBlock({
+            type: "image",
+            maxWidth: 100,
             src: url,
             width: $img.width,
             height: $img.height,
+            caption: "",
+            classList: [],
         });
     };
 }
