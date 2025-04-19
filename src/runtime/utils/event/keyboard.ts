@@ -42,12 +42,15 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
             break;
 
         case "ArrowUp":
+            _moveToBlockEvent(event, store, "up");
             break;
 
         case "ArrowDown":
+            _moveToBlockEvent(event, store, "down");
             break;
     }
 
+    _hotKeyEvent(event, store);
     store.value.eventStatus.preComposing = event.isComposing;
 }
 
@@ -1633,6 +1636,92 @@ function __spaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
                     $block.remove();
                     break;
             }
+        }
+    }
+}
+
+// 위 아래 화살표 이동 이벤트
+function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, keyType: "up" | "down"): void {
+    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+        const cursorData = store.value.cursorData;
+        const $editableElement = _findContentEditableElement(cursorData.startNode);
+        const $block = store.value.controlStatus.$curruntblock;
+
+        if ($editableElement !== null && $block !== null) {
+            let $targetElement: Element | null = null;
+
+            switch (store.value.controlStatus.curruntblockType) {
+                case "code":
+                    // NOTE : 코드블럭은 없음
+                    break;
+
+                case "ol":
+                case "ul":
+                    if (keyType === "up") {
+                        $targetElement = $editableElement.previousElementSibling;
+
+                        if ($targetElement === null) {
+                            $targetElement = $block.previousElementSibling;
+                        }
+                    } else {
+                        $targetElement = $editableElement.nextElementSibling;
+
+                        if ($targetElement === null) {
+                            $targetElement = $block.nextElementSibling;
+                        }
+                    }
+                    break;
+
+                default:
+                    if (keyType === "up") {
+                        $targetElement = $block.previousElementSibling;
+                    } else {
+                        $targetElement = $block.nextElementSibling;
+                    }
+            }
+
+            if ($targetElement !== null) {
+                _setCursor($targetElement, 0);
+            }
+        }
+    }
+}
+
+// 핫 키 이벤트
+export function _hotKeyEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    // _setCursorData(store);
+    const isControlKeyActive = event.ctrlKey || event.metaKey;
+
+    if (isControlKeyActive === true) {
+        switch (event.key) {
+            case "b":
+                event.preventDefault();
+                //             _setNodeStyle("de-bold", store);
+                break;
+
+            case "i":
+                event.preventDefault();
+                //             _setNodeStyle("de-italic", store);
+                break;
+
+            case "u":
+                event.preventDefault();
+                //             _setNodeStyle("de-underline", store);
+                break;
+
+            case "s":
+                if (event.shiftKey === true) {
+                    event.preventDefault();
+                    //                 _setNodeStyle("de-strikethrough", store);
+                }
+                break;
+
+            case "c":
+                if (event.shiftKey === true) {
+                    event.preventDefault();
+                    //                 _setNodeStyle("de-code", store);
+                }
+                break;
         }
     }
 }
