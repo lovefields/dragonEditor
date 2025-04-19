@@ -1648,71 +1648,115 @@ function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, 
         const $block = store.value.controlStatus.$curruntblock;
 
         if ($editableElement !== null && $block !== null) {
+            const $brList = $editableElement.querySelectorAll("br");
             let $targetElement: Element | null = null;
+            let suitable: boolean = false;
 
-            switch (store.value.controlStatus.curruntblockType) {
-                case "code":
-                    // NOTE : 코드블럭은 없음
-                    break;
-
-                case "ol":
-                case "ul":
-                    if (keyType === "up") {
-                        $targetElement = $editableElement.previousElementSibling;
-
-                        if ($targetElement === null) {
-                            $targetElement = $block.previousElementSibling;
-                        }
-                    } else {
-                        $targetElement = $editableElement.nextElementSibling;
-
-                        if ($targetElement === null) {
-                            $targetElement = $block.nextElementSibling;
-                        }
-                    }
-                    break;
-
-                default:
-                    if (keyType === "up") {
-                        $targetElement = $block.previousElementSibling;
-                    } else {
-                        $targetElement = $block.nextElementSibling;
-                    }
+            if ($brList.length !== 0) {
+                if (keyType === "up") {
+                    suitable = __isCursorFirstLine(cursorData.startNode, $brList[0]);
+                } else {
+                    suitable = __isCursorLastLine(cursorData.startNode, $brList[$brList.length - 1]);
+                }
+            } else {
+                suitable = true;
             }
 
-            if ($targetElement !== null) {
-                const { type, $element } = _getCurruntBlock($targetElement);
-
-                switch (type) {
-                    case "image":
-                        if ($element !== null) {
-                            const $caption = $element.querySelector(".de-caption");
-
-                            if ($caption !== null) {
-                                $targetElement = $caption;
-                            }
-                        }
+            if (suitable === true) {
+                switch (store.value.controlStatus.curruntblockType) {
+                    case "code":
+                        // NOTE : 코드블럭은 없음
                         break;
 
                     case "ol":
                     case "ul":
-                        if ($targetElement.tagName !== "LI" && $element !== null) {
-                            const $childList = $element.querySelectorAll(".de-item");
+                        if (keyType === "up") {
+                            $targetElement = $editableElement.previousElementSibling;
 
-                            if (keyType === "up") {
-                                $targetElement = $childList[$childList.length - 1];
-                            } else {
-                                $targetElement = $childList[0];
+                            if ($targetElement === null) {
+                                $targetElement = $block.previousElementSibling;
+                            }
+                        } else {
+                            $targetElement = $editableElement.nextElementSibling;
+
+                            if ($targetElement === null) {
+                                $targetElement = $block.nextElementSibling;
                             }
                         }
-
                         break;
+
+                    default:
+                        if (keyType === "up") {
+                            $targetElement = $block.previousElementSibling;
+                        } else {
+                            $targetElement = $block.nextElementSibling;
+                        }
                 }
 
-                _setCursor($targetElement, 0);
+                if ($targetElement !== null) {
+                    const { type, $element } = _getCurruntBlock($targetElement);
+
+                    switch (type) {
+                        case "image":
+                            if ($element !== null) {
+                                const $caption = $element.querySelector(".de-caption");
+
+                                if ($caption !== null) {
+                                    $targetElement = $caption;
+                                }
+                            }
+                            break;
+
+                        case "ol":
+                        case "ul":
+                            if ($targetElement.tagName !== "LI" && $element !== null) {
+                                const $childList = $element.querySelectorAll(".de-item");
+
+                                if (keyType === "up") {
+                                    $targetElement = $childList[$childList.length - 1];
+                                } else {
+                                    $targetElement = $childList[0];
+                                }
+                            }
+
+                            break;
+                    }
+
+                    _setCursor($targetElement, 0);
+                }
             }
         }
     }
+}
+
+function __isCursorFirstLine(node: Node, $br: HTMLElement): boolean {
+    let suitable: boolean = false;
+    let $previousNode = $br.previousSibling;
+
+    if ($previousNode !== null) {
+        if ($previousNode === node) {
+            suitable = true;
+        } else {
+            suitable = __isCursorFirstLine(node, $previousNode as HTMLElement);
+        }
+    }
+
+    return suitable;
+}
+
+function __isCursorLastLine(node: Node, $br: HTMLElement): boolean {
+    let suitable: boolean = false;
+    let $nextNode = $br.nextSibling;
+
+    if ($nextNode !== null) {
+        if ($nextNode === node) {
+            suitable = true;
+        } else {
+            suitable = __isCursorLastLine(node, $nextNode as HTMLElement);
+        }
+    }
+
+    return suitable;
 }
 
 // 핫 키 이벤트

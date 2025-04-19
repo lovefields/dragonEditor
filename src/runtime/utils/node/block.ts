@@ -26,6 +26,10 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, 
         case "code":
             block = _createCodeBlock(blockData);
             break;
+
+        case "custom":
+            block = _createCustomBlock(blockData);
+            break;
     }
 
     if (store.value.controlStatus.$curruntblock === null) {
@@ -217,15 +221,15 @@ export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
     return $wrap;
 }
 
-// // 커스텀 블럭 생성
-// export function _createCustomBlock(data: DECustomBlock): HTMLDivElement {
-//     const $block = document.createElement("div") as HTMLDivElement;
+// 커스텀 블럭 생성
+export function _createCustomBlock(data: DECustomBlock): HTMLDivElement {
+    const $block = document.createElement("div") as HTMLDivElement;
 
-//     $block.classList.add("de-block", "de-custom-block", ...data.classList);
-//     $block.innerHTML = data.textContent;
+    $block.classList.add("de-block", "de-custom-block", ...data.classList);
+    $block.innerHTML = data.textContent;
 
-//     return $block;
-// }
+    return $block;
+}
 
 // 활성화 블럭 업데이트
 export function _updateCurruntBlock(event: Event, store: Ref<DragonEditorStore>): void {

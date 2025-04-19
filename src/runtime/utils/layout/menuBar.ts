@@ -43,6 +43,9 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
     // 정렬 메뉴
     menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-left")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-center")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-right")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-justify")])]));
 
+    // 인던트 메뉴
+    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("indent-decrease")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("indent-increase")])]));
+
     // 위치 이동 메뉴
     menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("move-up")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("move-down")])]));
 
