@@ -2,9 +2,9 @@ import type { Ref } from "vue";
 import { _getDefaultBlockData, _generateId, _updateModelData } from "../event";
 
 // 블럭 추가
-export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>) {
-    const blockData = _getDefaultBlockData(type);
-    let block: DEBlockElement = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
+export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
+    const blockData = data === undefined ? _getDefaultBlockData(type) : data;
+    let block: DEBlockElement = _createTextBlock(blockData as DETextBlock);
 
     switch (blockData.type) {
         case "text":
@@ -13,6 +13,10 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>) 
 
         case "heading":
             block = _createHeadingBlock(blockData);
+            break;
+
+        case "image":
+            block = _createImageBlock(blockData, store.value.imageHostURL);
             break;
 
         case "list":
@@ -144,46 +148,46 @@ export function _createListItemBlock(child: DEListItem = { textContent: "", clas
     return $li;
 }
 
-// // 이미지 블럭 생성
-// export function _createImageBlock(data: DEImageBlock, imageHostURL: string = ""): HTMLDivElement {
-//     const $wrap = document.createElement("div") as HTMLDivElement;
-//     const $div = document.createElement("div") as HTMLDivElement;
-//     const $leftBtn = document.createElement("button") as HTMLButtonElement;
-//     const $rightBtn = document.createElement("button") as HTMLButtonElement;
-//     const $image = document.createElement("img") as HTMLImageElement;
-//     const $p = document.createElement("p") as HTMLParagraphElement;
+// 이미지 블럭 생성
+export function _createImageBlock(data: DEImageBlock, imageHostURL: string = ""): HTMLDivElement {
+    const $wrap = document.createElement("div") as HTMLDivElement;
+    const $div = document.createElement("div") as HTMLDivElement;
+    const $leftBtn = document.createElement("button") as HTMLButtonElement;
+    const $rightBtn = document.createElement("button") as HTMLButtonElement;
+    const $image = document.createElement("img") as HTMLImageElement;
+    const $p = document.createElement("p") as HTMLParagraphElement;
 
-//     $wrap.classList.add("de-block", "de-image-block", ...data.classList);
-//     $div.classList.add("de-image-area");
-//     $leftBtn.classList.add("de-btn", "de-btn-left");
-//     $rightBtn.classList.add("de-btn", "de-btn-right");
-//     $image.classList.add("de-img");
-//     $p.contentEditable = "true";
-//     $p.classList.add("de-caption");
+    $wrap.classList.add("de-block", "de-image-block", ...data.classList);
+    $div.classList.add("de-image-area");
+    $leftBtn.classList.add("de-btn", "de-btn-left");
+    $rightBtn.classList.add("de-btn", "de-btn-right");
+    $image.classList.add("de-img");
+    $p.contentEditable = "true";
+    $p.classList.add("de-caption");
 
-//     if (data.width / data.height < 1) {
-//         $div.dataset["maxwidth"] = "40";
-//     } else {
-//         $div.dataset["maxwidth"] = String(data.maxWidth);
-//     }
+    if (data.width / data.height < 1) {
+        $div.dataset["maxwidth"] = "40";
+    } else {
+        $div.dataset["maxwidth"] = String(data.maxWidth);
+    }
 
-//     $image.src = imageHostURL + data.src;
-//     $image.width = data.width;
-//     $image.height = data.height;
-//     $image.draggable = false;
+    $image.src = imageHostURL + data.src;
+    $image.width = data.width;
+    $image.height = data.height;
+    $image.draggable = false;
 
-//     if (data.caption !== undefined) {
-//         $p.textContent = data.caption;
-//     }
+    if (data.caption !== undefined) {
+        $p.textContent = data.caption;
+    }
 
-//     $div.appendChild($image);
-//     $div.appendChild($leftBtn);
-//     $div.appendChild($rightBtn);
-//     $wrap.appendChild($div);
-//     $wrap.appendChild($p);
+    $div.appendChild($image);
+    $div.appendChild($leftBtn);
+    $div.appendChild($rightBtn);
+    $wrap.appendChild($div);
+    $wrap.appendChild($p);
 
-//     return $wrap;
-// }
+    return $wrap;
+}
 
 // 코드 블럭 생성
 export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {

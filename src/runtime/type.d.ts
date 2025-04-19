@@ -110,13 +110,13 @@ interface DEHeadingItem {
 
 // 컴포넌트 메서드용 타입
 interface DragonEditor {
-    addBlock: (type: DEBlock) => void;
-    addImageBlock: (data: DEImage) => void;
-    setDecoration: (data: DEDecoration) => void;
-    setTextAlign: (type: DETextalign) => void;
-    getContentData: () => DEContentData;
-    setContentData: (data: DEContentData) => void;
-    addCustomBlock: (HTML: string, classList: string[]) => void;
+    addBlock: (type: DEBlockData) => void;
+    // addImageBlock: (data: DEImage) => void;
+    // setDecoration: (data: DEDecoration) => void;
+    // setTextAlign: (type: DETextalign) => void;
+    // getContentData: () => DEContentData;
+    // setContentData: (data: DEContentData) => void;
+    // addCustomBlock: (HTML: string, classList: string[]) => void;
 }
 
 interface DETextBlock {
@@ -130,7 +130,7 @@ interface DEHeadingBlock {
     type: "heading";
     level: number;
     id: string;
-    depth?:number;
+    depth?: number;
     classList: string[];
     textContent: string;
 }
@@ -143,7 +143,7 @@ interface DEListItem {
 interface DEListBlock {
     type: "list";
     element: DEListElementName;
-    depth?:number;
+    depth?: number;
     style: DEListStyle;
     child: DEListItem[];
 }

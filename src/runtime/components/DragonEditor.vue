@@ -6,6 +6,7 @@
 import { ref, h, onMounted, onUnmounted } from "vue";
 import { _getBodyVNodeStructure, _getMenuBarVNodeStructure } from "../utils/layout";
 import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent } from "../utils/event";
+import { _addBlock } from "../utils/node";
 import type { VNode } from "vue";
 import "../type.d.ts";
 
@@ -99,7 +100,31 @@ function mainStrucutre(): VNode {
     );
 }
 
-function addBlock(data: DEBlockData): void {}
+function addBlock(data: DEBlockData): void {
+    let type: DEBlockMenutype = "text";
+
+    switch (data.type) {
+        case "heading":
+            if (data.level === 1) {
+                type = "heading1";
+            } else if (data.level === 2) {
+                type = "heading2";
+            } else {
+                type = "heading3";
+            }
+            break;
+
+        case "list":
+            if (data.element === "ol") {
+                type = "ol";
+            } else {
+                type = "ul";
+            }
+            break;
+    }
+
+    _addBlock(type, editorStore, data);
+}
 
 onMounted(() => {
     _eidtorMountEvent(editorStore);
@@ -110,7 +135,7 @@ onUnmounted(() => {
 });
 
 defineExpose({
-    //     addBlock,
+    addBlock,
     //     setDecoration,
     //     setAlign,
 });

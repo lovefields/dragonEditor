@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
-import { _updateModelData, _updateCursorData, _setCursor, _sortingCursorDataOnElement } from "./index";
-import { _getCurruntBlock, _createTextBlock, _getParentElementIfNodeIsText, _findContentEditableElement, _createListItemBlock, _updateCurruntBlock } from "../node";
+import { _updateModelData, _updateCursorData, _setCursor, _sortingCursorDataOnElement, _generateId } from "./index";
+import { _getCurruntBlock, _createTextBlock, _createHeadingBlock, _createListBlock, _getParentElementIfNodeIsText, _findContentEditableElement, _createListItemBlock, _updateCurruntBlock } from "../node";
 import { _getDefaultBlockData } from "../event";
 
 // 키 다운 이벤트
@@ -37,7 +37,8 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
             __tabEvent(event, store);
             break;
 
-        case "Space":
+        case " ":
+            __spaceEvent(event, store);
             break;
 
         case "ArrowUp":
@@ -51,8 +52,37 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
 }
 
 // 붙여넣기 이벤트
-export function _contentPasteEvent(event: ClipboardEvent, store: Ref<DragonEditorStore>): void {
-    console.log("paste");
+export async function _contentPasteEvent(event: ClipboardEvent, store: Ref<DragonEditorStore>): Promise<void> {
+    event.preventDefault();
+
+    const text = await navigator.clipboard.readText();
+    const $block = (event.target as HTMLElement).closest(".de-block");
+
+    if ($block !== null) {
+        if (text === "") {
+            // 이미지인 경우
+
+            const clipboardItems = await navigator.clipboard.read();
+            const imageItem = clipboardItems[0].types.find((type) => type.startsWith("image/"));
+
+            if (imageItem !== undefined) {
+                const blob = await clipboardItems[0].getType(imageItem);
+                const file = new File([blob], `${_generateId()}.${imageItem.split("/")[1]}`);
+
+                store.value.emit("uploadImageEvent", file);
+            }
+        } else {
+            // 텍스트인 경우
+
+            const selection = window.getSelection() as Selection;
+            const textNode = document.createTextNode(text);
+
+            selection.deleteFromDocument();
+            selection.getRangeAt(0).insertNode(textNode);
+
+            _setCursor(textNode, textNode.length);
+        }
+    }
 }
 
 // 키보드 엔터 이벤트 (키 다운)
@@ -1089,6 +1119,7 @@ function ___listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdito
                 }
 
                 ____backspackeLogic(hasChild, childHTML, $listBlock, $targetItem);
+                $listBlock.remove();
             } else {
                 // 텍스트가 있는 경우
 
@@ -1099,10 +1130,9 @@ function ___listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdito
                     let childHTML: string = $targetItem.innerHTML;
 
                     ____backspackeLogic(true, childHTML, $listBlock, $targetItem);
+                    $listBlock.remove();
                 }
             }
-
-            $listBlock.remove();
         } else {
             // 자식이 여러개인 경우
 
@@ -1544,6 +1574,69 @@ function ____deleteLogic($targetElement: HTMLElement, $block: HTMLElement) {
     }
 }
 
+// 스페이스 이벤트 (키 다운)
+function __spaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+        const cursorData = store.value.cursorData;
+        const $block = store.value.controlStatus.$curruntblock;
+        const $targetItem = _findContentEditableElement(cursorData.startNode as HTMLElement) as HTMLLIElement;
+
+        if ($targetItem !== null && $targetItem.textContent !== "") {
+            switch ($targetItem.textContent) {
+                case "#":
+                    event.preventDefault();
+
+                    const $newHeading1Block = _createHeadingBlock(_getDefaultBlockData("heading1") as DEHeadingBlock);
+
+                    $block.insertAdjacentElement("afterend", $newHeading1Block);
+                    $newHeading1Block.focus();
+                    $block.remove();
+                    break;
+
+                case "##":
+                    event.preventDefault();
+
+                    const $newHeading2Block = _createHeadingBlock(_getDefaultBlockData("heading2") as DEHeadingBlock);
+
+                    $block.insertAdjacentElement("afterend", $newHeading2Block);
+                    $newHeading2Block.focus();
+                    $block.remove();
+                    break;
+
+                case "###":
+                    event.preventDefault();
+
+                    const $newHeading3Block = _createHeadingBlock(_getDefaultBlockData("heading3") as DEHeadingBlock);
+
+                    $block.insertAdjacentElement("afterend", $newHeading3Block);
+                    $newHeading3Block.focus();
+                    $block.remove();
+                    break;
+
+                case "-":
+                    event.preventDefault();
+
+                    const $newUlBlock = _createListBlock(_getDefaultBlockData("ul") as DEListBlock);
+
+                    $block.insertAdjacentElement("afterend", $newUlBlock);
+                    ($newUlBlock.children[0] as HTMLLIElement).focus();
+                    $block.remove();
+                    break;
+
+                case "1.":
+                    event.preventDefault();
+
+                    const $newOlBlock = _createListBlock(_getDefaultBlockData("ol") as DEListBlock);
+
+                    $block.insertAdjacentElement("afterend", $newOlBlock);
+                    ($newOlBlock.children[0] as HTMLLIElement).focus();
+                    $block.remove();
+                    break;
+            }
+        }
+    }
+}
+
 // 키 업 이벤트
 let contentKeyupEvent: NodeJS.Timeout;
 export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
@@ -1556,6 +1649,7 @@ export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditor
     }, 250);
 }
 
+// 내용 정리용 이벤트 (키 업)
 function __checkBlock(store: Ref<DragonEditorStore>) {
     if (store.value.$body !== null) {
         const blockList = store.value.$body.querySelectorAll(".de-block");
@@ -1568,6 +1662,17 @@ function __checkBlock(store: Ref<DragonEditorStore>) {
                 case "ul":
                     if ($block.hasChildNodes() === false) {
                         $block.remove();
+                    }
+                    break;
+
+                case "text":
+                case "heading":
+                    if ($block.textContent === "" && $block.hasChildNodes() === true) {
+                        const textNodeType = $block.childNodes[0].constructor.name;
+
+                        if (textNodeType === "HTMLBRElement") {
+                            $block.innerHTML = "";
+                        }
                     }
                     break;
             }
