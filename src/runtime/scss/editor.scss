@@ -34,11 +34,12 @@
 
         .de-menu-wrap {
             display: flex;
-            overflow-x: auto;
+            // overflow-x: auto; TODO : 모바일에서만 처리하기
         }
 
         .de-col {
             display: flex;
+            position: relative;
             border-right: 1px solid #ccc;
 
             &:last-child {
@@ -110,12 +111,15 @@
         .de-link-exit-area {
             display: none;
             position: absolute;
-            top: 39px;
-            left: 228px;
+            top: calc(100% + 1px);
+            left: 50%;
             width: 200px;
             background: #fff;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+            border: 1px solid #ccc;
+            border-top: 0;
+            border-radius: 0 0 var(--radius-default) var(--radius-default);
             z-index: 1000;
+            transform: translateX(-50%);
 
             &.--active {
                 display: block;
@@ -128,9 +132,10 @@
                 .de-btn {
                     flex: 1;
                     height: 24px;
+                    color: #999;
 
                     &.--active {
-                        background: #f1f1f1;
+                        color: #333;
                     }
                 }
             }

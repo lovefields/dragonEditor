@@ -4,52 +4,56 @@ import { _getDefaultBlockData, _generateId, _updateModelData } from "../event";
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
     const blockData = data === undefined ? _getDefaultBlockData(type) : data;
-    let block: DEBlockElement = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
+    let $block: DEBlockElement = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
 
     switch (blockData.type) {
         case "text":
-            block = _createTextBlock(blockData);
+            $block = _createTextBlock(blockData);
             break;
 
         case "heading":
-            block = _createHeadingBlock(blockData);
+            $block = _createHeadingBlock(blockData);
             break;
 
         case "image":
-            block = _createImageBlock(blockData, store.value.imageHostURL);
+            $block = _createImageBlock(blockData, store.value.imageHostURL);
             break;
 
         case "list":
-            block = _createListBlock(blockData);
+            $block = _createListBlock(blockData);
             break;
 
         case "code":
-            block = _createCodeBlock(blockData);
+            $block = _createCodeBlock(blockData);
             break;
 
         case "custom":
-            block = _createCustomBlock(blockData);
+            $block = _createCustomBlock(blockData);
             break;
     }
 
     if (store.value.controlStatus.$curruntblock === null) {
         if (store.value.$body !== null) {
-            store.value.$body.insertAdjacentElement("beforeend", block);
+            store.value.$body.insertAdjacentElement("beforeend", $block);
         } else {
         }
     } else {
-        store.value.controlStatus.$curruntblock.insertAdjacentElement("afterend", block);
+        store.value.controlStatus.$curruntblock.insertAdjacentElement("afterend", $block);
     }
 
     if (blockData.type === "list") {
-        (block.children[0] as HTMLLIElement).focus();
+        ($block.children[0] as HTMLLIElement).focus();
     } else if (blockData.type === "code") {
-        (block.querySelector(".de-code-content") as HTMLElement).focus();
+        ($block.querySelector(".de-code-content") as HTMLElement).focus();
     } else if (blockData.type === "text" || blockData.type === "heading") {
-        block.focus();
+        $block.focus();
     }
 
+    const { type: blockType, $element } = _getCurruntBlock($block);
+
     store.value.activeStatus.addBlockMenu = false;
+    store.value.controlStatus.curruntblockType = blockType;
+    store.value.controlStatus.$curruntblock = $element;
     _updateModelData(store);
 }
 
