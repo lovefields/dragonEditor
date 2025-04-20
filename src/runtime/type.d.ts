@@ -40,17 +40,19 @@ interface DragonEditorStore {
     activeStatus: {
         addBlockMenu: boolean;
         anchorInputArea: boolean;
-        resizeEvent: boolean;
+        imageResizeEvent: boolean;
     };
     eventStatus: {
         preComposing: boolean;
-        resizeEventStartX: number;
-        resizeEventType: "right" | "left";
-        resizeEventEndX: number;
+        imageResizeEventStartX: number;
+        imageResizeEventType: "right" | "left";
+        imageResizeEventEndX: number;
         resizeCurruntWidth: number;
         keyboardEnterCount: number;
     };
     controlStatus: {
+        isMobile: boolean;
+        anchorValidation: boolean;
         curruntblockType: DEBlock;
         codeBlockTheme: DECodeTheme;
         codeBlockLang: string;
@@ -66,6 +68,7 @@ interface DragonEditorStore {
     $controlbar: HTMLDivElement | null;
     $parentWrap: HTMLElement | Window | null;
     windowClickEvent(event: MouseEvent): void;
+    windowResizeEvent(event: Event): void;
     parentWrapScollEvent(event: Event): void;
     emit: {
         (e: "update:modelValue", data: DEContentData): void;

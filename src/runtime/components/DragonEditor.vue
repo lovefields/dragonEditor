@@ -3,9 +3,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, h, onMounted, onUnmounted } from "vue";
+import { ref, h, onMounted, onBeforeUnmount } from "vue";
 import { _getBodyVNodeStructure, _getMenuBarVNodeStructure } from "../utils/layout";
-import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent } from "../utils/event";
+import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent } from "../utils/event";
 import { _addBlock } from "../utils/node";
 import type { VNode } from "vue";
 import "../type.d.ts";
@@ -42,17 +42,18 @@ const editorStore = ref<DragonEditorStore>({
     activeStatus: {
         addBlockMenu: false,
         anchorInputArea: false,
-        resizeEvent: false,
+        imageResizeEvent: false,
     },
     eventStatus: {
         preComposing: false,
-        resizeEventStartX: 0,
-        resizeEventType: "left",
-        resizeEventEndX: 0,
+        imageResizeEventStartX: 0,
+        imageResizeEventType: "left",
+        imageResizeEventEndX: 0,
         resizeCurruntWidth: 0,
         keyboardEnterCount: 0,
     },
     controlStatus: {
+        isMobile: false,
         curruntblockType: "text",
         codeBlockTheme: "github",
         codeBlockLang: "",
@@ -60,6 +61,7 @@ const editorStore = ref<DragonEditorStore>({
         anchorTabType: "url",
         anchorHeadingList: [],
         anchorHref: "",
+        anchorValidation: false,
         $anchorInput: null,
         $curruntblock: null,
     },
@@ -70,6 +72,9 @@ const editorStore = ref<DragonEditorStore>({
     emit: emit,
     windowClickEvent: function (event: MouseEvent) {
         _checkOthersideClick(event, editorStore);
+    },
+    windowResizeEvent: function (event: Event) {
+        _windowResizeEvent(event, editorStore);
     },
     parentWrapScollEvent: function (event: Event) {
         _parentWrapScollEvent(event, editorStore);
@@ -88,7 +93,7 @@ function mainStrucutre(): VNode {
     return h(
         "div",
         {
-            class: ["dragon-editor", "js-dragon-editor", { "--has-menu": editorStore.value.useMenuBar === true }],
+            class: ["dragon-editor", "js-dragon-editor", { "--has-menu": editorStore.value.useMenuBar === true }, { "--mobile": editorStore.value.controlStatus.isMobile === true }],
             onMousemove: (event: MouseEvent) => _editorMousemoveEvent(event, editorStore),
             onMouseup: (event: MouseEvent) => _editorMouseupEvent(event, editorStore),
             onMouseleave: (event: MouseEvent) => _editorMouseleaveEvent(event, editorStore),
@@ -130,7 +135,7 @@ onMounted(() => {
     _eidtorMountEvent(editorStore);
 });
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     _eidtorUnmountEvent(editorStore);
 });
 

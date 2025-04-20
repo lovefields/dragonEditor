@@ -10,34 +10,6 @@ export * from "./cursor";
 //  * 이벤트 관련 영역 시작
 //  */
 
-// function contentKeyboardEvent(e: KeyboardEvent) {
-//     _elementKeyEvent(e, editorStore);
-//     _hotKeyEvent(e, editorStore);
-// }
-
-// function updateCursorData(e: MouseEvent) {
-//     const originalCursorData = editorStore.cursorData;
-
-//     _clenupCursor(editorStore);
-
-//     if (editorStore.cursorData !== null && _findContentEditableElement(editorStore.cursorData.startNode) === null) {
-//         // 비정상 커서 값일 경우 초기화
-//         editorStore.cursorData = originalCursorData;
-//     }
-
-//     // 선택 블럭 업데이트
-//     if (e.target !== null) {
-//         const $block = (e.target as HTMLElement).closest(".de-block");
-
-//         if ($block !== null) {
-//             editorStore.setCurrentBlock($block as HTMLElement);
-//         }
-//     }
-
-//     controlBarStatusUpdate();
-//     anchorTagValueUpdate();
-// }
-
 // // 컨트롤 바 상태 업데이트
 // function controlBarStatusUpdate() {
 //     if (editorStore.$currentBlock !== null) {
@@ -63,77 +35,6 @@ export * from "./cursor";
 //     }
 // }
 
-// // 사이즈 조정 이벤트 시작
-// function resizeEventStart(event: Event) {
-//     const $target = event.target as HTMLElement;
-
-//     if ($target !== null) {
-//         const $block = $target.closest(".de-block");
-
-//         if ($block?.classList.contains("de-image-block") === true && $target.classList.contains("de-btn") === true) {
-//             editorStore.setCurrentBlock($block as HTMLElement);
-//             resizeEventActive = true;
-
-//             if (event.type === "touchstart") {
-//                 resizeStartX = (event as TouchEvent).touches[0].clientX;
-//             } else {
-//                 resizeStartX = (event as MouseEvent).clientX;
-//             }
-
-//             if ($target.classList.contains("de-btn-left") === true) {
-//                 resizeType = "left";
-//             } else {
-//                 resizeType = "right";
-//             }
-
-//             resizeEndX = resizeStartX;
-
-//             const $imgArea = (editorStore.$currentBlock as HTMLElement).querySelector(".de-image-area") as HTMLDivElement;
-//             resizeCurruntWidth = parseInt($imgArea.dataset["maxwidth"] ?? "25");
-//         }
-//     }
-// }
-
-// // 사이즈 조정 이벤트
-// function resizeEvent(event: Event) {
-//     if (resizeEventActive === true) {
-//         const $imgArea = (editorStore.$currentBlock as HTMLElement).querySelector(".de-image-area") as HTMLDivElement;
-//         const contentWidth = (editorStore.$content?.offsetWidth ?? 0) / 2;
-//         let gap: number = 0;
-
-//         if (event.type === "touchmove") {
-//             resizeEndX = (event as TouchEvent).touches[0].clientX;
-//         } else {
-//             resizeEndX = (event as MouseEvent).clientX;
-//         }
-
-//         if (resizeType === "right") {
-//             gap = Math.floor(resizeStartX - resizeEndX);
-//         } else {
-//             gap = Math.floor(resizeEndX - resizeStartX);
-//         }
-
-//         const percent = (100 / contentWidth) * gap;
-//         let value = Math.floor(resizeCurruntWidth - percent);
-
-//         if (value < 25) {
-//             value = 25;
-//         }
-
-//         if (value > 100) {
-//             value = 100;
-//         }
-
-//         $imgArea.dataset["maxwidth"] = String(value);
-//     }
-// }
-
-// // 사이즈 조정 이벤트 종료
-// function resizeEventEnd() {
-//     if (resizeEventActive === true) {
-//         resizeEventActive = false;
-//     }
-// }
 
 // // 메뉴 외부 클릭시 닫기
 // function checkOthersideClick(event: MouseEvent) {

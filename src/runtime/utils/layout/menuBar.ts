@@ -32,10 +32,81 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
     );
 
     // 데코레이션 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("bold")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("italic")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("underline")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("strikethrough")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("codeblock")])]));
+    menuGroupNode.push(
+        h("div", { class: ["de-col"] }, [
+            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("bold")]),
+            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("italic")]),
+            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("underline")]),
+            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("strikethrough")]),
+            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("codeblock")]),
+        ])
+    );
 
     // 링크 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("add-link")]), h("button", { class: ["de-menu", { "--disabled": store.value.controlStatus.anchorHref === "" }], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("remove-link")])]));
+    menuGroupNode.push(
+        h("div", { class: ["de-col"] }, [
+            h(
+                "button",
+                {
+                    class: ["de-menu", "js-de-link-btn"],
+                    onClick: (evnet: MouseEvent) => {
+                        if (store.value.controlStatus.anchorHref !== "" && store.value.controlStatus.anchorHref.charAt(0) === "#") {
+                            store.value.controlStatus.anchorTabType = "heading";
+                        } else {
+                            store.value.controlStatus.anchorTabType = "url";
+                        }
+
+                        store.value.activeStatus.anchorInputArea = !store.value.activeStatus.anchorInputArea;
+                    },
+                },
+                [_getIconNode("add-link")]
+            ),
+            h("button", { class: ["de-menu", { "--disabled": store.value.controlStatus.anchorHref === "" }], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("remove-link")]),
+            h("div", { class: ["de-link-exit-area", "js-de-link-exit-area", { "--active": store.value.activeStatus.anchorInputArea }] }, [
+                h("div", { class: ["de-btn-area"] }, [
+                    h(
+                        "button",
+                        {
+                            class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "url" }],
+                            onClick: () => {
+                                store.value.controlStatus.anchorTabType = "url";
+                            },
+                        },
+                        "Text"
+                    ),
+                    h(
+                        "button",
+                        {
+                            class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "heading" }],
+                            onClick: () => {
+                                store.value.controlStatus.anchorTabType = "heading";
+                            },
+                        },
+                        "Heading"
+                    ),
+                ]),
+                store.value.controlStatus.anchorTabType === "url"
+                    ? h("div", { class: ["de-link-text-area"] }, [
+                          h("input", {
+                              class: ["de-input", { "--error": store.value.controlStatus.anchorValidation === false }],
+                              value: store.value.controlStatus.anchorHref,
+                              onChange: (event: Event) => {
+                                  store.value.controlStatus.anchorHref = (event.currentTarget as HTMLInputElement).value;
+                              },
+                          }),
+                          h("button", { class: ["de-btn"], onClick: () => {} }, "Add"),
+                      ])
+                    : h(
+                          "div",
+                          { class: ["de-link-heading-area"] },
+                          store.value.controlStatus.anchorHeadingList.map((item) => {
+                              return h("button", { class: ["de-btn"], onClick: () => {} }, item.name);
+                              // TODO : 링크 값과 같으면 active 처리
+                          })
+                      ),
+            ]),
+        ])
+    );
 
     // 이미지 메뉴
     menuGroupNode.push(h("div", { class: ["de-col"] }, [h("label", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [h("input", { type: "file", hidden: true, accept: ".jpg,.jpeg,.png,.webp,.gif" }), _getIconNode("image")])]));
@@ -144,19 +215,3 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
 
     return h("div", { class: ["de-block-menu-area", "js-de-block-menu-area", { "--active": store.value.activeStatus.addBlockMenu }] }, h("div", { class: ["de-list"] }, menuList));
 }
-
-//             <div class="de-link-exit-area" :class="{ '--active': isActiveLinkArea }">
-//                 <div class="de-btn-area">
-//                     <button class="de-btn" :class="{ '--active': activeLinkTabType === 'url' }" @click="openLinkArea"> Text </button>
-//                     <button class="de-btn" :class="{ '--active': activeLinkTabType === 'heading' }" @click="listUpHeading">Heading</button>
-//                 </div>
-
-//                 <div v-if="activeLinkTabType === 'url'" class="de-link-text-area">
-//                     <input v-model="anchorTagValue" class="de-input" :class="{ '--red': anchorValueError }" type="url" ref="$linkInput" />
-//                     <button class="de-btn" @click="setLink">Add</button>
-//                 </div>
-
-//                 <div v-if="activeLinkTabType === 'heading'" class="de-link-heading-area">
-//                     <button v-for="item in anchorHeadingList" class="de-btn" @click="setHeadingLink(item.id)">{{ item.name }}</button>
-//                 </div>
-//             </div>
