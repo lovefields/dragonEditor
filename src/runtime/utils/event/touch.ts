@@ -1,13 +1,14 @@
 import type { Ref } from "vue";
+import { _imageResizeEventStart, _imageResizeEvent, _imageResizeEventEnd } from "./index";
 
 export function _contentTouchstartEvent(event: TouchEvent, store: Ref<DragonEditorStore>): void {
-    console.log("_contentTouchstartEvent");
+    _imageResizeEventStart(event, store);
 }
 
 export function _editorTouchmoveEvent(event: TouchEvent, store: Ref<DragonEditorStore>): void {
-    console.log("_editorTouchmoveEvent");
+    _imageResizeEvent(event, store);
 }
 
 export function _editorTouchendEvent(event: TouchEvent, store: Ref<DragonEditorStore>): void {
-    console.log("_editorTouchendEvent");
+    _imageResizeEventEnd(event, store);
 }

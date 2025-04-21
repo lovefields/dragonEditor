@@ -49,7 +49,7 @@ const editorStore = ref<DragonEditorStore>({
         imageResizeEventStartX: 0,
         imageResizeEventType: "left",
         imageResizeEventEndX: 0,
-        resizeCurruntWidth: 0,
+        imageResizeCurruntWidth: 0,
         keyboardEnterCount: 0,
     },
     controlStatus: {

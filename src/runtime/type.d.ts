@@ -47,7 +47,7 @@ interface DragonEditorStore {
         imageResizeEventStartX: number;
         imageResizeEventType: "right" | "left";
         imageResizeEventEndX: number;
-        resizeCurruntWidth: number;
+        imageResizeCurruntWidth: number;
         keyboardEnterCount: number;
     };
     controlStatus: {

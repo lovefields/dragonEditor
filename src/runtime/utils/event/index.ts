@@ -5,6 +5,7 @@ export * from "./data";
 export * from "./window";
 export * from "./scroll";
 export * from "./cursor";
+export * from "./block";
 
 // /**
 //  * 이벤트 관련 영역 시작
