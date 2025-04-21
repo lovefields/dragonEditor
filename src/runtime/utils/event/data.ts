@@ -4,8 +4,8 @@ export function _updateModelData(store: Ref<DragonEditorStore>): void {
     const $body = store.value.$body;
 
     if ($body !== null) {
-        const newData: DEContentData = [];
         const $blockList = $body.querySelectorAll(".de-block");
+        const workList: Promise<DEBlockData>[] = [];
 
         $blockList.forEach(($el) => {
             let classListText: string = $el.classList.value.replaceAll("de-block", "");
@@ -13,94 +13,145 @@ export function _updateModelData(store: Ref<DragonEditorStore>): void {
 
             switch (true) {
                 case $el.classList.contains("de-text-block"):
-                    classList = classListText.replaceAll("de-text-block", "").trim();
+                    workList.push(
+                        new Promise((done) => {
+                            classList = classListText.replaceAll("de-text-block", "").trim();
 
-                    const textBlockDepth = ($el as HTMLParagraphElement).dataset["depth"];
-                    let textBlockData: DETextBlock = {
-                        type: "text",
-                        classList: classList === "" ? [] : classList.split(" "),
-                        textContent: $el.innerHTML,
-                    };
+                            const textBlockDepth = ($el as HTMLParagraphElement).dataset["depth"];
+                            let textBlockData: DETextBlock = {
+                                type: "text",
+                                classList: classList === "" ? [] : classList.split(" "),
+                                textContent: $el.innerHTML,
+                            };
 
-                    if (textBlockDepth !== undefined) {
-                        textBlockData.depth = parseInt(textBlockDepth);
-                    }
+                            if (textBlockDepth !== undefined) {
+                                textBlockData.depth = parseInt(textBlockDepth);
+                            }
 
-                    newData.push(textBlockData);
+                            done(textBlockData);
+                        })
+                    );
                     break;
 
                 case $el.classList.contains("de-heading-block"):
-                    classList = classListText.replaceAll("de-heading-block", "").trim();
+                    workList.push(
+                        new Promise((done) => {
+                            classList = classListText.replaceAll("de-heading-block", "").trim();
 
-                    const headingBlockDepth = ($el as HTMLHeadingElement).dataset["depth"];
-                    let headingBlockData: DEHeadingBlock = {
-                        type: "heading",
-                        id: $el.id,
-                        level: parseInt(($el as HTMLHeadingElement).dataset["level"] ?? "3"),
-                        classList: classList === "" ? [] : classList.split(" "),
-                        textContent: $el.innerHTML,
-                    };
+                            const headingBlockDepth = ($el as HTMLHeadingElement).dataset["depth"];
+                            let headingBlockData: DEHeadingBlock = {
+                                type: "heading",
+                                id: $el.id,
+                                level: parseInt(($el as HTMLHeadingElement).dataset["level"] ?? "3"),
+                                classList: classList === "" ? [] : classList.split(" "),
+                                textContent: $el.innerHTML,
+                            };
 
-                    if (headingBlockDepth !== undefined) {
-                        headingBlockData.depth = parseInt(headingBlockDepth);
-                    }
+                            if (headingBlockDepth !== undefined) {
+                                headingBlockData.depth = parseInt(headingBlockDepth);
+                            }
 
-                    newData.push(headingBlockData);
+                            done(headingBlockData);
+                        })
+                    );
                     break;
 
                 case $el.classList.contains("de-list-block"):
-                    const $li = $el.querySelectorAll(".de-item");
-                    const liList: DEListItem[] = [];
+                    workList.push(
+                        new Promise((done) => {
+                            const $li = $el.querySelectorAll(".de-item");
+                            const liList: DEListItem[] = [];
 
-                    classList = classListText.replaceAll("de-list-block", "").trim();
-                    $li.forEach(($child) => {
-                        let childClassName = $child.classList.value.replace("de-item", "");
+                            classList = classListText.replaceAll("de-list-block", "").trim();
+                            $li.forEach(($child) => {
+                                let childClassName = $child.classList.value.replace("de-item", "");
 
-                        liList.push({
-                            classList: childClassName === "" ? [] : childClassName.split(" "),
-                            textContent: $child.innerHTML,
-                        });
-                    });
+                                liList.push({
+                                    classList: childClassName === "" ? [] : childClassName.split(" "),
+                                    textContent: $child.innerHTML,
+                                });
+                            });
 
-                    const listBlockDepth = ($el as HTMLElement).dataset["depth"];
-                    let listBlockData: DEListBlock = {
-                        type: "list",
-                        element: $el.tagName.toLowerCase() as DEListElementName,
-                        style: ($el as HTMLElement).dataset["style"] as DEListStyle,
-                        child: liList,
-                    };
+                            const listBlockDepth = ($el as HTMLElement).dataset["depth"];
+                            let listBlockData: DEListBlock = {
+                                type: "list",
+                                element: $el.tagName.toLowerCase() as DEListElementName,
+                                style: ($el as HTMLElement).dataset["style"] as DEListStyle,
+                                child: liList,
+                            };
 
-                    if (listBlockDepth !== undefined) {
-                        listBlockData.depth = parseInt(listBlockDepth);
-                    }
+                            if (listBlockDepth !== undefined) {
+                                listBlockData.depth = parseInt(listBlockDepth);
+                            }
 
-                    newData.push(listBlockData);
+                            done(listBlockData);
+                        })
+                    );
                     break;
 
                 case $el.classList.contains("de-image-block"):
+                    workList.push(
+                        new Promise((done) => {
+                            const $imageArea = $el.querySelector(".de-image-area") as HTMLDivElement;
+                            const $img = $el.querySelector(".de-img") as HTMLImageElement;
+                            const $caption = $el.querySelector(".de-caption");
+                            classList = classListText.replaceAll("de-image-block", "").trim();
+
+                            if ($img !== null) {
+                                $img.onload = () => {
+                                    done({
+                                        type: "image",
+                                        src: $img?.src.replace(store.value.imageHostURL, ""),
+                                        maxWidth: parseInt($imageArea?.dataset["maxwidth"] ?? "25"),
+                                        width: $img?.width,
+                                        height: $img?.height,
+                                        caption: $caption?.textContent ?? "",
+                                        classList: classList === "" ? [] : classList.split(" "),
+                                    });
+                                };
+                            }
+                        })
+                    );
                     break;
 
                 case $el.classList.contains("de-code-block"):
-                    const $language = $el.querySelector(".de-language");
-                    const $fileName = $el.querySelector(".de-filename");
-                    const $codeBlock = $el.querySelector(".de-code-content");
+                    workList.push(
+                        new Promise((done) => {
+                            const $language = $el.querySelector(".de-language");
+                            const $fileName = $el.querySelector(".de-filename");
+                            const $codeBlock = $el.querySelector(".de-code-content");
 
-                    classList = classListText.replaceAll("de-code-block", "").trim();
+                            classList = classListText.replaceAll("de-code-block", "").trim();
 
-                    newData.push({
-                        type: "code",
-                        theme: ($el as HTMLElement).dataset["theme"] as DECodeTheme,
-                        filename: $fileName?.textContent || "",
-                        language: $language === null ? "text" : ($language.textContent as DECodeblockLang),
-                        textContent: $codeBlock === null ? "" : $codeBlock.innerHTML,
-                    });
+                            done({
+                                type: "code",
+                                theme: ($el as HTMLElement).dataset["theme"] as DECodeTheme,
+                                filename: $fileName?.textContent || "",
+                                language: $language === null ? "text" : ($language.textContent as DECodeblockLang),
+                                textContent: $codeBlock === null ? "" : $codeBlock.innerHTML,
+                            });
+                        })
+                    );
                     break;
 
                 default:
+                    workList.push(
+                        new Promise((done) => {
+                            classList = classListText.replaceAll("de-custom-block", "").trim();
+
+                            done({
+                                type: "custom",
+                                classList: classList === "" ? [] : classList.split(" "),
+                                textContent: $el.innerHTML,
+                            });
+                        })
+                    );
             }
         });
 
-        store.value.emit("update:modelValue", newData);
+        Promise.all(workList).then((data) => {
+            store.value.emit("update:modelValue", data);
+        });
     }
 }
 
