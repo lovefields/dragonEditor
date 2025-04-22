@@ -2,6 +2,7 @@ import type { Ref } from "vue";
 import { _updateModelData, _updateCursorData, _setCursor, _sortingCursorDataOnElement, _generateId } from "./index";
 import { _getCurruntBlock, _createTextBlock, _createHeadingBlock, _createListBlock, _getParentElementIfNodeIsText, _findContentEditableElement, _createListItemBlock, _updateCurruntBlock } from "../node";
 import { _getDefaultBlockData } from "../event";
+import { _setDecoration } from "../style";
 
 // 키 다운 이벤트
 export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
@@ -1768,30 +1769,30 @@ export function _hotKeyEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>
         switch (event.key) {
             case "b":
                 event.preventDefault();
-                //             _setNodeStyle("de-bold", store);
+                _setDecoration("de-bold", store);
                 break;
 
             case "i":
                 event.preventDefault();
-                //             _setNodeStyle("de-italic", store);
+                _setDecoration("de-italic", store);
                 break;
 
             case "u":
                 event.preventDefault();
-                //             _setNodeStyle("de-underline", store);
+                _setDecoration("de-underline", store);
                 break;
 
             case "s":
                 if (event.shiftKey === true) {
                     event.preventDefault();
-                    //                 _setNodeStyle("de-strikethrough", store);
+                    _setDecoration("de-strikethrough", store);
                 }
                 break;
 
             case "c":
                 if (event.shiftKey === true) {
                     event.preventDefault();
-                    //                 _setNodeStyle("de-code", store);
+                    _setDecoration("de-code", store);
                 }
                 break;
         }
