@@ -65,10 +65,11 @@ interface DragonEditorStore {
     };
     $editor: HTMLDivElement | null;
     $body: HTMLDivElement | null;
-    $controlbar: HTMLDivElement | null;
+    $controlBar: HTMLDivElement | null;
     $parentWrap: HTMLElement | Window | null;
     windowClickEvent(event: MouseEvent): void;
     windowResizeEvent(event: Event): void;
+    windowMouseUpEvent(event: MouseEvent): void;
     parentWrapScollEvent(event: Event): void;
     emit: {
         (e: "update:modelValue", data: DEContentData): void;

@@ -1,28 +1,30 @@
 import type { Ref } from "vue";
 import { _findScrollingElement } from "../node";
 
-// 윈도우 마운트 이벤트트
+// 윈도우 마운트 이벤트
 export function _eidtorMountEvent(store: Ref<DragonEditorStore>): void {
     const $editor = document.querySelector(".js-dragon-editor") as HTMLDivElement;
     const $body = document.querySelector(".js-de-body") as HTMLDivElement;
-    const $controlbar = document.querySelector(".js-de-controlbar") as HTMLDivElement;
+    const $controlBar = document.querySelector(".js-de-controlbar") as HTMLDivElement;
     const $parentWrap = _findScrollingElement($editor);
 
     store.value.$editor = $editor;
     store.value.$body = $body;
-    store.value.$controlbar = $controlbar;
+    store.value.$controlBar = $controlBar;
     store.value.$parentWrap = $parentWrap;
 
     __checkAndSetUpMobile(store);
     window.addEventListener("click", store.value.windowClickEvent);
     window.addEventListener("resize", store.value.windowResizeEvent);
+    window.addEventListener("mouseup", store.value.windowMouseUpEvent);
     store.value.$parentWrap?.addEventListener("scroll", store.value.parentWrapScollEvent);
 }
 
-// 윈도우 언마운트 이벤트트
+// 윈도우 언마운트 이벤트
 export function _eidtorUnmountEvent(store: Ref<DragonEditorStore>): void {
     window.removeEventListener("click", store.value.windowClickEvent);
     window.removeEventListener("resize", store.value.windowResizeEvent);
+    window.removeEventListener("mouseup", store.value.windowMouseUpEvent);
     store.value.$parentWrap?.removeEventListener("scroll", store.value.parentWrapScollEvent);
 }
 

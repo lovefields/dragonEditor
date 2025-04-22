@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { ref, h, onMounted, onBeforeUnmount } from "vue";
-import { _getBodyVNodeStructure, _getMenuBarVNodeStructure } from "../utils/layout";
+import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure } from "../utils/layout";
 import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent } from "../utils/event";
 import { _addBlock } from "../utils/node";
 import type { VNode } from "vue";
@@ -67,7 +67,7 @@ const editorStore = ref<DragonEditorStore>({
     },
     $editor: null,
     $body: null,
-    $controlbar: null,
+    $controlBar: null,
     $parentWrap: null,
     emit: emit,
     windowClickEvent: function (event: MouseEvent) {
@@ -75,6 +75,9 @@ const editorStore = ref<DragonEditorStore>({
     },
     windowResizeEvent: function (event: Event) {
         _windowResizeEvent(event, editorStore);
+    },
+    windowMouseUpEvent: function (event: MouseEvent) {
+        _editorMouseupEvent(event, editorStore);
     },
     parentWrapScollEvent: function (event: Event) {
         _parentWrapScollEvent(event, editorStore);
@@ -89,6 +92,7 @@ function mainStrucutre(): VNode {
     }
 
     childList.push(_getBodyVNodeStructure(editorStore));
+    childList.push(_getControlbarVNodeStructure(editorStore));
 
     return h(
         "div",

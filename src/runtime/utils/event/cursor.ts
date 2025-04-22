@@ -38,6 +38,43 @@ export function _setCursor($target: Node, startIdx: number) {
     selection.addRange(range);
 }
 
+// 레인지 커서 지정
+export function _setRangeCursor($startTarget: Element, $endTarget: Element, startIdx: number, endIdx: number) {
+    const range = document.createRange();
+    const selection = window.getSelection() as Selection;
+
+    if ($startTarget.constructor.name === "Text") {
+        range.setStart($startTarget, startIdx);
+    } else {
+        if ($startTarget.hasChildNodes() === true) {
+            if ($startTarget.textContent === "") {
+                range.setStart($startTarget.childNodes[startIdx], 0);
+            } else {
+                range.setStart($startTarget.childNodes[0], startIdx);
+            }
+        } else {
+            range.setStart($startTarget, startIdx);
+        }
+    }
+
+    if ($endTarget.constructor.name === "Text") {
+        range.setEnd($endTarget, endIdx);
+    } else {
+        if ($endTarget.hasChildNodes() === true) {
+            if ($endTarget.textContent === "") {
+                range.setEnd($endTarget.childNodes[endIdx], 0);
+            } else {
+                range.setEnd($endTarget.childNodes[0], endIdx);
+            }
+        } else {
+            range.setEnd($endTarget, endIdx);
+        }
+    }
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
 // 엘리먼트 기준 커서 데이터 정렬
 export function _sortingCursorDataOnElement(cursorData: DEditorCursor, $element: HTMLElement): DEArrangeCursorData {
     const childList = $element.childNodes;

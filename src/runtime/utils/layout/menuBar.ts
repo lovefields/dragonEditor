@@ -2,6 +2,7 @@ import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _getIconNode } from "./index";
 import { _addBlock } from "../node";
+import { _setDecoration } from "../style";
 
 export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
     const childNode: VNode[] = [];
@@ -22,7 +23,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu", "de-menu-add", "js-de-menu-add"],
-                    onClick: (evnet: MouseEvent) => {
+                    onClick: () => {
                         store.value.activeStatus.addBlockMenu = !store.value.activeStatus.addBlockMenu;
                     },
                 },
@@ -34,11 +35,56 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
     // 데코레이션 메뉴
     menuGroupNode.push(
         h("div", { class: ["de-col"] }, [
-            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("bold")]),
-            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("italic")]),
-            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("underline")]),
-            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("strikethrough")]),
-            h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("codeblock")]),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setDecoration("de-bold", store);
+                    },
+                },
+                [_getIconNode("bold")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setDecoration("de-italic", store);
+                    },
+                },
+                [_getIconNode("italic")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setDecoration("de-underline", store);
+                    },
+                },
+                [_getIconNode("underline")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setDecoration("de-strikethrough", store);
+                    },
+                },
+                [_getIconNode("strikethrough")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setDecoration("de-code", store);
+                    },
+                },
+                [_getIconNode("codeblock")]
+            ),
         ])
     );
 
@@ -49,7 +95,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu", "js-de-link-btn"],
-                    onClick: (evnet: MouseEvent) => {
+                    onClick: () => {
                         if (store.value.controlStatus.anchorHref !== "" && store.value.controlStatus.anchorHref.charAt(0) === "#") {
                             store.value.controlStatus.anchorTabType = "heading";
                         } else {
@@ -61,7 +107,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 },
                 [_getIconNode("add-link")]
             ),
-            h("button", { class: ["de-menu", { "--disabled": store.value.controlStatus.anchorHref === "" }], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("remove-link")]),
+            h("button", { class: ["de-menu", { "--disabled": store.value.controlStatus.anchorHref === "" }], onClick: () => {} }, [_getIconNode("remove-link")]),
             h("div", { class: ["de-link-exit-area", "js-de-link-exit-area", { "--active": store.value.activeStatus.anchorInputArea }] }, [
                 h("div", { class: ["de-btn-area"] }, [
                     h(
@@ -109,16 +155,16 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
     );
 
     // 이미지 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("label", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [h("input", { type: "file", hidden: true, accept: ".jpg,.jpeg,.png,.webp,.gif" }), _getIconNode("image")])]));
+    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("label", { class: ["de-menu"], onClick: () => {} }, [h("input", { type: "file", hidden: true, accept: ".jpg,.jpeg,.png,.webp,.gif" }), _getIconNode("image")])]));
 
     // 정렬 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-left")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-center")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-right")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("align-justify")])]));
+    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-left")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-center")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-right")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-justify")])]));
 
     // 인던트 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("indent-decrease")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("indent-increase")])]));
+    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("indent-decrease")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("indent-increase")])]));
 
     // 위치 이동 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("move-up")]), h("button", { class: ["de-menu"], onClick: (evnet: MouseEvent) => {} }, [_getIconNode("move-down")])]));
+    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("move-up")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("move-down")])]));
 
     return h("div", { class: ["de-menu-wrap"] }, menuGroupNode);
 }

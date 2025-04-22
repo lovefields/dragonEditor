@@ -50,3 +50,16 @@ export function _findContentEditableElement($target: Node): HTMLElement | null {
         }
     }
 }
+
+// 이전 텍스트 노드 찾기
+export function _findPoverTextNode(node: Element, idx: number) {
+    if (node.previousSibling !== null) {
+        if (node.previousSibling.constructor.name === "Text") {
+            return _findPoverTextNode(node.previousSibling as Element, (idx -= 1));
+        } else {
+            return idx;
+        }
+    } else {
+        return idx;
+    }
+}
