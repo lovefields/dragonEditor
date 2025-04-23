@@ -1,7 +1,8 @@
 import type { Ref } from "vue";
-import { _setRangeCursor, _sortingCursorDataOnElement, _updateModelData, _updateCursorData } from "../event";
+import { _setRangeCursor, _sortingCursorDataOnElement, _updateModelData, _updateCursorData, _setCursor } from "../event";
 import { _findContentEditableElement, _findPoverTextNode } from "../node";
 
+// 텍스트 스타일 적용
 export function _setDecoration(className: string, store: Ref<DragonEditorStore>): void {
     if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
         const cursorData = store.value.cursorData;
@@ -503,8 +504,61 @@ export function _setDecoration(className: string, store: Ref<DragonEditorStore>)
                     }
                 }
 
-                _updateModelData(store);
                 _updateCursorData(store);
+                _updateModelData(store);
+            }
+        }
+    }
+}
+
+// 텍스트 정렬 적용
+export function _setTextAlign(type: DETextalign, store: Ref<DragonEditorStore>) {
+    // TODO : 커서 기존위치로 지정해주기
+
+    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+        const cursorData = store.value.cursorData;
+        const typeIgnoreList: DEBlock[] = ["code", "custom"];
+
+        if (typeIgnoreList.includes(store.value.controlStatus.curruntblockType) === false) {
+            // 제외 타입에 해당하지 않는 경우만 적용
+
+            const alignClassList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];
+            const className: string = `de-align-${type}`;
+            let $element: HTMLElement | null = null;
+
+            if (store.value.controlStatus.$curruntblock.classList.contains("de-image-block") === true) {
+                // 이미지 블럭의 경우
+
+                $element = store.value.controlStatus.$curruntblock;
+            } else {
+                // 이미지 블럭 외의 경우
+
+                if (cursorData !== null) {
+                    $element = _findContentEditableElement(cursorData.startNode as HTMLElement);
+                }
+            }
+
+            if ($element !== null) {
+                if ($element.classList.contains(className) === true) {
+                    $element.classList.remove(className);
+                } else {
+                    const curruntClassname: string | undefined = alignClassList.filter((text) => $element.classList.contains(text) === true)[0];
+
+                    if (curruntClassname !== undefined) {
+                        $element.classList.remove(curruntClassname);
+                    }
+
+                    $element.classList.add(className);
+                }
+
+                if (store.value.controlStatus.$curruntblock.classList.contains("de-image-block") !== true) {
+                    // 이미지 블럭이 아닌 경우
+
+                    // _setCursor($element, 0);
+                }
+
+                _updateCursorData(store);
+                _updateModelData(store);
             }
         }
     }

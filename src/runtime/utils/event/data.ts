@@ -95,20 +95,31 @@ export function _updateModelData(store: Ref<DragonEditorStore>): void {
                             const $imageArea = $el.querySelector(".de-image-area") as HTMLDivElement;
                             const $img = $el.querySelector(".de-img") as HTMLImageElement;
                             const $caption = $el.querySelector(".de-caption");
+
                             classList = classListText.replaceAll("de-image-block", "").trim();
 
-                            if ($img !== null) {
+                            if ($img.complete === false) {
                                 $img.onload = () => {
                                     done({
                                         type: "image",
-                                        src: $img?.src.replace(store.value.imageHostURL, ""),
-                                        maxWidth: parseInt($imageArea?.dataset["maxwidth"] ?? "25"),
-                                        width: $img?.width,
-                                        height: $img?.height,
+                                        src: $img.src.replace(store.value.imageHostURL, ""),
+                                        maxWidth: parseInt($imageArea.dataset["maxwidth"] ?? "25"),
+                                        width: $img.width,
+                                        height: $img.height,
                                         caption: $caption?.textContent ?? "",
                                         classList: classList === "" ? [] : classList.split(" "),
                                     });
                                 };
+                            } else {
+                                done({
+                                    type: "image",
+                                    src: $img.src.replace(store.value.imageHostURL, ""),
+                                    maxWidth: parseInt($imageArea.dataset["maxwidth"] ?? "25"),
+                                    width: $img.width,
+                                    height: $img.height,
+                                    caption: $caption?.textContent ?? "",
+                                    classList: classList === "" ? [] : classList.split(" "),
+                                });
                             }
                         })
                     );

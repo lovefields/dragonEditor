@@ -9,6 +9,8 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
     _updateCurruntBlock(event, store);
     _updateCursorData(store);
 
+    // FIXME : 한글 문제 있음
+
     switch (event.key) {
         case "Enter":
             if (store.value.eventStatus.preComposing === false) {
@@ -508,6 +510,8 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
                 });
 
                 $block.innerHTML = structure;
+
+                // FIXME : 간혈적으로 위치 안맞음
                 _setCursor($block.childNodes[curruntIdx + 1] as Element, 0);
             }
         } else {
@@ -1351,36 +1355,43 @@ function ____nodeBackspaceEvent(event: KeyboardEvent, cursorData: DEditorCursor,
 
 // 탭 이벤트 (키 다운)
 function __tabEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    event.preventDefault();
+
+    switch (store.value.controlStatus.curruntblockType) {
+        case "code":
+        case "custom":
+        case "image":
+            // NOTE : 뎁스처리 안함
+            break;
+
+        default:
+            if (event.shiftKey === true) {
+                _setIndent(store, "minus");
+            } else {
+                _setIndent(store, "plus");
+            }
+    }
+}
+
+export function _setIndent(store: Ref<DragonEditorStore>, type: "plus" | "minus"): void {
     if (store.value.controlStatus.$curruntblock !== null) {
-        event.preventDefault();
-
         const $block = store.value.controlStatus.$curruntblock;
+        let value: number = $block.dataset["depth"] === undefined ? 0 : parseInt($block.dataset["depth"]);
 
-        switch (store.value.controlStatus.curruntblockType) {
-            case "code":
-            case "custom":
-            case "image":
-                // NOTE : 뎁스처리 안함
-                break;
+        if (type === "minus") {
+            if (value !== 0) {
+                value -= 1;
+            }
+        } else {
+            if (value < 5) {
+                value += 1;
+            }
+        }
 
-            default:
-                let value: number = $block.dataset["depth"] === undefined ? 0 : parseInt($block.dataset["depth"]);
-
-                if (event.shiftKey === true) {
-                    if (value !== 0) {
-                        value -= 1;
-                    }
-                } else {
-                    if (value < 5) {
-                        value += 1;
-                    }
-                }
-
-                if (value === 0) {
-                    delete $block.dataset["depth"];
-                } else {
-                    $block.dataset["depth"] = String(value);
-                }
+        if (value === 0) {
+            delete $block.dataset["depth"];
+        } else {
+            $block.dataset["depth"] = String(value);
         }
     }
 }

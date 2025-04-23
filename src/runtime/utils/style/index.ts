@@ -3,53 +3,6 @@ import "../../type.d.ts";
 export * from "./decoration";
 
 
-// import { _findContentEditableElement } from "./element";
-// import { _soltingCursorDataOnElement, _setCursor, _setRangeCursor, _clenupCursor } from "./cursor";
-// import { _getBlockType } from "./block";
-// import type { Ref } from "vue";
-
-// export function _setTextAlign(type: DETextalign, store: any) {
-//     const { type: blockType } = _getBlockType(store.$currentBlock);
-//     const typeIgnoreList: string[] = ["code", "other"];
-
-//     if (typeIgnoreList.includes(blockType) === false) {
-//         const alignClassList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];
-//         const className: string = `de-align-${type}`;
-//         let $element: HTMLElement | null = null;
-
-//         if (store.$currentBlock.classList.contains("de-image-block") === true) {
-//             // 이미지 블럭의 경우
-
-//             $element = store.$currentBlock;
-//         } else {
-//             // 이미지 블럭 외의 경우
-
-//             if (store.cursorData !== null) {
-//                 $element = _findContentEditableElement(store.cursorData.startNode as HTMLElement);
-//             }
-//         }
-
-//         if ($element !== null) {
-//             if ($element.classList.contains(className) === true) {
-//                 $element.classList.remove(className);
-//             } else {
-//                 const curruntClassname: string | undefined = alignClassList.filter((text) => $element.classList.contains(text) === true)[0];
-
-//                 if (curruntClassname !== undefined) {
-//                     $element.classList.remove(curruntClassname);
-//                 }
-
-//                 $element.classList.add(className);
-//             }
-
-//             if (store.$currentBlock.classList.contains("de-image-block") !== true) {
-//                 // 이미지 블럭이 아닌 경우
-
-//                 _setCursor($element, 0);
-//             }
-//         }
-//     }
-// }
 
 // export function _setAnchorTag(url: string, isOutsideLink: boolean, store: any) {
 //     if (store.cursorData !== null) {
@@ -388,16 +341,4 @@ export * from "./decoration";
 //     }
 
 //     return href;
-// }
-
-// function findPoverTextNode(node: Element, idx: number) {
-//     if (node.previousSibling !== null) {
-//         if (node.previousSibling.constructor.name === "Text") {
-//             return findPoverTextNode(node.previousSibling as Element, (idx -= 1));
-//         } else {
-//             return idx;
-//         }
-//     } else {
-//         return idx;
-//     }
 // }
