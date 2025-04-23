@@ -1,5 +1,5 @@
 import type { Ref } from "vue";
-import { _getDefaultBlockData, _generateId, _updateModelData } from "../event";
+import { _getDefaultBlockData, _generateId, _updateModelData, _updateCursorData } from "../event";
 
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
@@ -47,6 +47,8 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, 
         ($block.querySelector(".de-code-content") as HTMLElement).focus();
     } else if (blockData.type === "text" || blockData.type === "heading") {
         $block.focus();
+    } else if (blockData.type === "image") {
+        ($block.querySelector(".de-caption") as HTMLElement).focus();
     }
 
     const { type: blockType, $element } = _getCurruntBlock($block);
@@ -55,6 +57,7 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, 
     store.value.controlStatus.curruntblockType = blockType;
     store.value.controlStatus.$curruntblock = $element;
     _updateModelData(store);
+    _updateCursorData(store);
 }
 
 // 현재 활성화된 블럭 찾기

@@ -2,7 +2,8 @@ import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _getIconNode } from "./index";
 import { _addBlock } from "../node";
-import { _setDecoration } from "../style";
+import { _setDecoration, _setTextAlign } from "../style";
+import { _setIndent } from "../event";
 
 export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
     const childNode: VNode[] = [];
@@ -155,13 +156,79 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
     );
 
     // 이미지 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("label", { class: ["de-menu"], onClick: () => {} }, [h("input", { type: "file", hidden: true, accept: ".jpg,.jpeg,.png,.webp,.gif" }), _getIconNode("image")])]));
+    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("label", { class: ["de-menu"] }, [h("input", { type: "file", hidden: true, accept: ".jpg,.jpeg,.png,.webp,.gif" }), _getIconNode("image")])]));
 
     // 정렬 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-left")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-center")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-right")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("align-justify")])]));
+    menuGroupNode.push(
+        h("div", { class: ["de-col"] }, [
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setTextAlign("left", store);
+                    },
+                },
+                [_getIconNode("align-left")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setTextAlign("center", store);
+                    },
+                },
+                [_getIconNode("align-center")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setTextAlign("right", store);
+                    },
+                },
+                [_getIconNode("align-right")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setTextAlign("justify", store);
+                    },
+                },
+                [_getIconNode("align-justify")]
+            ),
+        ])
+    );
 
     // 인던트 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("indent-decrease")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("indent-increase")])]));
+    menuGroupNode.push(
+        h("div", { class: ["de-col"] }, [
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setIndent(store, "minus");
+                    },
+                },
+                [_getIconNode("indent-decrease")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _setIndent(store, "plus");
+                    },
+                },
+                [_getIconNode("indent-increase")]
+            ),
+        ])
+    );
 
     // 위치 이동 메뉴
     menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("move-up")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("move-down")])]));
