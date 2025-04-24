@@ -498,6 +498,7 @@ export function _setDecoration(className: string, store: Ref<DragonEditorStore>)
                                 startOffset = newStartOffset;
                             }
 
+                            // FIXME : 계산오류 있음
                             _setRangeCursor($element.childNodes[startNodeIdx] as Element, $element.childNodes[endNodeIdx] as Element, startOffset, endOffset);
                         } else {
                             alert(store.value.message.linkTextNoStyle);

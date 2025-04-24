@@ -50,11 +50,11 @@ function __blockAddOthersideEvent(event: MouseEvent, store: Ref<DragonEditorStor
 
 // 앵커 컨트롤 영역 토글 이벤트
 export function _openAnchorArea(store: Ref<DragonEditorStore>): void {
-    store.value.controlStatus.cursorDataForAnchor = store.value.cursorData;
+    store.value.controlStatus.previousCorsorData = store.value.cursorData;
 
     // 링크 값 추출
-    if (store.value.controlStatus.cursorDataForAnchor !== null) {
-        const cursorData = store.value.controlStatus.cursorDataForAnchor;
+    if (store.value.controlStatus.previousCorsorData !== null) {
+        const cursorData = store.value.controlStatus.previousCorsorData;
 
         if (cursorData.type === "Caret" || (cursorData.type === "Range" && cursorData.startNode === cursorData.endNode)) {
             // 단일 커서이거나 하나의 노드인경우

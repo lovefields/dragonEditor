@@ -3,8 +3,8 @@ import { _setRangeCursor, _updateCursorData, _updateModelData } from "../event";
 import { _findContentEditableElement, _findPoverTextNode } from "../node";
 
 export function _setAnchorTag(url: string, isOutsideLink: boolean, store: Ref<DragonEditorStore>) {
-    if (store.value.controlStatus.cursorDataForAnchor !== null && store.value.controlStatus.$curruntblock !== null) {
-        const cursorData = store.value.controlStatus.cursorDataForAnchor;
+    if (store.value.controlStatus.previousCorsorData !== null && store.value.controlStatus.$curruntblock !== null) {
+        const cursorData = store.value.controlStatus.previousCorsorData;
         const $block = store.value.controlStatus.$curruntblock;
         const typeIgnoreList: DEBlock[] = ["image", "code", "custom"];
         const hrefValue = isOutsideLink === true ? url : `#${url}`;
