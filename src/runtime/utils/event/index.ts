@@ -71,13 +71,6 @@ export * from "./block";
 
 
 
-// function chooseMediaEvent(event: Event) {
-//     const $target = event.target as HTMLInputElement;
-//     const file = $target.files![0];
-
-//     emit("uploadImageEvent", file);
-//     $target.value = "";
-// }
 
 // // 링크 삽입
 // function setLink() {

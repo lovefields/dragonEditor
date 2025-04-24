@@ -156,7 +156,28 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
     );
 
     // 이미지 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("label", { class: ["de-menu"] }, [h("input", { type: "file", hidden: true, accept: ".jpg,.jpeg,.png,.webp,.gif" }), _getIconNode("image")])]));
+    menuGroupNode.push(
+        h("div", { class: ["de-col"] }, [
+            h("label", { class: ["de-menu"] }, [
+                h("input", {
+                    type: "file",
+                    hidden: true,
+                    accept: ".jpg,.jpeg,.png,.webp,.gif",
+                    onChange: (event: Event) => {
+                        const $target = event.target as HTMLInputElement;
+
+                        if ($target.files !== null) {
+                            const file = $target.files[0];
+
+                            store.value.emit("uploadImageEvent", file);
+                            $target.value = "";
+                        }
+                    },
+                }),
+                _getIconNode("image"),
+            ]),
+        ])
+    );
 
     // 정렬 메뉴
     menuGroupNode.push(
