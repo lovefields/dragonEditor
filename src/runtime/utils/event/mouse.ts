@@ -1,6 +1,7 @@
 import type { Ref } from "vue";
 import { _updateCursorData, _imageResizeEventStart, _imageResizeEvent, _imageResizeEventEnd } from "./index";
 import { _getCurruntBlock, _updateCurruntBlock, _updateHeadingBlockList } from "../node";
+import { _updateAnchorTagValue } from "../style";
 
 export function _contentMouseupEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
     _updateCurruntBlock(event, store);
@@ -17,6 +18,7 @@ export function _editorMousemoveEvent(event: MouseEvent, store: Ref<DragonEditor
 
 export function _editorMouseupEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
     _imageResizeEventEnd(event, store);
+    _updateAnchorTagValue(store);
 }
 
 export function _editorMouseleaveEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
@@ -52,25 +54,7 @@ function __blockAddOthersideEvent(event: MouseEvent, store: Ref<DragonEditorStor
 export function _openAnchorArea(store: Ref<DragonEditorStore>): void {
     store.value.controlStatus.previousCorsorData = store.value.cursorData;
 
-    // 링크 값 추출
-    if (store.value.controlStatus.previousCorsorData !== null) {
-        const cursorData = store.value.controlStatus.previousCorsorData;
-
-        if (cursorData.type === "Caret" || (cursorData.type === "Range" && cursorData.startNode === cursorData.endNode)) {
-            // 단일 커서이거나 하나의 노드인경우
-
-            const $targetNode = cursorData.startNode;
-
-            if ($targetNode.constructor.name === "HTMLAnchorElement") {
-                const $tag = $targetNode as HTMLAnchorElement;
-
-                store.value.controlStatus.anchorHref = $tag.href;
-            }
-        } else {
-            store.value.controlStatus.anchorHref = "";
-        }
-    }
-
+    _updateAnchorTagValue(store, true);
     _updateHeadingBlockList(store);
 
     if (store.value.controlStatus.anchorHref !== "" && store.value.controlStatus.anchorHref.charAt(0) === "#") {

@@ -2,7 +2,7 @@ import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _getIconNode } from "./index";
 import { _addBlock } from "../node";
-import { _setDecoration, _setTextAlign, _setAnchorTag } from "../style";
+import { _setDecoration, _setTextAlign, _setAnchorTag, _unsetAnchorTag } from "../style";
 import { _setIndent, _moveBlock, _openAnchorArea } from "../event";
 
 export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
@@ -102,7 +102,16 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 },
                 [_getIconNode("add-link")]
             ),
-            h("button", { class: ["de-menu", { "--disabled": store.value.controlStatus.anchorHref === "" }], onClick: () => {} }, [_getIconNode("remove-link")]),
+            h(
+                "button",
+                {
+                    class: ["de-menu", { "--disabled": store.value.controlStatus.anchorHref === "" }],
+                    onClick: () => {
+                        _unsetAnchorTag(store);
+                    },
+                },
+                [_getIconNode("remove-link")]
+            ),
             h("div", { class: ["de-link-exit-area", "js-de-link-exit-area", { "--active": store.value.activeStatus.anchorInputArea }] }, [
                 h("div", { class: ["de-btn-area"] }, [
                     h(
