@@ -68,28 +68,7 @@ export * from "./block";
 // }
 
 
-// function moveBlock(type: "up" | "down") {
-//     if (editorStore.$currentBlock !== null) {
-//         let $target: Element | null;
 
-//         if (type === "up") {
-//             $target = editorStore.$currentBlock.previousElementSibling;
-//         } else {
-//             $target = editorStore.$currentBlock.nextElementSibling;
-//         }
-
-//         if ($target !== null) {
-//             ($target as HTMLElement).insertAdjacentHTML(type === "up" ? "beforebegin" : "afterend", editorStore.$currentBlock.outerHTML);
-//             editorStore.$currentBlock.remove();
-
-//             if (type === "up") {
-//                 editorStore.setCurrentBlock(($target as HTMLElement).previousElementSibling as HTMLElement | null);
-//             } else {
-//                 editorStore.setCurrentBlock(($target as HTMLElement).nextElementSibling as HTMLElement | null);
-//             }
-//         }
-//     }
-// }
 
 
 // function chooseMediaEvent(event: Event) {

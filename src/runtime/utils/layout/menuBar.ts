@@ -3,7 +3,7 @@ import type { VNode, Ref } from "vue";
 import { _getIconNode } from "./index";
 import { _addBlock } from "../node";
 import { _setDecoration, _setTextAlign } from "../style";
-import { _setIndent } from "../event";
+import { _setIndent, _moveBlock } from "../event";
 
 export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
     const childNode: VNode[] = [];
@@ -231,7 +231,30 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
     );
 
     // 위치 이동 메뉴
-    menuGroupNode.push(h("div", { class: ["de-col"] }, [h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("move-up")]), h("button", { class: ["de-menu"], onClick: () => {} }, [_getIconNode("move-down")])]));
+    menuGroupNode.push(
+        h("div", { class: ["de-col"] }, [
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _moveBlock("up", store);
+                    },
+                },
+                [_getIconNode("move-up")]
+            ),
+            h(
+                "button",
+                {
+                    class: ["de-menu"],
+                    onClick: () => {
+                        _moveBlock("down", store);
+                    },
+                },
+                [_getIconNode("move-down")]
+            ),
+        ])
+    );
 
     return h("div", { class: ["de-menu-wrap"] }, menuGroupNode);
 }

@@ -9,23 +9,18 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
     _updateCurruntBlock(event, store);
     _updateCursorData(store);
 
-    // FIXME : 한글 문제 있음
-
     switch (event.key) {
         case "Enter":
-            if (store.value.eventStatus.preComposing === false) {
+            // 문자 조합에 의한 중복 이벤트 방지 처리
+            if (store.value.eventStatus.preComposing === false && event.isComposing === false) {
                 __enterEvent(event, store);
             } else {
-                if (store.value.eventStatus.keyboardEnterCount === 1) {
+                if (store.value.eventStatus.keyboardEnterCount % 2 === 1) {
                     __enterEvent(event, store);
                 }
             }
 
             store.value.eventStatus.keyboardEnterCount += 1;
-
-            setTimeout(() => {
-                store.value.eventStatus.keyboardEnterCount = 0;
-            }, 1);
             break;
 
         case "Backspace":
@@ -1819,6 +1814,7 @@ export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditor
     clearTimeout(contentKeyupEvent);
     contentKeyupEvent = setTimeout(() => {
         _updateModelData(store);
+        store.value.eventStatus.keyboardEnterCount = 0;
     }, 250);
 }
 
