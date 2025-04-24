@@ -1,8 +1,9 @@
 import type { Ref } from "vue";
+import { _updateModelData } from "./index";
 import { _updateCurruntBlock } from "../node";
 
 // 사이즈 조정 이벤트 시작
-export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStore>) {
+export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStore>): void {
     const $target = event.target as HTMLElement;
     if ($target !== null) {
         const $block = $target.closest(".de-block");
@@ -32,7 +33,7 @@ export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStor
 }
 
 // 사이즈 조정 이벤트
-export function _imageResizeEvent(event: Event, store: Ref<DragonEditorStore>) {
+export function _imageResizeEvent(event: Event, store: Ref<DragonEditorStore>): void {
     if (store.value.activeStatus.imageResizeEvent === true && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
         const $imgArea = store.value.controlStatus.$curruntblock.querySelector(".de-image-area") as HTMLDivElement;
         const contentWidth = store.value.$body.offsetWidth / 2;
@@ -66,8 +67,37 @@ export function _imageResizeEvent(event: Event, store: Ref<DragonEditorStore>) {
 }
 
 // 사이즈 조정 이벤트 종료
-export function _imageResizeEventEnd(event: Event, store: Ref<DragonEditorStore>) {
+export function _imageResizeEventEnd(event: Event, store: Ref<DragonEditorStore>): void {
     if (store.value.activeStatus.imageResizeEvent === true) {
         store.value.activeStatus.imageResizeEvent = false;
+        _updateModelData(store);
+    }
+}
+
+// 블럭 이동 이벤트
+export function _moveBlock(type: "up" | "down", store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$curruntblock !== null) {
+        const $block = store.value.controlStatus.$curruntblock;
+        let $target: Element | null;
+
+        if (type === "up") {
+            $target = $block.previousElementSibling;
+        } else {
+            $target = $block.nextElementSibling;
+        }
+
+        if ($target !== null) {
+            ($target as HTMLElement).insertAdjacentHTML(type === "up" ? "beforebegin" : "afterend", $block.outerHTML);
+
+            $block.remove();
+
+            if (type === "up") {
+                store.value.controlStatus.$curruntblock = ($target as HTMLElement).previousElementSibling as HTMLDivElement | null;
+            } else {
+                store.value.controlStatus.$curruntblock = ($target as HTMLElement).nextElementSibling as HTMLDivElement | null;
+            }
+        }
+
+        _updateModelData(store);
     }
 }
