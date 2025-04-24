@@ -215,6 +215,8 @@ export function _setDecoration(className: string, store: Ref<DragonEditorStore>)
                                 const targetNode = $nextElement as Element;
 
                                 _setRangeCursor(targetNode, targetNode, 0, targetNode.textContent?.length ?? 0);
+                            } else {
+                                alert(store.value.message.linkTextNoStyle);
                             }
                         }
                     } else {
@@ -442,63 +444,62 @@ export function _setDecoration(className: string, store: Ref<DragonEditorStore>)
                             }
                         });
 
-                        $element.innerHTML = structureArray.join("");
+                        if (isAnchorElement === false) {
+                            $element.innerHTML = structureArray.join("");
 
-                        // @ts-ignore : 반복문이슈
-                        if (isWrap === true) {
                             // @ts-ignore : 반복문이슈
-                            if (isDuble === true) {
-                                startNodeIdx += 1;
-                                endNodeIdx += 1;
-                                startOffset = 0;
-                            }
-                        } else {
-                            const tagReg = new RegExp("(<([^>]+)>)", "i");
-                            const isTagList: (boolean | null)[] = [];
-                            let newStartNodeIdx: number = 0;
-                            let newStartOffset: number = startOffset * 1;
-                            let newEndOffset: number = 0;
-                            let endMinusCount: number = 0;
-
-                            structureArray.forEach((string: string, i: number) => {
-                                const isTag: boolean = tagReg.test(string);
-                                isTagList.push(isTag);
-                                if (startNodeIdx <= i && i <= endNodeIdx) {
-                                    if (isTag === true) {
-                                        newEndOffset = 0;
-                                    } else {
-                                        endMinusCount += 1;
-                                        newEndOffset += string.length;
-                                    }
+                            if (isWrap === true) {
+                                // @ts-ignore : 반복문이슈
+                                if (isDuble === true) {
+                                    startNodeIdx += 1;
+                                    endNodeIdx += 1;
+                                    startOffset = 0;
                                 }
-                            });
-
-                            // 시작 노드의 전 노드가 텍스트라면
-                            if (isTagList[startNodeIdx - 1] === false) {
-                                newStartNodeIdx = startNodeIdx - 1;
-                                newStartOffset = startOffset + structureArray[startNodeIdx - 1].length;
-                            }
-
-                            if (isTagList.slice(startNodeIdx, endNodeIdx).includes(true) === true) {
-                                // 중간에 태그가 있는경우
-
-                                endNodeIdx -= endMinusCount - 1;
-                                endOffset = newEndOffset;
                             } else {
-                                // 중간에 태그가 없는 경우
+                                const tagReg = new RegExp("(<([^>]+)>)", "i");
+                                const isTagList: (boolean | null)[] = [];
+                                let newStartNodeIdx: number = 0;
+                                let newStartOffset: number = startOffset * 1;
+                                let newEndOffset: number = 0;
+                                let endMinusCount: number = 0;
 
-                                endNodeIdx = newStartNodeIdx;
-                                endOffset = newStartOffset + newEndOffset;
+                                structureArray.forEach((string: string, i: number) => {
+                                    const isTag: boolean = tagReg.test(string);
+                                    isTagList.push(isTag);
+                                    if (startNodeIdx <= i && i <= endNodeIdx) {
+                                        if (isTag === true) {
+                                            newEndOffset = 0;
+                                        } else {
+                                            endMinusCount += 1;
+                                            newEndOffset += string.length;
+                                        }
+                                    }
+                                });
+
+                                // 시작 노드의 전 노드가 텍스트라면
+                                if (isTagList[startNodeIdx - 1] === false) {
+                                    newStartNodeIdx = startNodeIdx - 1;
+                                    newStartOffset = startOffset + structureArray[startNodeIdx - 1].length;
+                                }
+
+                                if (isTagList.slice(startNodeIdx, endNodeIdx).includes(true) === true) {
+                                    // 중간에 태그가 있는경우
+
+                                    endNodeIdx -= endMinusCount - 1;
+                                    endOffset = newEndOffset;
+                                } else {
+                                    // 중간에 태그가 없는 경우
+
+                                    endNodeIdx = newStartNodeIdx;
+                                    endOffset = newStartOffset + newEndOffset;
+                                }
+
+                                startNodeIdx = newStartNodeIdx;
+                                startOffset = newStartOffset;
                             }
 
-                            startNodeIdx = newStartNodeIdx;
-                            startOffset = newStartOffset;
-                        }
-
-                        _setRangeCursor($element.childNodes[startNodeIdx] as Element, $element.childNodes[endNodeIdx] as Element, startOffset, endOffset);
-
-                        // @ts-ignore : IDE가 인식 못함
-                        if (isAnchorElement === true) {
+                            _setRangeCursor($element.childNodes[startNodeIdx] as Element, $element.childNodes[endNodeIdx] as Element, startOffset, endOffset);
+                        } else {
                             alert(store.value.message.linkTextNoStyle);
                         }
                     }
@@ -553,7 +554,6 @@ export function _setTextAlign(type: DETextalign, store: Ref<DragonEditorStore>) 
 
                 if (store.value.controlStatus.$curruntblock.classList.contains("de-image-block") !== true) {
                     // 이미지 블럭이 아닌 경우
-
                     // _setCursor($element, 0);
                 }
 

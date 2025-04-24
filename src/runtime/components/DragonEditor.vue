@@ -62,6 +62,7 @@ const editorStore = ref<DragonEditorStore>({
         anchorHeadingList: [],
         anchorHref: "",
         anchorValidation: false,
+        cursorDataForAnchor:null,
         $anchorInput: null,
         $curruntblock: null,
     },

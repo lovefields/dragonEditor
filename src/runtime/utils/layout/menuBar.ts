@@ -2,8 +2,8 @@ import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _getIconNode } from "./index";
 import { _addBlock } from "../node";
-import { _setDecoration, _setTextAlign } from "../style";
-import { _setIndent, _moveBlock } from "../event";
+import { _setDecoration, _setTextAlign, _setAnchorTag } from "../style";
+import { _setIndent, _moveBlock, _openAnchorArea } from "../event";
 
 export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
     const childNode: VNode[] = [];
@@ -97,13 +97,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 {
                     class: ["de-menu", "js-de-link-btn"],
                     onClick: () => {
-                        if (store.value.controlStatus.anchorHref !== "" && store.value.controlStatus.anchorHref.charAt(0) === "#") {
-                            store.value.controlStatus.anchorTabType = "heading";
-                        } else {
-                            store.value.controlStatus.anchorTabType = "url";
-                        }
-
-                        store.value.activeStatus.anchorInputArea = !store.value.activeStatus.anchorInputArea;
+                        _openAnchorArea(store);
                     },
                 },
                 [_getIconNode("add-link")]
@@ -141,14 +135,23 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                                   store.value.controlStatus.anchorHref = (event.currentTarget as HTMLInputElement).value;
                               },
                           }),
-                          h("button", { class: ["de-btn"], onClick: () => {} }, "Add"),
+                          h("button", { class: ["de-btn"], onClick: () => {} }, "Set"),
                       ])
                     : h(
                           "div",
                           { class: ["de-link-heading-area"] },
                           store.value.controlStatus.anchorHeadingList.map((item) => {
-                              return h("button", { class: ["de-btn"], onClick: () => {} }, item.name);
-                              // TODO : 링크 값과 같으면 active 처리
+                              return h(
+                                  "button",
+                                  {
+                                      class: ["de-btn", { "--active": store.value.controlStatus.anchorHref === `#${item.id}` }],
+                                      onClick: () => {
+                                          store.value.activeStatus.anchorInputArea = false;
+                                          _setAnchorTag(item.id, false, store);
+                                      },
+                                  },
+                                  item.name
+                              );
                           })
                       ),
             ]),
