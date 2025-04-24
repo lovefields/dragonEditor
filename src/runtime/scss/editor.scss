@@ -173,8 +173,9 @@
                 overflow-y: auto;
 
                 .de-btn {
-                    min-height: 20px;
+                    padding: 2px 4px;
                     text-align: left;
+                    border-radius: var(--radius-default);
 
                     &:hover {
                         background: #f1f1f1;

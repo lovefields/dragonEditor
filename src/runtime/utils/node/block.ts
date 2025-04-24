@@ -247,3 +247,17 @@ export function _updateCurruntBlock(event: Event, store: Ref<DragonEditorStore>)
         store.value.controlStatus.$curruntblock = $element;
     }
 }
+
+// 해딩 블럭 리스트 업데이트
+export function _updateHeadingBlockList(store: Ref<DragonEditorStore>): void {
+    if (store.value.$body !== null) {
+        const $headingList = store.value.$body.querySelectorAll(".de-heading-block");
+
+        store.value.controlStatus.anchorHeadingList = Array.from($headingList).map(($element) => {
+            return {
+                name: $element.textContent ?? "",
+                id: $element.id ?? "",
+            };
+        });
+    }
+}
