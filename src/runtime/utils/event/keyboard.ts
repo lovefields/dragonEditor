@@ -15,8 +15,10 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
             if (store.value.eventStatus.preComposing === false && event.isComposing === false) {
                 __enterEvent(event, store);
             } else {
-                if (store.value.eventStatus.keyboardEnterCount % 2 === 1) {
+                if (store.value.eventStatus.keyboardEnterCount % 2 === 0) {
                     __enterEvent(event, store);
+                } else {
+                    event.preventDefault();
                 }
             }
 
@@ -506,7 +508,10 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
 
                 $block.innerHTML = structure;
 
-                // FIXME : 간혈적으로 위치 안맞음
+                if ($block.childNodes[curruntIdx + 1] === undefined) {
+                    $block.insertAdjacentHTML("beforeend", "<br>");
+                }
+
                 _setCursor($block.childNodes[curruntIdx + 1] as Element, 0);
             }
         } else {
@@ -1810,11 +1815,11 @@ let contentKeyupEvent: NodeJS.Timeout;
 export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     _updateCursorData(store);
     __checkBlock(store);
+    store.value.eventStatus.keyboardEnterCount = 0;
 
     clearTimeout(contentKeyupEvent);
     contentKeyupEvent = setTimeout(() => {
         _updateModelData(store);
-        store.value.eventStatus.keyboardEnterCount = 0;
     }, 250);
 }
 

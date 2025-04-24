@@ -60,7 +60,7 @@ interface DragonEditorStore {
         anchorTabType: "url" | "heading";
         anchorHeadingList: DEHeadingItem[];
         anchorHref: string;
-        cursorDataForAnchor: DEditorCursor | null;
+        previousCorsorData: DEditorCursor | null;
         $anchorInput: HTMLInputElement | null;
         $curruntblock: HTMLDivElement | null;
     };
