@@ -4,8 +4,6 @@ type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | D
 
 type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "indent-decrease" | "indent-increase";
 
-type DECodeTheme = "github";
-
 type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
 
 type DETextalign = "left" | "right" | "center" | "justify";
@@ -47,23 +45,26 @@ interface DragonEditorStore {
         imageResizeEventStartX: number;
         imageResizeEventType: "right" | "left";
         imageResizeEventEndX: number;
-        imageResizeCurruntWidth: number;
+        imageResizeCurrentWidth: number;
         keyboardEnterCount: number;
     };
     controlStatus: {
         isMobile: boolean;
         anchorValidation: boolean;
-        curruntblockType: DEBlock;
-        codeBlockTheme: DECodeTheme;
-        codeBlockLang: string;
+        currentBlockType: DEBlock;
+        codeBlockTheme: DECodeblockTheme;
+        codeBlockLang: DECodeblockLang;
         listBlockStyle: DEListStyle;
         anchorTabType: "url" | "heading";
         anchorHeadingList: DEHeadingItem[];
         anchorHref: string;
         previousCorsorData: DEditorCursor | null;
         $anchorInput: HTMLInputElement | null;
-        $curruntblock: HTMLDivElement | null;
+        $currentBlock: HTMLDivElement | null;
     };
+    codeBlockTheme: DECodeItem<DECodeblockTheme>[];
+    listUlType: DECodeItem<DEListStyle>[];
+    listOlType: DECodeItem<DEListStyle>[];
     $editor: HTMLDivElement | null;
     $body: HTMLDivElement | null;
     $controlBar: HTMLDivElement | null;
@@ -103,9 +104,9 @@ interface DEImage {
     caption?: string;
 }
 
-interface DECodeItem {
+interface DECodeItem<T = string> {
     text: string;
-    code: string;
+    code: T;
 }
 
 interface DEHeadingItem {
@@ -116,12 +117,8 @@ interface DEHeadingItem {
 // 컴포넌트 메서드용 타입
 interface DragonEditor {
     addBlock: (type: DEBlockData) => void;
-    // addImageBlock: (data: DEImage) => void;
-    // setDecoration: (data: DEDecoration) => void;
-    // setTextAlign: (type: DETextalign) => void;
-    // getContentData: () => DEContentData;
-    // setContentData: (data: DEContentData) => void;
-    // addCustomBlock: (HTML: string, classList: string[]) => void;
+    setDecoration: (data: DEDecoration) => void;
+    setTextAlign: (type: DETextalign) => void;
 }
 
 interface DETextBlock {

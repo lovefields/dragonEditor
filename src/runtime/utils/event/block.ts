@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
 import { _updateModelData } from "./index";
-import { _updateCurruntBlock } from "../node";
+import { _updateCurrentBlock } from "../node";
 
 // 사이즈 조정 이벤트 시작
 export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStore>): void {
@@ -9,7 +9,7 @@ export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStor
         const $block = $target.closest(".de-block");
 
         if ($block !== null && $block.classList.contains("de-image-block") === true && $target.classList.contains("de-btn") === true) {
-            _updateCurruntBlock(event, store);
+            _updateCurrentBlock(event, store);
             store.value.activeStatus.imageResizeEvent = true;
 
             if (event.type === "touchstart") {
@@ -27,15 +27,15 @@ export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStor
             const $imgArea = $block.querySelector(".de-image-area") as HTMLDivElement;
 
             store.value.eventStatus.imageResizeEventEndX = store.value.eventStatus.imageResizeEventStartX;
-            store.value.eventStatus.imageResizeCurruntWidth = parseInt($imgArea.dataset["maxwidth"] ?? "25");
+            store.value.eventStatus.imageResizeCurrentWidth = parseInt($imgArea.dataset["maxwidth"] ?? "25");
         }
     }
 }
 
 // 사이즈 조정 이벤트
 export function _imageResizeEvent(event: Event, store: Ref<DragonEditorStore>): void {
-    if (store.value.activeStatus.imageResizeEvent === true && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
-        const $imgArea = store.value.controlStatus.$curruntblock.querySelector(".de-image-area") as HTMLDivElement;
+    if (store.value.activeStatus.imageResizeEvent === true && store.value.controlStatus.$currentBlock !== null && store.value.$body !== null) {
+        const $imgArea = store.value.controlStatus.$currentBlock.querySelector(".de-image-area") as HTMLDivElement;
         const contentWidth = store.value.$body.offsetWidth / 2;
         let gap: number = 0;
 
@@ -52,7 +52,7 @@ export function _imageResizeEvent(event: Event, store: Ref<DragonEditorStore>): 
         }
 
         const percent = (100 / contentWidth) * gap;
-        let value = Math.floor(store.value.eventStatus.imageResizeCurruntWidth - percent);
+        let value = Math.floor(store.value.eventStatus.imageResizeCurrentWidth - percent);
 
         if (value < 25) {
             value = 25;
@@ -76,8 +76,8 @@ export function _imageResizeEventEnd(event: Event, store: Ref<DragonEditorStore>
 
 // 블럭 이동 이벤트
 export function _moveBlock(type: "up" | "down", store: Ref<DragonEditorStore>): void {
-    if (store.value.controlStatus.$curruntblock !== null) {
-        const $block = store.value.controlStatus.$curruntblock;
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const $block = store.value.controlStatus.$currentBlock;
         let $target: Element | null;
 
         if (type === "up") {
@@ -92,9 +92,9 @@ export function _moveBlock(type: "up" | "down", store: Ref<DragonEditorStore>): 
             $block.remove();
 
             if (type === "up") {
-                store.value.controlStatus.$curruntblock = ($target as HTMLElement).previousElementSibling as HTMLDivElement | null;
+                store.value.controlStatus.$currentBlock = ($target as HTMLElement).previousElementSibling as HTMLDivElement | null;
             } else {
-                store.value.controlStatus.$curruntblock = ($target as HTMLElement).nextElementSibling as HTMLDivElement | null;
+                store.value.controlStatus.$currentBlock = ($target as HTMLElement).nextElementSibling as HTMLDivElement | null;
             }
         }
 

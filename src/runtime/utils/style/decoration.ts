@@ -4,11 +4,11 @@ import { _findContentEditableElement, _findPoverTextNode } from "../node";
 
 // 텍스트 스타일 적용
 export function _setDecoration(className: string, store: Ref<DragonEditorStore>): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.cursorData;
         const typeIgnoreList: DEBlock[] = ["image", "code", "custom"];
 
-        if (typeIgnoreList.includes(store.value.controlStatus.curruntblockType) === false) {
+        if (typeIgnoreList.includes(store.value.controlStatus.currentBlockType) === false) {
             // 제외 타입에 해당하지 않는 경우만 적용
 
             const $element = _findContentEditableElement(cursorData.startNode);
@@ -517,21 +517,21 @@ export function _setDecoration(className: string, store: Ref<DragonEditorStore>)
 export function _setTextAlign(type: DETextalign, store: Ref<DragonEditorStore>) {
     // TODO : 커서 기존위치로 지정해주기
 
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.cursorData;
         const typeIgnoreList: DEBlock[] = ["code", "custom"];
 
-        if (typeIgnoreList.includes(store.value.controlStatus.curruntblockType) === false) {
+        if (typeIgnoreList.includes(store.value.controlStatus.currentBlockType) === false) {
             // 제외 타입에 해당하지 않는 경우만 적용
 
             const alignClassList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];
             const className: string = `de-align-${type}`;
             let $element: HTMLElement | null = null;
 
-            if (store.value.controlStatus.$curruntblock.classList.contains("de-image-block") === true) {
+            if (store.value.controlStatus.$currentBlock.classList.contains("de-image-block") === true) {
                 // 이미지 블럭의 경우
 
-                $element = store.value.controlStatus.$curruntblock;
+                $element = store.value.controlStatus.$currentBlock;
             } else {
                 // 이미지 블럭 외의 경우
 
@@ -544,16 +544,16 @@ export function _setTextAlign(type: DETextalign, store: Ref<DragonEditorStore>) 
                 if ($element.classList.contains(className) === true) {
                     $element.classList.remove(className);
                 } else {
-                    const curruntClassname: string | undefined = alignClassList.filter((text) => $element.classList.contains(text) === true)[0];
+                    const currentClassname: string | undefined = alignClassList.filter((text) => $element.classList.contains(text) === true)[0];
 
-                    if (curruntClassname !== undefined) {
-                        $element.classList.remove(curruntClassname);
+                    if (currentClassname !== undefined) {
+                        $element.classList.remove(currentClassname);
                     }
 
                     $element.classList.add(className);
                 }
 
-                if (store.value.controlStatus.$curruntblock.classList.contains("de-image-block") !== true) {
+                if (store.value.controlStatus.$currentBlock.classList.contains("de-image-block") !== true) {
                     // 이미지 블럭이 아닌 경우
                     // _setCursor($element, 0);
                 }

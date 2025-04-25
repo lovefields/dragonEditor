@@ -1,40 +1,110 @@
 import { h } from "vue";
 import type { VNode, Ref } from "vue";
+import { _setCodeBlockTheme, _setCodeBlockLanguage, _setListBlockStyle } from "../node";
+import { CODEBLOCKLANG } from "../event";
 
 export function _getControlbarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
-    return h("div", { class: ["de-controlbar", "js-de-controlbar"] });
+    const childList: VNode[] = [];
+
+    switch (store.value.controlStatus.currentBlockType) {
+        case "code":
+            childList.push(
+                h("div", { class: ["de-col"] }, [
+                    h("p", { class: ["de-name"] }, "Theme : "),
+                    h(
+                        "select",
+                        {
+                            class: ["de-selector"],
+                            value: store.value.controlStatus.codeBlockTheme,
+                            onChange: (event: Event) => {
+                                const $target = event.currentTarget as HTMLSelectElement;
+
+                                if ($target !== null) {
+                                    _setCodeBlockTheme($target.value as DECodeblockTheme, store);
+                                }
+                            },
+                        },
+                        store.value.codeBlockTheme.map((item) => {
+                            return h("option", { value: item.code }, item.text);
+                        })
+                    ),
+                ])
+            );
+
+            childList.push(
+                h("div", { class: ["de-col"] }, [
+                    h("p", { class: ["de-name"] }, "Language : "),
+                    h(
+                        "select",
+                        {
+                            class: ["de-selector"],
+                            value: store.value.controlStatus.codeBlockLang,
+                            onChange: (event: Event) => {
+                                const $target = event.currentTarget as HTMLSelectElement;
+
+                                if ($target !== null) {
+                                    _setCodeBlockLanguage($target.value as DECodeblockLang, store);
+                                }
+                            },
+                        },
+                        CODEBLOCKLANG.map((item) => {
+                            return h("option", { value: item.code }, item.text);
+                        })
+                    ),
+                ])
+            );
+            break;
+
+        case "ol":
+            childList.push(
+                h("div", { class: ["de-col"] }, [
+                    h("p", { class: ["de-name"] }, "List Style : "),
+                    h(
+                        "select",
+                        {
+                            class: ["de-selector"],
+                            value: store.value.controlStatus.listBlockStyle,
+                            onChange: (event: Event) => {
+                                const $target = event.currentTarget as HTMLSelectElement;
+
+                                if ($target !== null) {
+                                    _setListBlockStyle($target.value as DEListStyle, store);
+                                }
+                            },
+                        },
+                        store.value.listOlType.map((item) => {
+                            return h("option", { value: item.code }, item.text);
+                        })
+                    ),
+                ])
+            );
+            break;
+
+        case "ul":
+            childList.push(
+                h("div", { class: ["de-col"] }, [
+                    h("p", { class: ["de-name"] }, "List Style : "),
+                    h(
+                        "select",
+                        {
+                            class: ["de-selector"],
+                            value: store.value.controlStatus.listBlockStyle,
+                            onChange: (event: Event) => {
+                                const $target = event.currentTarget as HTMLSelectElement;
+
+                                if ($target !== null) {
+                                    _setListBlockStyle($target.value as DEListStyle, store);
+                                }
+                            },
+                        },
+                        store.value.listUlType.map((item) => {
+                            return h("option", { value: item.code }, item.text);
+                        })
+                    ),
+                ])
+            );
+            break;
+    }
+
+    return h("div", { class: ["de-controlbar", "js-de-controlbar"], style: { top: `${store.value.controlBar.y}px`, left: `${store.value.controlBar.x}px` } }, childList);
 }
-
-//         <div v-if="editorStore.$currentBlock !== null" class="de-controlbar js-de-controlbar" :class="{ '--active': editorStore.controlBar.active === true }" :style="{ top: `${editorStore.controlBar.y}px`, left: `${editorStore.controlBar.x}px` }" ref="$controlBar">
-//             <div v-if="['code'].includes(curruntType) === true" class="de-col">
-//                 <p class="de-name">Theme :</p>
-//                 <select class="de-selector" v-model="codeBlockTheme" @change="codeBlockThemeChangeEvent">
-//                     <option v-for="(item, i) in _getCodeBlockTheme()" :value="item.code" :key="`codeBlockTheme-${i}`">{{ item.text }}</option>
-//                 </select>
-//             </div>
-
-//             <div v-if="['code'].includes(curruntType) === true" class="de-col">
-//                 <p class="de-name">Language :</p>
-//                 <select class="de-selector" v-model="codeblockLanguage" @change="codeblockLanguageChangeEvent">
-//                     <option v-for="(item, i) in _getCodeBlockLanguage()" :value="item.code" :key="`codeBlockLanuage-${i}`">{{ item.text }}</option>
-//                 </select>
-//             </div>
-
-//             <div v-if="['list'].includes(curruntType) === true" class="de-col">
-//                 <p class="de-name">List Style :</p>
-//                 <select class="de-selector" v-model="listBlockStyle" @change="listBlockStyleChangeEvent">
-//                     <template v-if="editorStore.$currentBlock.tagName === 'UL'">
-//                         <option value="disc">Disc</option>
-//                         <option value="square">Square</option>
-//                     </template>
-
-//                     <template v-else>
-//                         <option value="decimal">Decimal</option>
-//                         <option value="lower-alpha">Lower-Alpha</option>
-//                         <option value="upper-alpha">Upper-Alpha</option>
-//                         <option value="lower-roman">Lower-Roman</option>
-//                         <option value="upper-roman">Upper-Roman</option>
-//                     </template>
-//                 </select>
-//             </div>
-//         </div>

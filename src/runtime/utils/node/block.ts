@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
-import { _getDefaultBlockData, _generateId, _updateModelData, _updateCursorData } from "../event";
+import { _getDefaultBlockData, _generateId, _updateModelData, _updateCursorData, _decideWhetherOpenControlBar, _updateControlBarStatus, CODEBLOCKLANG } from "../event";
+import hljs from "highlight.js";
 
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
@@ -24,7 +25,7 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, 
             break;
 
         case "code":
-            $block = _createCodeBlock(blockData);
+            $block = _createCodeBlock(blockData, store);
             break;
 
         case "custom":
@@ -32,13 +33,13 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, 
             break;
     }
 
-    if (store.value.controlStatus.$curruntblock === null) {
+    if (store.value.controlStatus.$currentBlock === null) {
         if (store.value.$body !== null) {
             store.value.$body.insertAdjacentElement("beforeend", $block);
         } else {
         }
     } else {
-        store.value.controlStatus.$curruntblock.insertAdjacentElement("afterend", $block);
+        store.value.controlStatus.$currentBlock.insertAdjacentElement("afterend", $block);
     }
 
     if (blockData.type === "list") {
@@ -51,17 +52,18 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, 
         ($block.querySelector(".de-caption") as HTMLElement).focus();
     }
 
-    const { type: blockType, $element } = _getCurruntBlock($block);
+    const { type: blockType, $element } = _getCurrentBlock($block);
 
     store.value.activeStatus.addBlockMenu = false;
-    store.value.controlStatus.curruntblockType = blockType;
-    store.value.controlStatus.$curruntblock = $element;
+    store.value.controlStatus.currentBlockType = blockType;
+    store.value.controlStatus.$currentBlock = $element;
     _updateModelData(store);
     _updateCursorData(store);
+    _decideWhetherOpenControlBar(store);
 }
 
 // 현재 활성화된 블럭 찾기
-export function _getCurruntBlock($target: EventTarget): {
+export function _getCurrentBlock($target: EventTarget): {
     type: DEBlock;
     $element: HTMLDivElement | null;
 } {
@@ -201,19 +203,20 @@ export function _createImageBlock(data: DEImageBlock, imageHostURL: string = "")
 }
 
 // 코드 블럭 생성
-export function _createCodeBlock(data: DECodeBlock): HTMLDivElement {
+export function _createCodeBlock(data: DECodeBlock, store: Ref<DragonEditorStore>): HTMLDivElement {
     const $wrap = document.createElement("div") as HTMLDivElement;
     const $file = document.createElement("p") as HTMLParagraphElement;
     const $lang = document.createElement("p") as HTMLParagraphElement;
     const $pre = document.createElement("pre") as HTMLPreElement;
     const $code = document.createElement("code") as HTMLElement;
+    const targetValue = CODEBLOCKLANG.find((item) => item.code === data.language);
 
     $wrap.classList.add("de-block", "de-code-block");
     $wrap.dataset["theme"] = data.theme;
     $file.contentEditable = "true";
     $file.classList.add("de-filename");
     $file.textContent = data.filename;
-    $lang.textContent = data.language;
+    $lang.textContent = targetValue?.text ?? "Plan Text";
     $lang.classList.add("de-language");
     $pre.classList.add("de-pre");
     $code.contentEditable = "true";
@@ -239,12 +242,23 @@ export function _createCustomBlock(data: DECustomBlock): HTMLDivElement {
 }
 
 // 활성화 블럭 업데이트
-export function _updateCurruntBlock(event: Event, store: Ref<DragonEditorStore>): void {
-    if (event.target !== null) {
-        const { type, $element } = _getCurruntBlock(event.target);
+export function _updateCurrentBlock(event: Event, store: Ref<DragonEditorStore>): void {
+    let $target = event.target;
 
-        store.value.controlStatus.curruntblockType = type;
-        store.value.controlStatus.$curruntblock = $element;
+    if ($target !== null) {
+        $target = $target.constructor.name === "Text" ? (($target as Node).parentElement as EventTarget) : $target;
+
+        const $menuBar = ($target as HTMLElement).closest(".de-menu-bar");
+        const $controlBar = ($target as HTMLElement).closest(".js-de-controlbar");
+
+        if ($menuBar === null && $controlBar === null) {
+            const { type, $element } = _getCurrentBlock($target);
+
+            store.value.controlStatus.currentBlockType = type;
+            store.value.controlStatus.$currentBlock = $element;
+            _decideWhetherOpenControlBar(store);
+            _updateControlBarStatus(store);
+        }
     }
 }
 
@@ -259,5 +273,41 @@ export function _updateHeadingBlockList(store: Ref<DragonEditorStore>): void {
                 id: $element.id ?? "",
             };
         });
+    }
+}
+
+// 코드블럭 테마 변경
+export function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null) {
+        store.value.controlStatus.codeBlockTheme = theme;
+        store.value.controlStatus.$currentBlock.dataset["theme"] = theme;
+    }
+}
+
+// 코드블럭 언어 변경
+export function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const $target = store.value.controlStatus.$currentBlock.querySelector(".de-language");
+        const $code = store.value.controlStatus.$currentBlock.querySelector(".de-code-content");
+
+        if ($target !== null && $code !== null) {
+            const targetValue = CODEBLOCKLANG.find((item) => item.code === language);
+
+            if (targetValue !== undefined) {
+                const convert = hljs.highlight($code.textContent ?? "", { language: language });
+
+                $target.textContent = targetValue.text;
+                $code.innerHTML = convert.value;
+                store.value.controlStatus.codeBlockLang = targetValue.code;
+            }
+        }
+    }
+}
+
+// 리스트 블럭 스타일 변경
+export function _setListBlockStyle(style: DEListStyle, store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null) {
+        store.value.controlStatus.listBlockStyle = style;
+        store.value.controlStatus.$currentBlock.dataset["style"] = style;
     }
 }

@@ -11,6 +11,14 @@
         padding-top: 35px;
     }
 
+    &.--mobile {
+        .de-menu-bar {
+            .de-menu-wrap {
+                overflow-x: auto;
+            }
+        }
+    }
+
     .de-body {
         display: flex;
         flex-direction: column;
@@ -34,7 +42,6 @@
 
         .de-menu-wrap {
             display: flex;
-            // overflow-x: auto; TODO : 모바일에서만 처리하기
         }
 
         .de-col {
@@ -187,30 +194,25 @@
 
     // 컨트롤 바 스타일
     .de-controlbar {
-        display: none;
+        display: flex;
         position: fixed;
-        height: 38px;
+        height: 34px;
         background: #fff;
         border: 1px solid #ccc;
-        border-width: 1px 0 0 1px;
+        border-radius: var(--radius-default);
         transform: translateX(-50%);
         z-index: 20;
-
-        &.--active {
-            display: flex;
-        }
-
-        &:empty {
-            display: none;
-        }
 
         .de-col {
             display: flex;
             align-items: center;
             column-gap: 6px;
             padding: 0 10px;
-            border: 1px solid #ccc;
-            border-width: 0 1px 1px 0;
+            border-right: 1px solid #ccc;
+
+            &:last-child {
+                border-right: 0;
+            }
 
             .de-selector {
                 height: 100%;
