@@ -1,3 +1,5 @@
+import type { HLJSApi } from "highlight.js";
+
 type DEContentData = DEBlockData[];
 
 type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock;
@@ -62,6 +64,7 @@ interface DragonEditorStore {
         $anchorInput: HTMLInputElement | null;
         $currentBlock: HTMLDivElement | null;
     };
+    hljs: HLJSApi;
     codeBlockTheme: DECodeItem<DECodeblockTheme>[];
     listUlType: DECodeItem<DEListStyle>[];
     listOlType: DECodeItem<DEListStyle>[];
