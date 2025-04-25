@@ -3,14 +3,14 @@ import { _setRangeCursor, _updateCursorData, _updateModelData, _sortingCursorDat
 import { _findContentEditableElement, _findPoverTextNode } from "../node";
 
 export function _setAnchorTag(url: string, isOutsideLink: boolean, store: Ref<DragonEditorStore>) {
-    if (store.value.controlStatus.previousCorsorData !== null && store.value.controlStatus.$curruntblock !== null) {
+    if (store.value.controlStatus.previousCorsorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.controlStatus.previousCorsorData;
-        const $block = store.value.controlStatus.$curruntblock;
+        const $block = store.value.controlStatus.$currentBlock;
         const typeIgnoreList: DEBlock[] = ["image", "code", "custom"];
         const hrefValue = isOutsideLink === true ? url : `#${url}`;
         const $element = _findContentEditableElement(cursorData.startNode as HTMLElement);
 
-        if (typeIgnoreList.includes(store.value.controlStatus.curruntblockType) === false && $element !== null) {
+        if (typeIgnoreList.includes(store.value.controlStatus.currentBlockType) === false && $element !== null) {
             // 허용한 블럭 타입에서만 && 에디팅이 가능한 노드가 있는 경우만
 
             if (cursorData.type === "Caret") {

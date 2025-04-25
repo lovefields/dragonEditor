@@ -1,10 +1,10 @@
 import type { Ref } from "vue";
 import { _updateCursorData, _imageResizeEventStart, _imageResizeEvent, _imageResizeEventEnd } from "./index";
-import { _getCurruntBlock, _updateCurruntBlock, _updateHeadingBlockList } from "../node";
+import { _getCurrentBlock, _updateCurrentBlock, _updateHeadingBlockList } from "../node";
 import { _updateAnchorTagValue } from "../style";
 
 export function _contentMouseupEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
-    _updateCurruntBlock(event, store);
+    _updateCurrentBlock(event, store);
     _updateCursorData(store);
 }
 
@@ -27,7 +27,9 @@ export function _editorMouseleaveEvent(event: MouseEvent, store: Ref<DragonEdito
 
 // 에디터 영역 이외 클릭시 처리 이벤트
 export function _checkOthersideClick(event: MouseEvent, store: Ref<DragonEditorStore>): void {
+    _updateCurrentBlock(event, store);
     __blockAddOthersideEvent(event, store);
+    _decideWhetherOpenControlBar(store);
 }
 
 // 메뉴 추가 이외 영역 클릭 이벤트
@@ -64,6 +66,26 @@ export function _openAnchorArea(store: Ref<DragonEditorStore>): void {
     }
 
     store.value.activeStatus.anchorInputArea = !store.value.activeStatus.anchorInputArea;
+}
+
+export function _decideWhetherOpenControlBar(store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const { type, $element } = _getCurrentBlock(store.value.controlStatus.$currentBlock);
+        const allowTypeList: DEBlock[] = ["code", "ol", "ul"];
+
+        if (allowTypeList.includes(type) === true && $element !== null) {
+            const targetRect = $element.getBoundingClientRect();
+
+            store.value.controlBar.x = Math.floor(targetRect.left + targetRect.width / 2);
+            store.value.controlBar.y = Math.floor(targetRect.top - 8 - 32);
+            store.value.controlBar.$element = $element;
+            store.value.controlBar.active = true;
+        } else {
+            store.value.controlBar.active = false;
+        }
+    } else {
+        store.value.controlBar.active = false;
+    }
 }
 
 // 에디터 메뉴 호출 이벤트 (오른쪽 클릭)

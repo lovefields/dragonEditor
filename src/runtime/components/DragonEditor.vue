@@ -7,6 +7,7 @@ import { ref, h, onMounted, onBeforeUnmount } from "vue";
 import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure } from "../utils/layout";
 import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent } from "../utils/event";
 import { _addBlock } from "../utils/node";
+import { _setDecoration, _setTextAlign } from "../utils/style";
 import type { VNode } from "vue";
 import "../type.d.ts";
 
@@ -49,23 +50,65 @@ const editorStore = ref<DragonEditorStore>({
         imageResizeEventStartX: 0,
         imageResizeEventType: "left",
         imageResizeEventEndX: 0,
-        imageResizeCurruntWidth: 0,
+        imageResizeCurrentWidth: 0,
         keyboardEnterCount: 0,
     },
     controlStatus: {
         isMobile: false,
-        curruntblockType: "text",
+        currentBlockType: "text",
         codeBlockTheme: "github",
-        codeBlockLang: "",
+        codeBlockLang: "text",
         listBlockStyle: "disc",
         anchorTabType: "url",
         anchorHeadingList: [],
         anchorHref: "",
         anchorValidation: false,
-        previousCorsorData:null,
+        previousCorsorData: null,
         $anchorInput: null,
-        $curruntblock: null,
+        $currentBlock: null,
     },
+    codeBlockTheme: [
+        {
+            text: "GitHub",
+            code: "github",
+        },
+        {
+            text: "GitHub Dark Dimmed",
+            code: "github-dark-dimmed",
+        },
+    ],
+    listUlType: [
+        {
+            text: "Disc",
+            code: "disc",
+        },
+        {
+            text: "Square",
+            code: "square",
+        },
+    ],
+    listOlType: [
+        {
+            text: "Decimal",
+            code: "decimal",
+        },
+        {
+            text: "Lower-Alpha",
+            code: "lower-alpha",
+        },
+        {
+            text: "Upper-Alpha",
+            code: "upper-alpha",
+        },
+        {
+            text: "Lower-Roman",
+            code: "lower-roman",
+        },
+        {
+            text: "Upper-Roman",
+            code: "upper-roman",
+        },
+    ],
     $editor: null,
     $body: null,
     $controlBar: null,
@@ -93,7 +136,10 @@ function mainStrucutre(): VNode {
     }
 
     childList.push(_getBodyVNodeStructure(editorStore));
-    childList.push(_getControlbarVNodeStructure(editorStore));
+
+    if (editorStore.value.controlBar.active === true) {
+        childList.push(_getControlbarVNodeStructure(editorStore));
+    }
 
     return h(
         "div",
@@ -110,6 +156,7 @@ function mainStrucutre(): VNode {
     );
 }
 
+// 외부용 블럭 추가 함수
 function addBlock(data: DEBlockData): void {
     let type: DEBlockMenutype = "text";
 
@@ -136,6 +183,16 @@ function addBlock(data: DEBlockData): void {
     _addBlock(type, editorStore, data);
 }
 
+// 외부용 스타일 적용 함수
+function setDecoration(style: DEDecoration): void {
+    _setDecoration(`de-${style}`, editorStore);
+}
+
+// 외부용 정렬 함수
+function setAlign(align: DETextalign): void {
+    _setTextAlign(align, editorStore);
+}
+
 onMounted(() => {
     _eidtorMountEvent(editorStore);
 });
@@ -146,8 +203,8 @@ onBeforeUnmount(() => {
 
 defineExpose({
     addBlock,
-    //     setDecoration,
-    //     setAlign,
+    setDecoration,
+    setAlign,
 });
 </script>
 

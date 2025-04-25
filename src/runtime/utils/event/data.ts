@@ -1,4 +1,112 @@
 import type { Ref } from "vue";
+import { _getCurrentBlock } from "../node";
+
+export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
+    {
+        text: "Plain Text",
+        code: "text",
+    },
+    {
+        text: "Bash",
+        code: "bash",
+    },
+    {
+        text: "C#",
+        code: "csharp",
+    },
+    {
+        text: "C",
+        code: "c",
+    },
+    {
+        text: "C++",
+        code: "cpp",
+    },
+    {
+        text: "CSS",
+        code: "css",
+    },
+    {
+        text: "Django",
+        code: "django",
+    },
+    {
+        text: "Dockerfile",
+        code: "dockerfile",
+    },
+    {
+        text: "Go",
+        code: "go",
+    },
+    {
+        text: "HTML, XML",
+        code: "html",
+    },
+    {
+        text: "JSON",
+        code: "json",
+    },
+    {
+        text: "Java",
+        code: "java",
+    },
+    {
+        text: "JavaScript",
+        code: "js",
+    },
+    {
+        text: "TypeScript",
+        code: "ts",
+    },
+    {
+        text: "Kotlin",
+        code: "kotlin",
+    },
+    {
+        text: "Lua",
+        code: "lua",
+    },
+    {
+        text: "Markdown",
+        code: "md",
+    },
+    {
+        text: "Nginx",
+        code: "nginx",
+    },
+    {
+        text: "PHP",
+        code: "php",
+    },
+    {
+        text: "Python",
+        code: "python",
+    },
+    {
+        text: "Ruby",
+        code: "ruby",
+    },
+    {
+        text: "SCSS",
+        code: "scss",
+    },
+    {
+        text: "SQL",
+        code: "sql",
+    },
+    {
+        text: "Shell",
+        code: "shell",
+    },
+    {
+        text: "Swift",
+        code: "swift",
+    },
+    {
+        text: "YAML",
+        code: "yml",
+    },
+];
 
 export function _updateModelData(store: Ref<DragonEditorStore>): void {
     const $body = store.value.$body;
@@ -131,14 +239,24 @@ export function _updateModelData(store: Ref<DragonEditorStore>): void {
                             const $language = $el.querySelector(".de-language");
                             const $fileName = $el.querySelector(".de-filename");
                             const $codeBlock = $el.querySelector(".de-code-content");
+                            let language: DECodeblockLang = "text";
 
                             classList = classListText.replaceAll("de-code-block", "").trim();
 
+                            if ($language !== null) {
+                                const value = $language.textContent ?? "";
+                                const targetValue = CODEBLOCKLANG.find((item) => item.text === value);
+
+                                if (targetValue !== undefined) {
+                                    language = targetValue.code;
+                                }
+                            }
+
                             done({
                                 type: "code",
-                                theme: ($el as HTMLElement).dataset["theme"] as DECodeTheme,
+                                theme: ($el as HTMLElement).dataset["theme"] as DECodeblockTheme,
                                 filename: $fileName?.textContent || "",
-                                language: $language === null ? "text" : ($language.textContent as DECodeblockLang),
+                                language: language,
                                 textContent: $codeBlock === null ? "" : $codeBlock.innerHTML,
                             });
                         })
@@ -222,4 +340,55 @@ export function _generateId() {
     }
 
     return str;
+}
+
+// 컨트롤 바 상태 업데이트
+export function _updateControlBarStatus(store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const { type } = _getCurrentBlock(store.value.controlStatus.$currentBlock);
+        const allowTypeList = ["code", "ol", "ul"];
+
+        if (allowTypeList.includes(type) === true) {
+            switch (type) {
+                case "code":
+                    __updateCodeBlockStyle(store);
+                    break;
+
+                case "ol":
+                case "ul":
+                    __updateListBlockStyle(store);
+                    break;
+            }
+        }
+    }
+}
+
+// 코드블럭 스타일 추출
+function __updateCodeBlockStyle(store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const $block = store.value.controlStatus.$currentBlock;
+        const $language = $block.querySelector(".de-language");
+        let language: DECodeblockLang = "text";
+
+        if ($language !== null) {
+            const value = $language.textContent ?? "";
+            const targetValue = CODEBLOCKLANG.find((item) => item.text === value);
+
+            if (targetValue !== undefined) {
+                language = targetValue.code;
+            }
+        }
+
+        store.value.controlStatus.codeBlockTheme = ($block.dataset["theme"] as DECodeblockTheme) ?? "github";
+        store.value.controlStatus.codeBlockLang = language;
+    }
+}
+
+// 리스트 스타일 추출
+function __updateListBlockStyle(store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const $block = store.value.controlStatus.$currentBlock;
+
+        store.value.controlStatus.listBlockStyle = ($block.dataset["style"] as DEListStyle) ?? "disc";
+    }
 }

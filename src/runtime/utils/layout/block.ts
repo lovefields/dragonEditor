@@ -1,6 +1,6 @@
 import { h } from "vue";
 import type { VNode } from "vue";
-import { _generateId, _getDefaultBlockData } from "../event";
+import { _generateId, _getDefaultBlockData, CODEBLOCKLANG } from "../event";
 
 // 블럭 구조체 생성
 export function _createBlockList({ blockList, isEditable, imageHostURL }: { blockList: DEContentData; isEditable: boolean; imageHostURL: string } = { blockList: [], isEditable: false, imageHostURL: "" }): VNode[] {
@@ -120,6 +120,7 @@ function __createCodeBlock(data: DECodeBlock, isEditable: boolean): VNode {
     const childList: VNode[] = [];
     const fileNameOption: any = { class: ["de-filename"] };
     const codeOption: any = { class: ["de-code-content"], innerHTML: data.textContent };
+    const targetValue = CODEBLOCKLANG.find((item) => item.code === data.language);
 
     if (isEditable === true) {
         fileNameOption.contenteditable = true;
@@ -127,7 +128,7 @@ function __createCodeBlock(data: DECodeBlock, isEditable: boolean): VNode {
     }
 
     childList.push(h("p", fileNameOption, data.filename));
-    childList.push(h("p", { class: ["de-language"] }, data.language));
+    childList.push(h("p", { class: ["de-language"] }, targetValue?.text ?? "Plain Text"));
     childList.push(h("pre", { class: ["de-pre"] }, [h("code", codeOption)]));
 
     return h(

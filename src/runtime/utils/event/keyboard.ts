@@ -1,12 +1,12 @@
 import type { Ref } from "vue";
 import { _updateModelData, _updateCursorData, _setCursor, _sortingCursorDataOnElement, _generateId } from "./index";
-import { _getCurruntBlock, _createTextBlock, _createHeadingBlock, _createListBlock, _getParentElementIfNodeIsText, _findContentEditableElement, _createListItemBlock, _updateCurruntBlock } from "../node";
+import { _getCurrentBlock, _createTextBlock, _createHeadingBlock, _createListBlock, _getParentElementIfNodeIsText, _findContentEditableElement, _createListItemBlock, _updateCurrentBlock, _createCodeBlock } from "../node";
 import { _getDefaultBlockData } from "../event";
 import { _setDecoration } from "../style";
 
 // 키 다운 이벤트
 export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    _updateCurruntBlock(event, store);
+    _updateCurrentBlock(event, store);
     _updateCursorData(store);
 
     switch (event.key) {
@@ -47,6 +47,10 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
 
         case "ArrowDown":
             _moveToBlockEvent(event, store, "down");
+            break;
+
+        case "`":
+            __backtickEvent(event, store);
             break;
     }
 
@@ -93,7 +97,7 @@ function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
     if (event.shiftKey === true) {
         // 쉬프트 엔터 이벤트
 
-        switch (store.value.controlStatus.curruntblockType) {
+        switch (store.value.controlStatus.currentBlockType) {
             case "image":
                 event.preventDefault();
                 break;
@@ -113,12 +117,12 @@ function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
     } else {
         // 일반 엔터 이벤트
 
-        switch (store.value.controlStatus.curruntblockType) {
+        switch (store.value.controlStatus.currentBlockType) {
             case "image":
                 event.preventDefault();
 
-                if (store.value.controlStatus.$curruntblock !== null) {
-                    const $block = store.value.controlStatus.$curruntblock;
+                if (store.value.controlStatus.$currentBlock !== null) {
+                    const $block = store.value.controlStatus.$currentBlock;
                     const $newTextBlock = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
 
                     $block.insertAdjacentElement("afterend", $newTextBlock);
@@ -145,9 +149,9 @@ function __enterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
 function __defaultBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     event.preventDefault();
 
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.cursorData;
-        const $block = store.value.controlStatus.$curruntblock;
+        const $block = store.value.controlStatus.$currentBlock;
 
         if (store.value.cursorData.type === "Caret") {
             // 단일커서인 경우
@@ -398,9 +402,9 @@ function __defaultBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorS
 function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     event.preventDefault();
 
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.cursorData;
-        const $block = store.value.controlStatus.$curruntblock;
+        const $block = store.value.controlStatus.$currentBlock;
 
         if (cursorData.type === "Caret") {
             // 단일 커서인경우
@@ -445,7 +449,7 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
                     }
                 }
 
-                let curruntIdx: number = targetIdx;
+                let currentIdx: number = targetIdx;
 
                 childList.forEach((child, i) => {
                     if (i === targetIdx) {
@@ -468,7 +472,7 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
                                 if ((child.textContent as string).slice(0, cursorData.startOffset) === "") {
                                     // 앞 문자가 없는 경우
 
-                                    curruntIdx -= 1;
+                                    currentIdx -= 1;
                                 }
                             } else {
                                 // 다음 노드가 있는 경우
@@ -476,11 +480,11 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
                                 if ((child.textContent as string).slice(cursorData.endOffset) !== "" && (child.textContent as string).slice(0, cursorData.startOffset) === "") {
                                     // 뒷 문자가 있고 앞 문자가 없는 경우
 
-                                    curruntIdx -= 1;
+                                    currentIdx -= 1;
                                 }
                             }
 
-                            curruntIdx += 1;
+                            currentIdx += 1;
                         } else {
                             // 엘리먼트인 경우
 
@@ -494,7 +498,7 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
                                 structure += `<span class="${Array.from((child as HTMLSpanElement).classList).join(" ")}">${(child.textContent as string).slice(0, cursorData.startOffset)}</span>`;
                                 structure += `<br>`;
                                 structure += `<span class="${Array.from((child as HTMLSpanElement).classList).join(" ")}">${(child.textContent as string).slice(cursorData.startOffset)}</span>`;
-                                curruntIdx += 1;
+                                currentIdx += 1;
                             }
                         }
                     } else {
@@ -508,11 +512,11 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
 
                 $block.innerHTML = structure;
 
-                if ($block.childNodes[curruntIdx + 1] === undefined) {
+                if ($block.childNodes[currentIdx + 1] === undefined) {
                     $block.insertAdjacentHTML("beforeend", "<br>");
                 }
 
-                _setCursor($block.childNodes[curruntIdx + 1] as Element, 0);
+                _setCursor($block.childNodes[currentIdx + 1] as Element, 0);
             }
         } else {
             // 셀렉트 커서인경우
@@ -580,9 +584,9 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
 function __listBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     event.preventDefault();
 
-    if (store.value.controlStatus.$curruntblock !== null && store.value.cursorData !== null) {
+    if (store.value.controlStatus.$currentBlock !== null && store.value.cursorData !== null) {
         const cursorData = store.value.cursorData;
-        const $listBlock = store.value.controlStatus.$curruntblock;
+        const $listBlock = store.value.controlStatus.$currentBlock;
         const $editableElement = _findContentEditableElement(event.target as Node) as HTMLLIElement;
         const liList = $listBlock.querySelectorAll(".de-item");
 
@@ -789,7 +793,7 @@ function __listBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStor
 function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     event.preventDefault();
 
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.cursorData;
         const $editableElement = _findContentEditableElement(event.target as Node) as HTMLLIElement;
 
@@ -837,7 +841,7 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
                         }
                     }
 
-                    let curruntIdx: number = targetIdx;
+                    let currentIdx: number = targetIdx;
 
                     childList.forEach((child, i) => {
                         if (i === targetIdx) {
@@ -858,7 +862,7 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
 
                                     if ((child.textContent as string).slice(0, cursorData.startOffset) === "") {
                                         // 앞 문자가 없는 경우
-                                        curruntIdx -= 1;
+                                        currentIdx -= 1;
                                     }
                                 } else {
                                     // 다음 노드가 있는 경우
@@ -866,11 +870,11 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
                                     if ((child.textContent as string).slice(cursorData.endOffset) !== "" && (child.textContent as string).slice(0, cursorData.startOffset) === "") {
                                         // 뒷 문자가 있고 앞 문자가 없는 경우
 
-                                        curruntIdx -= 1;
+                                        currentIdx -= 1;
                                     }
                                 }
 
-                                curruntIdx += 1;
+                                currentIdx += 1;
                             } else {
                                 // 엘리먼트인 경우
 
@@ -884,7 +888,7 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
                                     structure += `<span class="${Array.from((child as HTMLSpanElement).classList).join(" ")}">${(child.textContent as string).slice(0, cursorData.startOffset)}</span>`;
                                     structure += `<br>`;
                                     structure += `<span class="${Array.from((child as HTMLSpanElement).classList).join(" ")}">${(child.textContent as string).slice(cursorData.startOffset)}</span>`;
-                                    curruntIdx += 1;
+                                    currentIdx += 1;
                                 }
                             }
                         } else {
@@ -897,7 +901,7 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
                     });
 
                     $editableElement.innerHTML = structure;
-                    _setCursor($editableElement.childNodes[curruntIdx + 1] as Element, 0);
+                    _setCursor($editableElement.childNodes[currentIdx + 1] as Element, 0);
                 }
             } else {
                 // 셀렉트 커서인경우
@@ -965,8 +969,8 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
 function __codeBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     event.preventDefault();
 
-    if (store.value.controlStatus.$curruntblock !== null) {
-        const $block = store.value.controlStatus.$curruntblock;
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const $block = store.value.controlStatus.$currentBlock;
         const $newTextBlock = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
 
         $block.insertAdjacentElement("afterend", $newTextBlock);
@@ -976,7 +980,7 @@ function __codeBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
 
 // 키보드 백스페이스 이벤트 (키 다운)
 function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    switch (store.value.controlStatus.curruntblockType) {
+    switch (store.value.controlStatus.currentBlockType) {
         case "image":
         case "code":
             // NOTE : 별도 처리 불필요
@@ -994,10 +998,10 @@ function __backspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): 
 
 // 기본 백스페이스 이벤트
 function ___defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
         const childList = store.value.$body.querySelectorAll(".de-block");
-        const $block = store.value.controlStatus.$curruntblock;
+        const $block = store.value.controlStatus.$currentBlock;
         let $target = cursorData.startNode;
         let elementIdx: number = -1;
 
@@ -1029,7 +1033,7 @@ function ___defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEd
                     // 내용이 있는 경우
                     event.preventDefault();
 
-                    if (store.value.controlStatus.curruntblockType !== "text") {
+                    if (store.value.controlStatus.currentBlockType !== "text") {
                         const $newBlock = _createTextBlock({ type: "text", classList: [], textContent: $block.textContent ?? "" });
 
                         $block.insertAdjacentElement("afterend", $newBlock);
@@ -1084,9 +1088,9 @@ function ___defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEd
 
 // 리스트 블럭 백스페이스 이벤트
 function ___listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
-        const $listBlock = store.value.controlStatus.$curruntblock;
+        const $listBlock = store.value.controlStatus.$currentBlock;
         const $targetItem = _findContentEditableElement(cursorData.startNode as HTMLElement) as HTMLLIElement;
         const $liList = $listBlock.querySelectorAll(".de-item");
         let $target = cursorData.startNode;
@@ -1265,7 +1269,7 @@ function ____backspackeLogic(hasChild: boolean, childHTML: string, $block: HTMLE
     const $preBlock = $block.previousElementSibling as HTMLElement;
 
     if ($preBlock !== null) {
-        const { type: preBlockType } = _getCurruntBlock($preBlock);
+        const { type: preBlockType } = _getCurrentBlock($preBlock);
         let preDelete: boolean = false;
         let $targetBlock: HTMLElement = $preBlock;
 
@@ -1357,7 +1361,7 @@ function ____nodeBackspaceEvent(event: KeyboardEvent, cursorData: DEditorCursor,
 function __tabEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
     event.preventDefault();
 
-    switch (store.value.controlStatus.curruntblockType) {
+    switch (store.value.controlStatus.currentBlockType) {
         case "code":
         case "custom":
         case "image":
@@ -1374,8 +1378,8 @@ function __tabEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
 }
 
 export function _setIndent(store: Ref<DragonEditorStore>, type: "plus" | "minus"): void {
-    if (store.value.controlStatus.$curruntblock !== null) {
-        const $block = store.value.controlStatus.$curruntblock;
+    if (store.value.controlStatus.$currentBlock !== null) {
+        const $block = store.value.controlStatus.$currentBlock;
         let value: number = $block.dataset["depth"] === undefined ? 0 : parseInt($block.dataset["depth"]);
 
         if (type === "minus") {
@@ -1393,12 +1397,14 @@ export function _setIndent(store: Ref<DragonEditorStore>, type: "plus" | "minus"
         } else {
             $block.dataset["depth"] = String(value);
         }
+
+        _updateModelData(store);
     }
 }
 
 // 딜리트 이벤트 (키 다운)
 function __deleteEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    switch (store.value.controlStatus.curruntblockType) {
+    switch (store.value.controlStatus.currentBlockType) {
         case "image":
         case "code":
             // NOTE : 별도 처리 불필요
@@ -1416,9 +1422,9 @@ function __deleteEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): voi
 
 // 기본 딜리트 이벤트
 function ___defaultBlockDeleteEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
-        const $block = store.value.controlStatus.$curruntblock;
+        const $block = store.value.controlStatus.$currentBlock;
         let $target = cursorData.startNode;
 
         if ($target.constructor.name === "Text") {
@@ -1465,9 +1471,9 @@ function ___defaultBlockDeleteEvent(event: KeyboardEvent, store: Ref<DragonEdito
 
 // 리스트 블럭 딜리트 이벤트
 function ___listBlockDeleteEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
-        const $listBlock = store.value.controlStatus.$curruntblock;
+        const $listBlock = store.value.controlStatus.$currentBlock;
         const $targetItem = _findContentEditableElement(cursorData.startNode as HTMLElement) as HTMLLIElement;
         const $liList = $listBlock.querySelectorAll(".de-item");
         let $target = cursorData.startNode;
@@ -1548,7 +1554,7 @@ function ____deleteLogic($targetElement: HTMLElement, $block: HTMLElement) {
     let $nextBlock = $block.nextElementSibling as HTMLElement;
 
     if ($nextBlock !== null) {
-        const { type: nextBlockType } = _getCurruntBlock($nextBlock);
+        const { type: nextBlockType } = _getCurrentBlock($nextBlock);
         let nextDelete: boolean = false;
 
         switch (nextBlockType) {
@@ -1591,12 +1597,12 @@ function ____deleteLogic($targetElement: HTMLElement, $block: HTMLElement) {
 
 // 스페이스 이벤트 (키 다운)
 function __spaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null && store.value.$body !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null && store.value.$body !== null) {
         const cursorData = store.value.cursorData;
-        const $block = store.value.controlStatus.$curruntblock;
+        const $block = store.value.controlStatus.$currentBlock;
         const $targetItem = _findContentEditableElement(cursorData.startNode as HTMLElement) as HTMLLIElement;
 
-        if ($targetItem !== null && $targetItem.textContent !== "") {
+        if (store.value.controlStatus.currentBlockType === "text" && $targetItem !== null && $targetItem.textContent !== "") {
             switch ($targetItem.textContent) {
                 case "#":
                     event.preventDefault();
@@ -1654,10 +1660,10 @@ function __spaceEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void
 
 // 위 아래 화살표 이동 이벤트
 function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, keyType: "up" | "down"): void {
-    if (store.value.cursorData !== null && store.value.controlStatus.$curruntblock !== null) {
+    if (store.value.cursorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.cursorData;
         const $editableElement = _findContentEditableElement(cursorData.startNode);
-        const $block = store.value.controlStatus.$curruntblock;
+        const $block = store.value.controlStatus.$currentBlock;
 
         if ($editableElement !== null && $block !== null) {
             const $brList = $editableElement.querySelectorAll("br");
@@ -1675,7 +1681,7 @@ function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, 
             }
 
             if (suitable === true) {
-                switch (store.value.controlStatus.curruntblockType) {
+                switch (store.value.controlStatus.currentBlockType) {
                     case "code":
                         // NOTE : 코드블럭은 없음
                         break;
@@ -1706,7 +1712,7 @@ function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, 
                 }
 
                 if ($targetElement !== null) {
-                    const { type, $element } = _getCurruntBlock($targetElement);
+                    const { type, $element } = _getCurrentBlock($targetElement);
 
                     switch (type) {
                         case "image":
@@ -1773,7 +1779,6 @@ function __isCursorLastLine(node: Node, $br: HTMLElement): boolean {
 
 // 핫 키 이벤트
 export function _hotKeyEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
-    // _setCursorData(store);
     const isControlKeyActive = event.ctrlKey || event.metaKey;
 
     if (isControlKeyActive === true) {
@@ -1810,9 +1815,31 @@ export function _hotKeyEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>
     }
 }
 
+function __backtickEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    if (store.value.controlStatus.$currentBlock !== null && store.value.controlStatus.currentBlockType === "text") {
+        const $block = store.value.controlStatus.$currentBlock;
+
+        if ($block.textContent === "``") {
+            event.preventDefault();
+
+            const $newBlock = _createCodeBlock(_getDefaultBlockData("code") as DECodeBlock, store);
+
+            $block.insertAdjacentElement("afterend", $newBlock);
+            $block.remove();
+
+            const $code = $newBlock.querySelector(".de-code-content");
+
+            if ($code !== null) {
+                _setCursor($code, 0);
+            }
+        }
+    }
+}
+
 // 키 업 이벤트
 let contentKeyupEvent: NodeJS.Timeout;
 export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {
+    _updateCurrentBlock(event, store);
     _updateCursorData(store);
     __checkBlock(store);
     store.value.eventStatus.keyboardEnterCount = 0;
@@ -1829,7 +1856,7 @@ function __checkBlock(store: Ref<DragonEditorStore>) {
         const blockList = store.value.$body.querySelectorAll(".de-block");
 
         blockList.forEach(($block) => {
-            const { type } = _getCurruntBlock($block);
+            const { type } = _getCurrentBlock($block);
 
             switch (type) {
                 case "ol":

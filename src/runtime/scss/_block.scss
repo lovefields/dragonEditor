@@ -144,8 +144,9 @@
                 top: 50%;
                 width: 8px;
                 height: 15%;
-                background: #ccc;
-                border: 1px solid #333;
+                background: #f1f1f1;
+                border: 1px solid #ccc;
+                border-radius: var(--radius-default);
                 transform: translate(-50%, -50%);
                 cursor: col-resize;
                 user-select: none;
