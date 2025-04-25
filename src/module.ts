@@ -29,9 +29,12 @@ export default defineNuxtModule({
         addPluginTemplate({
             src: resolver.resolve(__dirname, "./runtime/plugin.mjs"),
             filename: "plugin.mjs",
+            options: {
+                name: "DragonEditor",
+            },
         });
 
-        // nuxt.options.plugins.push(resolver.resolve(nuxt.options.buildDir, "plugin.mjs"));
+        nuxt.options.plugins.push(resolver.resolve(nuxt.options.buildDir, "plugin.mjs"));
         nuxt.options.build.transpile.push("highlight.js");
     },
 });
