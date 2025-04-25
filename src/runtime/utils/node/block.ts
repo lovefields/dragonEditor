@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
 import { _getDefaultBlockData, _generateId, _updateModelData, _updateCursorData, _decideWhetherOpenControlBar, _updateControlBarStatus, CODEBLOCKLANG } from "../event";
-import hljs from "highlight.js";
+import hljs from "highlight.js/lib/core";
 
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
