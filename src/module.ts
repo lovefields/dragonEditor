@@ -28,7 +28,7 @@ export default defineNuxtModule({
 
         addPluginTemplate({
             src: resolver.resolve("./runtime/plugin.mjs"),
-            filename: "hljs.plugin.mjs",
+            filename: "plugin.mjs",
         });
 
         nuxt.options.build.transpile.push("highlight.js");
