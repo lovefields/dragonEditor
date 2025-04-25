@@ -83,7 +83,7 @@ Done!
 </template>
 
 <script setup lang="ts">
-    const data = ref<DEContentData>([]); // content data
+    const data = ref<DEContentData>([]);
 </script>
 ```
 
