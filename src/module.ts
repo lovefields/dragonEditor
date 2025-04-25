@@ -12,25 +12,26 @@ export default defineNuxtModule({
 
         addComponent({
             name: "DragonEditor",
-            filePath: resolver.resolve("./runtime/components/DragonEditor"),
+            filePath: resolver.resolve(__dirname, "./runtime/components/DragonEditor"),
         });
 
         addComponent({
             name: "DragonEditorViewer",
-            filePath: resolver.resolve("./runtime/components/DragonEditorViewer"),
+            filePath: resolver.resolve(__dirname, "./runtime/components/DragonEditorViewer"),
         });
 
         addTypeTemplate({
             filename: "types/dragonEditor.d.ts",
-            src: resolver.resolve("./runtime/type.d.ts"),
+            src: resolver.resolve(__dirname, "./runtime/type.d.ts"),
             write: true,
         });
 
         addPluginTemplate({
-            src: resolver.resolve("./runtime/plugin.mjs"),
+            src: resolver.resolve(__dirname, "./runtime/plugin.mjs"),
             filename: "plugin.mjs",
         });
 
+        // nuxt.options.plugins.push(resolver.resolve(nuxt.options.buildDir, "plugin.mjs"));
         nuxt.options.build.transpile.push("highlight.js");
     },
 });
