@@ -31,7 +31,7 @@ This module support only Nuxt3.
 
 # Dependencies
 
-- highlight.js
+-   highlight.js
 
 # Font
 
@@ -54,6 +54,11 @@ First. Set module
 ```typescript
 export default defineNuxtConfig({
     modules: ["dragon-editor"],
+    vite: {
+        optimizeDeps: {
+            include: ["highlight.js/lib/core"],
+        },
+    },
 });
 ```
 
