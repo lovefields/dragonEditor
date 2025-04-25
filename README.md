@@ -54,11 +54,6 @@ First. Set module
 ```typescript
 export default defineNuxtConfig({
     modules: ["dragon-editor"],
-    vite: {
-        optimizeDeps: {
-            include: ["highlight.js/lib/core"],
-        },
-    },
 });
 ```
 

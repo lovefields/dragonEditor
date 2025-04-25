@@ -26,8 +26,6 @@ export default defineNuxtModule({
             write: true,
         });
 
-        addPlugin(resolver.resolve(__dirname, "./runtime/plugin"));
-
         nuxt.options.build.transpile.push("highlight.js");
     },
 });

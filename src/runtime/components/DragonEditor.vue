@@ -9,6 +9,7 @@ import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorM
 import { _addBlock } from "../utils/node";
 import { _setDecoration, _setTextAlign } from "../utils/style";
 import type { VNode } from "vue";
+import hljs from "highlight.js";
 import "../type.d.ts";
 
 interface DEOption {
@@ -113,6 +114,7 @@ const editorStore = ref<DragonEditorStore>({
     $body: null,
     $controlBar: null,
     $parentWrap: null,
+    hljs: hljs,
     emit: emit,
     windowClickEvent: function (event: MouseEvent) {
         _checkOthersideClick(event, editorStore);

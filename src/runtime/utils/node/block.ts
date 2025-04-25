@@ -1,6 +1,5 @@
 import type { Ref } from "vue";
 import { _getDefaultBlockData, _generateId, _updateModelData, _updateCursorData, _decideWhetherOpenControlBar, _updateControlBarStatus, CODEBLOCKLANG } from "../event";
-import hljs from "highlight.js/lib/common";
 
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
@@ -294,7 +293,7 @@ export function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<Drag
             const targetValue = CODEBLOCKLANG.find((item) => item.code === language);
 
             if (targetValue !== undefined) {
-                const convert = hljs.highlight($code.textContent ?? "", { language: language });
+                const convert = store.value.hljs.highlight($code.textContent ?? "", { language: language });
 
                 $target.textContent = targetValue.text;
                 $code.innerHTML = convert.value;
