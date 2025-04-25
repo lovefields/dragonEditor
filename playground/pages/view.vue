@@ -29,5 +29,6 @@ const data = ref<DEContentData>([
 .view-area {
     max-width: 800px;
     margin: 0 auto;
+    font-size: 15px;
 }
 </style>

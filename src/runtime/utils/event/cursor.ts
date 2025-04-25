@@ -1,19 +1,21 @@
-import "../type.d.ts";
+import type { Ref } from "vue";
 
-export function _setCursorData(store: any) {
+// 커서정보 업데이트
+export function _updateCursorData(store: Ref<DragonEditorStore>) {
     const selection = window.getSelection() as Selection;
 
     if (selection.type !== "None") {
-        store.setCursorData({
+        store.value.cursorData = {
             type: selection.type as "Range" | "Caret",
             startNode: selection.anchorNode as Node,
             startOffset: selection.anchorOffset,
             endNode: selection.focusNode as Node,
             endOffset: selection.focusOffset,
-        });
+        };
     }
 }
 
+// 커서 위치 지정
 export function _setCursor($target: Node, startIdx: number) {
     const range = document.createRange();
     const selection = window.getSelection() as Selection;
@@ -36,6 +38,7 @@ export function _setCursor($target: Node, startIdx: number) {
     selection.addRange(range);
 }
 
+// 레인지 커서 지정
 export function _setRangeCursor($startTarget: Element, $endTarget: Element, startIdx: number, endIdx: number) {
     const range = document.createRange();
     const selection = window.getSelection() as Selection;
@@ -72,22 +75,8 @@ export function _setRangeCursor($startTarget: Element, $endTarget: Element, star
     selection.addRange(range);
 }
 
-export function _clenupCursor(store: any) {
-    _setCursorData(store);
-
-    if (store.cursorData.startNode !== store.cursorData.endNode || store.cursorData.startOffset !== store.cursorData.endOffset) {
-        // setRangeCursor();
-    } else {
-        if (store.cursorData.startNode.hasChildNodes() === true) {
-            _setCursor(store.cursorData.startNode.childNodes[store.cursorData.startOffset] as Element, 0);
-        } else {
-            _setCursor(store.cursorData.startNode as Element, store.cursorData.startOffset);
-        }
-    }
-}
-
 // 엘리먼트 기준 커서 데이터 정렬
-export function _soltingCursorDataOnElement(cursorData: DEditorCursor, $element: HTMLElement): DEArrangeCursorData {
+export function _sortingCursorDataOnElement(cursorData: DEditorCursor, $element: HTMLElement): DEArrangeCursorData {
     const childList = $element.childNodes;
     let startNode = cursorData.startNode;
     let startIdx = -1;

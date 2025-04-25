@@ -1,4 +1,28 @@
-interface EditorStore {
+type DEContentData = DEBlockData[];
+
+type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock;
+
+type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "indent-decrease" | "indent-increase";
+
+type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
+
+type DETextalign = "left" | "right" | "center" | "justify";
+
+type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "custom";
+
+type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom";
+
+type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
+
+type DECodeblockTheme = "github" | "github-dark-dimmed";
+
+type DECodeblockLang = "text" | "bash" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "js" | "ts" | "kotlin" | "lua" | "md" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shell" | "swift" | "yml";
+
+type DEBlockElement = HTMLParagraphElement | HTMLHeadingElement | HTMLElement | HTMLDivElement;
+
+type DEListElementName = "ul" | "ol";
+
+interface DragonEditorStore {
     cursorData: DEditorCursor | null;
     message: { [key: string]: string };
     controlBar: {
@@ -7,10 +31,52 @@ interface EditorStore {
         y: number;
         $element: HTMLDivElement | null;
     };
+    useMenuBar: boolean;
+    imageHostURL: string;
+    firstData: DEContentData;
+    menuBarTop: number;
+    activeStatus: {
+        addBlockMenu: boolean;
+        anchorInputArea: boolean;
+        imageResizeEvent: boolean;
+    };
+    eventStatus: {
+        preComposing: boolean;
+        imageResizeEventStartX: number;
+        imageResizeEventType: "right" | "left";
+        imageResizeEventEndX: number;
+        imageResizeCurrentWidth: number;
+        keyboardEnterCount: number;
+    };
+    controlStatus: {
+        isMobile: boolean;
+        anchorValidation: boolean;
+        currentBlockType: DEBlock;
+        codeBlockTheme: DECodeblockTheme;
+        codeBlockLang: DECodeblockLang;
+        listBlockStyle: DEListStyle;
+        anchorTabType: "url" | "heading";
+        anchorHeadingList: DEHeadingItem[];
+        anchorHref: string;
+        previousCorsorData: DEditorCursor | null;
+        $anchorInput: HTMLInputElement | null;
+        $currentBlock: HTMLDivElement | null;
+    };
+    codeBlockTheme: DECodeItem<DECodeblockTheme>[];
+    listUlType: DECodeItem<DEListStyle>[];
+    listOlType: DECodeItem<DEListStyle>[];
     $editor: HTMLDivElement | null;
-    $content: HTMLDivElement | null;
-    $currentBlock: HTMLElement | null;
+    $body: HTMLDivElement | null;
+    $controlBar: HTMLDivElement | null;
     $parentWrap: HTMLElement | Window | null;
+    windowClickEvent(event: MouseEvent): void;
+    windowResizeEvent(event: Event): void;
+    windowMouseUpEvent(event: MouseEvent): void;
+    parentWrapScollEvent(event: Event): void;
+    emit: {
+        (e: "update:modelValue", data: DEContentData): void;
+        (e: "uploadImageEvent", file: File): void;
+    };
 }
 
 interface DEditorCursor {
@@ -38,9 +104,9 @@ interface DEImage {
     caption?: string;
 }
 
-interface DECodeItem {
+interface DECodeItem<T = string> {
     text: string;
-    code: string;
+    code: T;
 }
 
 interface DEHeadingItem {
@@ -48,26 +114,17 @@ interface DEHeadingItem {
     id: string;
 }
 
-type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
-
-type DETextalign = "left" | "right" | "center" | "justify";
-
-type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code";
-
 // 컴포넌트 메서드용 타입
 interface DragonEditor {
-    addBlock: (type: DEBlock) => void;
-    addImageBlock: (data: DEImage) => void;
+    addBlock: (type: DEBlockData) => void;
     setDecoration: (data: DEDecoration) => void;
     setTextAlign: (type: DETextalign) => void;
-    getContentData: () => DEContentData;
-    setContentData: (data: DEContentData) => void;
-    addCustomBlock: (HTML: string, classList: string[]) => void;
 }
 
 interface DETextBlock {
     type: "text";
     classList: string[];
+    depth?: number;
     textContent: string;
 }
 
@@ -75,6 +132,7 @@ interface DEHeadingBlock {
     type: "heading";
     level: number;
     id: string;
+    depth?: number;
     classList: string[];
     textContent: string;
 }
@@ -84,11 +142,10 @@ interface DEListItem {
     textContent: string;
 }
 
-type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
-
 interface DEListBlock {
     type: "list";
-    element: "ul" | "ol";
+    element: DEListElementName;
+    depth?: number;
     style: DEListStyle;
     child: DEListItem[];
 }
@@ -105,8 +162,8 @@ interface DEImageBlock {
 
 interface DECodeBlock {
     type: "code";
-    language: string;
-    theme: string;
+    language: DECodeblockLang;
+    theme: DECodeblockTheme;
     filename: string;
     textContent: string;
 }
@@ -116,5 +173,3 @@ interface DECustomBlock {
     classList: string[];
     textContent: string;
 }
-
-type DEContentData = (DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECustomBlock | DECodeBlock)[];

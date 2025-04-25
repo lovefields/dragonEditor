@@ -1,19 +1,29 @@
-@import "./base";
-@import "./block";
-@import "./style";
+@use "./base";
+@use "./block" as *;
+@use "./style" as *;
 
 .dragon-editor {
     position: relative;
     border: 1px solid #ccc;
+    border-radius: var(--radius-default);
 
-    &.--hasMenu {
-        padding-top: 38px;
+    &.--has-menu {
+        padding-top: 35px;
+    }
+
+    &.--mobile {
+        .de-menu-bar {
+            .de-menu-wrap {
+                overflow-x: auto;
+            }
+        }
     }
 
     .de-body {
         display: flex;
         flex-direction: column;
         gap: 4px;
+        min-height: 500px;
         padding: 20px;
         line-height: 1.6;
     }
@@ -24,48 +34,69 @@
         top: 0;
         left: 0;
         right: 0;
-        height: 38px;
+        height: 34px;
         background: #fff;
         border-bottom: 1px solid #ccc;
+        border-radius: var(--radius-default) var(--radius-default) 0 0;
         z-index: 10;
 
         .de-menu-wrap {
             display: flex;
-            overflow-x: auto;
+        }
+
+        .de-col {
+            display: flex;
+            position: relative;
+            border-right: 1px solid #ccc;
+
+            &:last-child {
+                border-right: 0;
+            }
         }
 
         .de-menu {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-width: 38px;
-            height: 38px;
-            border-right: 1px solid #ccc;
-            box-sizing: border-box;
+            min-width: 34px;
+            height: 34px;
             cursor: pointer;
 
+            &.--disabled {
+                .de-path {
+                    fill: #ccc;
+                }
+            }
+
             .de-icon {
-                width: 24px;
-                height: 24px;
+                width: 16px;
+                height: 16px;
             }
 
             &.--lastchild {
                 border-right: 0;
             }
 
-            .de-path.--red {
-                fill: #dd0000;
+            .de-path {
+                fill: #333;
+
+                &.--red {
+                    fill: #dd0000;
+                }
             }
         }
 
         .de-block-menu-area {
             display: none;
             position: absolute;
-            top: 39px;
+            top: 35px;
             left: 0;
             width: 120px;
             background: #fff;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+            border-width: 0 1px 1px 0;
+            border-style: solid;
+            border-color: #ccc;
+            border-bottom-right-radius: var(--radius-default);
             z-index: 1000;
 
             &.--active {
@@ -87,12 +118,15 @@
         .de-link-exit-area {
             display: none;
             position: absolute;
-            top: 39px;
-            left: 228px;
+            top: calc(100% + 1px);
+            left: 50%;
             width: 200px;
             background: #fff;
-            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
+            border: 1px solid #ccc;
+            border-top: 0;
+            border-radius: 0 0 var(--radius-default) var(--radius-default);
             z-index: 1000;
+            transform: translateX(-50%);
 
             &.--active {
                 display: block;
@@ -105,9 +139,10 @@
                 .de-btn {
                     flex: 1;
                     height: 24px;
+                    color: #999;
 
                     &.--active {
-                        background: #f1f1f1;
+                        color: #333;
                     }
                 }
             }
@@ -145,8 +180,9 @@
                 overflow-y: auto;
 
                 .de-btn {
-                    min-height: 20px;
+                    padding: 2px 4px;
                     text-align: left;
+                    border-radius: var(--radius-default);
 
                     &:hover {
                         background: #f1f1f1;
@@ -157,31 +193,26 @@
     }
 
     // 컨트롤 바 스타일
-    .de-control-bar {
-        display: none;
+    .de-controlbar {
+        display: flex;
         position: fixed;
-        height: 38px;
+        height: 34px;
         background: #fff;
         border: 1px solid #ccc;
-        border-width: 1px 0 0 1px;
+        border-radius: var(--radius-default);
         transform: translateX(-50%);
         z-index: 20;
-
-        &.--active {
-            display: flex;
-        }
-
-        &:empty {
-            display: none;
-        }
 
         .de-col {
             display: flex;
             align-items: center;
             column-gap: 6px;
             padding: 0 10px;
-            border: 1px solid #ccc;
-            border-width: 0 1px 1px 0;
+            border-right: 1px solid #ccc;
+
+            &:last-child {
+                border-right: 0;
+            }
 
             .de-selector {
                 height: 100%;

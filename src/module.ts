@@ -3,6 +3,9 @@ import { defineNuxtModule, createResolver, addComponent, addTypeTemplate, instal
 export default defineNuxtModule({
     meta: {
         name: "dragon-editor",
+        compatibility: {
+            nuxt: ">=3.0.0",
+        },
     },
     async setup(options, nuxt) {
         const resolver = createResolver(import.meta.url);
@@ -22,8 +25,6 @@ export default defineNuxtModule({
             src: resolver.resolve("./runtime/type.d.ts"),
             write: true,
         });
-
-        await installModule("@pinia/nuxt");
 
         addPluginTemplate({
             src: resolver.resolve("./runtime/plugin.mjs"),

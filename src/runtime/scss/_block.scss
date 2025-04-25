@@ -1,6 +1,7 @@
 @mixin blockStyle($isEdit: "false") {
     .de-block {
         width: 100%;
+        box-sizing: border-box;
     }
 
     // 텍스트 블럭
@@ -135,15 +136,17 @@
             .de-img {
                 width: 100%;
                 height: auto;
+                border-radius: var(--radius-default);
             }
 
             .de-btn {
                 position: absolute;
                 top: 50%;
                 width: 8px;
-                height: 100px;
-                background: #ccc;
-                border: 1px solid #333;
+                height: 15%;
+                background: #f1f1f1;
+                border: 1px solid #ccc;
+                border-radius: var(--radius-default);
                 transform: translate(-50%, -50%);
                 cursor: col-resize;
                 user-select: none;
@@ -182,6 +185,8 @@
     .de-code-block {
         display: flex;
         flex-wrap: wrap;
+        border-radius: var(--radius-default);
+        overflow: hidden;
 
         .de-filename {
             flex: 1;
