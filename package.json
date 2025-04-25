@@ -1,6 +1,6 @@
 {
     "name": "dragon-editor",
-    "version": "3.5.9",
+    "version": "3.5.10",
     "description": "Javascript WYSIWYG editor in Nuxt3!",
     "repository": {
         "type": "git",
@@ -32,7 +32,7 @@
     },
     "dependencies": {
         "@nuxt/kit": "^3.16.1",
-        "highlight.js": "^11.11.1"
+        "shiki": "^3.3.0"
     },
     "devDependencies": {
         "@nuxt/eslint-config": "^1.2.0",

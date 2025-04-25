@@ -9,7 +9,7 @@ import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorM
 import { _addBlock } from "../utils/node";
 import { _setDecoration, _setTextAlign } from "../utils/style";
 import type { VNode } from "vue";
-import hljs from "highlight.js";
+import { codeToHtml } from "shiki";
 import "../type.d.ts";
 
 interface DEOption {
@@ -57,7 +57,7 @@ const editorStore = ref<DragonEditorStore>({
     controlStatus: {
         isMobile: false,
         currentBlockType: "text",
-        codeBlockTheme: "github",
+        codeBlockTheme: "github-light",
         codeBlockLang: "text",
         listBlockStyle: "disc",
         anchorTabType: "url",
@@ -70,8 +70,8 @@ const editorStore = ref<DragonEditorStore>({
     },
     codeBlockTheme: [
         {
-            text: "GitHub",
-            code: "github",
+            text: "GitHub Ligth",
+            code: "github-light",
         },
         {
             text: "GitHub Dark Dimmed",
@@ -114,7 +114,7 @@ const editorStore = ref<DragonEditorStore>({
     $body: null,
     $controlBar: null,
     $parentWrap: null,
-    hljs: hljs,
+    codeToHtml: codeToHtml,
     emit: emit,
     windowClickEvent: function (event: MouseEvent) {
         _checkOthersideClick(event, editorStore);

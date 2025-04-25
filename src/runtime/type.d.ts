@@ -1,4 +1,4 @@
-import type { HLJSApi } from "highlight.js";
+import type { codeToHtml } from "shiki";
 
 type DEContentData = DEBlockData[];
 
@@ -16,9 +16,9 @@ type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "o
 
 type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
-type DECodeblockTheme = "github" | "github-dark-dimmed";
+type DECodeblockTheme = "github-light" | "github-dark-dimmed";
 
-type DECodeblockLang = "text" | "bash" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "js" | "ts" | "kotlin" | "lua" | "md" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shell" | "swift" | "yml";
+type DECodeblockLang = "text" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "javascript" | "typescript" | "kotlin" | "lua" | "markdown" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shellscript" | "swift" | "yaml";
 
 type DEBlockElement = HTMLParagraphElement | HTMLHeadingElement | HTMLElement | HTMLDivElement;
 
@@ -64,7 +64,7 @@ interface DragonEditorStore {
         $anchorInput: HTMLInputElement | null;
         $currentBlock: HTMLDivElement | null;
     };
-    hljs: HLJSApi;
+    codeToHtml: codeToHtml;
     codeBlockTheme: DECodeItem<DECodeblockTheme>[];
     listUlType: DECodeItem<DEListStyle>[];
     listOlType: DECodeItem<DEListStyle>[];

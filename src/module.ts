@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addComponent, addTypeTemplate, addPlugin } from "@nuxt/kit";
+import { defineNuxtModule, createResolver, addComponent, addTypeTemplate, installModule } from "@nuxt/kit";
 
 export default defineNuxtModule({
     meta: {
@@ -26,6 +26,6 @@ export default defineNuxtModule({
             write: true,
         });
 
-        nuxt.options.build.transpile.push("highlight.js");
+        // nuxt.options.build.transpile.push("highlight.js");
     },
 });
