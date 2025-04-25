@@ -276,15 +276,28 @@ export function _updateHeadingBlockList(store: Ref<DragonEditorStore>): void {
 }
 
 // 코드블럭 테마 변경
-export function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<DragonEditorStore>): void {
+export async function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<DragonEditorStore>): void {
     if (store.value.controlStatus.$currentBlock !== null) {
-        store.value.controlStatus.codeBlockTheme = theme;
-        store.value.controlStatus.$currentBlock.dataset["theme"] = theme;
+        const $target = store.value.controlStatus.$currentBlock.querySelector(".de-language");
+        const $code = store.value.controlStatus.$currentBlock.querySelector(".de-code-content");
+
+        if ($target !== null && $code !== null) {
+            const convert = await store.value.codeToHtml($code.textContent ?? "", { lang: store.value.controlStatus.codeBlockLang, theme: theme });
+            const $div = document.createElement("div");
+
+            $div.innerHTML = convert;
+            $code.innerHTML = $div.querySelector("code").innerHTML;
+            store.value.controlStatus.codeBlockTheme = theme;
+            store.value.controlStatus.$currentBlock.dataset["theme"] = theme;
+
+            _updateCursorData(store);
+            _updateModelData(store);
+        }
     }
 }
 
 // 코드블럭 언어 변경
-export function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<DragonEditorStore>): void {
+export async function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<DragonEditorStore>): void {
     if (store.value.controlStatus.$currentBlock !== null) {
         const $target = store.value.controlStatus.$currentBlock.querySelector(".de-language");
         const $code = store.value.controlStatus.$currentBlock.querySelector(".de-code-content");
@@ -293,11 +306,17 @@ export function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<Drag
             const targetValue = CODEBLOCKLANG.find((item) => item.code === language);
 
             if (targetValue !== undefined) {
-                const convert = store.value.hljs.highlight($code.textContent ?? "", { language: language });
+                const convert = await store.value.codeToHtml($code.textContent ?? "", { lang: language, theme: store.value.controlStatus.codeBlockTheme });
+                const $div = document.createElement("div");
+
+                $div.innerHTML = convert;
 
                 $target.textContent = targetValue.text;
-                $code.innerHTML = convert.value;
+                $code.innerHTML = $div.querySelector("code").innerHTML;
                 store.value.controlStatus.codeBlockLang = targetValue.code;
+
+                _updateCursorData(store);
+                _updateModelData(store);
             }
         }
     }
@@ -308,5 +327,8 @@ export function _setListBlockStyle(style: DEListStyle, store: Ref<DragonEditorSt
     if (store.value.controlStatus.$currentBlock !== null) {
         store.value.controlStatus.listBlockStyle = style;
         store.value.controlStatus.$currentBlock.dataset["style"] = style;
+
+        _updateCursorData(store);
+        _updateModelData(store);
     }
 }

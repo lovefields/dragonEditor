@@ -7,10 +7,6 @@ export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
         code: "text",
     },
     {
-        text: "Bash",
-        code: "bash",
-    },
-    {
         text: "C#",
         code: "csharp",
     },
@@ -25,10 +21,6 @@ export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
     {
         text: "CSS",
         code: "css",
-    },
-    {
-        text: "Django",
-        code: "django",
     },
     {
         text: "Dockerfile",
@@ -52,11 +44,11 @@ export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
     },
     {
         text: "JavaScript",
-        code: "js",
+        code: "javascript",
     },
     {
         text: "TypeScript",
-        code: "ts",
+        code: "typescript",
     },
     {
         text: "Kotlin",
@@ -68,7 +60,7 @@ export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
     },
     {
         text: "Markdown",
-        code: "md",
+        code: "markdown",
     },
     {
         text: "Nginx",
@@ -96,7 +88,7 @@ export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
     },
     {
         text: "Shell",
-        code: "shell",
+        code: "shellscript",
     },
     {
         text: "Swift",
@@ -104,7 +96,7 @@ export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
     },
     {
         text: "YAML",
-        code: "yml",
+        code: "yaml",
     },
 ];
 
@@ -320,7 +312,7 @@ export function _getDefaultBlockData(type: DEBlockMenutype): DEBlockData {
             data = {
                 type: "code",
                 language: "text",
-                theme: "github",
+                theme: "github-light",
                 filename: "",
                 textContent: "",
             };
@@ -379,7 +371,7 @@ function __updateCodeBlockStyle(store: Ref<DragonEditorStore>): void {
             }
         }
 
-        store.value.controlStatus.codeBlockTheme = ($block.dataset["theme"] as DECodeblockTheme) ?? "github";
+        store.value.controlStatus.codeBlockTheme = ($block.dataset["theme"] as DECodeblockTheme) ?? "github-light";
         store.value.controlStatus.codeBlockLang = language;
     }
 }
