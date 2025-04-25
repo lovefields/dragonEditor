@@ -1,4 +1,5 @@
 import hljs from "highlight.js";
+import { defineNuxtPlugin } from "nuxt/app";
 
 export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.provide("hljs", hljs);
