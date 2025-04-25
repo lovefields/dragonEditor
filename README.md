@@ -29,10 +29,6 @@ I just made the DragonEditor because I needed the WYSIWYG Editor to write on my 
 
 This module support only Nuxt3.
 
-# Dependencies
-
--   highlight.js
-
 # Font
 
 If you use Codeblock. I recommented use `Inconsolata` font. [(link)](https://fonts.google.com/specimen/Inconsolata?query=Inconsolata)
