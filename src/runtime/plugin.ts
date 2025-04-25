@@ -1,4 +1,4 @@
-import hljs from "highlight.js/lib/core";
+import hljs from "highlight.js";
 import { defineNuxtPlugin } from "nuxt/app";
 
 export default defineNuxtPlugin((nuxtApp) => {

@@ -1,28 +1,28 @@
-export type DEContentData = DEBlockData[];
+type DEContentData = DEBlockData[];
 
-export type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock;
+type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock;
 
-export type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "indent-decrease" | "indent-increase";
+type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "indent-decrease" | "indent-increase";
 
-export type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
+type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
 
-export type DETextalign = "left" | "right" | "center" | "justify";
+type DETextalign = "left" | "right" | "center" | "justify";
 
-export type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "custom";
+type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "custom";
 
-export type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom";
+type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom";
 
-export type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
+type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
-export type DECodeblockTheme = "github" | "github-dark-dimmed";
+type DECodeblockTheme = "github" | "github-dark-dimmed";
 
-export type DECodeblockLang = "text" | "bash" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "js" | "ts" | "kotlin" | "lua" | "md" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shell" | "swift" | "yml";
+type DECodeblockLang = "text" | "bash" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "js" | "ts" | "kotlin" | "lua" | "md" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shell" | "swift" | "yml";
 
-export type DEBlockElement = HTMLParagraphElement | HTMLHeadingElement | HTMLElement | HTMLDivElement;
+type DEBlockElement = HTMLParagraphElement | HTMLHeadingElement | HTMLElement | HTMLDivElement;
 
-export type DEListElementName = "ul" | "ol";
+type DEListElementName = "ul" | "ol";
 
-export interface DragonEditorStore {
+interface DragonEditorStore {
     cursorData: DEditorCursor | null;
     message: { [key: string]: string };
     controlBar: {
@@ -79,7 +79,7 @@ export interface DragonEditorStore {
     };
 }
 
-export interface DEditorCursor {
+interface DEditorCursor {
     type: "Range" | "Caret" | "None";
     startNode: Node;
     startOffset: number;
@@ -87,7 +87,7 @@ export interface DEditorCursor {
     endOffset: number;
 }
 
-export interface DEArrangeCursorData {
+interface DEArrangeCursorData {
     startNode: Node;
     startNodeIdx: number;
     startOffset: number;
@@ -96,31 +96,31 @@ export interface DEArrangeCursorData {
     endOffset: number;
 }
 
-export interface DECodeItem<T = string> {
+interface DECodeItem<T = string> {
     text: string;
     code: T;
 }
 
-export interface DEHeadingItem {
+interface DEHeadingItem {
     name: string;
     id: string;
 }
 
 // 컴포넌트 메서드용 타입
-export interface DragonEditor {
+interface DragonEditor {
     addBlock: (type: DEBlockData) => void;
     setDecoration: (data: DEDecoration) => void;
     setTextAlign: (type: DETextalign) => void;
 }
 
-export interface DETextBlock {
+interface DETextBlock {
     type: "text";
     classList: string[];
     depth?: number;
     textContent: string;
 }
 
-export interface DEHeadingBlock {
+interface DEHeadingBlock {
     type: "heading";
     level: number;
     id: string;
@@ -129,12 +129,12 @@ export interface DEHeadingBlock {
     textContent: string;
 }
 
-export interface DEListItem {
+interface DEListItem {
     classList: string[];
     textContent: string;
 }
 
-export interface DEListBlock {
+interface DEListBlock {
     type: "list";
     element: DEListElementName;
     depth?: number;
@@ -142,7 +142,7 @@ export interface DEListBlock {
     child: DEListItem[];
 }
 
-export interface DEImageBlock {
+interface DEImageBlock {
     type: "image";
     maxWidth: number;
     src: string;
@@ -152,7 +152,7 @@ export interface DEImageBlock {
     classList: string[];
 }
 
-export interface DECodeBlock {
+interface DECodeBlock {
     type: "code";
     language: DECodeblockLang;
     theme: DECodeblockTheme;
@@ -160,7 +160,7 @@ export interface DECodeBlock {
     textContent: string;
 }
 
-export interface DECustomBlock {
+interface DECustomBlock {
     type: "custom";
     classList: string[];
     textContent: string;
