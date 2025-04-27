@@ -1,4 +1,5 @@
 import type { Ref } from "vue";
+import type { DEArrangeCursorData, DEditorCursor, DragonEditorStore } from "../../type";
 
 // 커서정보 업데이트
 export function _updateCursorData(store: Ref<DragonEditorStore>) {

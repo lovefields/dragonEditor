@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
 import { _getDefaultBlockData, _generateId, _updateModelData, _updateCursorData, _decideWhetherOpenControlBar, _updateControlBarStatus, CODEBLOCKLANG } from "../event";
+import type { DEBlockMenutype, DragonEditorStore, DEBlockData, DEBlockElement, DETextBlock, DEBlock, DEHeadingBlock, DEListBlock, DEListItem, DEImageBlock, DECodeBlock, DECustomBlock, DECodeblockTheme, DECodeblockLang, DEListStyle } from "../../type";
 
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {
@@ -276,7 +277,7 @@ export function _updateHeadingBlockList(store: Ref<DragonEditorStore>): void {
 }
 
 // 코드블럭 테마 변경
-export async function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<DragonEditorStore>): void {
+export async function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<DragonEditorStore>): Promise<void> {
     if (store.value.controlStatus.$currentBlock !== null) {
         const $target = store.value.controlStatus.$currentBlock.querySelector(".de-language");
         const $code = store.value.controlStatus.$currentBlock.querySelector(".de-code-content");
@@ -286,9 +287,14 @@ export async function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<Dra
             const $div = document.createElement("div");
 
             $div.innerHTML = convert;
-            $code.innerHTML = $div.querySelector("code").innerHTML;
-            store.value.controlStatus.codeBlockTheme = theme;
-            store.value.controlStatus.$currentBlock.dataset["theme"] = theme;
+
+            const $childCode = $div.querySelector("code");
+
+            if ($childCode !== null) {
+                $code.innerHTML = $childCode.innerHTML;
+                store.value.controlStatus.codeBlockTheme = theme;
+                store.value.controlStatus.$currentBlock.dataset["theme"] = theme;
+            }
 
             _updateCursorData(store);
             _updateModelData(store);
@@ -297,7 +303,7 @@ export async function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<Dra
 }
 
 // 코드블럭 언어 변경
-export async function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<DragonEditorStore>): void {
+export async function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<DragonEditorStore>): Promise<void> {
     if (store.value.controlStatus.$currentBlock !== null) {
         const $target = store.value.controlStatus.$currentBlock.querySelector(".de-language");
         const $code = store.value.controlStatus.$currentBlock.querySelector(".de-code-content");
@@ -311,12 +317,16 @@ export async function _setCodeBlockLanguage(language: DECodeblockLang, store: Re
 
                 $div.innerHTML = convert;
 
-                $target.textContent = targetValue.text;
-                $code.innerHTML = $div.querySelector("code").innerHTML;
-                store.value.controlStatus.codeBlockLang = targetValue.code;
+                const $childCode = $div.querySelector("code");
 
-                _updateCursorData(store);
-                _updateModelData(store);
+                if ($childCode !== null) {
+                    $target.textContent = targetValue.text;
+                    $code.innerHTML = $childCode.innerHTML;
+                    store.value.controlStatus.codeBlockLang = targetValue.code;
+
+                    _updateCursorData(store);
+                    _updateModelData(store);
+                }
             }
         }
     }

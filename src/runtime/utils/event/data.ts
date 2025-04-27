@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
 import { _getCurrentBlock } from "../node";
+import type { DECodeItem, DECodeblockLang, DragonEditorStore, DEBlockData, DETextBlock, DEHeadingBlock, DEListItem, DEListBlock, DEListElementName, DEListStyle, DECodeblockTheme, DEBlockMenutype } from "../../type";
 
 export const CODEBLOCKLANG: DECodeItem<DECodeblockLang>[] = [
     {

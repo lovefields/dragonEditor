@@ -1,6 +1,7 @@
 import { h } from "vue";
 import type { VNode } from "vue";
 import { _generateId, _getDefaultBlockData, CODEBLOCKLANG } from "../event";
+import type { DEContentData, DETextBlock, DECustomBlock, DEHeadingBlock, DEImageBlock, DEListBlock, DECodeBlock } from "../../type";
 
 // 블럭 구조체 생성
 export function _createBlockList({ blockList, isEditable, imageHostURL }: { blockList: DEContentData; isEditable: boolean; imageHostURL: string } = { blockList: [], isEditable: false, imageHostURL: "" }): VNode[] {

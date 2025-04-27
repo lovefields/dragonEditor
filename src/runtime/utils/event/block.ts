@@ -1,6 +1,7 @@
 import type { Ref } from "vue";
 import { _updateModelData } from "./index";
 import { _updateCurrentBlock } from "../node";
+import type { DragonEditorStore } from "../../type";
 
 // 사이즈 조정 이벤트 시작
 export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStore>): void {
