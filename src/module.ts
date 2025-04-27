@@ -22,7 +22,7 @@ export default defineNuxtModule({
 
         addTypeTemplate({
             filename: "types/dragon-editor.d.ts",
-            src: resolver.resolve(__dirname, "./types.d.ts"),
+            src: resolver.resolve(__dirname, "./runtime/type.d.ts"),
             write: true,
         });
     },
