@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
 import { _imageResizeEventStart, _imageResizeEvent, _imageResizeEventEnd } from "./index";
+import type { DragonEditorStore } from "../../type";
 
 export function _contentTouchstartEvent(event: TouchEvent, store: Ref<DragonEditorStore>): void {
     _imageResizeEventStart(event, store);

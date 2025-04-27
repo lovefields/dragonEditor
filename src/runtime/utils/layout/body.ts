@@ -2,6 +2,7 @@ import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _createBlockList } from "./index";
 import { _contentKeydownEvent, _contentKeyupEvent, _contentPasteEvent, _contentMouseupEvent, _contentMousedownEvnet, _contentTouchstartEvent } from "../event";
+import type { DragonEditorStore } from "../../type";
 
 // 바디 구조체 생성
 export function _getBodyVNodeStructure(store: Ref<DragonEditorStore>): VNode {

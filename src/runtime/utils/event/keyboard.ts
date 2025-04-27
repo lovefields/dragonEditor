@@ -3,6 +3,7 @@ import { _updateModelData, _updateCursorData, _setCursor, _sortingCursorDataOnEl
 import { _getCurrentBlock, _createTextBlock, _createHeadingBlock, _createListBlock, _getParentElementIfNodeIsText, _findContentEditableElement, _createListItemBlock, _updateCurrentBlock, _createCodeBlock } from "../node";
 import { _getDefaultBlockData } from "../event";
 import { _setDecoration } from "../style";
+import type { DragonEditorStore, DETextBlock, DEditorCursor, DEHeadingBlock, DEListBlock, DECodeBlock } from "../../type";
 
 // 키 다운 이벤트
 export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>): void {

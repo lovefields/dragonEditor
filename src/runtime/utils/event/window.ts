@@ -1,5 +1,6 @@
 import type { Ref } from "vue";
 import { _findScrollingElement } from "../node";
+import type { DragonEditorStore } from "../../type";
 
 // 윈도우 마운트 이벤트
 export function _eidtorMountEvent(store: Ref<DragonEditorStore>): void {

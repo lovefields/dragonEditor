@@ -2,6 +2,7 @@ import type { Ref } from "vue";
 import { _updateCursorData, _imageResizeEventStart, _imageResizeEvent, _imageResizeEventEnd } from "./index";
 import { _getCurrentBlock, _updateCurrentBlock, _updateHeadingBlockList } from "../node";
 import { _updateAnchorTagValue } from "../style";
+import type { DragonEditorStore, DEBlock } from "../../type";
 
 export function _contentMouseupEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
     _updateCurrentBlock(event, store);

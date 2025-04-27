@@ -1,5 +1,6 @@
 import { h } from "vue";
 import type { VNode, Ref } from "vue";
+import type { DEIconKind } from "../../type";
 
 export function _getIconNode(kind: DEIconKind): VNode {
     const pathNode: VNode[] = [];

@@ -10,7 +10,7 @@ import { _addBlock } from "../utils/node";
 import { _setDecoration, _setTextAlign } from "../utils/style";
 import type { VNode } from "vue";
 import { codeToHtml } from "shiki";
-import "../type.d.ts";
+import type { DEBlockData, DEBlockMenutype, DEContentData, DEDecoration, DETextalign, DragonEditorStore } from "../type.d.ts";
 
 interface DEOption {
     modelValue: DEContentData;
