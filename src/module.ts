@@ -21,11 +21,9 @@ export default defineNuxtModule({
         });
 
         addTypeTemplate({
-            filename: "types/dragonEditor.d.ts",
+            filename: "type.d.ts",
             src: resolver.resolve(__dirname, "./runtime/type.d.ts"),
             write: true,
         });
-
-        // nuxt.options.build.transpile.push("highlight.js");
     },
 });
