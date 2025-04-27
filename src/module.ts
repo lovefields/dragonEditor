@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addComponent, addTypeTemplate, installModule } from "@nuxt/kit";
+import { defineNuxtModule, createResolver, addComponent, addTypeTemplate } from "@nuxt/kit";
 
 export default defineNuxtModule({
     meta: {
@@ -21,8 +21,8 @@ export default defineNuxtModule({
         });
 
         addTypeTemplate({
-            filename: "type.d.ts",
-            src: resolver.resolve(__dirname, "./runtime/type.d.ts"),
+            filename: "types/dragon-editor.d.ts",
+            src: resolver.resolve(__dirname, "./types.d.ts"),
             write: true,
         });
     },
