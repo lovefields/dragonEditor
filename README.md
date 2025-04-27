@@ -36,7 +36,7 @@ If you use Codeblock. I recommented use `Inconsolata` font. [(link)](https://fon
 ## Install
 
 ```shell
-npm i dragon-edtior
+npm i dragon-editor
 # or
 yarn add dragon-editor
 # or
