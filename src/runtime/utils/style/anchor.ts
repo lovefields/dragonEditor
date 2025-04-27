@@ -1,6 +1,7 @@
 import type { Ref } from "vue";
 import { _setRangeCursor, _updateCursorData, _updateModelData, _sortingCursorDataOnElement } from "../event";
 import { _findContentEditableElement, _findPoverTextNode } from "../node";
+import type { DragonEditorStore, DEBlock } from "../../type";
 
 export function _setAnchorTag(url: string, isOutsideLink: boolean, store: Ref<DragonEditorStore>) {
     if (store.value.controlStatus.previousCorsorData !== null && store.value.controlStatus.$currentBlock !== null) {

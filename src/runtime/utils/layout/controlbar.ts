@@ -2,6 +2,7 @@ import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _setCodeBlockTheme, _setCodeBlockLanguage, _setListBlockStyle } from "../node";
 import { CODEBLOCKLANG } from "../event";
+import type { DragonEditorStore, DECodeblockTheme, DECodeblockLang, DEListStyle } from "../../type";
 
 export function _getControlbarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
     const childList: VNode[] = [];
