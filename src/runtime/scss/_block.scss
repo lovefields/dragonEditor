@@ -7,6 +7,7 @@
     // 텍스트 블럭
     .de-text-block {
         min-height: 1.6em;
+        word-break: break-all;
         outline: 0;
 
         @if $isEdit == "true" {
@@ -23,6 +24,7 @@
     // 해딩 블럭
     .de-heading-block {
         min-height: 1.6em;
+        word-break: break-all;
         outline: 0;
 
         &[data-level="1"] {
@@ -85,6 +87,7 @@
 
         .de-item {
             min-height: 1.6em;
+            word-break: break-all;
             outline: 0;
             list-style: inherit;
 
@@ -167,6 +170,7 @@
             min-height: 1.6em;
             color: #909090;
             text-align: center;
+            word-break: break-all;
             outline: 0;
 
             @if $isEdit == "true" {
@@ -190,6 +194,7 @@
 
         .de-filename {
             flex: 1;
+            max-width: calc(100% - 120px);
             padding: 5px 10px;
             box-sizing: border-box;
             outline: 0;
