@@ -13,17 +13,12 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
     switch (event.key) {
         case "Enter":
             // 문자 조합에 의한 중복 이벤트 방지 처리
-            if (store.value.eventStatus.preComposing === false && event.isComposing === false) {
+
+            if (event.isComposing === false) {
                 __enterEvent(event, store);
             } else {
-                if (store.value.eventStatus.keyboardEnterCount % 2 === 0) {
-                    __enterEvent(event, store);
-                } else {
-                    event.preventDefault();
-                }
+                event.preventDefault();
             }
-
-            store.value.eventStatus.keyboardEnterCount += 1;
             break;
 
         case "Backspace":
@@ -56,7 +51,6 @@ export function _contentKeydownEvent(event: KeyboardEvent, store: Ref<DragonEdit
     }
 
     _hotKeyEvent(event, store);
-    store.value.eventStatus.preComposing = event.isComposing;
 }
 
 // 붙여넣기 이벤트
@@ -1843,7 +1837,6 @@ export function _contentKeyupEvent(event: KeyboardEvent, store: Ref<DragonEditor
     _updateCurrentBlock(event, store);
     _updateCursorData(store);
     __checkBlock(store);
-    store.value.eventStatus.keyboardEnterCount = 0;
 
     clearTimeout(contentKeyupEvent);
     contentKeyupEvent = setTimeout(() => {

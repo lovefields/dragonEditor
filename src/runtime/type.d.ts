@@ -43,12 +43,10 @@ interface DragonEditorStore {
         imageResizeEvent: boolean;
     };
     eventStatus: {
-        preComposing: boolean;
         imageResizeEventStartX: number;
         imageResizeEventType: "right" | "left";
         imageResizeEventEndX: number;
         imageResizeCurrentWidth: number;
-        keyboardEnterCount: number;
     };
     controlStatus: {
         isMobile: boolean;
