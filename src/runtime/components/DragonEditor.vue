@@ -47,12 +47,10 @@ const editorStore = ref<DragonEditorStore>({
         imageResizeEvent: false,
     },
     eventStatus: {
-        preComposing: false,
         imageResizeEventStartX: 0,
         imageResizeEventType: "left",
         imageResizeEventEndX: 0,
         imageResizeCurrentWidth: 0,
-        keyboardEnterCount: 0,
     },
     controlStatus: {
         isMobile: false,
