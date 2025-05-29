@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
-import { _updateModelData } from "./index";
-import { _updateCurrentBlock } from "../node";
+import { _updateModelData, _getDefaultBlockData } from "./index";
+import { _updateCurrentBlock, _createTextBlock } from "../node";
 import type { DragonEditorStore } from "../../type";
 
 // 사이즈 조정 이벤트 시작
@@ -100,5 +100,35 @@ export function _moveBlock(type: "up" | "down", store: Ref<DragonEditorStore>): 
         }
 
         _updateModelData(store);
+    }
+}
+
+// 바디 클릭시 새 블럭 필요 여부 검증
+export function _checkNeedNewBlock(event: MouseEvent, store: Ref<DragonEditorStore>): void {
+    const $target = event.target;
+
+    if ($target !== null) {
+        const $element = $target as HTMLElement;
+
+        if ($element.classList.contains("js-de-body") === true) {
+            const blockList = $element.querySelectorAll(".de-block");
+            const $targetBlock = blockList[blockList.length - 1];
+
+            if ($targetBlock.classList.contains("de-text-block") === true) {
+                if ($targetBlock.textContent === "") {
+                    ($targetBlock as HTMLParagraphElement).focus();
+                } else {
+                    const $block = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
+
+                    $targetBlock.insertAdjacentElement("afterend", $block);
+                    $block.focus();
+                }
+            } else {
+                const $block = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
+
+                $targetBlock.insertAdjacentElement("afterend", $block);
+                $block.focus();
+            }
+        }
     }
 }

@@ -11,6 +11,60 @@ export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode 
 
     childNode.push(__getMenuListStructure(store));
     childNode.push(__getBlockListStructure(store));
+    childNode.push(
+        h("div", { class: ["de-link-exit-area", "js-de-link-exit-area", { "--active": store.value.activeStatus.anchorInputArea }] }, [
+            h("div", { class: ["de-btn-area"] }, [
+                h(
+                    "button",
+                    {
+                        class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "url" }],
+                        onClick: () => {
+                            store.value.controlStatus.anchorTabType = "url";
+                        },
+                    },
+                    "Text"
+                ),
+                h(
+                    "button",
+                    {
+                        class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "heading" }],
+                        onClick: () => {
+                            store.value.controlStatus.anchorTabType = "heading";
+                        },
+                    },
+                    "Heading"
+                ),
+            ]),
+            store.value.controlStatus.anchorTabType === "url"
+                ? h("div", { class: ["de-link-text-area"] }, [
+                      h("input", {
+                          class: ["de-input", { "--error": store.value.controlStatus.anchorValidation === false }],
+                          value: store.value.controlStatus.anchorHref,
+                          onChange: (event: Event) => {
+                              store.value.controlStatus.anchorHref = (event.currentTarget as HTMLInputElement).value;
+                          },
+                      }),
+                      h("button", { class: ["de-btn"], onClick: () => {} }, "Set"),
+                  ])
+                : h(
+                      "div",
+                      { class: ["de-link-heading-area"] },
+                      store.value.controlStatus.anchorHeadingList.map((item) => {
+                          return h(
+                              "button",
+                              {
+                                  class: ["de-btn", { "--active": store.value.controlStatus.anchorHref === `#${item.id}` }],
+                                  onClick: () => {
+                                      store.value.activeStatus.anchorInputArea = false;
+                                      _setAnchorTag(item.id, false, store);
+                                  },
+                              },
+                              item.name
+                          );
+                      })
+                  ),
+        ])
+    );
 
     return h("div", { class: ["de-menu-bar"], style: { top: `${store.value.menuBarTop}px` } }, childNode);
 }
@@ -113,58 +167,6 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 },
                 [_getIconNode("remove-link")]
             ),
-            h("div", { class: ["de-link-exit-area", "js-de-link-exit-area", { "--active": store.value.activeStatus.anchorInputArea }] }, [
-                h("div", { class: ["de-btn-area"] }, [
-                    h(
-                        "button",
-                        {
-                            class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "url" }],
-                            onClick: () => {
-                                store.value.controlStatus.anchorTabType = "url";
-                            },
-                        },
-                        "Text"
-                    ),
-                    h(
-                        "button",
-                        {
-                            class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "heading" }],
-                            onClick: () => {
-                                store.value.controlStatus.anchorTabType = "heading";
-                            },
-                        },
-                        "Heading"
-                    ),
-                ]),
-                store.value.controlStatus.anchorTabType === "url"
-                    ? h("div", { class: ["de-link-text-area"] }, [
-                          h("input", {
-                              class: ["de-input", { "--error": store.value.controlStatus.anchorValidation === false }],
-                              value: store.value.controlStatus.anchorHref,
-                              onChange: (event: Event) => {
-                                  store.value.controlStatus.anchorHref = (event.currentTarget as HTMLInputElement).value;
-                              },
-                          }),
-                          h("button", { class: ["de-btn"], onClick: () => {} }, "Set"),
-                      ])
-                    : h(
-                          "div",
-                          { class: ["de-link-heading-area"] },
-                          store.value.controlStatus.anchorHeadingList.map((item) => {
-                              return h(
-                                  "button",
-                                  {
-                                      class: ["de-btn", { "--active": store.value.controlStatus.anchorHref === `#${item.id}` }],
-                                      onClick: () => {
-                                          store.value.activeStatus.anchorInputArea = false;
-                                          _setAnchorTag(item.id, false, store);
-                                      },
-                                  },
-                                  item.name
-                              );
-                          })
-                      ),
-            ]),
         ])
     );
 
