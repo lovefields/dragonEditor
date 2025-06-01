@@ -21,8 +21,10 @@ const $editor = ref<DragonEditor>();
 let isChange: boolean = true;
 
 function changeData() {
+    let data: DEContentData = [];
+
     if (isChange === true) {
-        contentData.value = [
+        data = [
             { type: "text", classList: [], textContent: "1" },
             { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
             { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
@@ -39,7 +41,7 @@ function changeData() {
             { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
         ];
     } else {
-        contentData.value = [
+        data = [
             { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
             { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
             { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
@@ -58,6 +60,7 @@ function changeData() {
     }
 
     isChange = !isChange;
+    $editor.value?.changeEditorData(data);
 }
 
 function setContent() {

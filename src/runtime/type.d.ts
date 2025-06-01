@@ -112,6 +112,7 @@ interface DragonEditor {
     addBlock: (type: DEBlockData) => void;
     setDecoration: (data: DEDecoration) => void;
     setTextAlign: (type: DETextalign) => void;
+    changeEditorData: (data: DEContentData) => void;
 }
 
 interface DETextBlock {
