@@ -1,9 +1,9 @@
 <template>
-    <component :is="mainStrucutre()"></component>
+    <component :is="editorStructure"></component>
 </template>
 
 <script setup lang="ts">
-import { ref, h, onMounted, onBeforeUnmount } from "vue";
+import { ref, h, onMounted, onBeforeUnmount, watch } from "vue";
 import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure } from "../utils/layout";
 import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent } from "../utils/event";
 import { _addBlock } from "../utils/node";
@@ -127,6 +127,7 @@ const editorStore = ref<DragonEditorStore>({
         _parentWrapScollEvent(event, editorStore);
     },
 });
+const editorStructure = ref<VNode>(mainStrucutre());
 
 function mainStrucutre(): VNode {
     const childList: VNode[] = [];
@@ -192,6 +193,14 @@ function setDecoration(style: DEDecoration): void {
 function setAlign(align: DETextalign): void {
     _setTextAlign(align, editorStore);
 }
+
+watch(
+    () => props.modelValue,
+    (newData) => {
+        editorStore.value.firstData = newData;
+        editorStructure.value = mainStrucutre();
+    }
+);
 
 onMounted(() => {
     _eidtorMountEvent(editorStore);
