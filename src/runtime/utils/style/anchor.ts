@@ -6,7 +6,6 @@ import type { DragonEditorStore, DEBlock } from "../../type";
 export function _setAnchorTag(url: string, isOutsideLink: boolean, store: Ref<DragonEditorStore>) {
     if (store.value.controlStatus.previousCorsorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.controlStatus.previousCorsorData;
-        const $block = store.value.controlStatus.$currentBlock;
         const typeIgnoreList: DEBlock[] = ["image", "code", "custom"];
         const hrefValue = isOutsideLink === true ? url : `#${url}`;
         const $element = _findContentEditableElement(cursorData.startNode as HTMLElement);

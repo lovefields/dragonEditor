@@ -44,7 +44,16 @@ export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode 
                               store.value.controlStatus.anchorHref = (event.currentTarget as HTMLInputElement).value;
                           },
                       }),
-                      h("button", { class: ["de-btn"], onClick: () => {} }, "Set"),
+                      h(
+                          "button",
+                          {
+                              class: ["de-btn"],
+                              onClick: () => {
+                                  _setAnchorTag(store.value.controlStatus.anchorHref, true, store);
+                              },
+                          },
+                          "Set"
+                      ),
                   ])
                 : h(
                       "div",
