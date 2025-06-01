@@ -1,10 +1,10 @@
 <template>
-    <component :is="editorStructure"></component>
+    <component :is="mainStrucutre"></component>
 </template>
 
 <script setup lang="ts">
 import { ref, h, onMounted, onBeforeUnmount, watch } from "vue";
-import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure } from "../utils/layout";
+import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure, _updateBodyStructure } from "../utils/layout";
 import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent } from "../utils/event";
 import { _addBlock } from "../utils/node";
 import { _setDecoration, _setTextAlign } from "../utils/style";
@@ -127,7 +127,6 @@ const editorStore = ref<DragonEditorStore>({
         _parentWrapScollEvent(event, editorStore);
     },
 });
-const editorStructure = ref<VNode>(mainStrucutre());
 
 function mainStrucutre(): VNode {
     const childList: VNode[] = [];
@@ -194,13 +193,13 @@ function setAlign(align: DETextalign): void {
     _setTextAlign(align, editorStore);
 }
 
-watch(
-    () => props.modelValue,
-    (newData) => {
-        editorStore.value.firstData = newData;
-        editorStructure.value = mainStrucutre();
+// 데이터 변경용 함수
+function changeEditorData(data: DEContentData): void {
+    if (editorStore.value.$body !== null) {
+        editorStore.value.$body.innerHTML = "";
+        _updateBodyStructure(data, editorStore);
     }
-);
+}
 
 onMounted(() => {
     _eidtorMountEvent(editorStore);
@@ -214,6 +213,7 @@ defineExpose({
     addBlock,
     setDecoration,
     setAlign,
+    changeEditorData,
 });
 </script>
 
