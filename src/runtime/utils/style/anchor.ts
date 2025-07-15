@@ -4,6 +4,8 @@ import { _findContentEditableElement, _findPoverTextNode } from "../node";
 import type { DragonEditorStore, DEBlock } from "../../type";
 
 export function _setAnchorTag(url: string, isOutsideLink: boolean, store: Ref<DragonEditorStore>) {
+    console.log("url", url);
+
     if (store.value.controlStatus.previousCorsorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.controlStatus.previousCorsorData;
         const typeIgnoreList: DEBlock[] = ["image", "code", "custom"];
@@ -330,31 +332,40 @@ export function _unsetAnchorTag(store: Ref<DragonEditorStore>) {
 }
 
 // 링크 값 추출
-export function _updateAnchorTagValue(store: Ref<DragonEditorStore>, previous: boolean = false): void {
-    if (store.value.controlStatus.previousCorsorData !== null && store.value.cursorData !== null) {
-        const cursorData = previous === true ? store.value.controlStatus.previousCorsorData : store.value.cursorData;
+export function _updateAnchorTagValue(event: MouseEvent, store: Ref<DragonEditorStore>, previous: boolean = false): void {
+    const $target = event.target as HTMLElement;
 
-        if (cursorData.type === "Caret" || (cursorData.type === "Range" && cursorData.startNode === cursorData.endNode)) {
-            // 단일 커서이거나 하나의 노드인경우
+    if ($target !== null) {
+        const $linkArea = $target.closest(".js-de-link-exit-area");
 
-            const $element = _findContentEditableElement(cursorData.startNode);
-            let $targetNode: HTMLElement | null = cursorData.startNode as HTMLElement;
+        // 링크 수정 영역이 아닌 경우만 갱신
+        if ($linkArea === null) {
+            if (store.value.controlStatus.previousCorsorData !== null && store.value.cursorData !== null) {
+                const cursorData = previous === true ? store.value.controlStatus.previousCorsorData : store.value.cursorData;
 
-            if ($targetNode.constructor.name === "Text") {
-                if ($targetNode.parentElement !== $element) {
-                    $targetNode = $targetNode.parentElement;
+                if (cursorData.type === "Caret" || (cursorData.type === "Range" && cursorData.startNode === cursorData.endNode)) {
+                    // 단일 커서이거나 하나의 노드인경우
+
+                    const $element = _findContentEditableElement(cursorData.startNode);
+                    let $targetNode: HTMLElement | null = cursorData.startNode as HTMLElement;
+
+                    if ($targetNode.constructor.name === "Text") {
+                        if ($targetNode.parentElement !== $element) {
+                            $targetNode = $targetNode.parentElement;
+                        }
+                    }
+
+                    if (($targetNode as HTMLElement).constructor.name === "HTMLAnchorElement") {
+                        const $tag = $targetNode as HTMLAnchorElement;
+
+                        store.value.controlStatus.anchorHref = $tag.href;
+                    } else {
+                        store.value.controlStatus.anchorHref = "";
+                    }
+                } else {
+                    store.value.controlStatus.anchorHref = "";
                 }
             }
-
-            if (($targetNode as HTMLElement).constructor.name === "HTMLAnchorElement") {
-                const $tag = $targetNode as HTMLAnchorElement;
-
-                store.value.controlStatus.anchorHref = $tag.href;
-            } else {
-                store.value.controlStatus.anchorHref = "";
-            }
-        } else {
-            store.value.controlStatus.anchorHref = "";
         }
     }
 }

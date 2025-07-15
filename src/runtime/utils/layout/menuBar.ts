@@ -40,7 +40,7 @@ export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode 
                       h("input", {
                           class: ["de-input", { "--error": store.value.controlStatus.anchorValidation === false }],
                           value: store.value.controlStatus.anchorHref,
-                          onChange: (event: Event) => {
+                          onInput: (event: Event) => {
                               store.value.controlStatus.anchorHref = (event.currentTarget as HTMLInputElement).value;
                           },
                       }),
@@ -160,8 +160,8 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu", "js-de-link-btn"],
-                    onClick: () => {
-                        _openAnchorArea(store);
+                    onClick: (event: MouseEvent) => {
+                        _openAnchorArea(event, store);
                     },
                 },
                 [_getIconNode("add-link")]
