@@ -1,5 +1,5 @@
 import type { Ref } from "vue";
-import { _updateCursorData, _imageResizeEventStart, _imageResizeEvent, _imageResizeEventEnd,_checkNeedNewBlock } from "./index";
+import { _updateCursorData, _imageResizeEventStart, _imageResizeEvent, _imageResizeEventEnd, _checkNeedNewBlock } from "./index";
 import { _getCurrentBlock, _updateCurrentBlock, _updateHeadingBlockList } from "../node";
 import { _updateAnchorTagValue } from "../style";
 import type { DragonEditorStore, DEBlock } from "../../type";
@@ -7,7 +7,7 @@ import type { DragonEditorStore, DEBlock } from "../../type";
 export function _contentMouseupEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
     _updateCurrentBlock(event, store);
     _updateCursorData(store);
-    _checkNeedNewBlock(event,store);
+    _checkNeedNewBlock(event, store);
 }
 
 export function _contentMousedownEvnet(event: MouseEvent, store: Ref<DragonEditorStore>): void {
@@ -20,7 +20,7 @@ export function _editorMousemoveEvent(event: MouseEvent, store: Ref<DragonEditor
 
 export function _editorMouseupEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
     _imageResizeEventEnd(event, store);
-    _updateAnchorTagValue(store);
+    _updateAnchorTagValue(event, store);
 }
 
 export function _editorMouseleaveEvent(event: MouseEvent, store: Ref<DragonEditorStore>): void {
@@ -55,10 +55,10 @@ function __blockAddOthersideEvent(event: MouseEvent, store: Ref<DragonEditorStor
 }
 
 // 앵커 컨트롤 영역 토글 이벤트
-export function _openAnchorArea(store: Ref<DragonEditorStore>): void {
+export function _openAnchorArea(event: MouseEvent, store: Ref<DragonEditorStore>): void {
     store.value.controlStatus.previousCorsorData = store.value.cursorData;
 
-    _updateAnchorTagValue(store, true);
+    _updateAnchorTagValue(event, store, true);
     _updateHeadingBlockList(store);
 
     if (store.value.controlStatus.anchorHref !== "" && store.value.controlStatus.anchorHref.charAt(0) === "#") {
