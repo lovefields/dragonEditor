@@ -4,8 +4,6 @@ import { _findContentEditableElement, _findPoverTextNode } from "../node";
 import type { DragonEditorStore, DEBlock } from "../../type";
 
 export function _setAnchorTag(url: string, isOutsideLink: boolean, store: Ref<DragonEditorStore>) {
-    console.log("url", url);
-
     if (store.value.controlStatus.previousCorsorData !== null && store.value.controlStatus.$currentBlock !== null) {
         const cursorData = store.value.controlStatus.previousCorsorData;
         const typeIgnoreList: DEBlock[] = ["image", "code", "custom"];
