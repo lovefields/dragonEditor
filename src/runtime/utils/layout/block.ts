@@ -32,6 +32,10 @@ export function _createBlockList({ blockList, isEditable, imageHostURL }: { bloc
                     blockArray.push(__createCodeBlock(block, isEditable));
                     break;
 
+                case "divider":
+                    blockArray.push(__createDividerBlock());
+                    break;
+
                 default:
                     blockArray.push(__createCustomBlock(block as DECustomBlock));
             }
@@ -145,4 +149,9 @@ function __createCodeBlock(data: DECodeBlock, isEditable: boolean): VNode {
 // 커스텀 블럭 생성
 function __createCustomBlock(data: DECustomBlock): VNode {
     return h("div", { class: ["de-block", "de-custom-block", ...data.classList], innerHTML: data.textContent });
+}
+
+// 구분선 블럭 생성
+function __createDividerBlock(): VNode {
+    return h("div", { class: ["de-block", "de-divider-block"] });
 }

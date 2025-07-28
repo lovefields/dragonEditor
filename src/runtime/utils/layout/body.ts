@@ -2,7 +2,7 @@ import { h } from "vue";
 import type { VNode, Ref } from "vue";
 import { _createBlockList } from "./index";
 import { _contentKeydownEvent, _contentKeyupEvent, _contentPasteEvent, _contentMouseupEvent, _contentMousedownEvnet, _contentTouchstartEvent, _getDefaultBlockData, _updateModelData } from "../event";
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createListItemBlock, _createImageBlock, _createCodeBlock, _createCustomBlock } from "../node";
+import { _createTextBlock, _createHeadingBlock, _createListBlock, _createListItemBlock, _createImageBlock, _createCodeBlock, _createCustomBlock, _createDividerBlock } from "../node";
 import type { DragonEditorStore } from "../../type";
 
 // 바디 구조체 생성
@@ -53,6 +53,10 @@ export function _updateBodyStructure(bodyData: DEContentData, store: Ref<DragonE
 
                     case "code":
                         htmlSturcutre += _createCodeBlock(data, store).outerHTML;
+                        break;
+
+                    case "divider":
+                        htmlSturcutre += _createDividerBlock().outerHTML;
                         break;
 
                     default:

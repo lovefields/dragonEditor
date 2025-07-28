@@ -1,22 +1,22 @@
 <template>
     <div>
-        <div class="editor-area">
-            <ClientOnly>
-                <DragonEditor v-model="contentData" ref="$editor" @uploadImageEvent="pasteImageProcess" />
-            </ClientOnly>
+        <div class="editor-area" :class="{ '--sort': isChangeLayout === true }">
+            <DragonEditor v-model="contentData" ref="$editor" @uploadImageEvent="pasteImageProcess" />
         </div>
 
         <button @click="setContent">set data</button>
         <button @click="addImage">Add Image</button>
         <button @click="addCustomBlock">Add Custom Block</button>
         <button @click="changeData">change data</button>
-        <p>{{ contentData }}</p>
+        <button @click="changeLayout">Change Layout</button>
+        <p class="data">{{ contentData }}</p>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "#imports";
 const contentData = ref<DEContentData>([]);
+const isChangeLayout = ref<boolean>(false);
 const $editor = ref<DragonEditor>();
 let isChange: boolean = true;
 
@@ -74,12 +74,13 @@ function setContent() {
             { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }] },
             { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }] },
             { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }] },
+            { type: "divider" },
             { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
             { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
             { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
             { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
             { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
-            { type: "code", theme: "github", filename: "123", language: "text", textContent: "332213231232132131313" },
+            { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
         ] as DEBlockData[]
     ).forEach((data: DEBlockData) => {
         $editor.value?.addBlock(data);
@@ -123,6 +124,11 @@ function pasteImageProcess(file: File) {
         });
     };
 }
+
+function changeLayout(): void {
+    isChangeLayout.value = !isChangeLayout.value;
+    $editor.value?.updateLayout();
+}
 </script>
 
 <style lang="scss">
@@ -130,5 +136,14 @@ function pasteImageProcess(file: File) {
     max-width: 800px;
     margin: 0 auto;
     font-size: 15px;
+
+    &.--sort {
+        height: 200px;
+        overflow: auto;
+    }
+}
+
+.data {
+    height: 2500px;
 }
 </style>

@@ -36,7 +36,7 @@ export function _windowResizeEvent(event: Event, store: Ref<DragonEditorStore>):
 
 // 모바일 체크
 function __checkAndSetUpMobile(store: Ref<DragonEditorStore>): void {
-    if (window.innerWidth > 1200) {
+    if (window.innerWidth > store.value.screenChangePoint) {
         store.value.controlStatus.isMobile = false;
     } else {
         store.value.controlStatus.isMobile = true;

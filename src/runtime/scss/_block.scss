@@ -191,6 +191,8 @@
     .de-code-block {
         display: flex;
         flex-wrap: wrap;
+        margin: 2px 0;
+        padding: 0;
         border-radius: var(--radius-default);
         overflow: hidden;
 
@@ -519,6 +521,23 @@
                 color: #ffd8d3;
                 background-color: #78191b;
             }
+        }
+    }
+
+    // 구분선
+    .de-divider-block {
+        display: flex;
+        align-items: center;
+        height: 20px;
+
+        &::before {
+            display: block;
+            content: "";
+            width: 100%;
+            height: 2px;
+            padding: 0;
+            background: #e5e5e5;
+            border-radius: 2px;
         }
     }
 }

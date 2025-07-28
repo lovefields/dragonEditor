@@ -31,6 +31,10 @@ export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, 
         case "custom":
             $block = _createCustomBlock(blockData);
             break;
+
+        case "divider":
+            $block = _createDividerBlock();
+            break;
     }
 
     if (store.value.controlStatus.$currentBlock === null) {
@@ -237,6 +241,15 @@ export function _createCustomBlock(data: DECustomBlock): HTMLDivElement {
 
     $block.classList.add("de-block", "de-custom-block", ...data.classList);
     $block.innerHTML = data.textContent;
+
+    return $block;
+}
+
+// 구분선 블럭 생성
+export function _createDividerBlock(): HTMLDivElement {
+    const $block = document.createElement("div") as HTMLDivElement;
+
+    $block.classList.add("de-block", "de-divider-block");
 
     return $block;
 }

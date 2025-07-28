@@ -16,11 +16,13 @@ interface DEOption {
     modelValue: DEContentData;
     useMenuBar?: boolean;
     imageHostURL?: string;
+    screenChangePoint?: number;
 }
 
 const props = withDefaults(defineProps<DEOption>(), {
     useMenuBar: true,
     imageHostURL: "",
+    screenChangePoint: 1200,
 });
 const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
@@ -40,6 +42,7 @@ const editorStore = ref<DragonEditorStore>({
     useMenuBar: props.useMenuBar,
     imageHostURL: props.imageHostURL,
     firstData: props.modelValue,
+    screenChangePoint: props.screenChangePoint,
     menuBarTop: 0,
     activeStatus: {
         addBlockMenu: false,
@@ -201,6 +204,15 @@ function changeEditorData(data: DEContentData): void {
     }
 }
 
+// 레이아웃 변경시 리마운트
+function updateLayout(): void {
+    _eidtorUnmountEvent(editorStore);
+
+    setTimeout(() => {
+        _eidtorMountEvent(editorStore);
+    }, 250);
+}
+
 onMounted(() => {
     _eidtorMountEvent(editorStore);
 });
@@ -214,6 +226,7 @@ defineExpose({
     setDecoration,
     setAlign,
     changeEditorData,
+    updateLayout,
 });
 </script>
 

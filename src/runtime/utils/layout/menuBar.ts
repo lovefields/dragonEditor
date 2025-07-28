@@ -307,6 +307,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
 function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
     const menuList: VNode[] = [];
 
+    // 텍스트
     menuList.push(
         h(
             "button",
@@ -319,6 +320,8 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "Text"
         )
     );
+
+    // 해딩 1
     menuList.push(
         h(
             "button",
@@ -331,6 +334,8 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "Heading-1"
         )
     );
+
+    // 해딩 2
     menuList.push(
         h(
             "button",
@@ -343,6 +348,8 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "Heading-2"
         )
     );
+
+    // 해딩 3
     menuList.push(
         h(
             "button",
@@ -355,6 +362,8 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "Heading-3"
         )
     );
+
+    // 순서 없는 리스트
     menuList.push(
         h(
             "button",
@@ -367,6 +376,8 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "Unodered List"
         )
     );
+
+    // 순서 있는 리스트
     menuList.push(
         h(
             "button",
@@ -379,6 +390,8 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "Odered List"
         )
     );
+
+    // 코드 블럭
     menuList.push(
         h(
             "button",
@@ -389,6 +402,20 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
                 },
             },
             "Code Block"
+        )
+    );
+
+    // 구분선
+    menuList.push(
+        h(
+            "button",
+            {
+                class: ["de-add-block"],
+                onClick: () => {
+                    _addBlock("divider", store);
+                },
+            },
+            "Divider"
         )
     );
 

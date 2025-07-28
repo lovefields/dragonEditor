@@ -2,7 +2,7 @@ import type { codeToHtml } from "shiki";
 
 type DEContentData = DEBlockData[];
 
-type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock;
+type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock | DEDividerBlock;
 
 type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "indent-decrease" | "indent-increase";
 
@@ -12,7 +12,7 @@ type DETextalign = "left" | "right" | "center" | "justify";
 
 type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "custom";
 
-type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom";
+type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom" | "divider";
 
 type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
@@ -35,6 +35,7 @@ interface DragonEditorStore {
     };
     useMenuBar: boolean;
     imageHostURL: string;
+    screenChangePoint: number;
     firstData: DEContentData;
     menuBarTop: number;
     activeStatus: {
@@ -113,6 +114,7 @@ interface DragonEditor {
     setDecoration: (data: DEDecoration) => void;
     setTextAlign: (type: DETextalign) => void;
     changeEditorData: (data: DEContentData) => void;
+    updateLayout: () => void;
 }
 
 interface DETextBlock {
@@ -166,4 +168,8 @@ interface DECustomBlock {
     type: "custom";
     classList: string[];
     textContent: string;
+}
+
+interface DEDividerBlock {
+    type: "divider";
 }

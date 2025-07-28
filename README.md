@@ -63,7 +63,7 @@ Second. Use Component
 </template>
 
 <script setup lang="ts">
-    const contentData = ref<DEContentData>([]);
+    const contentData = ref<DEContentData>([]); // Do not modify the value after binding under any circumstances.
 </script>
 ```
 

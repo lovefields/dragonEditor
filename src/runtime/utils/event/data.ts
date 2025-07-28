@@ -256,6 +256,16 @@ export function _updateModelData(store: Ref<DragonEditorStore>): void {
                     );
                     break;
 
+                case $el.classList.contains("de-divider-block"):
+                    workList.push(
+                        new Promise((done) => {
+                            done({
+                                type: "divider",
+                            });
+                        })
+                    );
+                    break;
+
                 default:
                     workList.push(
                         new Promise((done) => {
@@ -316,6 +326,12 @@ export function _getDefaultBlockData(type: DEBlockMenutype): DEBlockData {
                 theme: "github-light",
                 filename: "",
                 textContent: "",
+            };
+            break;
+
+        case "divider":
+            data = {
+                type: "divider",
             };
             break;
     }
