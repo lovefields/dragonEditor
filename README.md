@@ -27,7 +27,7 @@
 
 I just made the DragonEditor because I needed the WYSIWYG Editor to write on my [blog](https://dico.me).
 
-This module support only Nuxt3.
+This module support only Nuxt.
 
 # Font
 
@@ -83,4 +83,4 @@ Done!
 </script>
 ```
 
-More information is here [Document](https://lovefields.github.io/dragonEditor-doc/)
+More information is [here](https://lovefields.github.io/dragonEditor-doc/)
