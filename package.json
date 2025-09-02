@@ -31,21 +31,21 @@
         "test:watch": "vitest watch"
     },
     "dependencies": {
-        "@nuxt/kit": "^3.16.1",
-        "shiki": "^3.3.0"
+        "@nuxt/kit": "^4.0.3",
+        "shiki": "^3.12.1"
     },
     "devDependencies": {
-        "@nuxt/eslint-config": "^1.2.0",
-        "@nuxt/module-builder": "^0.8.4",
-        "@nuxt/schema": "^3.16.1",
-        "@nuxt/test-utils": "^3.17.2",
-        "@types/bun": "^1.2.8",
-        "changelogen": "^0.6.1",
-        "eslint": "^9.23.0",
-        "nuxt": "^3.16.1",
-        "sass": "^1.86.0",
-        "sass-embedded": "^1.86.0",
-        "vitest": "^3.0.9"
+        "@nuxt/eslint-config": "^1.9.0",
+        "@nuxt/module-builder": "^1.0.2",
+        "@nuxt/schema": "^4.0.3",
+        "@nuxt/test-utils": "^3.19.2",
+        "@types/bun": "^1.2.21",
+        "changelogen": "^0.6.2",
+        "eslint": "^9.34.0",
+        "nuxt": "^4.0.3",
+        "sass": "^1.91.0",
+        "sass-embedded": "^1.91.0",
+        "vitest": "^3.2.4"
     },
     "keywords": [
         "editor",
