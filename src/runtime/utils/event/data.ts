@@ -401,3 +401,42 @@ function __updateListBlockStyle(store: Ref<DragonEditorStore>): void {
         store.value.controlStatus.listBlockStyle = ($block.dataset["style"] as DEListStyle) ?? "disc";
     }
 }
+
+// 빈 데이터 체크
+export function _checkDataEmpty(data: DEContentData): boolean {
+    let suitable: boolean = true;
+
+    data.forEach((item) => {
+        switch (item.type) {
+            case "heading":
+            case "text":
+                if (item.textContent !== "") {
+                    suitable = false;
+                }
+                break;
+
+            case "list":
+                item.child.forEach((listChild) => {
+                    if (listChild.textContent !== "") {
+                        suitable = false;
+                    }
+                });
+                break;
+
+            case "code":
+                if (item.filename !== "" || item.textContent !== "") {
+                    suitable = false;
+                }
+
+                break;
+
+            case "image":
+            case "divider":
+            case "custom":
+                suitable = false;
+                break;
+        }
+    });
+
+    return suitable;
+}
