@@ -9,22 +9,20 @@ export default defineNuxtModule({
     },
     async setup(options, nuxt) {
         const resolver = createResolver(import.meta.url);
-        const typeContent = await readFile(`${__dirname}/runtime/type.d.mts`);
+        const typeContent = await readFile(resolver.resolve("./runtime/type.d.mts"));
 
         addComponent({
             name: "DragonEditor",
-            filePath: resolver.resolve(__dirname, "./runtime/components/DragonEditor"),
+            filePath: resolver.resolve("./runtime/components/DragonEditor"),
         });
 
         addComponent({
             name: "DragonEditorViewer",
-            filePath: resolver.resolve(__dirname, "./runtime/components/DragonEditorViewer"),
+            filePath: resolver.resolve("./runtime/components/DragonEditorViewer"),
         });
 
         addTypeTemplate({
             filename: "types/dragon-editor.d.ts",
-            // src: resolver.resolve(__dirname, "./runtime/type.d.ts"),
-            // write: true,
             getContents: () => `
                 declare global {
                     ${typeContent}
@@ -37,8 +35,8 @@ export default defineNuxtModule({
 });
 
 async function readFile(path: string): Promise<string> {
-    // Bun 환경이면
     if (typeof Bun !== "undefined" && Bun.file) {
+        // Bun 환경이면
         const file = Bun.file(path);
 
         return await file.text();
