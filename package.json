@@ -10,18 +10,16 @@
     "type": "module",
     "exports": {
         ".": {
-            "types": "./dist/module.d.ts",
-            "import": "./dist/module.mjs",
-            "require": "./dist/module.cjs"
+            "types": "./dist/module.d.mts",
+            "import": "./dist/module.mjs"
         }
     },
-    "main": "./dist/module.cjs",
-    "types": "./dist/types.d.ts",
+    "main": "./dist/module.mjs",
     "files": [
         "dist"
     ],
     "scripts": {
-        "prepack": "nuxt-module-build",
+        "prepack": "nuxt-module-build build",
         "dev": "nuxi dev playground",
         "dev:build": "nuxi build playground",
         "dev:prepare": "nuxt-module-build build --stub && nuxi prepare playground",
@@ -45,7 +43,9 @@
         "nuxt": "^4.0.3",
         "sass": "^1.91.0",
         "sass-embedded": "^1.91.0",
-        "vitest": "^3.2.4"
+        "typescript": "^5.1.6",
+        "vitest": "^3.2.4",
+        "vue-tsc": "^3.0.6"
     },
     "keywords": [
         "editor",

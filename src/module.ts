@@ -9,7 +9,7 @@ export default defineNuxtModule({
     },
     async setup(options, nuxt) {
         const resolver = createResolver(import.meta.url);
-        const typeContent = await readFile(`${__dirname}/runtime/type.d.ts`);
+        const typeContent = await readFile(`${__dirname}/runtime/type.d.mts`);
 
         addComponent({
             name: "DragonEditor",
@@ -42,10 +42,10 @@ async function readFile(path: string): Promise<string> {
         const file = Bun.file(path);
 
         return await file.text();
+    } else {
+        // Node.js 환경이면
+        const { promises: fs } = await import("fs");
+
+        return await fs.readFile(path, "utf-8");
     }
-
-    // Node.js 환경이면
-    const { promises: fs } = await import("fs");
-
-    return await fs.readFile(path, "utf-8");
 }

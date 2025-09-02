@@ -4,7 +4,7 @@ import { _getIconNode } from "./index";
 import { _addBlock } from "../node";
 import { _setDecoration, _setTextAlign, _setAnchorTag, _unsetAnchorTag } from "../style";
 import { _setIndent, _moveBlock, _openAnchorArea } from "../event";
-import type { DragonEditorStore } from "../../type";
+import type { DragonEditorStore } from "../../type.d.mts";
 
 export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode {
     const childNode: VNode[] = [];

@@ -1,8 +1,10 @@
 {
     "extends": "./playground/.nuxt/tsconfig.json",
+    "type": "module",
     "compilerOptions": {
         "target": "ESNext",
-        "module": "ESNext",
+        "module": "es2022",
+        "moduleResolution": "Bundler",
         "lib": ["ESNext", "DOM"],
         "types": ["bun"]
     }

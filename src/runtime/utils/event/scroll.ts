@@ -1,4 +1,4 @@
-import type { DragonEditorStore } from "../../type";
+import type { DragonEditorStore } from "../../type.d.mts";
 import type { Ref } from "vue";
 
 export function _parentWrapScollEvent(event: Event, store: Ref<DragonEditorStore>) {

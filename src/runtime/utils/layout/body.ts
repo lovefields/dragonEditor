@@ -3,7 +3,7 @@ import type { VNode, Ref } from "vue";
 import { _createBlockList } from "./index";
 import { _contentKeydownEvent, _contentKeyupEvent, _contentPasteEvent, _contentMouseupEvent, _contentMousedownEvnet, _contentTouchstartEvent, _getDefaultBlockData, _updateModelData } from "../event";
 import { _createTextBlock, _createHeadingBlock, _createListBlock, _createListItemBlock, _createImageBlock, _createCodeBlock, _createCustomBlock, _createDividerBlock } from "../node";
-import type { DragonEditorStore } from "../../type";
+import type { DragonEditorStore, DEContentData } from "../../type.d.mts";
 
 // 바디 구조체 생성
 export function _getBodyVNodeStructure(store: Ref<DragonEditorStore>): VNode {

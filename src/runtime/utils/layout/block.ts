@@ -1,7 +1,7 @@
 import { h } from "vue";
 import type { VNode } from "vue";
 import { _generateId, _getDefaultBlockData, CODEBLOCKLANG } from "../event";
-import type { DEContentData, DETextBlock, DECustomBlock, DEHeadingBlock, DEImageBlock, DEListBlock, DECodeBlock } from "../../type";
+import type { DEContentData, DETextBlock, DECustomBlock, DEHeadingBlock, DEImageBlock, DEListBlock, DECodeBlock } from "../../type.d.mts";
 
 // 블럭 구조체 생성
 export function _createBlockList({ blockList, isEditable, imageHostURL }: { blockList: DEContentData; isEditable: boolean; imageHostURL: string } = { blockList: [], isEditable: false, imageHostURL: "" }): VNode[] {
@@ -47,7 +47,11 @@ export function _createBlockList({ blockList, isEditable, imageHostURL }: { bloc
 
 // 텍스트 블럭 생성
 function __createTextBlock(data: DETextBlock, isEditable: boolean): VNode {
-    const option: any = { class: ["de-block", "de-text-block", ...data.classList], innerHTML: data.textContent };
+    const option: Record<string, any> = { class: ["de-block", "de-text-block", ...data.classList], innerHTML: data.textContent };
+
+    if (data.depth !== undefined) {
+        option["data-depth"] = data.depth;
+    }
 
     if (isEditable === true) {
         option.contenteditable = true;
@@ -58,7 +62,11 @@ function __createTextBlock(data: DETextBlock, isEditable: boolean): VNode {
 
 // 해딩 블럭 생성
 function __createHeadingBlock(data: DEHeadingBlock, isEditable: boolean): VNode {
-    const option: any = { class: ["de-block", "de-heading-block", ...data.classList], "data-level": data.level, innerHTML: data.textContent };
+    const option: Record<string, any> = { class: ["de-block", "de-heading-block", ...data.classList], "data-level": data.level, innerHTML: data.textContent };
+
+    if (data.depth !== undefined) {
+        option["data-depth"] = data.depth;
+    }
 
     if (isEditable === true) {
         option.contenteditable = true;
@@ -84,8 +92,8 @@ function __createImageBlock(data: DEImageBlock, isEditable: boolean, imageHostUR
     );
 
     if (isEditable === true) {
-        // areaChild
-        // TODO : 이미지 크기 컨트롤러 추가
+        areaChild.push(h("button", { class: ["de-btn", "de-btn-left"] }));
+        areaChild.push(h("button", { class: ["de-btn", "de-btn-right"] }));
     }
 
     imageChild.push(h("div", { class: ["de-image-area"], "data-maxwidth": data.maxWidth }, areaChild));
@@ -106,9 +114,14 @@ function __createImageBlock(data: DEImageBlock, isEditable: boolean, imageHostUR
 // 리스트 블럭 생성
 function __createListBlock(data: DEListBlock, isEditable: boolean): VNode {
     const liList: VNode[] = [];
+    const option: Record<string, any> = { class: ["de-block", "de-list-block"], "data-style": data.style };
+
+    if (data.depth !== undefined) {
+        option["data-depth"] = data.depth;
+    }
 
     data.child.forEach((child) => {
-        const option: any = { class: ["de-item", ...child.classList], innerHTML: child.textContent };
+        const option: Record<string, any> = { class: ["de-item", ...child.classList], innerHTML: child.textContent };
 
         if (isEditable === true) {
             option.contenteditable = true;
@@ -117,14 +130,14 @@ function __createListBlock(data: DEListBlock, isEditable: boolean): VNode {
         liList.push(h("li", option));
     });
 
-    return h(data.element, { class: ["de-block", "de-list-block"], "data-style": data.style }, liList);
+    return h(data.element, option, liList);
 }
 
 // 코드 블럭 생성
 function __createCodeBlock(data: DECodeBlock, isEditable: boolean): VNode {
     const childList: VNode[] = [];
-    const fileNameOption: any = { class: ["de-filename"] };
-    const codeOption: any = { class: ["de-code-content"], innerHTML: data.textContent };
+    const fileNameOption: Record<string, any> = { class: ["de-filename"] };
+    const codeOption: Record<string, any> = { class: ["de-code-content"], innerHTML: data.textContent };
     const targetValue = CODEBLOCKLANG.find((item) => item.code === data.language);
 
     if (isEditable === true) {

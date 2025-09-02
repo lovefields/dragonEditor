@@ -1,7 +1,7 @@
 import type { Ref } from "vue";
 import { _setRangeCursor, _sortingCursorDataOnElement, _updateModelData, _updateCursorData, _setCursor } from "../event";
 import { _findContentEditableElement, _findPoverTextNode } from "../node";
-import type { DragonEditorStore, DEBlock, DETextalign } from "../../type";
+import type { DragonEditorStore, DEBlock, DETextalign } from "../../type.d.mts";
 
 // 텍스트 스타일 적용
 export function _setDecoration(className: string, store: Ref<DragonEditorStore>): void {

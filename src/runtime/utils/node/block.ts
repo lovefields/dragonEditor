@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
 import { _getDefaultBlockData, _generateId, _updateModelData, _updateCursorData, _decideWhetherOpenControlBar, _updateControlBarStatus, CODEBLOCKLANG } from "../event";
-import type { DEBlockMenutype, DragonEditorStore, DEBlockData, DEBlockElement, DETextBlock, DEBlock, DEHeadingBlock, DEListBlock, DEListItem, DEImageBlock, DECodeBlock, DECustomBlock, DECodeblockTheme, DECodeblockLang, DEListStyle } from "../../type";
+import type { DEBlockMenutype, DragonEditorStore, DEBlockData, DEBlockElement, DETextBlock, DEBlock, DEHeadingBlock, DEListBlock, DEListItem, DEImageBlock, DECodeBlock, DECustomBlock, DECodeblockTheme, DECodeblockLang, DEListStyle } from "../../type.d.mts";
 
 // 블럭 추가
 export function _addBlock(type: DEBlockMenutype, store: Ref<DragonEditorStore>, data?: DEBlockData) {

@@ -9,16 +9,20 @@ on:
 
 jobs:
     publish:
-        runs-on: ubuntu-latest
+        runs-on: macos-latest
         permissions:
             contents: read
             packages: write
         steps:
             - uses: actions/checkout@v3
-            - uses: oven-sh/setup-bun@v2
-            - run: bun install --frozn-lockfile
-            - run: bun run dev:prepare
-            - run: bun run prepack
-            - run: bun publish
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: "22.x"
+                  registry-url: https://npm.pkg.github.com
+                  scope: "@octocat"
+            - run: npm install
+            - run: npm run dev:prepare
+            - run: npm run prepack
+            - run: npm publish
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
