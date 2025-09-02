@@ -9,6 +9,7 @@
         <button @click="addCustomBlock">Add Custom Block</button>
         <button @click="changeData">change data</button>
         <button @click="changeLayout">Change Layout</button>
+        <button @click="checkEmpty">Check Empty</button>
         <p class="data">{{ contentData }}</p>
     </div>
 </template>
@@ -128,6 +129,10 @@ function pasteImageProcess(file: File) {
 function changeLayout(): void {
     isChangeLayout.value = !isChangeLayout.value;
     $editor.value?.updateLayout();
+}
+
+function checkEmpty(): void {
+    console.log($editor.value?.checkDataEmpty());
 }
 </script>
 

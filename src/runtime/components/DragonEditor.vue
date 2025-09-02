@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { ref, h, onMounted, onBeforeUnmount, watch } from "vue";
 import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure, _updateBodyStructure } from "../utils/layout";
-import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent } from "../utils/event";
+import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent, _checkDataEmpty } from "../utils/event";
 import { _addBlock } from "../utils/node";
 import { _setDecoration, _setTextAlign } from "../utils/style";
 import type { VNode } from "vue";
@@ -210,7 +210,7 @@ function updateLayout(): void {
 
     setTimeout(() => {
         _eidtorMountEvent(editorStore);
-    }, 250);
+    }, 500);
 }
 
 onMounted(() => {
@@ -227,6 +227,7 @@ defineExpose({
     setAlign,
     changeEditorData,
     updateLayout,
+    checkDataEmpty: () => _checkDataEmpty(props.modelValue),
 });
 </script>
 

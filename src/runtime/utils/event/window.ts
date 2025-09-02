@@ -27,6 +27,7 @@ export function _eidtorUnmountEvent(store: Ref<DragonEditorStore>): void {
     window.removeEventListener("resize", store.value.windowResizeEvent);
     window.removeEventListener("mouseup", store.value.windowMouseUpEvent);
     store.value.$parentWrap?.removeEventListener("scroll", store.value.parentWrapScollEvent);
+    store.value.menuBarTop = 0;
 }
 
 // 윈도우 리사이즈 이벤트
