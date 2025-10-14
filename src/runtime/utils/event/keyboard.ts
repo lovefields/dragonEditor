@@ -65,10 +65,10 @@ export async function _contentPasteEvent(event: ClipboardEvent, store: Ref<Drago
             // 이미지인 경우
 
             const clipboardItems = await navigator.clipboard.read();
-            const imageItem = clipboardItems[0].types.find((type) => type.startsWith("image/"));
+            const imageItem = clipboardItems[0]!.types.find((type) => type.startsWith("image/"));
 
             if (imageItem !== undefined) {
-                const blob = await clipboardItems[0].getType(imageItem);
+                const blob = await clipboardItems[0]!.getType(imageItem);
                 const file = new File([blob], `${_generateId()}.${imageItem.split("/")[1]}`);
 
                 store.value.emit("uploadImageEvent", file);
@@ -199,7 +199,7 @@ function __defaultBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorS
                             }
 
                             $nextTextBlock.replaceChildren(...nextStructure);
-                            _setCursor(nextStructure[0], 0);
+                            _setCursor(nextStructure[0]!, 0);
                         }
                     }
                 }
@@ -265,7 +265,7 @@ function __defaultBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorS
                 if (nextStructure.length === 0) {
                     $nextTextBlock.focus();
                 } else {
-                    _setCursor($nextTextBlock.childNodes[0], 0);
+                    _setCursor($nextTextBlock.childNodes[0]!, 0);
                 }
             }
         } else {
@@ -384,7 +384,7 @@ function __defaultBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorS
                 if (nextStructure.length === 0) {
                     $nextBlock.focus();
                 } else {
-                    _setCursor($nextBlock.childNodes[0], 0);
+                    _setCursor($nextBlock.childNodes[0]!, 0);
                 }
             }
         }
@@ -434,7 +434,7 @@ function __defaultBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEd
                 }
 
                 if ($block === $target) {
-                    $target = $block.childNodes[cursorData.startOffset];
+                    $target = $block.childNodes[cursorData.startOffset]!;
                 }
 
                 for (let i = 0; childList.length > i; i += 1) {
@@ -693,7 +693,7 @@ function __listBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStor
                     if (nextStructure.length === 0) {
                         $liBlock.focus();
                     } else {
-                        _setCursor($liBlock.childNodes[0], 0);
+                        _setCursor($liBlock.childNodes[0]!, 0);
                     }
                 }
             } else {
@@ -763,7 +763,7 @@ function __listBlockEnterEvent(event: KeyboardEvent, store: Ref<DragonEditorStor
                     $liBlock.focus();
                 } else {
                     $liBlock.replaceChildren(...nextStructure);
-                    _setCursor(nextStructure[0], 0);
+                    _setCursor(nextStructure[0]!, 0);
                 }
             }
         }
@@ -826,7 +826,7 @@ function __listBlockShiftEnterEvent(event: KeyboardEvent, store: Ref<DragonEdito
                     }
 
                     if ($editableElement === $target) {
-                        $target = $editableElement.childNodes[cursorData.startOffset];
+                        $target = $editableElement.childNodes[cursorData.startOffset]!;
                     }
 
                     for (let i = 0; childList.length > i; i += 1) {
@@ -1015,21 +1015,39 @@ function ___defaultBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEd
         if (elementIdx === 0) {
             // 첫번째 블럭인 경우
 
-            if (cursorData.startOffset === 0 && $target === $block) {
-                // 에디팅 블럭의 첫 커서인 경우
+            if (cursorData.type === "Caret") {
+                if (cursorData.startOffset === 0 && $target === $block) {
+                    // 에디팅 블럭의 첫 커서인 경우
 
-                if ($target.textContent === "") {
-                    // 내용이 없는 경우 : 상태 초기화를 위한 교체
+                    if ($target.textContent === "") {
+                        // 내용이 없는 경우 : 상태 초기화를 위한 교체
 
-                    $block.insertAdjacentElement("afterend", _createTextBlock(_getDefaultBlockData("text") as DETextBlock));
-                    _setCursor($block.nextElementSibling as Node, 0);
-                    $block.remove();
-                } else {
+                        $block.insertAdjacentElement("afterend", _createTextBlock(_getDefaultBlockData("text") as DETextBlock));
+                        _setCursor($block.nextElementSibling as Node, 0);
+                        $block.remove();
+                    } else {
+                        // 내용이 있는 경우
+                        event.preventDefault();
+
+                        if (store.value.controlStatus.currentBlockType !== "text") {
+                            const $newBlock = _createTextBlock({ type: "text", classList: [], textContent: $block.textContent ?? "" });
+
+                            $block.insertAdjacentElement("afterend", $newBlock);
+                            _setCursor($newBlock, 0);
+                            $block.remove();
+                        }
+                    }
+                }
+            } else {
+                if ($block.textContent !== "") {
                     // 내용이 있는 경우
-                    event.preventDefault();
 
-                    if (store.value.controlStatus.currentBlockType !== "text") {
-                        const $newBlock = _createTextBlock({ type: "text", classList: [], textContent: $block.textContent ?? "" });
+                    if ((cursorData.startOffset === 0 || cursorData.endOffset === 0) && ($block.childNodes[0] === cursorData.startNode || $block.childNodes[0] === $target || $block.childNodes[0] === cursorData.endNode)) {
+                        // 커서가 첫번째에 있는 경우
+
+                        event.preventDefault();
+
+                        const $newBlock = _createTextBlock({ type: "text", classList: [], textContent: "" });
 
                         $block.insertAdjacentElement("afterend", $newBlock);
                         _setCursor($newBlock, 0);
@@ -1209,7 +1227,7 @@ function ___listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdito
                             $preLi.insertAdjacentHTML("beforeend", childHTML);
                         }
 
-                        _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                        _setCursor(textBlockTargetChild as Element, (textBlockTargetChild!.textContent as string).length);
                     } else {
                         if (hasChild === true) {
                             $preLi.insertAdjacentHTML("beforeend", childHTML);
@@ -1239,7 +1257,7 @@ function ___listBlockBackspaceEvent(event: KeyboardEvent, store: Ref<DragonEdito
                                 $preLi.insertAdjacentHTML("beforeend", childHTML);
                             }
 
-                            _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                            _setCursor(textBlockTargetChild as Element, (textBlockTargetChild!.textContent as string).length);
                         } else {
                             if (hasChild === true) {
                                 $preLi.insertAdjacentHTML("beforeend", childHTML);
@@ -1295,7 +1313,7 @@ function ____backspackeLogic(hasChild: boolean, childHTML: string, $block: HTMLE
                     $targetBlock.insertAdjacentHTML("beforeend", childHTML);
                 }
 
-                _setCursor(textBlockTargetChild as Element, (textBlockTargetChild.textContent as string).length);
+                _setCursor(textBlockTargetChild as Element, (textBlockTargetChild!.textContent as string).length);
             } else {
                 if (hasChild === true) {
                     $targetBlock.insertAdjacentHTML("beforeend", childHTML);
@@ -1667,9 +1685,9 @@ function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, 
 
             if ($brList.length !== 0) {
                 if (keyType === "up") {
-                    suitable = __isCursorFirstLine(cursorData.startNode, $brList[0]);
+                    suitable = __isCursorFirstLine(cursorData.startNode, $brList[0]!);
                 } else {
-                    suitable = __isCursorLastLine(cursorData.startNode, $brList[$brList.length - 1]);
+                    suitable = __isCursorLastLine(cursorData.startNode, $brList[$brList.length - 1]!);
                 }
             } else {
                 suitable = true;
@@ -1726,9 +1744,9 @@ function _moveToBlockEvent(event: KeyboardEvent, store: Ref<DragonEditorStore>, 
                                 const $childList = $element.querySelectorAll(".de-item");
 
                                 if (keyType === "up") {
-                                    $targetElement = $childList[$childList.length - 1];
+                                    $targetElement = $childList[$childList.length - 1]!;
                                 } else {
-                                    $targetElement = $childList[0];
+                                    $targetElement = $childList[0]!;
                                 }
                             }
 
@@ -1863,7 +1881,7 @@ function __checkBlock(store: Ref<DragonEditorStore>) {
                 case "text":
                 case "heading":
                     if ($block.textContent === "" && $block.hasChildNodes() === true) {
-                        const textNodeType = $block.childNodes[0].constructor.name;
+                        const textNodeType = $block.childNodes[0]!.constructor.name;
 
                         if (textNodeType === "HTMLBRElement") {
                             $block.innerHTML = "";
