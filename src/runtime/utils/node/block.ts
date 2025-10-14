@@ -289,34 +289,8 @@ export function _updateHeadingBlockList(store: Ref<DragonEditorStore>): void {
     }
 }
 
-// 코드블럭 테마 변경
-export async function _setCodeBlockTheme(theme: DECodeblockTheme, store: Ref<DragonEditorStore>): Promise<void> {
-    if (store.value.controlStatus.$currentBlock !== null) {
-        const $target = store.value.controlStatus.$currentBlock.querySelector(".de-language");
-        const $code = store.value.controlStatus.$currentBlock.querySelector(".de-code-content");
-
-        if ($target !== null && $code !== null) {
-            const convert = await store.value.codeToHtml($code.textContent ?? "", { lang: store.value.controlStatus.codeBlockLang, theme: theme });
-            const $div = document.createElement("div");
-
-            $div.innerHTML = convert;
-
-            const $childCode = $div.querySelector("code");
-
-            if ($childCode !== null) {
-                $code.innerHTML = $childCode.innerHTML;
-                store.value.controlStatus.codeBlockTheme = theme;
-                store.value.controlStatus.$currentBlock.dataset["theme"] = theme;
-            }
-
-            _updateCursorData(store);
-            _updateModelData(store);
-        }
-    }
-}
-
-// 코드블럭 언어 변경
-export async function _setCodeBlockLanguage(language: DECodeblockLang, store: Ref<DragonEditorStore>): Promise<void> {
+// 코드블럭 상태 변경
+export async function _setCodeBlockStatus(theme: DECodeblockTheme, language: DECodeblockLang, store: Ref<DragonEditorStore>): Promise<void> {
     if (store.value.controlStatus.$currentBlock !== null) {
         const $target = store.value.controlStatus.$currentBlock.querySelector(".de-language");
         const $code = store.value.controlStatus.$currentBlock.querySelector(".de-code-content");
@@ -325,7 +299,7 @@ export async function _setCodeBlockLanguage(language: DECodeblockLang, store: Re
             const targetValue = CODEBLOCKLANG.find((item) => item.code === language);
 
             if (targetValue !== undefined) {
-                const convert = await store.value.codeToHtml($code.textContent ?? "", { lang: language, theme: store.value.controlStatus.codeBlockTheme });
+                const convert = await store.value.codeToHtml($code.textContent ?? "", { lang: language, theme: theme });
                 const $div = document.createElement("div");
 
                 $div.innerHTML = convert;
@@ -336,6 +310,8 @@ export async function _setCodeBlockLanguage(language: DECodeblockLang, store: Re
                     $target.textContent = targetValue.text;
                     $code.innerHTML = $childCode.innerHTML;
                     store.value.controlStatus.codeBlockLang = targetValue.code;
+                    store.value.controlStatus.codeBlockTheme = theme;
+                    store.value.controlStatus.$currentBlock.dataset["theme"] = theme;
 
                     _updateCursorData(store);
                     _updateModelData(store);

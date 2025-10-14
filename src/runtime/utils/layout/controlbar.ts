@@ -1,6 +1,6 @@
 import { h } from "vue";
 import type { VNode, Ref } from "vue";
-import { _setCodeBlockTheme, _setCodeBlockLanguage, _setListBlockStyle } from "../node";
+import { _setCodeBlockStatus, _setListBlockStyle } from "../node";
 import { CODEBLOCKLANG } from "../event";
 import type { DragonEditorStore, DECodeblockTheme, DECodeblockLang, DEListStyle } from "../../type.d.mts";
 
@@ -21,7 +21,7 @@ export function _getControlbarVNodeStructure(store: Ref<DragonEditorStore>): VNo
                                 const $target = event.currentTarget as HTMLSelectElement;
 
                                 if ($target !== null) {
-                                    _setCodeBlockTheme($target.value as DECodeblockTheme, store);
+                                    _setCodeBlockStatus($target.value as DECodeblockTheme, store.value.controlStatus.codeBlockLang, store);
                                 }
                             },
                         },
@@ -44,7 +44,7 @@ export function _getControlbarVNodeStructure(store: Ref<DragonEditorStore>): VNo
                                 const $target = event.currentTarget as HTMLSelectElement;
 
                                 if ($target !== null) {
-                                    _setCodeBlockLanguage($target.value as DECodeblockLang, store);
+                                    _setCodeBlockStatus(store.value.controlStatus.codeBlockTheme, $target.value as DECodeblockLang, store);
                                 }
                             },
                         },
