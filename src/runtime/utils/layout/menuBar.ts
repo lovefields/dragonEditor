@@ -18,6 +18,7 @@ export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode 
                     "button",
                     {
                         class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "url" }],
+                        type: "button",
                         onClick: () => {
                             store.value.controlStatus.anchorTabType = "url";
                         },
@@ -28,6 +29,7 @@ export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode 
                     "button",
                     {
                         class: ["de-btn", { "--active": store.value.controlStatus.anchorTabType === "heading" }],
+                        type: "button",
                         onClick: () => {
                             store.value.controlStatus.anchorTabType = "heading";
                         },
@@ -48,6 +50,7 @@ export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode 
                           "button",
                           {
                               class: ["de-btn"],
+                              type: "button",
                               onClick: () => {
                                   _setAnchorTag(store.value.controlStatus.anchorHref, true, store);
                               },
@@ -63,6 +66,7 @@ export function _getMenuBarVNodeStructure(store: Ref<DragonEditorStore>): VNode 
                               "button",
                               {
                                   class: ["de-btn", { "--active": store.value.controlStatus.anchorHref === `#${item.id}` }],
+                                  type: "button",
                                   onClick: () => {
                                       store.value.activeStatus.anchorInputArea = false;
                                       _setAnchorTag(item.id, false, store);
@@ -88,6 +92,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu", "de-menu-add", "js-de-menu-add"],
+                    type: "button",
                     onClick: () => {
                         store.value.activeStatus.addBlockMenu = !store.value.activeStatus.addBlockMenu;
                     },
@@ -104,6 +109,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setDecoration("de-bold", store);
                     },
@@ -114,6 +120,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setDecoration("de-italic", store);
                     },
@@ -124,6 +131,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setDecoration("de-underline", store);
                     },
@@ -134,6 +142,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setDecoration("de-strikethrough", store);
                     },
@@ -144,6 +153,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setDecoration("de-code", store);
                     },
@@ -160,6 +170,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu", "js-de-link-btn"],
+                    type: "button",
                     onClick: (event: MouseEvent) => {
                         _openAnchorArea(event, store);
                     },
@@ -170,6 +181,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu", { "--disabled": store.value.controlStatus.anchorHref === "" }],
+                    type: "button",
                     onClick: () => {
                         _unsetAnchorTag(store);
                     },
@@ -193,7 +205,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                         if ($target.files !== null) {
                             const file = $target.files[0];
 
-                            store.value.emit("uploadImageEvent", file);
+                            store.value.emit("uploadImageEvent", file!);
                             $target.value = "";
                         }
                     },
@@ -210,6 +222,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setTextAlign("left", store);
                     },
@@ -220,6 +233,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setTextAlign("center", store);
                     },
@@ -230,6 +244,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setTextAlign("right", store);
                     },
@@ -240,6 +255,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setTextAlign("justify", store);
                     },
@@ -256,6 +272,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setIndent(store, "minus");
                     },
@@ -266,6 +283,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _setIndent(store, "plus");
                     },
@@ -282,6 +300,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _moveBlock("up", store);
                     },
@@ -292,6 +311,7 @@ function __getMenuListStructure(store: Ref<DragonEditorStore>): VNode {
                 "button",
                 {
                     class: ["de-menu"],
+                    type: "button",
                     onClick: () => {
                         _moveBlock("down", store);
                     },
@@ -313,6 +333,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("text", store);
                 },
@@ -327,6 +348,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("heading1", store);
                 },
@@ -341,6 +363,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("heading2", store);
                 },
@@ -355,6 +378,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("heading3", store);
                 },
@@ -369,6 +393,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("ul", store);
                 },
@@ -383,6 +408,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("ol", store);
                 },
@@ -397,6 +423,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("code", store);
                 },
@@ -411,6 +438,7 @@ function __getBlockListStructure(store: Ref<DragonEditorStore>): VNode {
             "button",
             {
                 class: ["de-add-block"],
+                type: "button",
                 onClick: () => {
                     _addBlock("divider", store);
                 },
