@@ -49,7 +49,7 @@ export function _createBlockList({ blockList, isEditable, imageHostURL }: { bloc
 function __createTextBlock(data: DETextBlock, isEditable: boolean): VNode {
     const option: Record<string, any> = { class: ["de-block", "de-text-block", ...data.classList], innerHTML: data.textContent };
 
-    if (data.depth !== undefined) {
+    if (data.depth !== undefined && data.depth !== 0) {
         option["data-depth"] = data.depth;
     }
 
@@ -64,7 +64,7 @@ function __createTextBlock(data: DETextBlock, isEditable: boolean): VNode {
 function __createHeadingBlock(data: DEHeadingBlock, isEditable: boolean): VNode {
     const option: Record<string, any> = { class: ["de-block", "de-heading-block", ...data.classList], "data-level": data.level, innerHTML: data.textContent };
 
-    if (data.depth !== undefined) {
+    if (data.depth !== undefined && data.depth !== 0) {
         option["data-depth"] = data.depth;
     }
 
@@ -116,7 +116,7 @@ function __createListBlock(data: DEListBlock, isEditable: boolean): VNode {
     const liList: VNode[] = [];
     const option: Record<string, any> = { class: ["de-block", "de-list-block"], "data-style": data.style };
 
-    if (data.depth !== undefined) {
+    if (data.depth !== undefined && data.depth !== 0) {
         option["data-depth"] = data.depth;
     }
 

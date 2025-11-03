@@ -480,7 +480,7 @@ export function _setDecoration(className: string, store: Ref<DragonEditorStore>)
                                 // 시작 노드의 전 노드가 텍스트라면
                                 if (isTagList[startNodeIdx - 1] === false) {
                                     newStartNodeIdx = startNodeIdx - 1;
-                                    newStartOffset = startOffset + structureArray[startNodeIdx - 1].length;
+                                    newStartOffset = startOffset + structureArray[startNodeIdx - 1]!.length;
                                 }
 
                                 if (isTagList.slice(startNodeIdx, endNodeIdx).includes(true) === true) {

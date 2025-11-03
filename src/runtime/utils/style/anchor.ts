@@ -285,7 +285,7 @@ export function _setAnchorTag(url: string, isOutsideLink: boolean, store: Ref<Dr
                         targetNode = $element.childNodes[newCursorData.startNodeIdx + 1];
                     }
 
-                    _setRangeCursor(targetNode as Element, targetNode as Element, 0, targetNode.textContent?.length ?? 0);
+                    _setRangeCursor(targetNode as Element, targetNode as Element, 0, targetNode?.textContent?.length ?? 0);
                 }
             }
 

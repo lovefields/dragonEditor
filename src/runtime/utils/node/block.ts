@@ -115,6 +115,10 @@ export function _getCurrentBlock($target: EventTarget): {
 export function _createTextBlock(data: DETextBlock): HTMLParagraphElement {
     const $paragraph = document.createElement("p");
 
+    if (data.depth !== undefined && data.depth !== 0) {
+        $paragraph.dataset["depth"] = String(data.depth);
+    }
+
     $paragraph.classList.add("de-block", "de-text-block", ...data.classList);
     $paragraph.setAttribute("contenteditable", "true");
     $paragraph.innerHTML = data.textContent;
@@ -132,6 +136,10 @@ export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
         $headingBlock.id = data.id;
     }
 
+    if (data.depth !== undefined && data.depth !== 0) {
+        $headingBlock.dataset["depth"] = String(data.depth);
+    }
+
     $headingBlock.classList.add("de-block", "de-heading-block", ...data.classList);
     $headingBlock.dataset["level"] = String(data.level);
     $headingBlock.setAttribute("contenteditable", "true");
@@ -143,6 +151,10 @@ export function _createHeadingBlock(data: DEHeadingBlock): HTMLHeadingElement {
 // 리스트 블럭 생성
 export function _createListBlock(data: DEListBlock): HTMLElement {
     const $block = document.createElement(data.element) as HTMLElement;
+
+    if (data.depth !== undefined && data.depth !== 0) {
+        $block.dataset["depth"] = String(data.depth);
+    }
 
     $block.classList.add("de-block", "de-list-block");
     $block.dataset["style"] = data.style;
