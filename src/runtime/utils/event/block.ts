@@ -14,7 +14,7 @@ export function _imageResizeEventStart(event: Event, store: Ref<DragonEditorStor
             store.value.activeStatus.imageResizeEvent = true;
 
             if (event.type === "touchstart") {
-                store.value.eventStatus.imageResizeEventStartX = (event as TouchEvent).touches[0].clientX;
+                store.value.eventStatus.imageResizeEventStartX = (event as TouchEvent).touches[0]!.clientX;
             } else {
                 store.value.eventStatus.imageResizeEventStartX = (event as MouseEvent).clientX;
             }
@@ -41,7 +41,7 @@ export function _imageResizeEvent(event: Event, store: Ref<DragonEditorStore>): 
         let gap: number = 0;
 
         if (event.type === "touchmove") {
-            store.value.eventStatus.imageResizeEventEndX = (event as TouchEvent).touches[0].clientX;
+            store.value.eventStatus.imageResizeEventEndX = (event as TouchEvent).touches[0]!.clientX;
         } else {
             store.value.eventStatus.imageResizeEventEndX = (event as MouseEvent).clientX;
         }
@@ -111,23 +111,34 @@ export function _checkNeedNewBlock(event: MouseEvent, store: Ref<DragonEditorSto
         const $element = $target as HTMLElement;
 
         if ($element.classList.contains("js-de-body") === true) {
+            const bodyRect = $element.getBoundingClientRect();
             const blockList = $element.querySelectorAll(".de-block");
-            const $targetBlock = blockList[blockList.length - 1];
+            const $targetBlock = blockList[blockList.length - 1]!;
+            let isAllowed: boolean = true;
 
-            if ($targetBlock.classList.contains("de-text-block") === true) {
-                if ($targetBlock.textContent === "") {
-                    ($targetBlock as HTMLParagraphElement).focus();
+            // 좌우 여백 클릭시 로직 제외
+            switch (true) {
+                case event.clientX > bodyRect.left + bodyRect.width - 20:
+                case event.clientX < bodyRect.left + 20:
+                    isAllowed = false;
+            }
+
+            if (isAllowed === true) {
+                if ($targetBlock.classList.contains("de-text-block") === true) {
+                    if ($targetBlock.textContent === "") {
+                        ($targetBlock as HTMLParagraphElement).focus();
+                    } else {
+                        const $block = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
+
+                        $targetBlock.insertAdjacentElement("afterend", $block);
+                        $block.focus();
+                    }
                 } else {
                     const $block = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
 
                     $targetBlock.insertAdjacentElement("afterend", $block);
                     $block.focus();
                 }
-            } else {
-                const $block = _createTextBlock(_getDefaultBlockData("text") as DETextBlock);
-
-                $targetBlock.insertAdjacentElement("afterend", $block);
-                $block.focus();
             }
         }
     }

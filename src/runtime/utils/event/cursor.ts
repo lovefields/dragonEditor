@@ -26,9 +26,9 @@ export function _setCursor($target: Node, startIdx: number) {
     } else {
         if ($target.hasChildNodes() === true) {
             if ($target.textContent === "") {
-                range.setStart($target.childNodes[startIdx], 0);
+                range.setStart($target.childNodes[startIdx]!, 0);
             } else {
-                range.setStart($target.childNodes[0], startIdx);
+                range.setStart($target.childNodes[0]!, startIdx);
             }
         } else {
             range.setStart($target, startIdx);
@@ -49,9 +49,9 @@ export function _setRangeCursor($startTarget: Element, $endTarget: Element, star
     } else {
         if ($startTarget.hasChildNodes() === true) {
             if ($startTarget.textContent === "") {
-                range.setStart($startTarget.childNodes[startIdx], 0);
+                range.setStart($startTarget.childNodes[startIdx]!, 0);
             } else {
-                range.setStart($startTarget.childNodes[0], startIdx);
+                range.setStart($startTarget.childNodes[0]!, startIdx);
             }
         } else {
             range.setStart($startTarget, startIdx);
@@ -63,9 +63,9 @@ export function _setRangeCursor($startTarget: Element, $endTarget: Element, star
     } else {
         if ($endTarget.hasChildNodes() === true) {
             if ($endTarget.textContent === "") {
-                range.setEnd($endTarget.childNodes[endIdx], 0);
+                range.setEnd($endTarget.childNodes[endIdx]!, 0);
             } else {
-                range.setEnd($endTarget.childNodes[0], endIdx);
+                range.setEnd($endTarget.childNodes[0]!, endIdx);
             }
         } else {
             range.setEnd($endTarget, endIdx);

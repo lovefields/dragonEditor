@@ -100,7 +100,7 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
     if (store.value.controlStatus.$currentBlock !== null) {
         const lineList: string[] = value.split("\n");
         const blockList: DEContentData = [];
-        const unorderListReg = new RegExp("^( +)?(\\*|-)(?= )( )");
+        const unorderListReg = new RegExp("^( +)?(\\+|\\*|-)(?= )( )");
         const orderListReg = new RegExp("^( +)?(\\d+.)(?= )( )");
         const codeBlockReg = new RegExp("^```");
         let tempData: DEBlockData | null = null;
@@ -108,6 +108,12 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
 
         lineList.forEach((text, lineIndex) => {
             switch (true) {
+                case new RegExp("^(---|___|\\*\\*\\*)").test(text):
+                    blockList.push({
+                        type: "divider",
+                    });
+                    break;
+
                 case codeBlockReg.test(text) || isCodeBlock === true:
                     if (isCodeBlock === false) {
                         // 코드 블럭 시작
@@ -148,7 +154,7 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
                 case orderListReg.test(text):
                     // 순서 있는 리스트
                     const olSplitText: string[] = text.split(new RegExp("\\d+.(?= )"));
-                    const olDepth: number = olSplitText[0]!.length / 4;
+                    const olDepth: number = Math.floor(olSplitText[0]!.length / 4);
 
                     if (tempData === null) {
                         // 리스트 시작
@@ -179,7 +185,7 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
                             // 리스트 종료
                             if (nextLine !== undefined) {
                                 const nextOlSplitText: string[] = nextLine.split(new RegExp("\\d+.(?= )"));
-                                const nextOlDepth: number = nextOlSplitText[0]!.length / 4;
+                                const nextOlDepth: number = Math.floor(nextOlSplitText[0]!.length / 4);
 
                                 if (orderListReg.test(nextLine) === false) {
                                     blockList.push(tempData);
@@ -200,8 +206,8 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
 
                 case unorderListReg.test(text):
                     // 순서 없는 리스트
-                    const ulSplitText: string[] = text.split(new RegExp("\\*|-"));
-                    const ulDepth: number = ulSplitText[0]!.length / 4;
+                    const ulSplitText: string[] = text.split(new RegExp("\\+|\\*|-"));
+                    const ulDepth: number = Math.floor(ulSplitText[0]!.length / 4);
 
                     if (tempData === null) {
                         // 리스트 시작
@@ -231,8 +237,8 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
 
                             // 리스트 종료
                             if (nextLine !== undefined) {
-                                const nextUlSplitText: string[] = nextLine.split(new RegExp("\\*|-"));
-                                const nextUlDepth: number = nextUlSplitText[0]!.length / 4;
+                                const nextUlSplitText: string[] = nextLine.split(new RegExp("\\+|\\*|-"));
+                                const nextUlDepth: number = Math.floor(nextUlSplitText[0]!.length / 4);
 
                                 if (unorderListReg.test(nextLine) === false) {
                                     blockList.push(tempData);
@@ -258,7 +264,7 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
                         level: 3,
                         id: _generateId(),
                         classList: [],
-                        textContent: text.substring(4),
+                        textContent: ___replaceTextData(text.substring(4)),
                     });
                     break;
 
@@ -269,7 +275,7 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
                         level: 2,
                         id: _generateId(),
                         classList: [],
-                        textContent: text.substring(3),
+                        textContent: ___replaceTextData(text.substring(3)),
                     });
                     break;
 
@@ -280,7 +286,7 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
                         level: 1,
                         id: _generateId(),
                         classList: [],
-                        textContent: text.substring(2),
+                        textContent: ___replaceTextData(text.substring(2)),
                     });
                     break;
 
@@ -323,12 +329,15 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
 
 function ___replaceTextData(text: string): string {
     return text
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
         .replaceAll(new RegExp("(`)([^`]+)(`)", "g"), `<span class="de-code">$2</span>`)
-        .replaceAll(new RegExp("(\\[)([^\\[\\]]+)(\\])(?=\\()(\\()([^\\(\\)]+)(?=\\))(\\))", "g"), `<a class="de-link" href="$5" target="_blank">$2</a>`)
         .replaceAll(new RegExp("(\\*\\*)([^\\*]+)(?=\\*\\*)(\\*\\*)", "g"), `<span class="de-bold">$2</span>`)
         .replaceAll(new RegExp("(\\_\\_)([^\\_]+)(?=\\_\\_)(\\_\\_)", "g"), `<span class="de-bold">$2</span>`)
+        .replaceAll(new RegExp("(\\~\\~)([^\\~]+)(?=\\~\\~)(\\~\\~)", "g"), `<span class="de-strikethrough">$2</span>`)
         .replaceAll(new RegExp("(\\*)([^\\*]+)(?=\\*)(\\*)", "g"), `<span class="de-italic">$2</span>`)
-        .replaceAll(new RegExp("(\\_)([^\\_]+)(?=\\_)(\\_)", "g"), `<span class="de-italic">$2</span>`);
+        .replaceAll(new RegExp("(\\_)([^\\_]+)(?=\\_)(\\_)", "g"), `<span class="de-italic">$2</span>`)
+        .replaceAll(new RegExp("(\\[)([^\\[\\]]+)(\\])(?=\\()(\\()([^\\(\\)]+)(?=\\))(\\))", "g"), `<a class="de-link" href="$5" target="_blank">$2</a>`);
 }
 
 // 키보드 엔터 이벤트 (키 다운)
