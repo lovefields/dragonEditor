@@ -115,7 +115,7 @@ interface DragonEditor {
     setTextAlign: (type: DETextalign) => void;
     changeEditorData: (data: DEContentData) => void;
     updateLayout: () => void;
-    checkDataEmpty: () => boolean;
+    checkDataEmpty: (data?: DEContentData) => boolean;
 }
 
 interface DETextBlock {

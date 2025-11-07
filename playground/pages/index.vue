@@ -10,6 +10,7 @@
         <button @click="changeData">change data</button>
         <button @click="changeLayout">Change Layout</button>
         <button @click="checkEmpty">Check Empty</button>
+        <button @click="checkEmpty2">Check Empty2</button>
         <p class="data">{{ contentData }}</p>
     </div>
 </template>
@@ -20,6 +21,10 @@ const contentData = ref<DEContentData>([]);
 const isChangeLayout = ref<boolean>(false);
 const $editor = ref<DragonEditor>();
 let isChange: boolean = true;
+
+function checkEmpty2(): void {
+    console.log($editor.value?.checkDataEmpty(contentData.value));
+}
 
 function changeData() {
     let data: DEContentData = [];

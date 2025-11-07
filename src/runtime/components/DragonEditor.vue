@@ -213,6 +213,19 @@ function updateLayout(): void {
     }, 500);
 }
 
+// 빈데이터 체크 함수
+function checkDataEmpty(data?: DEContentData): boolean {
+    let suitable: boolean = false;
+
+    if (data !== undefined) {
+        suitable = _checkDataEmpty(data);
+    } else {
+        suitable = _checkDataEmpty(props.modelValue);
+    }
+
+    return suitable;
+}
+
 onMounted(() => {
     _eidtorMountEvent(editorStore);
 });
@@ -227,7 +240,7 @@ defineExpose({
     setAlign,
     changeEditorData,
     updateLayout,
-    checkDataEmpty: () => _checkDataEmpty(props.modelValue),
+    checkDataEmpty,
 });
 </script>
 
