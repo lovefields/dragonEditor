@@ -13,6 +13,8 @@
 [license-src]: https://img.shields.io/npm/l/dragon-editor
 [nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?logo=nuxt.js
 [nuxt-href]: https://nuxt.com
+[sponsors-src]: https://img.shields.io/github/sponsors/lovefields
+[sponsors-href]: https://github.com/sponsors/lovefields
 
 [![stars-src]][stars-href]
 [![forks-src]][forks-href]
@@ -21,6 +23,7 @@
 [![npm-version-src]][npm-version-href]
 [![npm-downloads-src]][npm-downloads-href]
 ![NPM][license-src]
+[![sponsors-src]][sponsors-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
 # DragonEditor
@@ -84,3 +87,13 @@ Done!
 ```
 
 More information is [here](https://lovefields.github.io/dragonEditor-doc/)
+
+# Sponsors
+
+Support this project by becoming a sponsor. [GitHub Sponsors](https://github.com/sponsors/lovefields)
+
+<div align="center">
+    <a href="https://github.com/kyu91">
+        <img src="https://github.com/kyu91.png" width="50" title="kyu91" />
+    </a>
+</div>
