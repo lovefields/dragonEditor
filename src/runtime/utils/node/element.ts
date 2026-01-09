@@ -1,17 +1,42 @@
 // 스크롤 가능한 요소 찾기
 export function _findScrollingElement($target: HTMLElement): HTMLElement | Window {
-    if ($target.parentElement !== null) {
-        if ($target.scrollHeight > $target.clientHeight) {
-            return $target;
+    const $wrap = $target.parentElement;
+
+    if ($wrap !== null) {
+        const style = window.getComputedStyle($wrap);
+
+        if (style.overflow !== "visible") {
+            return $wrap;
         } else {
-            if ($target.parentElement.tagName === "BODY") {
+            if ($wrap.tagName === "BODY") {
                 return window;
             } else {
-                return _findScrollingElement($target.parentElement);
+                return _findScrollingElement($wrap);
             }
         }
     } else {
         return window;
+    }
+}
+
+// transform 스타일을 가진 요소 찾기
+export function _findTransformElement($target: HTMLElement): HTMLElement | null {
+    const $wrap = $target.parentElement;
+
+    if ($wrap !== null) {
+        const style = window.getComputedStyle($wrap);
+
+        if (style.transform !== "none") {
+            return $wrap;
+        } else {
+            if ($wrap.tagName === "BODY") {
+                return null;
+            } else {
+                return _findTransformElement($wrap);
+            }
+        }
+    } else {
+        return null;
     }
 }
 

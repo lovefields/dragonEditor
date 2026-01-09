@@ -106,224 +106,250 @@ function __pasteToMarkDownFormat(value: string, store: Ref<DragonEditorStore>): 
         let tempData: DEBlockData | null = null;
         let isCodeBlock: boolean = false;
 
-        lineList.forEach((text, lineIndex) => {
-            switch (true) {
-                case new RegExp("^(---|___|\\*\\*\\*)").test(text):
-                    blockList.push({
-                        type: "divider",
-                    });
-                    break;
+        if (lineList.length === 1) {
+            const selection = window.getSelection() as Selection;
+            const textNode = document.createTextNode(lineList[0]!);
 
-                case codeBlockReg.test(text) || isCodeBlock === true:
-                    if (isCodeBlock === false) {
-                        // 코드 블럭 시작
-                        const startLineText = text.split("```");
-                        let codeBlockLang: DECodeblockLang = "text";
+            selection.deleteFromDocument();
+            selection.getRangeAt(0).insertNode(textNode);
 
-                        if (["text", "csharp", "c", "cpp", "css", "django", "dockerfile", "go", "html", "json", "java", "javascript", "typescript", "kotlin", "lua", "markdown", "nginx", "php", "python", "ruby", "scss", "sql", "shellscript", "swift", "yaml"].includes(startLineText[1]!) === true) {
-                            codeBlockLang = startLineText[1] as DECodeblockLang;
-                        }
+            _setCursor(textNode, textNode.length);
+        } else {
+            let isDelete: boolean = false;
+            let $target: HTMLDivElement | null = null;
 
-                        isCodeBlock = true;
-                        tempData = {
-                            type: "code",
-                            filename: "",
-                            theme: "github-light",
-                            language: codeBlockLang,
-                            textContent: "",
-                        };
-                    } else {
-                        if (tempData !== null) {
-                            if (codeBlockReg.test(text) !== true) {
-                                // 중간
+            lineList.forEach((text, lineIndex) => {
+                switch (true) {
+                    case new RegExp("^(---|___|\\*\\*\\*)").test(text):
+                        blockList.push({
+                            type: "divider",
+                        });
+                        break;
 
-                                if (tempData.type === "code") {
-                                    tempData.textContent += `${text}\n`;
+                    case codeBlockReg.test(text) || isCodeBlock === true:
+                        if (isCodeBlock === false) {
+                            // 코드 블럭 시작
+                            const startLineText = text.split("```");
+                            let codeBlockLang: DECodeblockLang = "text";
+
+                            if (["text", "csharp", "c", "cpp", "css", "django", "dockerfile", "go", "html", "json", "java", "javascript", "typescript", "kotlin", "lua", "markdown", "nginx", "php", "python", "ruby", "scss", "sql", "shellscript", "swift", "yaml"].includes(startLineText[1]!) === true) {
+                                codeBlockLang = startLineText[1] as DECodeblockLang;
+                            }
+
+                            isCodeBlock = true;
+                            tempData = {
+                                type: "code",
+                                filename: "",
+                                theme: "github-light",
+                                language: codeBlockLang,
+                                textContent: "",
+                            };
+                        } else {
+                            if (tempData !== null) {
+                                if (codeBlockReg.test(text) !== true) {
+                                    // 중간
+
+                                    if (tempData.type === "code") {
+                                        tempData.textContent += `${text}\n`;
+                                    }
+                                } else {
+                                    // 마지막
+
+                                    blockList.push(tempData);
+                                    isCodeBlock = false;
+                                    tempData = null;
                                 }
-                            } else {
-                                // 마지막
-
-                                blockList.push(tempData);
-                                isCodeBlock = false;
-                                tempData = null;
                             }
                         }
-                    }
-                    break;
+                        break;
 
-                case orderListReg.test(text):
-                    // 순서 있는 리스트
-                    const olSplitText: string[] = text.split(new RegExp("\\d+.(?= )"));
-                    const olDepth: number = Math.floor(olSplitText[0]!.length / 4);
+                    case orderListReg.test(text):
+                        // 순서 있는 리스트
+                        const olSplitText: string[] = text.split(new RegExp("\\d+.(?= )"));
+                        const olDepth: number = Math.floor(olSplitText[0]!.length / 4);
 
-                    if (tempData === null) {
-                        // 리스트 시작
+                        if (tempData === null) {
+                            // 리스트 시작
 
-                        tempData = {
-                            type: "list",
-                            style: ["decimal", "lower-alpha", "upper-alpha", "lower-roman", "upper-roman"][olDepth] as DEListStyle,
-                            depth: olDepth,
-                            element: "ol",
-                            child: [],
-                        };
-
-                        tempData.child.push({
-                            classList: [],
-                            textContent: ___replaceTextData(olSplitText[1]!.trim()),
-                        });
-                    } else {
-                        // 리스트 중간
-
-                        if (tempData.type === "list") {
-                            const nextLine = lineList[lineIndex + 1];
+                            tempData = {
+                                type: "list",
+                                style: ["decimal", "lower-alpha", "upper-alpha", "lower-roman", "upper-roman"][olDepth] as DEListStyle,
+                                depth: olDepth,
+                                element: "ol",
+                                child: [],
+                            };
 
                             tempData.child.push({
                                 classList: [],
                                 textContent: ___replaceTextData(olSplitText[1]!.trim()),
                             });
+                        } else {
+                            // 리스트 중간
 
-                            // 리스트 종료
-                            if (nextLine !== undefined) {
-                                const nextOlSplitText: string[] = nextLine.split(new RegExp("\\d+.(?= )"));
-                                const nextOlDepth: number = Math.floor(nextOlSplitText[0]!.length / 4);
+                            if (tempData.type === "list") {
+                                const nextLine = lineList[lineIndex + 1];
 
-                                if (orderListReg.test(nextLine) === false) {
-                                    blockList.push(tempData);
-                                    tempData = null;
-                                } else {
-                                    if (tempData.depth !== nextOlDepth) {
+                                tempData.child.push({
+                                    classList: [],
+                                    textContent: ___replaceTextData(olSplitText[1]!.trim()),
+                                });
+
+                                // 리스트 종료
+                                if (nextLine !== undefined) {
+                                    const nextOlSplitText: string[] = nextLine.split(new RegExp("\\d+.(?= )"));
+                                    const nextOlDepth: number = Math.floor(nextOlSplitText[0]!.length / 4);
+
+                                    if (orderListReg.test(nextLine) === false) {
                                         blockList.push(tempData);
                                         tempData = null;
+                                    } else {
+                                        if (tempData.depth !== nextOlDepth) {
+                                            blockList.push(tempData);
+                                            tempData = null;
+                                        }
                                     }
+                                } else {
+                                    blockList.push(tempData);
+                                    tempData = null;
                                 }
-                            } else {
-                                blockList.push(tempData);
-                                tempData = null;
                             }
                         }
-                    }
-                    break;
+                        break;
 
-                case unorderListReg.test(text):
-                    // 순서 없는 리스트
-                    const ulSplitText: string[] = text.split(new RegExp("\\+|\\*|-"));
-                    const ulDepth: number = Math.floor(ulSplitText[0]!.length / 4);
+                    case unorderListReg.test(text):
+                        // 순서 없는 리스트
+                        const ulSplitText: string[] = text.split(new RegExp("\\+|\\*|-"));
+                        const ulDepth: number = Math.floor(ulSplitText[0]!.length / 4);
 
-                    if (tempData === null) {
-                        // 리스트 시작
+                        if (tempData === null) {
+                            // 리스트 시작
 
-                        tempData = {
-                            type: "list",
-                            style: ulDepth % 2 === 0 ? "disc" : "square",
-                            depth: ulDepth,
-                            element: "ul",
-                            child: [],
-                        };
-
-                        tempData.child.push({
-                            classList: [],
-                            textContent: ___replaceTextData(ulSplitText[1]!.trim()),
-                        });
-                    } else {
-                        // 리스트 중간
-
-                        if (tempData.type === "list") {
-                            const nextLine = lineList[lineIndex + 1];
+                            tempData = {
+                                type: "list",
+                                style: ulDepth % 2 === 0 ? "disc" : "square",
+                                depth: ulDepth,
+                                element: "ul",
+                                child: [],
+                            };
 
                             tempData.child.push({
                                 classList: [],
                                 textContent: ___replaceTextData(ulSplitText[1]!.trim()),
                             });
+                        } else {
+                            // 리스트 중간
 
-                            // 리스트 종료
-                            if (nextLine !== undefined) {
-                                const nextUlSplitText: string[] = nextLine.split(new RegExp("\\+|\\*|-"));
-                                const nextUlDepth: number = Math.floor(nextUlSplitText[0]!.length / 4);
+                            if (tempData.type === "list") {
+                                const nextLine = lineList[lineIndex + 1];
 
-                                if (unorderListReg.test(nextLine) === false) {
-                                    blockList.push(tempData);
-                                    tempData = null;
-                                } else {
-                                    if (tempData.depth !== nextUlDepth) {
+                                tempData.child.push({
+                                    classList: [],
+                                    textContent: ___replaceTextData(ulSplitText[1]!.trim()),
+                                });
+
+                                // 리스트 종료
+                                if (nextLine !== undefined) {
+                                    const nextUlSplitText: string[] = nextLine.split(new RegExp("\\+|\\*|-"));
+                                    const nextUlDepth: number = Math.floor(nextUlSplitText[0]!.length / 4);
+
+                                    if (unorderListReg.test(nextLine) === false) {
                                         blockList.push(tempData);
                                         tempData = null;
+                                    } else {
+                                        if (tempData.depth !== nextUlDepth) {
+                                            blockList.push(tempData);
+                                            tempData = null;
+                                        }
                                     }
+                                } else {
+                                    blockList.push(tempData);
+                                    tempData = null;
                                 }
-                            } else {
-                                blockList.push(tempData);
-                                tempData = null;
                             }
                         }
+                        break;
+
+                    case new RegExp("^###(?= )").test(text):
+                        // h3 블럭
+                        blockList.push({
+                            type: "heading",
+                            level: 3,
+                            id: _generateId(),
+                            classList: [],
+                            textContent: ___replaceTextData(text.substring(4)),
+                        });
+                        break;
+
+                    case new RegExp("^##(?= )").test(text):
+                        // h2 블럭
+                        blockList.push({
+                            type: "heading",
+                            level: 2,
+                            id: _generateId(),
+                            classList: [],
+                            textContent: ___replaceTextData(text.substring(3)),
+                        });
+                        break;
+
+                    case new RegExp("^#(?= )").test(text):
+                        // h1 블럭
+                        blockList.push({
+                            type: "heading",
+                            level: 1,
+                            id: _generateId(),
+                            classList: [],
+                            textContent: ___replaceTextData(text.substring(2)),
+                        });
+                        break;
+
+                    default:
+                        // 기본 텍스트 블럭
+                        blockList.push({
+                            type: "text",
+                            classList: [],
+                            textContent: ___replaceTextData(text),
+                        });
+                }
+            });
+
+            if (store.value.controlStatus.currentBlockType === "heading" || store.value.controlStatus.currentBlockType === "text") {
+                if (store.value.controlStatus.$currentBlock !== null) {
+                    if (store.value.controlStatus.$currentBlock.textContent === "") {
+                        isDelete = true;
+                        $target = store.value.controlStatus.$currentBlock;
                     }
-                    break;
-
-                case new RegExp("^###(?= )").test(text):
-                    // h3 블럭
-                    blockList.push({
-                        type: "heading",
-                        level: 3,
-                        id: _generateId(),
-                        classList: [],
-                        textContent: ___replaceTextData(text.substring(4)),
-                    });
-                    break;
-
-                case new RegExp("^##(?= )").test(text):
-                    // h2 블럭
-                    blockList.push({
-                        type: "heading",
-                        level: 2,
-                        id: _generateId(),
-                        classList: [],
-                        textContent: ___replaceTextData(text.substring(3)),
-                    });
-                    break;
-
-                case new RegExp("^#(?= )").test(text):
-                    // h1 블럭
-                    blockList.push({
-                        type: "heading",
-                        level: 1,
-                        id: _generateId(),
-                        classList: [],
-                        textContent: ___replaceTextData(text.substring(2)),
-                    });
-                    break;
-
-                default:
-                    // 기본 텍스트 블럭
-                    blockList.push({
-                        type: "text",
-                        classList: [],
-                        textContent: ___replaceTextData(text),
-                    });
+                }
             }
-        });
 
-        blockList.forEach((data) => {
-            switch (data.type) {
-                case "heading":
-                    if (data.level === 1) {
-                        _addBlock("heading1", store, data);
-                    }
+            blockList.forEach((data) => {
+                switch (data.type) {
+                    case "heading":
+                        if (data.level === 1) {
+                            _addBlock("heading1", store, data);
+                        }
 
-                    if (data.level === 2) {
-                        _addBlock("heading2", store, data);
-                    }
+                        if (data.level === 2) {
+                            _addBlock("heading2", store, data);
+                        }
 
-                    if (data.level === 3) {
-                        _addBlock("heading3", store, data);
-                    }
-                    break;
+                        if (data.level === 3) {
+                            _addBlock("heading3", store, data);
+                        }
+                        break;
 
-                case "list":
-                    _addBlock(data.element, store, data);
-                    break;
+                    case "list":
+                        _addBlock(data.element, store, data);
+                        break;
 
-                default:
-                    _addBlock(data.type, store, data);
+                    default:
+                        _addBlock(data.type, store, data);
+                }
+            });
+
+            if (isDelete === true) {
+                $target?.remove();
             }
-        });
+        }
     }
 }
 
