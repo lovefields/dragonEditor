@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="editor-area" :class="{ '--sort': isChangeLayout === true }">
+        <div class="editor-area" :class="{ '--sort': isChangeLayout === true, '--transform': isTransformLayout === true }">
             <DragonEditor v-model="contentData" ref="$editor" @uploadImageEvent="pasteImageProcess" />
         </div>
 
@@ -9,6 +9,7 @@
         <button @click="addCustomBlock">Add Custom Block</button>
         <button @click="changeData">change data</button>
         <button @click="changeLayout">Change Layout</button>
+        <button @click="changeLayout2">Change transform Layout</button>
         <button @click="checkEmpty">Check Empty</button>
         <button @click="checkEmpty2">Check Empty2</button>
         <p class="data">{{ contentData }}</p>
@@ -19,6 +20,7 @@
 import { ref } from "#imports";
 const contentData = ref<DEContentData>([]);
 const isChangeLayout = ref<boolean>(false);
+const isTransformLayout = ref<boolean>(false);
 const $editor = ref<DragonEditor>();
 let isChange: boolean = true;
 
@@ -136,6 +138,11 @@ function changeLayout(): void {
     $editor.value?.updateLayout();
 }
 
+function changeLayout2(): void {
+    isTransformLayout.value = !isTransformLayout.value;
+    $editor.value?.updateLayout();
+}
+
 function checkEmpty(): void {
     console.log($editor.value?.checkDataEmpty());
 }
@@ -150,6 +157,11 @@ function checkEmpty(): void {
     &.--sort {
         height: 200px;
         overflow: auto;
+    }
+
+    &.--transform {
+        margin-top: 200px;
+        transform: translate(0, 0);
     }
 }
 

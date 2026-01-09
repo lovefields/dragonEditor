@@ -51,6 +51,7 @@ interface DragonEditorStore {
     };
     controlStatus: {
         isMobile: boolean;
+        hasTransformParent: boolean;
         anchorValidation: boolean;
         currentBlockType: DEBlock;
         codeBlockTheme: DECodeblockTheme;
@@ -62,6 +63,7 @@ interface DragonEditorStore {
         previousCorsorData: DEditorCursor | null;
         $anchorInput: HTMLInputElement | null;
         $currentBlock: HTMLDivElement | null;
+        $transformElement: HTMLElement | null;
     };
     codeToHtml: codeToHtml;
     codeBlockTheme: DECodeItem<DECodeblockTheme>[];

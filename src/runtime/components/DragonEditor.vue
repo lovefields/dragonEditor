@@ -57,6 +57,7 @@ const editorStore = ref<DragonEditorStore>({
     },
     controlStatus: {
         isMobile: false,
+        hasTransformParent: false,
         currentBlockType: "text",
         codeBlockTheme: "github-light",
         codeBlockLang: "text",
@@ -68,6 +69,7 @@ const editorStore = ref<DragonEditorStore>({
         previousCorsorData: null,
         $anchorInput: null,
         $currentBlock: null,
+        $transformElement: null,
     },
     codeBlockTheme: [
         {
