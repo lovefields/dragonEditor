@@ -52,6 +52,7 @@ interface DragonEditorStore {
     controlStatus: {
         isMobile: boolean;
         hasTransformParent: boolean;
+        hasHiddenStyleParent: boolean;
         anchorValidation: boolean;
         currentBlockType: DEBlock;
         codeBlockTheme: DECodeblockTheme;

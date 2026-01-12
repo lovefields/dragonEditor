@@ -58,6 +58,7 @@ const editorStore = ref<DragonEditorStore>({
     controlStatus: {
         isMobile: false,
         hasTransformParent: false,
+        hasHiddenStyleParent: false,
         currentBlockType: "text",
         codeBlockTheme: "github-light",
         codeBlockLang: "text",
@@ -149,7 +150,7 @@ function mainStrucutre(): VNode {
     return h(
         "div",
         {
-            class: ["dragon-editor", "js-dragon-editor", { "--has-menu": editorStore.value.useMenuBar === true }, { "--mobile": editorStore.value.controlStatus.isMobile === true }],
+            class: ["dragon-editor", "js-dragon-editor", { "--has-menu": editorStore.value.useMenuBar === true }, { "--mobile": editorStore.value.controlStatus.isMobile === true }, { "--hidden-parent": editorStore.value.controlStatus.hasHiddenStyleParent === true }],
             onMousemove: (event: MouseEvent) => _editorMousemoveEvent(event, editorStore),
             onMouseup: (event: MouseEvent) => _editorMouseupEvent(event, editorStore),
             onMouseleave: (event: MouseEvent) => _editorMouseleaveEvent(event, editorStore),

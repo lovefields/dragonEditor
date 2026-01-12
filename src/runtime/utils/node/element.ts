@@ -5,7 +5,7 @@ export function _findScrollingElement($target: HTMLElement): HTMLElement | Windo
     if ($wrap !== null) {
         const style = window.getComputedStyle($wrap);
 
-        if (style.overflow !== "visible") {
+        if (style.overflow !== "visible" && style.overflow !== "hidden") {
             return $wrap;
         } else {
             if ($wrap.tagName === "BODY") {
@@ -16,6 +16,27 @@ export function _findScrollingElement($target: HTMLElement): HTMLElement | Windo
         }
     } else {
         return window;
+    }
+}
+
+// 히든 스타일 가진 요소 찾기
+export function _findHiddenStyleElement($target: HTMLElement): HTMLElement | null {
+    const $wrap = $target.parentElement;
+
+    if ($wrap !== null) {
+        const style = window.getComputedStyle($wrap);
+
+        if (style.overflow === "hidden") {
+            return $wrap;
+        } else {
+            if ($wrap.tagName === "HTML") {
+                return null;
+            } else {
+                return _findHiddenStyleElement($wrap);
+            }
+        }
+    } else {
+        return null;
     }
 }
 
