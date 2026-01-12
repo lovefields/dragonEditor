@@ -156,7 +156,7 @@ function checkEmpty(): void {
 
     &.--sort {
         height: 200px;
-        overflow: auto;
+        overflow: hidden;
     }
 
     &.--transform {

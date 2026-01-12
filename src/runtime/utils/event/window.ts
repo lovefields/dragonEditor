@@ -1,5 +1,5 @@
 import type { Ref } from "vue";
-import { _findScrollingElement, _findTransformElement } from "../node";
+import { _findScrollingElement, _findTransformElement, _findHiddenStyleElement } from "../node";
 import type { DragonEditorStore } from "../../type.d.mts";
 
 // 윈도우 마운트 이벤트
@@ -8,19 +8,26 @@ export function _eidtorMountEvent(store: Ref<DragonEditorStore>): void {
     const $body = document.querySelector(".js-de-body") as HTMLDivElement;
     const $controlBar = document.querySelector(".js-de-controlbar") as HTMLDivElement;
     const $parentWrap = _findScrollingElement($editor);
-    const $transformWrap = _findTransformElement($editor);
+    const $hiddenStyleElement = _findHiddenStyleElement($editor);
+    const $transformElement = _findTransformElement($editor);
 
     store.value.$editor = $editor;
     store.value.$body = $body;
     store.value.$controlBar = $controlBar;
     store.value.$parentWrap = $parentWrap;
 
-    if ($transformWrap === null) {
+    if ($hiddenStyleElement === $editor.parentElement) {
+        store.value.controlStatus.hasHiddenStyleParent = true;
+    } else {
+        store.value.controlStatus.hasHiddenStyleParent = false;
+    }
+
+    if ($transformElement === null) {
         store.value.controlStatus.hasTransformParent = false;
         store.value.controlStatus.$transformElement = null;
     } else {
         store.value.controlStatus.hasTransformParent = true;
-        store.value.controlStatus.$transformElement = $transformWrap;
+        store.value.controlStatus.$transformElement = $transformElement;
     }
 
     __checkAndSetUpMobile(store);
