@@ -80,19 +80,21 @@ export function _decideWhetherOpenControlBar(store: Ref<DragonEditorStore>): voi
             let x: number = Math.floor(targetRect.left + targetRect.width / 2);
             let y: number = Math.floor(targetRect.top - 8 - 32);
 
+            if (y < 0) {
+                y = 44;
+
+                if (store.value.$parentWrap !== null && store.value.$editor !== null) {
+                    const editorRect = store.value.$editor.getBoundingClientRect();
+
+                    y += editorRect.top;
+                }
+            }
+
             if (store.value.controlStatus.hasTransformParent === true && store.value.controlStatus.$transformElement !== null) {
                 const transformRect = store.value.controlStatus.$transformElement.getBoundingClientRect();
 
                 x -= transformRect.left;
                 y -= transformRect.top;
-
-                if (store.value.$parentWrap !== null) {
-                    if (store.value.$parentWrap === window) {
-                        y += store.value.$parentWrap.scrollY;
-                    } else {
-                        y += (store.value.$parentWrap as HTMLElement).scrollTop;
-                    }
-                }
             }
 
             store.value.controlBar.x = x;
