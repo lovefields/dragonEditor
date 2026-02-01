@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="area-page">
         <div class="editor-area" :class="{ '--sort': isChangeLayout === true, '--transform': isTransformLayout === true }">
             <DragonEditor v-model="contentData" ref="$editor" @uploadImageEvent="pasteImageProcess" />
         </div>
@@ -149,13 +149,24 @@ function checkEmpty(): void {
 </script>
 
 <style lang="scss">
+.area-page {
+    &.--transform {
+        height: 100vh;
+        overflow: auto;
+
+        .editor-area {
+            height: 300vh;
+        }
+    }
+}
+
 .editor-area {
     max-width: 800px;
     margin: 0 auto;
     font-size: 15px;
 
     &.--sort {
-        height: 200px;
+        height: 200vh;
         overflow: hidden;
     }
 
