@@ -62,7 +62,7 @@ function __createTextBlock(data: DETextBlock, isEditable: boolean): VNode {
 
 // 해딩 블럭 생성
 function __createHeadingBlock(data: DEHeadingBlock, isEditable: boolean): VNode {
-    const option: Record<string, any> = { class: ["de-block", "de-heading-block", ...data.classList], "data-level": data.level, innerHTML: data.textContent };
+    const option: Record<string, any> = { class: ["de-block", "de-heading-block", ...data.classList], id: data.id, "data-level": data.level, innerHTML: data.textContent };
 
     if (data.depth !== undefined && data.depth !== 0) {
         option["data-depth"] = data.depth;
