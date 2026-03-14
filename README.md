@@ -86,7 +86,7 @@ Done!
 </script>
 ```
 
-More information is [here](https://lovefields.github.io/dragonEditor-doc/)
+More information in [Document](https://lovefields.github.io/dragonEditor-doc/)
 
 # Sponsors
 
