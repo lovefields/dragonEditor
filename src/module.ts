@@ -1,4 +1,4 @@
-import { defineNuxtModule, createResolver, addComponent, addTypeTemplate } from "@nuxt/kit";
+import { defineNuxtModule, createResolver, addComponent, addTypeTemplate, importModule } from "@nuxt/kit";
 
 export default defineNuxtModule({
     meta: {
@@ -10,6 +10,8 @@ export default defineNuxtModule({
     async setup(options, nuxt) {
         const resolver = createResolver(import.meta.url);
         const typeContent = await readFile(resolver.resolve("./runtime/type.d.mts"));
+
+        await importModule("@pinia/nuxt");
 
         addComponent({
             name: "DragonEditor",

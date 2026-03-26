@@ -1,6 +1,6 @@
 {
     "name": "dragon-editor",
-    "version": "3.8.7",
+    "version": "4.0.0",
     "description": "Javascript WYSIWYG editor in Nuxt!",
     "repository": {
         "type": "git",
@@ -18,18 +18,31 @@
     "files": [
         "dist"
     ],
+    "typesVersions": {
+        "*": {
+            ".": [
+                "./dist/types.d.mts"
+            ]
+        }
+    },
+    "workspaces": [
+        "playground"
+    ],
     "scripts": {
         "prepack": "nuxt-module-build build",
-        "dev": "nuxi dev playground",
-        "dev:build": "nuxi build playground",
-        "dev:prepare": "nuxt-module-build build --stub && nuxi prepare playground",
+        "dev": "npm run dev:prepare && nuxt dev playground",
+        "dev:build": "nuxt build playground",
+        "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
         "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
         "lint": "eslint .",
         "test": "vitest run",
-        "test:watch": "vitest watch"
+        "test:watch": "vitest watch",
+        "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
     },
     "dependencies": {
-        "@nuxt/kit": "^4.0.3",
+        "@nuxt/kit": "^4.4.2",
+        "@pinia/nuxt": "^0.11.3",
+        "pinia": "^3.0.4",
         "shiki": "^3.12.1"
     },
     "devDependencies": {

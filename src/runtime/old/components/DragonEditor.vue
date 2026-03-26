@@ -1,0 +1,328 @@
+<template>
+    <div class="dragon-editor">
+        <div class="de-body">
+            <component :is="renderBlock"></component>
+            <!-- <component v-for="(block, index) in props.modelValue" v-memo="[editorStore.selectedBlockIndex, index]" :is="getBlock(block.type)" :data="block" :isEdit="true" :index="index" @update="testupdate"></component> -->
+        </div>
+    </div>
+    <!-- <component :is="mainStrucutre"></component> -->
+</template>
+
+<script setup lang="ts">
+import { ref, h, onMounted, onBeforeUnmount, watch, withMemo } from "vue";
+import { codeToHtml } from "shiki";
+import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure, _updateBodyStructure } from "../utils/layout";
+import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent, _checkDataEmpty } from "../utils/event";
+import { _addBlock } from "../utils/node";
+import { _setDecoration, _setTextAlign } from "../utils/style";
+import type { Component, VNode } from "vue";
+import type { DEBlockData, DEBlockMenutype, DEContentData, DEDecoration, DETextalign, DragonEditorStore } from "../type.d.mts";
+
+import { useEditorStore } from "../store/editor";
+import TextBlock from "./Block/Text.vue";
+
+interface DEOption {
+    modelValue: DEContentData;
+    useMenuBar?: boolean;
+    mediaHostURL?: string;
+    isMobile?: boolean;
+}
+
+const props = withDefaults(defineProps<DEOption>(), {
+    useMenuBar: true,
+    mediaHostURL: "",
+    isMobile: false,
+});
+const emit = defineEmits<{
+    (e: "update:modelValue", data: DEContentData): void;
+    (e: "uploadImageEvent", file: File): void;
+}>();
+
+const editorStore = useEditorStore();
+const renderCount = ref<number>(0);
+
+// const editorStore = ref<DragonEditorStore>({
+//     cursorData: null,
+//     message: {
+//         linkTextNoStyle: "Link text can't set any style.",
+//     },
+//     controlBar: {
+//         active: false,
+//         x: 0,
+//         y: 0,
+//         $element: null,
+//     },
+//     useMenuBar: props.useMenuBar,
+//     imageHostURL: props.imageHostURL,
+//     firstData: props.modelValue,
+//     screenChangePoint: props.screenChangePoint,
+//     menuBarTop: 0,
+//     activeStatus: {
+//         addBlockMenu: false,
+//         anchorInputArea: false,
+//         imageResizeEvent: false,
+//     },
+//     eventStatus: {
+//         imageResizeEventStartX: 0,
+//         imageResizeEventType: "left",
+//         imageResizeEventEndX: 0,
+//         imageResizeCurrentWidth: 0,
+//     },
+//     controlStatus: {
+//         isMobile: false,
+//         hasTransformParent: false,
+//         hasHiddenStyleParent: false,
+//         currentBlockType: "text",
+//         codeBlockTheme: "github-light",
+//         codeBlockLang: "text",
+//         listBlockStyle: "disc",
+//         anchorTabType: "url",
+//         anchorHeadingList: [],
+//         anchorHref: "",
+//         anchorValidation: false,
+//         previousCorsorData: null,
+//         $anchorInput: null,
+//         $currentBlock: null,
+//         $transformElement: null,
+//     },
+//     codeBlockTheme: [
+//         {
+//             text: "GitHub Ligth",
+//             code: "github-light",
+//         },
+//         {
+//             text: "GitHub Dark Dimmed",
+//             code: "github-dark-dimmed",
+//         },
+//     ],
+//     listUlType: [
+//         {
+//             text: "Disc",
+//             code: "disc",
+//         },
+//         {
+//             text: "Square",
+//             code: "square",
+//         },
+//     ],
+//     listOlType: [
+//         {
+//             text: "Decimal",
+//             code: "decimal",
+//         },
+//         {
+//             text: "Lower-Alpha",
+//             code: "lower-alpha",
+//         },
+//         {
+//             text: "Upper-Alpha",
+//             code: "upper-alpha",
+//         },
+//         {
+//             text: "Lower-Roman",
+//             code: "lower-roman",
+//         },
+//         {
+//             text: "Upper-Roman",
+//             code: "upper-roman",
+//         },
+//     ],
+//     $editor: null,
+//     $body: null,
+//     $controlBar: null,
+//     $parentWrap: null,
+//     codeToHtml: codeToHtml,
+//     emit: emit,
+//     windowClickEvent: function (event: MouseEvent) {
+//         _checkOthersideClick(event, editorStore);
+//     },
+//     windowResizeEvent: function (event: Event) {
+//         _windowResizeEvent(event, editorStore);
+//     },
+//     windowMouseUpEvent: function (event: MouseEvent) {
+//         _editorMouseupEvent(event, editorStore);
+//     },
+//     parentWrapScollEvent: function (event: Event) {
+//         _parentWrapScollEvent(event, editorStore);
+//     },
+// });
+
+function getBlock(type: string): Component | null {
+    switch (type) {
+        case "text":
+            return TextBlock;
+        default:
+            return null;
+    }
+}
+
+function testupdate(data: DEBlockData, index: number) {
+    const newData = JSON.parse(JSON.stringify(props.modelValue));
+    newData[index] = data;
+
+    emit("update:modelValue", newData);
+}
+
+function renderBlock(): VNode[] {
+    const blockList: VNode[] = [];
+
+    props.modelValue.forEach((block, index) => {
+        switch (block.type) {
+            case "text":
+                blockList.push(
+                    h(TextBlock, {
+                        data: block,
+                        isEdit: true,
+                        index: index,
+                        onUpdate: (data: DETextBlock) => {
+                            const newData = JSON.parse(JSON.stringify(props.modelValue));
+                            newData[index] = data;
+
+                            emit("update:modelValue", newData);
+                        },
+                    })
+                );
+                break;
+            default:
+                blockList.push(h("div", { class: "de-block", "data-type": block.type }, "Unknown block type"));
+                break;
+        }
+    });
+
+    return blockList;
+}
+
+function mainStrucutre(): VNode {
+    const childList: VNode[] = [];
+
+    // 메뉴바 구조
+    if (editorStore.value.useMenuBar === true) {
+        childList.push(_getMenuBarVNodeStructure(editorStore));
+    }
+
+    // 본문 구조
+    childList.push(_getBodyVNodeStructure(editorStore));
+
+    // 컨트롤바 구조
+    if (editorStore.value.controlBar.active === true) {
+        childList.push(_getControlbarVNodeStructure(editorStore));
+    }
+
+    return h(
+        "div",
+        {
+            class: ["dragon-editor", "js-dragon-editor", { "--has-menu": editorStore.value.useMenuBar === true }, { "--mobile": editorStore.value.controlStatus.isMobile === true }, { "--hidden-parent": editorStore.value.controlStatus.hasHiddenStyleParent === true }],
+            onMousemove: (event: MouseEvent) => _editorMousemoveEvent(event, editorStore),
+            onMouseup: (event: MouseEvent) => _editorMouseupEvent(event, editorStore),
+            onMouseleave: (event: MouseEvent) => _editorMouseleaveEvent(event, editorStore),
+            onTouchmove: (event: TouchEvent) => _editorTouchmoveEvent(event, editorStore),
+            onTouchend: (event: TouchEvent) => _editorTouchendEvent(event, editorStore),
+            onContextmenu: (event: MouseEvent) => _editorContextMenuEvent(event, editorStore),
+        },
+        childList
+    );
+}
+
+// 외부용 블럭 추가 함수
+function addBlock(data: DEBlockData): void {
+    let type: DEBlockMenutype = "text";
+
+    switch (data.type) {
+        case "heading":
+            if (data.level === 1) {
+                type = "heading1";
+            } else if (data.level === 2) {
+                type = "heading2";
+            } else {
+                type = "heading3";
+            }
+            break;
+
+        case "list":
+            if (data.element === "ol") {
+                type = "ol";
+            } else {
+                type = "ul";
+            }
+            break;
+    }
+
+    _addBlock(type, editorStore, data);
+}
+
+// 외부용 스타일 적용 함수
+function setDecoration(style: DEDecoration): void {
+    _setDecoration(`de-${style}`, editorStore);
+}
+
+// 외부용 정렬 함수
+function setAlign(align: DETextalign): void {
+    _setTextAlign(align, editorStore);
+}
+
+// 데이터 변경용 함수
+function changeEditorData(data: DEContentData): void {
+    if (editorStore.value.$body !== null) {
+        editorStore.value.$body.innerHTML = "";
+        _updateBodyStructure(data, editorStore);
+    }
+}
+
+// 레이아웃 변경시 리마운트
+function updateLayout(): void {
+    _eidtorUnmountEvent(editorStore);
+
+    setTimeout(() => {
+        _eidtorMountEvent(editorStore);
+    }, 500);
+}
+
+// 빈데이터 체크 함수
+// function checkDataEmpty(data?: DEContentData): boolean {
+//     let suitable: boolean = false;
+
+//     if (data !== undefined) {
+//         suitable = _checkDataEmpty(data);
+//     } else {
+//         suitable = _checkDataEmpty(props.modelValue);
+//     }
+
+//     return suitable;
+// }
+
+onMounted(() => {
+    // _eidtorMountEvent(editorStore);
+
+    if (props.modelValue.length === 0) {
+        emit("update:modelValue", [
+            {
+                type: "text",
+                textContent: "",
+                classList: [],
+            },
+            {
+                type: "text",
+                textContent: "",
+                classList: [],
+            },
+        ]);
+    }
+});
+
+onBeforeUnmount(() => {
+    // _eidtorUnmountEvent(editorStore);
+});
+
+// defineExpose({
+//     addBlock,
+//     setDecoration,
+//     setAlign,
+//     changeEditorData,
+//     updateLayout,
+//     checkDataEmpty,
+// });
+</script>
+
+<style lang="scss">
+@use "../scss/editor.scss";
+</style>
