@@ -1,8 +1,5 @@
 import type { codeToHtml } from "shiki";
 
-type DEContentData = DEBlockData[];
-
-type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock | DEDividerBlock;
 
 type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "indent-decrease" | "indent-increase";
 
@@ -119,61 +116,4 @@ interface DragonEditor {
     changeEditorData: (data: DEContentData) => void;
     updateLayout: () => void;
     checkDataEmpty: (data?: DEContentData) => boolean;
-}
-
-interface DETextBlock {
-    type: "text";
-    classList: string[];
-    depth?: number;
-    textContent: string;
-}
-
-interface DEHeadingBlock {
-    type: "heading";
-    level: number;
-    id: string;
-    depth?: number;
-    classList: string[];
-    textContent: string;
-}
-
-interface DEListItem {
-    classList: string[];
-    textContent: string;
-}
-
-interface DEListBlock {
-    type: "list";
-    element: DEListElementName;
-    depth?: number;
-    style: DEListStyle;
-    child: DEListItem[];
-}
-
-interface DEImageBlock {
-    type: "image";
-    maxWidth: number;
-    src: string;
-    width: number;
-    height: number;
-    caption: string;
-    classList: string[];
-}
-
-interface DECodeBlock {
-    type: "code";
-    language: DECodeblockLang;
-    theme: DECodeblockTheme;
-    filename: string;
-    textContent: string;
-}
-
-interface DECustomBlock {
-    type: "custom";
-    classList: string[];
-    textContent: string;
-}
-
-interface DEDividerBlock {
-    type: "divider";
 }

@@ -46,7 +46,7 @@ yarn add dragon-editor
 bun add dragon-editor
 ```
 
-## Using
+## How To Use
 
 First. Set module
 
@@ -66,11 +66,9 @@ Second. Use Component
 </template>
 
 <script setup lang="ts">
-    const contentData = ref<DEContentData>([]); // Do not modify the value after binding under any circumstances.
+    const contentData = ref<DEContentData>([]);
 </script>
 ```
-
-Done!
 
 ## View Page
 
@@ -86,7 +84,10 @@ Done!
 </script>
 ```
 
-More information in [Document](https://lovefields.github.io/dragonEditor-doc/)
+## Link
+
+- [Document](https://lovefields.github.io/dragonEditor-doc/)
+- [Demo](https://lovefields.github.io/dragonEditor-doc/demo)
 
 # Sponsors
 

@@ -74,7 +74,8 @@ function changeData() {
 
 function setContent() {
     contentData.value = [
-        { type: "text", classList: [], textContent: "12" },
+        { type: "text", classList: [], textContent: "1" },
+        { type: "text", classList: [], textContent: "2" },
         { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
         { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
         { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },

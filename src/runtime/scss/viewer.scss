@@ -1,0 +1,12 @@
+@use "./base";
+@use "./var/block" as *;
+@use "./var/style" as *;
+
+.dragon-editor-viewer {
+    width: 100%;
+    line-height: 1.6;
+    box-sizing: border-box;
+
+    @include blockStyle("false");
+    @include NodeStyle;
+}
