@@ -1,5 +1,18 @@
 <template>
-    <component v-memo="[editorStore.selectedBlockIndex === props.index ? 'frozen' : JSON.stringify(props.data)]" v-html="props.data.textContent" :is="tagName" class="de-block de-heading-block" :class="[...props.data.classList]" :data-depth="props.data.depth" :data-level="props.data.level" :contenteditable="props.isEdit === true" @focus="setEdit" @blur="abortEdit" @input="updateData" />
+    <component
+        v-memo="[editorStore.selectedBlockIndex === props.index ? 'frozen' : JSON.stringify(props.data)]"
+        v-html="props.data.textContent"
+        :is="tagName"
+        class="de-block de-heading-block"
+        :class="[...props.data.classList]"
+        :id="props.data.id"
+        :contenteditable="props.isEdit === true"
+        :data-depth="props.data.depth"
+        :data-level="props.data.level"
+        @focus="setEdit"
+        @blur="abortEdit"
+        @input="updateData"
+    />
 </template>
 
 <script setup lang="ts">

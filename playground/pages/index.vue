@@ -1,17 +1,29 @@
 <template>
     <div class="area-page">
-        <div class="editor-area" :class="{ '--sort': isChangeLayout === true, '--transform': isTransformLayout === true }">
-            <DragonEditor v-model="contentData" ref="$editor" @uploadImageEvent="pasteImageProcess" />
+        <div
+            class="editor-area"
+            :class="{ '--sort': isChangeLayout === true, '--transform': isTransformLayout === true }"
+        >
+            <DragonEditor
+                v-model="contentData"
+                ref="$editor"
+                @uploadImageEvent="pasteImageProcess"
+            />
         </div>
 
-        <button @click="setContent">set data</button>
-        <button @click="addImage">Add Image</button>
-        <button @click="addCustomBlock">Add Custom Block</button>
-        <button @click="changeData">change data</button>
-        <button @click="changeLayout">Change Layout</button>
-        <button @click="changeLayout2">Change transform Layout</button>
-        <button @click="checkEmpty">Check Empty</button>
-        <button @click="checkEmpty2">Check Empty2</button>
+        <div class="list-menu">
+            <button @click="setContent">Set Data</button>
+            <button @click="clearContent">Clear Data</button>
+
+            <button @click="addImage">Add Image</button>
+            <button @click="addCustomBlock">Add Custom Block</button>
+            <button @click="changeData">change data</button>
+            <button @click="changeLayout">Change Layout</button>
+            <button @click="changeLayout2">Change transform Layout</button>
+            <button @click="checkEmpty">Check Empty</button>
+            <button @click="checkEmpty2">Check Empty2</button>
+        </div>
+
         <p class="data">{{ contentData }}</p>
     </div>
 </template>
@@ -23,6 +35,31 @@ const isChangeLayout = ref<boolean>(false);
 const isTransformLayout = ref<boolean>(false);
 const $editor = ref<DragonEditor>();
 let isChange: boolean = true;
+
+function setContent() {
+    contentData.value = [
+        { type: "text", classList: [], textContent: "1" },
+        { type: "text", classList: [], textContent: "2" },
+        { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
+        { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
+        { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
+        { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [] },
+        { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }] },
+        { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }] },
+        { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }] },
+        { type: "divider" },
+        { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
+        { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
+        { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
+        { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
+        { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
+        { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
+    ];
+}
+
+function clearContent() {
+    contentData.value = [];
+}
 
 function checkEmpty2(): void {
     console.log($editor.value?.checkDataEmpty(contentData.value));
@@ -70,27 +107,6 @@ function changeData() {
     isChange = !isChange;
     contentData.value = data;
     // $editor.value?.changeEditorData(data);
-}
-
-function setContent() {
-    contentData.value = [
-        { type: "text", classList: [], textContent: "1" },
-        { type: "text", classList: [], textContent: "2" },
-        { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
-        { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
-        { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
-        { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [] },
-        { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "divider" },
-        { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
-        { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
-    ];
 }
 
 function addImage() {

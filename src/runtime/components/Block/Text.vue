@@ -1,9 +1,21 @@
 <template>
-    <p v-memo="[editorStore.selectedBlockIndex === props.index ? 'frozen' : JSON.stringify(props.data)]" v-html="props.data.textContent" class="de-block de-text-block" :class="[...props.data.classList]" :data-depth="props.data.depth" :contenteditable="props.isEdit === true" @focus="setEdit" @blur="abortEdit" @input="updateData"></p>
+    <p
+        v-memo="[editorStore.selectedBlockIndex === props.index ? 'frozen' : JSON.stringify(props.data)]"
+        v-html="props.data.textContent"
+        class="de-block de-text-block"
+        :class="[...props.data.classList]"
+        :contenteditable="props.isEdit === true"
+        :data-depth="props.data.depth"
+        @focus="setEdit"
+        @blur="abortEdit"
+        @keydown="keydownEvent"
+        @input="updateData"
+    ></p>
 </template>
 
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
+import { _sliceAndNewTextBlock } from "../../utils/event";
 import type { DETextBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -18,6 +30,43 @@ function setEdit() {
 
 function abortEdit() {
     editorStore.selectedBlockIndex = -1;
+}
+
+function keydownEvent(event: KeyboardEvent): void {
+    console.log(event.key);
+
+    switch (event.key) {
+        case "Enter":
+            // 엔터 이벤트
+            if (event.shiftKey === false) {
+                if (event.isComposing === false) {
+                    _sliceAndNewTextBlock(event, props.data, props.index);
+                } else {
+                    event.preventDefault();
+                }
+            } else {
+                // 쉬프트 엔터 이벤트
+            }
+            break;
+
+        case "Tab":
+            break;
+
+        case "ArrowUp":
+            break;
+
+        case "ArrowDown":
+            break;
+
+        case "Backspace":
+            break;
+
+        case "Delete":
+            break;
+
+        case "`":
+            break;
+    }
 }
 
 function updateData(event: Event): void {

@@ -93,8 +93,8 @@ Second. Use Component
 
 Support this project by becoming a sponsor. [GitHub Sponsors](https://github.com/sponsors/lovefields)
 
-<div align="center">
-    <a href="https://github.com/kyu91">
-        <img src="https://github.com/kyu91.png" width="50" title="kyu91" />
+<!-- <div align="center">
+    <a href="https://github.com/{id}">
+        <img src="https://github.com/{id}.png" width="50" title="{id}" />
     </a>
-</div>
+</div> -->

@@ -12,8 +12,16 @@ type DEListElementName = "ul" | "ol";
 
 // 스토어 구조체
 interface DragonEditorStore {
-    option: DEOption;
+    data: DEContentData;
     selectedBlockIndex: number;
+    option: DEOption;
+    cursorSelection: null | Selection;
+    fn: {
+        updateEditorData: ((data: DEContentData) => void) | null;
+    };
+    element: {
+        body: null | HTMLDivElement;
+    };
 }
 
 // 스토어용 에디터 옵션
@@ -24,6 +32,7 @@ interface DEOption {
 
 // 컨텐츠 블럭 타입
 interface DETextBlock {
+    id: string;
     type: "text";
     classList: string[];
     depth?: number;
@@ -32,9 +41,9 @@ interface DETextBlock {
 
 // 컨텐츠 해딩 타입
 interface DEHeadingBlock {
+    id: string;
     type: "heading";
     level: 1 | 2 | 3;
-    id: string;
     depth?: number;
     classList: string[];
     textContent: string;
@@ -42,12 +51,14 @@ interface DEHeadingBlock {
 
 // 컨텐츠 리스트 자식 타입
 interface DEListItem {
+    id: string;
     classList: string[];
     textContent: string;
 }
 
 // 컨텐츠 리스트 타입
 interface DEListBlock {
+    id: string;
     type: "list";
     element: DEListElementName;
     depth?: number;
@@ -57,6 +68,7 @@ interface DEListBlock {
 
 // 컨텐츠 이미지 타입
 interface DEImageBlock {
+    id: string;
     type: "image";
     maxWidth: number;
     src: string;
@@ -68,6 +80,7 @@ interface DEImageBlock {
 
 // 컨텐츠 코드 블럭 타입
 interface DECodeBlock {
+    id: string;
     type: "code";
     language: keyof typeof DECodeLanguage;
     filename: string;
@@ -76,6 +89,7 @@ interface DECodeBlock {
 
 // 컨텐츠 커스텀 타입
 interface DECustomBlock {
+    id: string;
     type: "custom";
     classList: string[];
     textContent: string;
@@ -83,6 +97,7 @@ interface DECustomBlock {
 
 // 컨텐츠 구분선 타입
 interface DEDividerBlock {
+    id: string;
     type: "divider";
 }
 
@@ -115,14 +130,6 @@ interface DECodeItem<T = string> {
 interface DEHeadingItem {
     name: string;
     id: string;
-}
-
-interface DEditorCursor {
-    type: "Range" | "Caret" | "None";
-    startNode: Node;
-    startOffset: number;
-    endNode: Node;
-    endOffset: number;
 }
 
 interface DEArrangeCursorData {

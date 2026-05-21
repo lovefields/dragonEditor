@@ -3,16 +3,19 @@ import type { DragonEditorStore, DEOption } from "../type.mjs";
 
 export const useEditorStore = defineStore("editorStore", {
     state: (): DragonEditorStore => ({
+        data: [],
+        selectedBlockIndex: -1,
         option: {
             mediaHostURL: "",
             isMobile: false,
         },
-        selectedBlockIndex: -1,
-    }),
-    actions: {
-        setOption(data: DEOption): void {
-            this.option.isMobile = data.isMobile;
-            this.option.mediaHostURL = data.mediaHostURL;
+        cursorSelection: null,
+        element: {
+            body: null,
         },
-    },
+        fn: {
+            updateEditorData: null,
+        },
+    }),
+    actions: {},
 });

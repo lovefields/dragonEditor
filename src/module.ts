@@ -7,20 +7,20 @@ export default defineNuxtModule({
             nuxt: ">=3.0.0",
         },
     },
-    async setup(options, nuxt) {
-        const resolver = createResolver(import.meta.url);
-        const typeContent = await readFile(resolver.resolve("./runtime/type.d.mts"));
+    async setup() {
+        const { resolve } = createResolver(import.meta.url);
+        const typeContent = await readFile(resolve("./runtime/type.d.mts"));
 
         await importModule("@pinia/nuxt");
 
         addComponent({
             name: "DragonEditor",
-            filePath: resolver.resolve("./runtime/components/DragonEditor"),
+            filePath: resolve("./runtime/components/DragonEditor"),
         });
 
         addComponent({
             name: "DragonEditorViewer",
-            filePath: resolver.resolve("./runtime/components/DragonEditorViewer"),
+            filePath: resolve("./runtime/components/DragonEditorViewer"),
         });
 
         addTypeTemplate({

@@ -12,7 +12,6 @@
 
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
-import { ref, computed } from "vue";
 import type { DEImageBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
