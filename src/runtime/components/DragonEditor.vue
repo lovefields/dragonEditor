@@ -18,7 +18,7 @@ import { ref, onMounted, watch } from "vue";
 import { _createTextBlockData } from "../utils/data";
 import type { DEContentData } from "../type.mjs";
 
-interface DEOption {
+interface DragonEditorOption {
     modelValue: DEContentData;
     useMenuBar?: boolean;
     mediaHostURL?: string;
@@ -27,7 +27,7 @@ interface DEOption {
 }
 
 const editorStore = useEditorStore();
-const props = withDefaults(defineProps<DEOption>(), {
+const props = withDefaults(defineProps<DragonEditorOption>(), {
     useMenuBar: true,
     isMobile: false,
     mediaHostURL: "",
@@ -37,7 +37,7 @@ const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
     (e: "uploadImageEvent", file: File): void;
 }>();
-const $body = ref<HTMLDivElement|null>(null);
+const $body = ref<HTMLDivElement | null>(null);
 
 // 옵션 저장
 editorStore.option.isMobile = props.isMobile;

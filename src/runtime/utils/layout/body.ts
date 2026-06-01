@@ -34,6 +34,12 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
 
             case "list":
                 component = ListBlock;
+
+                block.child.forEach((child) => {
+                    if (child.id === "" || child.id === null || child.id === undefined) {
+                        child.id = _generateId();
+                    }
+                });
                 break;
 
             case "image":

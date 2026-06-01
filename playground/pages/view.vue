@@ -8,21 +8,22 @@
 import { ref } from "#imports";
 
 const data = ref<DEContentData>([
-    { type: "text", classList: [], textContent: "1" },
+    { type: "text", classList: [], textContent: "1", id: "XB1hJj" },
+    { type: "text", classList: [], textContent: "2", id: "Zzf3zr" },
     { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
     { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
     { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
-    { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [] },
-    { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }] },
-    { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }] },
-    { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }] },
-    { type: "divider" },
-    { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-    { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-    { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-    { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-    { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
-    { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
+    { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [], id: "uigZjj" },
+    { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }], id: "b5tear" },
+    { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }], id: "BUvIPz" },
+    { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }], id: "2vXnat" },
+    { type: "divider", id: "3rdNAX" },
+    { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }], id: "Ici9Ls" },
+    { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }], id: "Azx5lD" },
+    { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }], id: "XonYkz" },
+    { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }], id: "WK9akP" },
+    { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>', id: "ssCjpu" },
+    { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313", id: "VNJJak" },
 ]);
 </script>
 

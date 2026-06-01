@@ -1,6 +1,6 @@
 <template>
     <p
-        v-memo="[editorStore.selectedBlockIndex === props.index ? 'frozen' : JSON.stringify(props.data)]"
+        v-memo="memoData"
         v-html="props.data.textContent"
         class="de-block de-text-block"
         :class="[...props.data.classList]"
@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
+import { computed } from "vue";
 import { _sliceAndNewTextBlock } from "../../utils/event";
 import type { DETextBlock } from "../../type.d.mts";
 
@@ -23,6 +24,12 @@ const props = defineProps<{ data: DETextBlock; isEdit: boolean; index: number }>
 const emit = defineEmits<{
     (e: "update", data: DETextBlock): void;
 }>();
+const memoData = computed<any[]>(() => {
+    const isFrozen = props.isEdit === true && editorStore.selectedBlockIndex === props.index;
+    const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
+
+    return [memoKey];
+});
 
 function setEdit() {
     editorStore.selectedBlockIndex = props.index;
