@@ -1,7 +1,7 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _updateCursorData } from "./index";
-import { _createTextBlockData } from "../data";
+import { _createTextBlockData, _createHeadingBlockData } from "../data";
 import type { DETextBlock, DEHeadingBlock, DEContentData } from "../../type.mjs";
 
 // 내용 짤라서 새로운 텍스트 블럭 생성 (엔터 이벤트)
@@ -43,11 +43,69 @@ export async function _sliceAndNewTextBlock(event: KeyboardEvent, data: DETextBl
             ($target.nextElementSibling as HTMLParagraphElement).focus();
         } else {
             // 중간인 경우
-            newData.splice(index, 0, _createTextBlockData(beforeHTML));
+            if (data.type === "text") {
+                newData.splice(index, 0, _createTextBlockData(beforeHTML));
+            } else {
+                newData.splice(index, 0, _createHeadingBlockData(data.level, beforeHTML));
+                newData.splice(index + 1, 1, _createTextBlockData(afterHTLM));
+            }
+
             editorStore.fn.updateEditorData(newData);
             await nextTick();
-            $target.innerHTML = afterHTLM;
-            $target.dispatchEvent(new Event("input"));
+
+            if (data.type === "text") {
+                $target.innerHTML = afterHTLM;
+                $target.focus();
+                $target.dispatchEvent(new Event("input"));
+            } else {
+                if (editorStore.element.body !== null) {
+                    const $block = editorStore.element.body.children[index + 1] as HTMLParagraphElement;
+
+                    $block.focus();
+                    $block.dispatchEvent(new Event("input"));
+                }
+            }
+
+            editorStore.selectedBlockIndex += 1;
+            _updateCursorData();
         }
+    }
+}
+
+// 블록 탭 이벤트
+export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | DEHeadingBlock | DEListBlock, index: number, setEvent: Function, abortEvent: Function): Promise<void> {
+    const editorStore = useEditorStore();
+    const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+
+    event.preventDefault();
+    _updateCursorData();
+
+    if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null) {
+        // 탭 이벤트
+        if (event.shiftKey === false) {
+            if (data.depth === undefined) {
+                data.depth = 1;
+            } else {
+                data.depth += 1;
+            }
+
+            if (data.depth > 5) {
+                data.depth = 5;
+            }
+        } else {
+            if (data.depth !== undefined) {
+                data.depth -= 1;
+
+                if (data.depth < 0) {
+                    delete data.depth;
+                }
+            }
+        }
+
+        abortEvent();
+        newData.splice(index, 1, data);
+        editorStore.fn.updateEditorData(newData);
+        await nextTick();
+        setEvent();
     }
 }

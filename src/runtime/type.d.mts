@@ -10,6 +10,9 @@ type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | D
 // 리스트 엘리먼트 태그 명
 type DEListElementName = "ul" | "ol";
 
+// 해딩 테그 레벨
+type DEHeadingElementLevel = 1 | 2 | 3;
+
 // 스토어 구조체
 interface DragonEditorStore {
     data: DEContentData;
@@ -43,7 +46,7 @@ interface DETextBlock {
 interface DEHeadingBlock {
     id: string;
     type: "heading";
-    level: 1 | 2 | 3;
+    level: DEHeadingElementLevel;
     depth?: number;
     classList: string[];
     textContent: string;

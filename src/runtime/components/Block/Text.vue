@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { computed } from "vue";
-import { _sliceAndNewTextBlock } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent } from "../../utils/event";
 import type { DETextBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -40,8 +40,6 @@ function abortEdit() {
 }
 
 function keydownEvent(event: KeyboardEvent): void {
-    console.log(event.key);
-
     switch (event.key) {
         case "Enter":
             // 엔터 이벤트
@@ -54,9 +52,11 @@ function keydownEvent(event: KeyboardEvent): void {
             } else {
                 // 쉬프트 엔터 이벤트
             }
+
             break;
 
         case "Tab":
+            _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
             break;
 
         case "ArrowUp":

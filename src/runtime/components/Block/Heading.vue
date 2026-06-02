@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { h, withMemo } from "vue";
+import { _sliceAndNewTextBlock, _blockTabEvent } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEHeadingBlock } from "../../type.d.mts";
 
@@ -13,6 +14,7 @@ const props = defineProps<{ data: DEHeadingBlock; isEdit: boolean; index: number
 const emit = defineEmits<{
     (e: "update", data: DEHeadingBlock): void;
 }>();
+const memoCache: any[] = [];
 
 function setEdit() {
     editorStore.selectedBlockIndex = props.index;
@@ -22,6 +24,43 @@ function abortEdit() {
     editorStore.selectedBlockIndex = -1;
 }
 
+function keydownEvent(event: KeyboardEvent): void {
+    switch (event.key) {
+        case "Enter":
+            // 엔터 이벤트
+            if (event.shiftKey === false) {
+                if (event.isComposing === false) {
+                    _sliceAndNewTextBlock(event, props.data, props.index);
+                } else {
+                    event.preventDefault();
+                }
+            } else {
+                // 쉬프트 엔터 이벤트
+            }
+
+            break;
+
+        case "Tab":
+            _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
+            break;
+
+        case "ArrowUp":
+            break;
+
+        case "ArrowDown":
+            break;
+
+        case "Backspace":
+            break;
+
+        case "Delete":
+            break;
+
+        case "`":
+            break;
+    }
+}
+
 function updateData(event: Event): void {
     const newData = JSON.parse(JSON.stringify(props.data)) as DEHeadingBlock;
 
@@ -29,8 +68,6 @@ function updateData(event: Event): void {
 
     emit("update", newData);
 }
-
-const memoCache: any[] = [];
 
 function renderHeading(): VNode {
     const isFrozen = props.isEdit === true && editorStore.selectedBlockIndex === props.index;
@@ -49,6 +86,7 @@ function renderHeading(): VNode {
                 onFocus: setEdit,
                 onBlur: abortEdit,
                 onInput: updateData,
+                onkeydown: keydownEvent,
             }),
         memoCache,
         0
