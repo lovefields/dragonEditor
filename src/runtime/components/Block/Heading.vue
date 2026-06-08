@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { h, withMemo } from "vue";
-import { _sliceAndNewTextBlock, _blockTabEvent } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEHeadingBlock } from "../../type.d.mts";
 
@@ -45,9 +45,11 @@ function keydownEvent(event: KeyboardEvent): void {
             break;
 
         case "ArrowUp":
+            _moveBlockDefaultEvent(event, "up");
             break;
 
         case "ArrowDown":
+            _moveBlockDefaultEvent(event, "down");
             break;
 
         case "Backspace":

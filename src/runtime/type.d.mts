@@ -7,6 +7,9 @@ type DEContentData = DEBlockData[];
 // 컨텐츠 타입
 type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock | DEDividerBlock;
 
+// 블록 타입
+type DEBlockType = DEBlockData["type"];
+
 // 리스트 엘리먼트 태그 명
 type DEListElementName = "ul" | "ol";
 
@@ -102,6 +105,12 @@ interface DECustomBlock {
 interface DEDividerBlock {
     id: string;
     type: "divider";
+}
+
+// 멀티라인 포지션
+interface DELinePosition {
+    curruntLine: number;
+    lineCount: number;
 }
 
 /**

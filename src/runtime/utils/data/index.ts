@@ -1,4 +1,5 @@
 export * from "./block";
+export * from "./cursor";
 
 // 난수 아이디 생성
 export function _generateId() {
@@ -11,11 +12,3 @@ export function _generateId() {
 
     return str;
 }
-
-// function __isMultiline(element: HTMLElement) {
-//     const { height } = element.getBoundingClientRect();
-//     const lineHeight = parseFloat(window.getComputedStyle(element).lineHeight);
-//     const padding = parseFloat(window.getComputedStyle(element).paddingTop) + parseFloat(window.getComputedStyle(element).paddingBottom);
-
-//     return height - padding > lineHeight;
-// }
