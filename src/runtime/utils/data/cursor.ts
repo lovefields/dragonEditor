@@ -35,3 +35,32 @@ export function _getMultilinePosition(element: HTMLElement): DELinePosition {
 
     return position;
 }
+
+// 커서기준 앞뒤 HTML 추출
+export function _getBeforeAndAfterHTMLOfCursor($target: HTMLElement): { beforeHTML: string; afterHTML: string } {
+    const editorStore = useEditorStore();
+    const data: { beforeHTML: string; afterHTML: string } = { beforeHTML: "", afterHTML: "" };
+
+    if (editorStore.cursorSelection !== null) {
+        const range = editorStore.cursorSelection.getRangeAt(0);
+        const cloneRangeBefore = range.cloneRange();
+        const cloneRangeAfter = range.cloneRange();
+
+        cloneRangeBefore.selectNodeContents($target);
+        cloneRangeBefore.setEnd(range.endContainer, range.endOffset);
+        cloneRangeAfter.selectNodeContents($target);
+        cloneRangeAfter.setStart(range.endContainer, range.endOffset);
+
+        const fragmentBefore = cloneRangeBefore.cloneContents();
+        const tempDivBefore = document.createElement("div");
+        const fragmentAfter = cloneRangeAfter.cloneContents();
+        const tempDivAfter = document.createElement("div");
+
+        tempDivBefore.appendChild(fragmentBefore);
+        tempDivAfter.appendChild(fragmentAfter);
+        data.beforeHTML = tempDivBefore.innerHTML;
+        data.afterHTML = tempDivAfter.innerHTML === "<br>" ? "" : tempDivAfter.innerHTML;
+    }
+
+    return data;
+}

@@ -100,8 +100,10 @@ $color-list:
 
         &.de-list-block {
             @for $i from 1 through 5 {
-                &[data-depth="#{$i}"] {
-                    padding-left: ($i * 30px) + 24px;
+                .de-item[data-depth="#{$i}"] {
+                    margin-left: $i * 30px;
+
+                    
                 }
             }
         }

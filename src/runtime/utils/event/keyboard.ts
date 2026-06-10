@@ -1,8 +1,8 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _updateCursorData } from "./index";
-import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType } from "../data";
-import { _findEditableElement } from "../node";
+import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData } from "../data";
+import { _findEditableElement, _findParentBlock } from "../node";
 import type { DETextBlock, DEHeadingBlock, DEContentData } from "../../type.mjs";
 
 // 내용 짤라서 새로운 텍스트 블럭 생성 (엔터 이벤트)
@@ -14,57 +14,42 @@ export async function _sliceAndNewTextBlock(event: KeyboardEvent, data: DETextBl
 
     if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null) {
         const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
-        const range = editorStore.cursorSelection.getRangeAt(0);
-        const cloneRange = range.cloneRange();
         const $target = event.currentTarget as HTMLElement;
+        const { beforeHTML, afterHTML } = _getBeforeAndAfterHTMLOfCursor($target);
 
-        cloneRange.selectNodeContents($target);
-        cloneRange.setEnd(range.endContainer, range.endOffset);
-
-        const extractedFragment = cloneRange.extractContents();
-        const tempDiv = document.createElement("div");
-
-        tempDiv.appendChild(extractedFragment);
-
-        const beforeHTML = tempDiv.innerHTML;
-        const afterHTLM = $target.innerHTML;
-
-        if (beforeHTML === "" && afterHTLM !== "") {
+        if (beforeHTML === "" && afterHTML !== "") {
             // 커서 앞이 빈 경우
             newData.splice(index, 0, _createTextBlockData());
             editorStore.fn.updateEditorData(newData);
-        } else if ((beforeHTML !== "" && afterHTLM === "") || (beforeHTML === "" && afterHTLM === "")) {
+        } else if ((beforeHTML !== "" && afterHTML === "") || (beforeHTML === "" && afterHTML === "")) {
             // 커서 뒤가 빈 경우 && 내용이 빈 경우
+            data.textContent = beforeHTML;
             newData.splice(index + 1, 0, _createTextBlockData());
+            newData[index] = data;
             editorStore.fn.updateEditorData(newData);
             await nextTick();
-            $target.innerHTML = beforeHTML;
             $target.dispatchEvent(new Event("input"));
             await nextTick();
             ($target.nextElementSibling as HTMLParagraphElement).focus();
         } else {
             // 중간인 경우
             if (data.type === "text") {
-                newData.splice(index, 0, _createTextBlockData(beforeHTML));
+                newData.splice(index + 1, 0, _createTextBlockData(afterHTML));
             } else {
                 newData.splice(index, 0, _createHeadingBlockData(data.level, beforeHTML));
-                newData.splice(index + 1, 1, _createTextBlockData(afterHTLM));
+                newData.splice(index + 1, 1, _createTextBlockData(afterHTML));
             }
 
+            data.textContent = beforeHTML;
+            newData[index] = data;
             editorStore.fn.updateEditorData(newData);
             await nextTick();
 
-            if (data.type === "text") {
-                $target.innerHTML = afterHTLM;
-                $target.focus();
-                $target.dispatchEvent(new Event("input"));
-            } else {
-                if (editorStore.element.body !== null) {
-                    const $block = editorStore.element.body.children[index + 1] as HTMLParagraphElement;
+            if (editorStore.element.body !== null) {
+                const $block = editorStore.element.body.children[index + 1] as HTMLParagraphElement;
 
-                    $block.focus();
-                    $block.dispatchEvent(new Event("input"));
-                }
+                $block.focus();
+                $block.dispatchEvent(new Event("input"));
             }
 
             editorStore.selectedBlockIndex += 1;
@@ -82,35 +67,124 @@ export async function _imageEnterEvent(event: KeyboardEvent, data: DEImageBlock,
 
     if (editorStore.element.body !== null && editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null) {
         const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
-        const range = editorStore.cursorSelection.getRangeAt(0);
-        const cloneRange = range.cloneRange();
         const $target = event.currentTarget as HTMLElement;
+        const { beforeHTML, afterHTML } = _getBeforeAndAfterHTMLOfCursor($target);
 
-        cloneRange.selectNodeContents($target);
-        cloneRange.setEnd(range.endContainer, range.endOffset);
-
-        const extractedFragment = cloneRange.extractContents();
-        const tempDiv = document.createElement("div");
-
-        tempDiv.appendChild(extractedFragment);
-
-        const beforeHTML = tempDiv.innerHTML;
-        const afterHTLM = $target.innerHTML;
-
-        newData.splice(index + 1, 0, _createTextBlockData(afterHTLM));
+        data.caption = beforeHTML;
+        newData.splice(index + 1, 0, _createTextBlockData(afterHTML));
+        newData[index] = data;
+        editorStore.selectedBlockIndex += 1;
         editorStore.fn.updateEditorData(newData);
         await nextTick();
-        $target.innerHTML = beforeHTML;
         $target.dispatchEvent(new Event("input"));
-        await nextTick();
         (editorStore.element.body.children[index + 1] as HTMLParagraphElement).focus();
-        editorStore.selectedBlockIndex += 1;
         _updateCursorData();
     }
 }
 
+// 리스트 블럭 엔터 이벤트
+export async function _listBlockEnterEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, setEvent: (liIndex: number) => void, abortEvent: Function): Promise<void> {
+    const editorStore = useEditorStore();
+
+    event.preventDefault();
+    _updateCursorData();
+
+    if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+        const $target = event.currentTarget as HTMLElement;
+        const $parentBlock = _findParentBlock($target);
+
+        if ($parentBlock !== null) {
+            const childCount = $parentBlock.querySelectorAll(".de-item").length;
+            const depth = parseInt($target.dataset["depth"] || "0");
+            const { beforeHTML, afterHTML } = _getBeforeAndAfterHTMLOfCursor($target);
+
+            if (childCount === 1) {
+                // 자식이 한개인 경우
+
+                if (beforeHTML === "" && afterHTML === "") {
+                    // 내용이 비어있는 경우
+                    newData.splice(index, 1, _createTextBlockData());
+                    editorStore.fn.updateEditorData(newData);
+                    await nextTick();
+
+                    (editorStore.element.body.children[index] as HTMLElement).focus();
+                } else {
+                    data.child[childIndex]!.textContent = beforeHTML;
+                    data.child.push(_createListBlockChildData(afterHTML, depth));
+                    newData[index] = data;
+                    editorStore.fn.updateEditorData(newData);
+                    await nextTick();
+                    ($target.nextElementSibling as HTMLElement).focus();
+                }
+            } else if (childIndex === childCount - 1) {
+                // 마지막 자식인 경우
+
+                if (beforeHTML === "" && afterHTML === "") {
+                    // 내용이 비어있는 경우
+                    data.child.splice(childIndex, 1);
+                    newData[index] = data;
+                    newData.splice(index + 1, 0, _createTextBlockData());
+                    editorStore.fn.updateEditorData(newData);
+                    await nextTick();
+                    (editorStore.element.body.children[index + 1] as HTMLElement).focus();
+                } else {
+                    data.child[childIndex]!.textContent = beforeHTML;
+                    data.child.push(_createListBlockChildData(afterHTML, depth));
+                    newData[index] = data;
+                    editorStore.fn.updateEditorData(newData);
+                    await nextTick();
+                    ($target.nextElementSibling as HTMLElement).focus();
+                }
+            } else {
+                // 중간 자식인 경우
+
+                if (beforeHTML === "" && afterHTML === "") {
+                    // 내용이 비어있는 경우
+
+                    if (depth === 0) {
+                        const beforeChildList = data.child.slice(0, childIndex);
+                        const afterChildList = data.child.slice(childIndex + 1);
+
+                        newData.splice(index, 1, _createListBlockData(data.element, data.style, beforeChildList));
+                        newData.splice(index + 1, 0, _createTextBlockData());
+                        newData.splice(index + 2, 0, _createListBlockData(data.element, data.style, afterChildList));
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+                        (editorStore.element.body.children[index + 1] as HTMLElement).focus();
+                    } else {
+                        const targetChild = data.child[childIndex];
+
+                        if (targetChild !== undefined && targetChild.depth !== undefined) {
+                            if (depth === 1) {
+                                delete targetChild.depth;
+                            } else {
+                                targetChild.depth -= 1;
+                            }
+
+                            data.child[childIndex] = targetChild;
+                            newData[index] = data;
+                            abortEvent();
+                            editorStore.fn.updateEditorData(newData);
+                            await nextTick();
+                            setEvent(childIndex);
+                        }
+                    }
+                } else {
+                    data.child[childIndex]!.textContent = beforeHTML;
+                    data.child.splice(childIndex + 1, 0, _createListBlockChildData(afterHTML, depth));
+                    newData[index] = data;
+                    editorStore.fn.updateEditorData(newData);
+                    await nextTick();
+                    ($target.nextElementSibling as HTMLElement).focus();
+                }
+            }
+        }
+    }
+}
+
 // 블록 탭 이벤트
-export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | DEHeadingBlock | DEListBlock, index: number, setEvent: Function, abortEvent: Function): Promise<void> {
+export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | DEHeadingBlock, index: number, setEvent: Function, abortEvent: Function): Promise<void> {
     const editorStore = useEditorStore();
     const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
 
@@ -145,6 +219,46 @@ export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | D
         await nextTick();
         setEvent();
     }
+}
+
+// 리스트 탭 이벤트
+export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, setEvent: (liIndex: number) => void, abortEvent: Function): Promise<void> {
+    // const editorStore = useEditorStore();
+    // const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+    // const targetChild = data.child[childIndex];
+
+    // event.preventDefault();
+    // _updateCursorData();
+
+    // if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null && targetChild !== undefined) {
+    //     // 탭 이벤트
+    //     if (event.shiftKey === false) {
+    //         if (targetChild.depth === undefined) {
+    //             targetChild.depth = 1;
+    //         } else {
+    //             targetChild.depth += 1;
+    //         }
+
+    //         if (targetChild.depth > 5) {
+    //             targetChild.depth = 5;
+    //         }
+    //     } else {
+    //         if (targetChild.depth !== undefined) {
+    //             targetChild.depth -= 1;
+
+    //             if (targetChild.depth < 0) {
+    //                 delete targetChild.depth;
+    //             }
+    //         }
+    //     }
+
+    //     data.child[childIndex] = targetChild;
+    //     newData[index] = data;
+    //     abortEvent();
+    //     editorStore.fn.updateEditorData(newData);
+    //     await nextTick();
+    //     setEvent(childIndex);
+    // }
 }
 
 // 커서 위치 이동
@@ -205,4 +319,3 @@ export function _moveBlockDefaultEvent(event: KeyboardEvent, type: "up" | "down"
         }
     }
 }
-

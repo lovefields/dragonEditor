@@ -58,6 +58,7 @@ interface DEHeadingBlock {
 // 컨텐츠 리스트 자식 타입
 interface DEListItem {
     id: string;
+    depth?: number;
     classList: string[];
     textContent: string;
 }
@@ -67,7 +68,6 @@ interface DEListBlock {
     id: string;
     type: "list";
     element: DEListElementName;
-    depth?: number;
     style: DEListStyle;
     child: DEListItem[];
 }
