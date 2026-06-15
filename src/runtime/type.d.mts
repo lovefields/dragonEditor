@@ -19,7 +19,8 @@ type DEHeadingElementLevel = 1 | 2 | 3;
 // 스토어 구조체
 interface DragonEditorStore {
     data: DEContentData;
-    selectedBlockIndex: number; // TODO : ID로 교체
+    selectedBlockId: string;
+    selectedBlockIndex: number;
     option: DEOption;
     cursorSelection: null | Selection;
     fn: {

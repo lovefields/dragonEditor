@@ -23,15 +23,20 @@ const emit = defineEmits<{
     (e: "update", data: DEListBlock): void;
 }>();
 const childIndex = ref<number>(-1);
+const childId = ref<string>("");
 let memoCache: any[] = [];
 
-function setEdit(liIndex: number) {
+function setEdit(liIndex: number, id: string) {
+    editorStore.selectedBlockId = props.data.id;
     editorStore.selectedBlockIndex = props.index;
     childIndex.value = liIndex;
+    childId.value = id;
 }
 
 function abortEdit() {
+    editorStore.selectedBlockIndex = -1;
     childIndex.value = -1;
+    childId.value = "";
     memoCache = [];
 }
 
@@ -164,7 +169,7 @@ function createTreeStructure(listData: DEListItem[]): ListTreeNode[] {
 // 자식 렌더링
 function renderTreeNodes(nodes: ListTreeNode[]): VNode[] {
     return nodes.map((node) => {
-        const isFrozen = props.isEdit === true && childIndex.value === node.liIndex;
+        const isFrozen = props.isEdit === true && childId.value === node.child.id;
         const memoKey = isFrozen ? "frozen" : JSON.stringify(node);
         const subListVNode = node.children.length > 0 ? h(props.data.element, { class: "de-list-sub" }, renderTreeNodes(node.children)) : null;
 
@@ -176,7 +181,7 @@ function renderTreeNodes(nodes: ListTreeNode[]): VNode[] {
                         class: ["de-item-text", ...node.child.classList],
                         innerHTML: node.child.textContent,
                         contenteditable: props.isEdit === true,
-                        onFocus: () => setEdit(node.liIndex),
+                        onFocus: () => setEdit(node.liIndex, node.child.id),
                         onBlur: abortEdit,
                         onKeydown: keydownEvent,
                         onInput: (event: Event) => updateData(event, node.liIndex),

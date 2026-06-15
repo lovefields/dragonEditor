@@ -83,7 +83,7 @@ export async function _imageEnterEvent(event: KeyboardEvent, data: DEImageBlock,
 }
 
 // 리스트 블럭 엔터 이벤트
-export async function _listBlockEnterEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, setEvent: (liIndex: number) => void, abortEvent: Function): Promise<void> {
+export async function _listBlockEnterEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, setEvent: (liIndex: number, id: string) => void, abortEvent: Function): Promise<void> {
     const editorStore = useEditorStore();
 
     event.preventDefault();
@@ -301,7 +301,7 @@ export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | D
 }
 
 // 리스트 탭 이벤트
-export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, setEvent: (liIndex: number) => void, abortEvent: Function): Promise<void> {
+export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, setEvent: (liIndex: number, id: string) => void, abortEvent: Function): Promise<void> {
     const editorStore = useEditorStore();
     const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
     const targetChild = data.child[childIndex];
@@ -340,7 +340,7 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
             const child = data.child[i];
 
             if (i > childIndex && child !== undefined) {
-                if ((child.depth || 0) <= (targetChild.depth || 0)) {
+                if ((child.depth || 0) <= (targetChild.depth || 0) - 1) {
                     break;
                 } else {
                     if (type === "plus") {
@@ -370,7 +370,7 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
         abortEvent();
         editorStore.fn.updateEditorData(newData);
         await nextTick();
-        setEvent(childIndex);
+        setEvent(childIndex, targetChild.id);
 
         const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
 

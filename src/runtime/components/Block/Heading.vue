@@ -17,10 +17,12 @@ const emit = defineEmits<{
 const memoCache: any[] = [];
 
 function setEdit() {
+    editorStore.selectedBlockId = props.data.id;
     editorStore.selectedBlockIndex = props.index;
 }
 
 function abortEdit() {
+    editorStore.selectedBlockId = "";
     editorStore.selectedBlockIndex = -1;
 }
 
@@ -72,7 +74,7 @@ function updateData(event: Event): void {
 }
 
 function renderHeading(): VNode {
-    const isFrozen = props.isEdit === true && editorStore.selectedBlockIndex === props.index;
+    const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
     const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
 
     return withMemo(

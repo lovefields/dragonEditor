@@ -48,7 +48,7 @@ const emit = defineEmits<{
     (e: "update", data: DEImageBlock): void;
 }>();
 const memoData = computed<any[]>(() => {
-    const isFrozen = props.isEdit === true && editorStore.selectedBlockIndex === props.index;
+    const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
     const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
 
     return [memoKey];
@@ -56,6 +56,7 @@ const memoData = computed<any[]>(() => {
 
 function setEdit() {
     editorStore.selectedBlockIndex = props.index;
+    editorStore.selectedBlockId = props.data.id;
 }
 
 function keydownEvent(event: KeyboardEvent): void {
