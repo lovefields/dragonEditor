@@ -23,12 +23,11 @@ export function _createHeadingBlockData(level: DEHeadingElementLevel, textConten
 }
 
 // 리스트 블럭 데이터 생성
-export function _createListBlockData(element: DEListElementName, style: DEListStyle = element === "ul" ? "disc" : "decimal", childList: DEListItem[] = [_createListBlockChildData()]): DEListBlock {
+export function _createListBlockData(element: DEListElementName, childList: DEListItem[] = [_createListBlockChildData()]): DEListBlock {
     return {
         id: _generateId(),
         type: "list",
         element: element,
-        style: style,
         child: childList,
     };
 }

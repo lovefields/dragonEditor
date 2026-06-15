@@ -97,15 +97,5 @@ $color-list:
                 padding-left: $i * 30px;
             }
         }
-
-        &.de-list-block {
-            @for $i from 1 through 5 {
-                .de-item[data-depth="#{$i}"] {
-                    margin-left: $i * 30px;
-
-                    
-                }
-            }
-        }
     }
 }

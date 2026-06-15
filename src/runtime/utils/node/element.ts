@@ -24,7 +24,7 @@ export function _findEditableElement($block: HTMLElement, direction: "up" | "dow
 
     switch (targetBlockType) {
         case "list":
-            const children = $block.querySelectorAll(".de-item");
+            const children = $block.querySelectorAll(".de-item-text");
 
             if (children.length > 0) {
                 $editableTarget = (direction === "up" ? children[children.length - 1] : children[0]) as HTMLElement;

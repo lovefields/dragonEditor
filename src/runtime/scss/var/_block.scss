@@ -59,39 +59,62 @@
         row-gap: 4px;
         padding-left: 24px;
 
-        &[data-style="disc"] {
+        &[data-type="unordered"] {
             list-style: disc;
+
+            .de-list-sub {
+                list-style: circle;
+
+                .de-list-sub {
+                    list-style: square;
+
+                    .de-list-sub {
+                        list-style: disclosure-closed;
+
+                        .de-list-sub {
+                            list-style: "- ";
+
+                            .de-list-sub {
+                                list-style: "* ";
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        &[data-style="square"] {
-            list-style: square;
-        }
-
-        &[data-style="decimal"] {
+        &[data-type="ordered"] {
             list-style: decimal;
-        }
 
-        &[data-style="lower-alpha"] {
-            list-style: lower-alpha;
-        }
+            .de-list-sub {
+                list-style: lower-alpha;
 
-        &[data-style="upper-alpha"] {
-            list-style: upper-alpha;
-        }
+                .de-list-sub {
+                    list-style: lower-roman;
 
-        &[data-style="lower-roman"] {
-            list-style: lower-roman;
-        }
+                    .de-list-sub {
+                        list-style: upper-alpha;
 
-        &[data-style="upper-roman"] {
-            list-style: upper-roman;
+                        .de-list-sub {
+                            list-style: upper-roman;
+
+                            .de-list-sub {
+                                list-style: decimal;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         .de-item {
+            list-style: inherit;
+        }
+
+        .de-item-text {
             min-height: 1.6em;
             word-break: break-all;
             outline: 0;
-            list-style: inherit;
 
             @if $isEdit == "true" {
                 &:empty:hover::before,
@@ -102,6 +125,10 @@
                     cursor: text;
                 }
             }
+        }
+
+        .de-list-sub {
+            padding-left: 30px;
         }
     }
 

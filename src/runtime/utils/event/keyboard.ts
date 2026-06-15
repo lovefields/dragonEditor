@@ -91,15 +91,16 @@ export async function _listBlockEnterEvent(event: KeyboardEvent, data: DEListBlo
 
     if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
         const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+        const targetChildrenCount = data.child.length;
+        const targetChild = data.child[childIndex];
         const $target = event.currentTarget as HTMLElement;
-        const $parentBlock = _findParentBlock($target);
 
-        if ($parentBlock !== null) {
-            const childCount = $parentBlock.querySelectorAll(".de-item").length;
-            const depth = parseInt($target.dataset["depth"] || "0");
+        if (targetChild !== undefined) {
             const { beforeHTML, afterHTML } = _getBeforeAndAfterHTMLOfCursor($target);
 
-            if (childCount === 1) {
+            abortEvent();
+
+            if (targetChildrenCount === 1) {
                 // 자식이 한개인 경우
 
                 if (beforeHTML === "" && afterHTML === "") {
@@ -111,72 +112,150 @@ export async function _listBlockEnterEvent(event: KeyboardEvent, data: DEListBlo
                     (editorStore.element.body.children[index] as HTMLElement).focus();
                 } else {
                     data.child[childIndex]!.textContent = beforeHTML;
-                    data.child.push(_createListBlockChildData(afterHTML, depth));
+                    data.child.push(_createListBlockChildData(afterHTML, targetChild.depth));
                     newData[index] = data;
                     editorStore.fn.updateEditorData(newData);
                     await nextTick();
-                    ($target.nextElementSibling as HTMLElement).focus();
+
+                    const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
+
+                    if ($parentBlock !== undefined) {
+                        const $childElement = $parentBlock.children[childIndex + 1] as HTMLLIElement;
+
+                        if ($childElement !== undefined) {
+                            const $textArea = $childElement.querySelector(".de-item-text") as HTMLParagraphElement;
+
+                            if ($textArea !== null) {
+                                $textArea.focus();
+                            }
+                        }
+                    }
                 }
-            } else if (childIndex === childCount - 1) {
+            } else if (targetChildrenCount - 1 === childIndex) {
                 // 마지막 자식인 경우
 
                 if (beforeHTML === "" && afterHTML === "") {
-                    // 내용이 비어있는 경우
-                    data.child.splice(childIndex, 1);
-                    newData[index] = data;
-                    newData.splice(index + 1, 0, _createTextBlockData());
-                    editorStore.fn.updateEditorData(newData);
-                    await nextTick();
-                    (editorStore.element.body.children[index + 1] as HTMLElement).focus();
+                    if (targetChild.depth === undefined) {
+                        data.child.splice(childIndex, 1);
+                        newData[index] = data;
+                        newData.splice(index + 1, 0, _createTextBlockData());
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+
+                        (editorStore.element.body.children[index + 1] as HTMLElement).focus();
+                    } else {
+                        if (targetChild.depth === 1) {
+                            delete targetChild.depth;
+                        } else {
+                            targetChild.depth -= 1;
+                        }
+
+                        data.child[childIndex] = targetChild;
+                        newData[index] = data;
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+
+                        const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
+
+                        if ($parentBlock !== undefined) {
+                            const $childElement = $parentBlock.querySelectorAll("li")[childIndex];
+
+                            if ($childElement !== undefined) {
+                                const $textArea = $childElement.querySelector(".de-item-text") as HTMLParagraphElement;
+
+                                if ($textArea !== null) {
+                                    $textArea.focus();
+                                }
+                            }
+                        }
+                    }
                 } else {
                     data.child[childIndex]!.textContent = beforeHTML;
-                    data.child.push(_createListBlockChildData(afterHTML, depth));
+                    data.child.push(_createListBlockChildData(afterHTML, targetChild.depth));
                     newData[index] = data;
                     editorStore.fn.updateEditorData(newData);
                     await nextTick();
-                    ($target.nextElementSibling as HTMLElement).focus();
+
+                    const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
+
+                    if ($parentBlock !== undefined) {
+                        const $childElement = $parentBlock.querySelectorAll("li")[childIndex + 1];
+
+                        if ($childElement !== undefined) {
+                            const $textArea = $childElement.querySelector(".de-item-text") as HTMLParagraphElement;
+
+                            if ($textArea !== null) {
+                                $textArea.focus();
+                            }
+                        }
+                    }
                 }
             } else {
                 // 중간 자식인 경우
 
                 if (beforeHTML === "" && afterHTML === "") {
-                    // 내용이 비어있는 경우
-
-                    if (depth === 0) {
+                    if (targetChild.depth === undefined) {
                         const beforeChildList = data.child.slice(0, childIndex);
                         const afterChildList = data.child.slice(childIndex + 1);
-
-                        newData.splice(index, 1, _createListBlockData(data.element, data.style, beforeChildList));
+                        newData.splice(index, 1, _createListBlockData(data.element, beforeChildList));
                         newData.splice(index + 1, 0, _createTextBlockData());
-                        newData.splice(index + 2, 0, _createListBlockData(data.element, data.style, afterChildList));
+                        newData.splice(index + 2, 0, _createListBlockData(data.element, afterChildList));
+
                         editorStore.fn.updateEditorData(newData);
                         await nextTick();
-                        (editorStore.element.body.children[index + 1] as HTMLElement).focus();
+
+                        const $block = editorStore.element.body.children[index + 1] as HTMLElement;
+
+                        if ($block !== undefined) {
+                            $block.focus();
+                        }
                     } else {
-                        const targetChild = data.child[childIndex];
+                        if (targetChild.depth === 1) {
+                            delete targetChild.depth;
+                        } else {
+                            targetChild.depth -= 1;
+                        }
 
-                        if (targetChild !== undefined && targetChild.depth !== undefined) {
-                            if (depth === 1) {
-                                delete targetChild.depth;
-                            } else {
-                                targetChild.depth -= 1;
+                        data.child[childIndex] = targetChild;
+                        newData[index] = data;
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+
+                        const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
+
+                        if ($parentBlock !== undefined) {
+                            const $childElement = $parentBlock.querySelectorAll("li")[childIndex];
+
+                            if ($childElement !== undefined) {
+                                const $textArea = $childElement.querySelector(".de-item-text") as HTMLParagraphElement;
+
+                                if ($textArea !== null) {
+                                    $textArea.focus();
+                                }
                             }
-
-                            data.child[childIndex] = targetChild;
-                            newData[index] = data;
-                            abortEvent();
-                            editorStore.fn.updateEditorData(newData);
-                            await nextTick();
-                            setEvent(childIndex);
                         }
                     }
                 } else {
-                    data.child[childIndex]!.textContent = beforeHTML;
-                    data.child.splice(childIndex + 1, 0, _createListBlockChildData(afterHTML, depth));
+                    targetChild.textContent = beforeHTML;
+                    data.child[childIndex] = targetChild;
+                    data.child.splice(childIndex + 1, 0, _createListBlockChildData(afterHTML, targetChild.depth || 0));
                     newData[index] = data;
                     editorStore.fn.updateEditorData(newData);
                     await nextTick();
-                    ($target.nextElementSibling as HTMLElement).focus();
+
+                    const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
+
+                    if ($parentBlock !== undefined) {
+                        const $targetChildElement = $parentBlock.querySelectorAll(".de-item-text")[childIndex];
+                        const $childElement = $parentBlock.querySelectorAll(".de-item-text")[childIndex + 1];
+
+                        // 엘리먼트 강제업데이트
+                        // $targetChildElement!.innerHTML = beforeHTML;
+
+                        if ($childElement !== undefined) {
+                            ($childElement as HTMLParagraphElement).focus();
+                        }
+                    }
                 }
             }
         }
@@ -223,42 +302,90 @@ export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | D
 
 // 리스트 탭 이벤트
 export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, setEvent: (liIndex: number) => void, abortEvent: Function): Promise<void> {
-    // const editorStore = useEditorStore();
-    // const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
-    // const targetChild = data.child[childIndex];
+    const editorStore = useEditorStore();
+    const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+    const targetChild = data.child[childIndex];
+    let type: "plus" | "minus" = "plus";
 
-    // event.preventDefault();
-    // _updateCursorData();
+    event.preventDefault();
+    _updateCursorData();
 
-    // if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null && targetChild !== undefined) {
-    //     // 탭 이벤트
-    //     if (event.shiftKey === false) {
-    //         if (targetChild.depth === undefined) {
-    //             targetChild.depth = 1;
-    //         } else {
-    //             targetChild.depth += 1;
-    //         }
+    if (data.child.length > 1 && editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null && targetChild !== undefined) {
+        // 탭 이벤트
+        if (event.shiftKey === false) {
+            if (targetChild.depth === undefined) {
+                targetChild.depth = 1;
+            } else {
+                targetChild.depth += 1;
+            }
 
-    //         if (targetChild.depth > 5) {
-    //             targetChild.depth = 5;
-    //         }
-    //     } else {
-    //         if (targetChild.depth !== undefined) {
-    //             targetChild.depth -= 1;
+            if (targetChild.depth > 5) {
+                targetChild.depth = 5;
+            }
+        } else {
+            type = "minus";
 
-    //             if (targetChild.depth < 0) {
-    //                 delete targetChild.depth;
-    //             }
-    //         }
-    //     }
+            if (targetChild.depth !== undefined) {
+                targetChild.depth -= 1;
 
-    //     data.child[childIndex] = targetChild;
-    //     newData[index] = data;
-    //     abortEvent();
-    //     editorStore.fn.updateEditorData(newData);
-    //     await nextTick();
-    //     setEvent(childIndex);
-    // }
+                if (targetChild.depth <= 0) {
+                    delete targetChild.depth;
+                }
+            }
+        }
+
+        data.child[childIndex] = targetChild;
+
+        for (let i = 0; i < data.child.length; i += 1) {
+            const child = data.child[i];
+
+            if (i > childIndex && child !== undefined) {
+                if ((child.depth || 0) <= (targetChild.depth || 0)) {
+                    break;
+                } else {
+                    if (type === "plus") {
+                        if (child.depth === undefined) {
+                            child.depth = 1;
+                        } else {
+                            child.depth += 1;
+                        }
+
+                        if (child.depth > 5) {
+                            child.depth = 5;
+                        }
+                    } else {
+                        if (child.depth !== undefined) {
+                            child.depth -= 1;
+
+                            if (child.depth <= 0) {
+                                delete child.depth;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        newData[index] = data;
+        abortEvent();
+        editorStore.fn.updateEditorData(newData);
+        await nextTick();
+        setEvent(childIndex);
+
+        const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
+
+        if ($parentBlock !== undefined) {
+            const $childElement = $parentBlock.querySelectorAll("li")[childIndex];
+
+            if ($childElement !== undefined) {
+                const $textArea = $childElement.querySelector(".de-item-text") as HTMLParagraphElement;
+
+                if ($textArea !== null) {
+                    $textArea.focus();
+                }
+            }
+        }
+    }
 }
 
 // 커서 위치 이동
@@ -315,6 +442,78 @@ export function _moveBlockDefaultEvent(event: KeyboardEvent, type: "up" | "down"
                     editorStore.cursorSelection.addRange(range);
                     _updateCursorData();
                 }
+            }
+        }
+    }
+}
+
+// 리스트 커서 위치 이동
+export function _moveListChildEvent(event: KeyboardEvent, data: DEListBlock, index: number, childIndex: number, type: "up" | "down"): void {
+    const editorStore = useEditorStore();
+
+    _updateCursorData();
+
+    if (editorStore.element.body !== null) {
+        const $target = event.currentTarget as HTMLParagraphElement;
+        let positionData = _getMultilinePosition($target);
+        let targetType: "block" | "child" = "child";
+        let logicWork: boolean = false;
+
+        if (data.child.length === 1) {
+            targetType = "block";
+        } else {
+            if (childIndex === 0 && type === "up") {
+                targetType = "block";
+            }
+
+            if (childIndex === data.child.length - 1 && type === "down") {
+                targetType = "block";
+            }
+        }
+
+        if (positionData.lineCount === 1) {
+            logicWork = true;
+        } else {
+            if (type === "up") {
+                if (positionData.curruntLine === 1) {
+                    logicWork = true;
+                }
+            } else {
+                if (positionData.curruntLine === positionData.lineCount) {
+                    logicWork = true;
+                }
+            }
+        }
+
+        if (logicWork === true) {
+            const $block = editorStore.element.body.children[index] as HTMLElement;
+            let $editableTarget: HTMLElement | null = null;
+
+            event.preventDefault();
+
+            if (targetType === "block") {
+                const $targetBlock = type === "up" ? $block.previousElementSibling : $block.nextElementSibling;
+
+                $editableTarget = _findEditableElement($targetBlock as HTMLElement, type);
+            } else {
+                const $targetChildElement = $block.querySelectorAll(".de-item-text");
+
+                $editableTarget = type === "up" ? ($targetChildElement[childIndex - 1] as HTMLElement) : ($targetChildElement[childIndex + 1] as HTMLElement);
+            }
+
+            if (editorStore.cursorSelection !== null && $editableTarget !== null) {
+                const range = document.createRange();
+
+                $editableTarget.focus();
+                range.selectNodeContents($editableTarget);
+                if (type === "up") {
+                    range.collapse(false); // 마지막 줄 끝으로 이동
+                } else {
+                    range.collapse(true); // 첫 번째 줄 처음으로 이동
+                }
+                editorStore.cursorSelection.removeAllRanges();
+                editorStore.cursorSelection.addRange(range);
+                _updateCursorData();
             }
         }
     }

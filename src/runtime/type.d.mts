@@ -19,7 +19,7 @@ type DEHeadingElementLevel = 1 | 2 | 3;
 // 스토어 구조체
 interface DragonEditorStore {
     data: DEContentData;
-    selectedBlockIndex: number;
+    selectedBlockIndex: number; // TODO : ID로 교체
     option: DEOption;
     cursorSelection: null | Selection;
     fn: {
@@ -68,7 +68,6 @@ interface DEListBlock {
     id: string;
     type: "list";
     element: DEListElementName;
-    style: DEListStyle;
     child: DEListItem[];
 }
 
@@ -125,8 +124,6 @@ type DETextalign = "left" | "right" | "center" | "justify";
 type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "divider" | "custom";
 
 type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom" | "divider";
-
-type DEListStyle = "disc" | "square" | "decimal" | "lower-alpha" | "upper-alpha" | "lower-roman" | "upper-roman";
 
 type DECodeblockTheme = "github-light" | "github-dark-dimmed";
 
