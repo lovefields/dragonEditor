@@ -225,6 +225,7 @@ body {
 }
 
 .data {
-    height: 2500px;
+    min-height: 1000px;
+    word-break: break-all;
 }
 </style>

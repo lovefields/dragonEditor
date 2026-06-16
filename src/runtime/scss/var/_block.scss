@@ -261,8 +261,26 @@
             }
         }
 
-        .de-pre {
+        .de-pre-wrap {
+            display: flex;
+            flex-wrap: wrap;
             width: 100%;
+
+            .de-number {
+                padding: 10px 4px;
+                background: var(--editor-code-number);
+                color: var(--editor-code-number-bg);
+
+                .de-number-item {
+                    min-height: 1.6em;
+                    font-family: Inconsolata, monospace, sans-serif;
+                    text-align: right;
+                }
+            }
+        }
+
+        .de-pre {
+            flex: 1;
             padding: 10px;
             box-sizing: border-box;
             white-space: pre-wrap;

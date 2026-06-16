@@ -1,10 +1,10 @@
 <template>
     <div
-        v-memo="memoData"
         class="de-block de-code-block"
         @click="setEdit"
     >
         <p
+            v-memo="memoData"
             class="de-filename"
             :contenteditable="props.isEdit === true"
             @input="updateFilename"
@@ -14,7 +14,18 @@
 
         <p class="de-language">{{ DECodeLanguage[props.data.language] }}</p>
 
-        <pre class="de-pre"><code v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" @input="updateContent"></code></pre>
+        <div class="de-pre-wrap">
+            <div class="de-number">
+                <p
+                    v-for="i in lineNumber"
+                    class="de-number-item"
+                >
+                    {{ i }}
+                </p>
+            </div>
+
+            <pre class="de-pre"><code v-memo="memoData" v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" @input="updateContent"></code></pre>
+        </div>
     </div>
 </template>
 
@@ -29,6 +40,17 @@ const props = defineProps<{ data: DECodeBlock; isEdit: boolean; index: number }>
 const emit = defineEmits<{
     (e: "update", data: DECodeBlock): void;
 }>();
+const lineNumber = computed<number>(() => {
+    const match = props.data.textContent.match(/\n/g);
+    const matchEmptyLast = props.data.textContent.match(/\n\n$/g);
+    let number = match === null ? 1 : match.length + 1;
+
+    if (matchEmptyLast !== null) {
+        number -= 1;
+    }
+
+    return number;
+});
 const memoData = computed<any[]>(() => {
     const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
     const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
