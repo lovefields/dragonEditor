@@ -6,10 +6,58 @@ $color-list:
 .dragon-editor-viewer {
     --radius-default: 4px;
 
-    &.--white {
+    &[data-theme="dark"] {
+        --editor-border: #555;
+        --editor-divider: #333;
+
+        // 코드블럭 스타일
+        --editor-code-color: #adbac7;
+        --editor-code-bg: #22272e;
+        --editor-code-file-bg: #494e54;
+        --editor-code-placeholder: #96a0aa;
+        --editor-code-keyword: #f47067;
+        --editor-code-entity: #dcbdfb;
+        --editor-code-constant: #6cb6ff;
+        --editor-code-string: #96d0ff;
+        --editor-code-variable: #f69d50;
+        --editor-code-comment: #768390;
+        --editor-code-entity-tag: #8ddb8c;
+        --editor-code-storage-modifier-import: #adbac7;
+        --editor-code-markup-heading: #316dca;
+        --editor-code-markup-list: #eac55f;
+        --editor-code-markup-italic: #adbac7;
+        --editor-code-markup-bold: #adbac7;
+        --editor-code-markup-inserted: #b4f1b4;
+        --editor-code-markup-inserted-bg: #1b4721;
+        --editor-code-markup-deleted: #ffd8d3;
+        --editor-code-markup-deleted-bg: #78191b;
     }
 
-    &.--dark {
+    &[data-theme="white"] {
+        --editor-border: #ccc;
+        --editor-divider: #e5e5e5;
+
+        // 코드블럭 스타일
+        --editor-code-color: #24292e;
+        --editor-code-bg: #f1f1f1;
+        --editor-code-file-bg: #ccc;
+        --editor-code-placeholder: #8b8d8f;
+        --editor-code-keyword: #d73a49;
+        --editor-code-entity: #6f42c1;
+        --editor-code-constant: #005cc5;
+        --editor-code-string: #032f62;
+        --editor-code-variable: #e36209;
+        --editor-code-comment: #6a737d;
+        --editor-code-entity-tag: #22863a;
+        --editor-code-storage-modifier-import: #24292e;
+        --editor-code-markup-heading: #005cc5;
+        --editor-code-markup-list: #735c0f;
+        --editor-code-markup-italic: #24292e;
+        --editor-code-markup-bold: #24292e;
+        --editor-code-markup-inserted: #22863a;
+        --editor-code-markup-inserted-bg: #f0fff4;
+        --editor-code-markup-deleted: #b31d28;
+        --editor-code-markup-deleted-bg: #ffeef0;
     }
 
     /**

@@ -1,11 +1,15 @@
 <template>
-    <div class="area-page">
+    <div
+        class="area-page"
+        :class="[`--${theme}`]"
+    >
         <div
             class="editor-area"
             :class="{ '--sort': isChangeLayout === true, '--transform': isTransformLayout === true }"
         >
             <DragonEditor
                 v-model="contentData"
+                :theme="theme"
                 ref="$editor"
                 @uploadImageEvent="pasteImageProcess"
             />
@@ -22,6 +26,7 @@
             <button @click="changeLayout2">Change transform Layout</button>
             <button @click="checkEmpty">Check Empty</button>
             <button @click="checkEmpty2">Check Empty2</button>
+            <button @click="changeTheme">Change Theme</button>
         </div>
 
         <p class="data">{{ contentData }}</p>
@@ -33,8 +38,13 @@ import { ref } from "#imports";
 const contentData = ref<DEContentData>([]);
 const isChangeLayout = ref<boolean>(false);
 const isTransformLayout = ref<boolean>(false);
+const theme = ref<"dark" | "white">("white");
 const $editor = ref<DragonEditor>();
 let isChange: boolean = true;
+
+function changeTheme(): void {
+    theme.value = theme.value === "white" ? "dark" : "white";
+}
 
 function setContent() {
     contentData.value = [
@@ -166,7 +176,27 @@ function checkEmpty(): void {
 </script>
 
 <style lang="scss">
+body {
+    margin: 0;
+}
+
 .area-page {
+    &.--dark {
+        background: #09090b;
+        color: #dfdfe1;
+
+        .list-menu button {
+            background: #555;
+            color: #f1f1f1;
+            border-color: #555;
+        }
+    }
+
+    &.--white {
+        background: #f9f9f9;
+        color: #333;
+    }
+
     &.--transform {
         height: 100vh;
         overflow: auto;
@@ -179,6 +209,7 @@ function checkEmpty(): void {
 
 .editor-area {
     max-width: 800px;
+    padding: 50px 0;
     margin: 0 auto;
     font-size: 15px;
 
