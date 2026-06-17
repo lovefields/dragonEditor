@@ -31,6 +31,14 @@ export function _getMultilinePosition(element: HTMLElement): DELinePosition {
 
         position.curruntLine = Math.floor((rect.top - paddingTop - elemTop) / lineHeight) + 1;
         position.lineCount = Math.floor(elementHeight / lineHeight);
+
+        if (position.curruntLine < 1) {
+            position.curruntLine = 1;
+        }
+
+        if (position.lineCount < 1) {
+            position.lineCount = 1;
+        }
     }
 
     return position;
@@ -58,12 +66,6 @@ export function _getBeforeAndAfterHTMLOfCursor($target: HTMLElement): { beforeHT
 
         tempDivBefore.appendChild(fragmentBefore);
         tempDivAfter.appendChild(fragmentAfter);
-
-        // // 하위 중첩 리스트 엘리먼트 제거
-        // const subListsBefore = tempDivBefore.querySelectorAll(".de-list-sub");
-        // subListsBefore.forEach(sub => sub.remove());
-        // const subListsAfter = tempDivAfter.querySelectorAll(".de-list-sub");
-        // subListsAfter.forEach(sub => sub.remove());
 
         data.beforeHTML = tempDivBefore.innerHTML;
         data.afterHTML = tempDivAfter.innerHTML === "<br>" ? "" : tempDivAfter.innerHTML;

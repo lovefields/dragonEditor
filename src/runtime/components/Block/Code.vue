@@ -7,6 +7,9 @@
             v-memo="memoData"
             class="de-filename"
             :contenteditable="props.isEdit === true"
+            ref="$fileName"
+            @focus="setEdit"
+            @keydown="fileNameKeydownEvent"
             @input="updateFilename"
         >
             {{ props.data.filename }}
@@ -24,15 +27,16 @@
                 </p>
             </div>
 
-            <pre class="de-pre"><code v-memo="memoData" v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" @input="updateContent"></code></pre>
+            <pre class="de-pre"><code v-memo="memoData" v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" ref="$content" @focus="setEdit" @keydown="contentKeydownEvent" @input="updateContent" @blur=""></code></pre>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { DECodeLanguage } from "../../enums/codeLanguage";
+import { _moveCodeBlockEvent, _codeBlockShiftEnterEvent } from "../../utils/event";
 import type { DECodeBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -40,6 +44,8 @@ const props = defineProps<{ data: DECodeBlock; isEdit: boolean; index: number }>
 const emit = defineEmits<{
     (e: "update", data: DECodeBlock): void;
 }>();
+const $fileName = ref<HTMLParagraphElement | null>(null);
+const $content = ref<HTMLDivElement | null>(null);
 const lineNumber = computed<number>(() => {
     const match = props.data.textContent.match(/\n/g);
     const matchEmptyLast = props.data.textContent.match(/\n\n$/g);
@@ -71,11 +77,57 @@ function updateFilename(event: Event): void {
     emit("update", newData);
 }
 
+function fileNameKeydownEvent(event: KeyboardEvent): void {
+    if ($content.value !== null) {
+        switch (event.key) {
+            case "Enter":
+                _moveCodeBlockEvent(event, "down", "filename", $content.value);
+                break;
+
+            case "Tab":
+                _moveCodeBlockEvent(event, "down", "filename", $content.value);
+                break;
+
+            case "ArrowUp":
+                _moveCodeBlockEvent(event, "up", "filename", $content.value);
+                break;
+
+            case "ArrowDown":
+                _moveCodeBlockEvent(event, "down", "filename", $content.value);
+                break;
+        }
+    }
+}
+
 function updateContent(event: Event): void {
     const newData = JSON.parse(JSON.stringify(props.data)) as DECodeBlock;
 
     newData.textContent = (event.target as HTMLParagraphElement).innerHTML;
 
     emit("update", newData);
+}
+
+function contentKeydownEvent(event: KeyboardEvent): void {
+    if ($fileName.value !== null) {
+        switch (event.key) {
+            case "Enter":
+                if (event.shiftKey === true) {
+                    _codeBlockShiftEnterEvent(event, props.index);
+                }
+                break;
+
+            case "Tab":
+                _moveCodeBlockEvent(event, "down", "content", $fileName.value);
+                break;
+
+            case "ArrowUp":
+                _moveCodeBlockEvent(event, "up", "content", $fileName.value);
+                break;
+
+            case "ArrowDown":
+                _moveCodeBlockEvent(event, "down", "content", $fileName.value);
+                break;
+        }
+    }
 }
 </script>

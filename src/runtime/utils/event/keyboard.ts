@@ -249,9 +249,6 @@ export async function _listBlockEnterEvent(event: KeyboardEvent, data: DEListBlo
                         const $targetChildElement = $parentBlock.querySelectorAll(".de-item-text")[childIndex];
                         const $childElement = $parentBlock.querySelectorAll(".de-item-text")[childIndex + 1];
 
-                        // 엘리먼트 강제업데이트
-                        // $targetChildElement!.innerHTML = beforeHTML;
-
                         if ($childElement !== undefined) {
                             ($childElement as HTMLParagraphElement).focus();
                         }
@@ -259,6 +256,27 @@ export async function _listBlockEnterEvent(event: KeyboardEvent, data: DEListBlo
                 }
             }
         }
+    }
+}
+
+// 코드블럭 쉬프트 엔터 이벤트
+export async function _codeBlockShiftEnterEvent(event: KeyboardEvent, index: number) {
+    const editorStore = useEditorStore();
+
+    event.preventDefault();
+    _updateCursorData();
+
+    if (editorStore.element.body !== null && editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null) {
+        const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+        const newTextBlockData = _createTextBlockData();
+
+        newData.splice(index + 1, 0, newTextBlockData);
+        editorStore.fn.updateEditorData(newData);
+        editorStore.selectedBlockIndex += 1;
+        editorStore.selectedBlockId = newTextBlockData.id;
+        await nextTick();
+        (editorStore.element.body.children[index + 1] as HTMLParagraphElement).focus();
+        _updateCursorData();
     }
 }
 
@@ -514,6 +532,56 @@ export function _moveListChildEvent(event: KeyboardEvent, data: DEListBlock, ind
                 editorStore.cursorSelection.removeAllRanges();
                 editorStore.cursorSelection.addRange(range);
                 _updateCursorData();
+            }
+        }
+    }
+}
+
+// 코드블럭 커서 위치 이동
+export function _moveCodeBlockEvent(event: KeyboardEvent, direction: "up" | "down", type: "filename" | "content", $targetElement: HTMLElement): void {
+    const editorStore = useEditorStore();
+
+    _updateCursorData();
+
+    if (editorStore.cursorSelection !== null) {
+        if (type === "filename") {
+            event.preventDefault();
+
+            if (direction === "up") {
+                _moveBlockDefaultEvent(event, direction);
+            } else {
+                const range = document.createRange();
+
+                $targetElement.focus();
+                range.selectNodeContents($targetElement);
+                range.collapse(true); // 첫 번째 줄 처음으로 이동
+
+                editorStore.cursorSelection.removeAllRanges();
+                editorStore.cursorSelection.addRange(range);
+                _updateCursorData();
+            }
+        } else {
+            const $content = event.currentTarget as HTMLElement;
+            const positionData = _getMultilinePosition($content);
+
+            if (direction === "up") {
+                if (positionData.curruntLine === 1) {
+                    event.preventDefault();
+
+                    const range = document.createRange();
+
+                    $targetElement.focus();
+                    range.selectNodeContents($targetElement);
+                    range.collapse(false);
+
+                    editorStore.cursorSelection.removeAllRanges();
+                    editorStore.cursorSelection.addRange(range);
+                    _updateCursorData();
+                }
+            } else {
+                if (positionData.curruntLine === positionData.lineCount) {
+                    _moveBlockDefaultEvent(event, direction);
+                }
             }
         }
     }
