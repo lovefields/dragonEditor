@@ -7,7 +7,6 @@
         :contenteditable="props.isEdit === true"
         :data-depth="props.data.depth"
         @focus="setEdit"
-        @blur="abortEdit"
         @keydown="keydownEvent"
         @input="updateData"
     ></p>
@@ -16,7 +15,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { computed } from "vue";
-import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent,_defaultBackspaceEvent } from "../../utils/event";
 import type { DETextBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -70,6 +69,7 @@ function keydownEvent(event: KeyboardEvent): void {
             break;
 
         case "Backspace":
+            _defaultBackspaceEvent(event);
             break;
 
         case "Delete":

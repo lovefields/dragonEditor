@@ -68,16 +68,14 @@ export function _findEditableElement($block: HTMLElement, direction: "up" | "dow
 }
 
 // 부모 블럭 찾기
-export function _findParentBlock($element: HTMLElement): HTMLElement | null {
-    const $parent = $element.parentElement;
-
-    if ($parent !== null) {
-        const hasClass = $parent.classList.contains("de-block");
+export function _findParentBlock($element: HTMLElement | null): HTMLElement | null {
+    if ($element !== null) {
+        const hasClass = $element.classList.contains("de-block");
 
         if (hasClass === true) {
-            return $parent;
+            return $element;
         } else {
-            return _findParentBlock($parent);
+            return _findParentBlock($element.parentElement);
         }
     } else {
         return null;

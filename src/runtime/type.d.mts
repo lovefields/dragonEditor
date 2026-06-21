@@ -113,6 +113,12 @@ interface DELinePosition {
     lineCount: number;
 }
 
+// 커서 포지션
+interface DECurSorPosition {
+    isStart: boolean;
+    isEnd: boolean;
+}
+
 /**
  * 레거시
  */

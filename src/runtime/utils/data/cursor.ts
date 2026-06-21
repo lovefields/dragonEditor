@@ -1,5 +1,5 @@
 import { useEditorStore } from "../../store/editor";
-import type { DELinePosition } from "../../type.mjs";
+import type { DELinePosition, DECurSorPosition } from "../../type.mjs";
 
 // 현재 멀티라인 줄 위치
 export function _getMultilinePosition(element: HTMLElement): DELinePosition {
@@ -69,6 +69,84 @@ export function _getBeforeAndAfterHTMLOfCursor($target: HTMLElement): { beforeHT
 
         data.beforeHTML = tempDivBefore.innerHTML;
         data.afterHTML = tempDivAfter.innerHTML === "<br>" ? "" : tempDivAfter.innerHTML;
+    }
+
+    return data;
+}
+
+// 현재 커서 위치
+export function _isCursorAtLineBoundary(): DECurSorPosition {
+    const editorStore = useEditorStore();
+    const result = { isStart: false, isEnd: false };
+
+    if (editorStore.cursorSelection !== null) {
+        if (editorStore.cursorSelection.rangeCount === 0) {
+            return result;
+        }
+
+        const originalRange = editorStore.cursorSelection.getRangeAt(0).cloneRange();
+
+        try {
+            let currentRect = originalRange.getBoundingClientRect();
+            if (currentRect.height === 0) {
+                const rects = originalRange.getClientRects();
+                if (rects.length > 0) {
+                    currentRect = rects[0]!;
+                }
+            }
+            const currentTop = currentRect.top;
+
+            // 1. 가장 앞(Start) 여부 확인
+            editorStore.cursorSelection.modify("move", "left", "character");
+            let leftRect = editorStore.cursorSelection.getRangeAt(0).getBoundingClientRect();
+            if (leftRect.height === 0) {
+                const rects = editorStore.cursorSelection.getRangeAt(0).getClientRects();
+                if (rects.length > 0) {
+                    leftRect = rects[0]!;
+                }
+            }
+
+            if (leftRect.top < currentTop - 5 || (leftRect.top === currentTop && leftRect.left === currentRect.left)) {
+                result.isStart = true;
+            }
+
+            // Selection 복구
+            editorStore.cursorSelection.removeAllRanges();
+            editorStore.cursorSelection.addRange(originalRange);
+
+            // 2. 가장 뒤(End) 여부 확인
+            editorStore.cursorSelection.modify("move", "right", "character");
+            let rightRect = editorStore.cursorSelection.getRangeAt(0).getBoundingClientRect();
+            if (rightRect.height === 0) {
+                const rects = editorStore.cursorSelection.getRangeAt(0).getClientRects();
+                if (rects.length > 0) {
+                    rightRect = rects[0]!;
+                }
+            }
+
+            if (rightRect.top > currentTop + 5 || (rightRect.top === currentTop && rightRect.left === currentRect.left)) {
+                result.isEnd = true;
+            }
+        } catch (e) {
+            console.error("[Dragon Editor]: Failed to check cursor line boundary", e);
+        } finally {
+            editorStore.cursorSelection.removeAllRanges();
+            editorStore.cursorSelection.addRange(originalRange);
+        }
+    }
+
+    return result;
+}
+
+// 에디팅 영역의 마지막커서 위치 반환
+export function _getEditorbleEndPosition($element: HTMLElement): { nodeIndex: number; offset: number } {
+    const data = { nodeIndex: 0, offset: 0 };
+    const lastIndex = $element.childNodes.length - 1;
+    const $lastChild = $element.childNodes[lastIndex];
+
+    if ($lastChild !== undefined) {
+        data.nodeIndex = lastIndex;
+        data.offset = $lastChild.textContent?.length ?? 0;
     }
 
     return data;

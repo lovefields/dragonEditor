@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { h, withMemo } from "vue";
-import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEHeadingBlock } from "../../type.d.mts";
 
@@ -55,6 +55,7 @@ function keydownEvent(event: KeyboardEvent): void {
             break;
 
         case "Backspace":
+            _defaultBackspaceEvent(event);
             break;
 
         case "Delete":
@@ -88,7 +89,6 @@ function renderHeading(): VNode {
                 "data-level": props.data.level,
                 innerHTML: props.data.textContent,
                 onFocus: setEdit,
-                onBlur: abortEdit,
                 onInput: updateData,
                 onkeydown: keydownEvent,
             }),

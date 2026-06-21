@@ -40,24 +40,24 @@
         "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
     },
     "dependencies": {
-        "@nuxt/kit": "^4.4.7",
+        "@nuxt/kit": "^4.4.8",
         "@pinia/nuxt": "^0.11.3",
         "pinia": "^3.0.4"
     },
     "devDependencies": {
-        "@nuxt/eslint-config": "^1.15.2",
+        "@nuxt/eslint-config": "^1.16.0",
         "@nuxt/module-builder": "^1.0.2",
-        "@nuxt/schema": "^4.4.7",
+        "@nuxt/schema": "^4.4.8",
         "@nuxt/test-utils": "^4.0.3",
         "@types/bun": "^1.3.14",
         "changelogen": "^0.6.2",
-        "eslint": "^10.4.1",
-        "nuxt": "^4.4.7",
-        "sass": "^1.100.0",
+        "eslint": "^10.5.0",
+        "nuxt": "^4.4.8",
+        "sass": "^1.101.0",
         "sass-embedded": "^1.100.0",
         "typescript": "^5.1.6",
-        "vitest": "^4.1.8",
-        "vue-tsc": "^3.3.3"
+        "vitest": "^4.1.9",
+        "vue-tsc": "^3.3.5"
     },
     "keywords": [
         "editor",

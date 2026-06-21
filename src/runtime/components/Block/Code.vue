@@ -5,15 +5,14 @@
     >
         <p
             v-memo="memoData"
+            v-html="props.data.filename"
             class="de-filename"
             :contenteditable="props.isEdit === true"
             ref="$fileName"
             @focus="setEdit"
             @keydown="fileNameKeydownEvent"
             @input="updateFilename"
-        >
-            {{ props.data.filename }}
-        </p>
+        ></p>
 
         <p class="de-language">{{ DECodeLanguage[props.data.language] }}</p>
 
@@ -81,7 +80,11 @@ function fileNameKeydownEvent(event: KeyboardEvent): void {
     if ($content.value !== null) {
         switch (event.key) {
             case "Enter":
-                _moveCodeBlockEvent(event, "down", "filename", $content.value);
+                if (event.isComposing === false) {
+                    _moveCodeBlockEvent(event, "down", "filename", $content.value);
+                } else {
+                    event.preventDefault();
+                }
                 break;
 
             case "Tab":
@@ -112,7 +115,11 @@ function contentKeydownEvent(event: KeyboardEvent): void {
         switch (event.key) {
             case "Enter":
                 if (event.shiftKey === true) {
-                    _codeBlockShiftEnterEvent(event, props.index);
+                    if (event.isComposing === false) {
+                        _codeBlockShiftEnterEvent(event, props.index);
+                    } else {
+                        event.preventDefault();
+                    }
                 }
                 break;
 

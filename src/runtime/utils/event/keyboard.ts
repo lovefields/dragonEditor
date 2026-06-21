@@ -1,7 +1,7 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
-import { _updateCursorData } from "./index";
-import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData } from "../data";
+import { _updateCursorData, _setCursorPosition } from "./index";
+import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition } from "../data";
 import { _findEditableElement, _findParentBlock } from "../node";
 import type { DETextBlock, DEHeadingBlock, DEContentData } from "../../type.mjs";
 
@@ -586,3 +586,81 @@ export function _moveCodeBlockEvent(event: KeyboardEvent, direction: "up" | "dow
         }
     }
 }
+
+// 기본 삭제 이벤트
+export async function _defaultBackspaceEvent(event: KeyboardEvent): Promise<void> {
+    const editorStore = useEditorStore();
+    const $target = event.currentTarget as HTMLElement;
+
+    _updateCursorData();
+
+    if ($target !== null && editorStore.element.body !== null && editorStore.fn.updateEditorData !== null) {
+        const multilinePosition = _getMultilinePosition($target);
+        const cursorPosition = _isCursorAtLineBoundary();
+
+        if (multilinePosition.curruntLine === 1 && cursorPosition.isStart === true) {
+            event.preventDefault();
+
+            const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+            const curruntData = newData[editorStore.selectedBlockIndex] as DETextBlock | DEHeadingBlock;
+
+            if (editorStore.selectedBlockIndex === 0) {
+                if (curruntData.type === "heading") {
+                    newData.splice(editorStore.selectedBlockIndex, 1, _createTextBlockData(curruntData.textContent));
+                    editorStore.fn.updateEditorData(newData);
+                    await nextTick();
+
+                    const $block = editorStore.element.body.children[0] as HTMLElement;
+
+                    $block.focus();
+                }
+            } else {
+                const preveiousData = newData[editorStore.selectedBlockIndex - 1] as DEBlockData;
+                const $preveiousBlock = editorStore.element.body.children[editorStore.selectedBlockIndex - 1] as HTMLElement;
+
+                if (preveiousData.type === "text" || preveiousData.type === "heading") {
+                    const blockLastOffset = _getEditorbleEndPosition($preveiousBlock);
+
+                    preveiousData.textContent += curruntData.textContent;
+                    newData.splice(editorStore.selectedBlockIndex - 1, 1, preveiousData);
+                    newData.splice(editorStore.selectedBlockIndex, 1);
+                    editorStore.fn.updateEditorData(newData);
+                    await nextTick();
+
+                    const $block = editorStore.element.body.children[editorStore.selectedBlockIndex - 1] as HTMLElement;
+                    const $blockTargetNode = $block.childNodes[blockLastOffset.nodeIndex];
+
+                    if ($blockTargetNode !== undefined) {
+                        _setCursorPosition($blockTargetNode, blockLastOffset.offset);
+                    }
+                } else if (preveiousData.type === "list") {
+                    const $listItems = $preveiousBlock.querySelectorAll(".de-item-text");
+                    const $listLastChild = $listItems[$listItems.length - 1] as HTMLParagraphElement;
+
+                    if ($listLastChild !== undefined) {
+                        const listChildOffset = _getEditorbleEndPosition($listLastChild);
+                        const listChildData = preveiousData.child[preveiousData.child.length - 1] as DEListItem;
+
+                        listChildData.textContent += curruntData.textContent;
+                        preveiousData.child[preveiousData.child.length - 1] = listChildData;
+                        newData.splice(editorStore.selectedBlockIndex - 1, 1, preveiousData);
+                        newData.splice(editorStore.selectedBlockIndex, 1);
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+
+                        const $node = $listLastChild.childNodes[listChildOffset.nodeIndex];
+
+                        if ($node !== undefined) {
+                            _setCursorPosition($node, listChildOffset.offset);
+                        }
+                    }
+                } else {
+                    newData.splice(editorStore.selectedBlockIndex - 1, 1);
+                    editorStore.fn.updateEditorData(newData);
+                    editorStore.selectedBlockIndex -= 1;
+                }
+            }
+        }
+    }
+}
+

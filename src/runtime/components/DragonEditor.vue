@@ -15,7 +15,7 @@ import "../scss/editor.scss";
 import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
 import { ref, onMounted, watch } from "vue";
-import { _createTextBlockData } from "../utils/data";
+import { _createTextBlockData, _arrangementContentData } from "../utils/data";
 import type { DEContentData } from "../type.mjs";
 
 interface DragonEditorOption {
@@ -45,7 +45,7 @@ editorStore.option.mediaHostURL = props.mediaHostURL;
 
 // 신규데이터 적용 함수
 function updateEditorData(data: DEContentData): void {
-    emit("update:modelValue", data);
+    emit("update:modelValue", _arrangementContentData(data));
 }
 
 // 데이터 없는경우 텍스트 블럭 생성

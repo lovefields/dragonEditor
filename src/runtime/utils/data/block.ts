@@ -1,5 +1,50 @@
 import { _generateId } from "../data";
-import type { DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType } from "../../type.mjs";
+import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType } from "../../type.mjs";
+
+// 데이터 정리
+export function _arrangementContentData(data: DEContentData): DEContentData {
+    data.forEach((block) => {
+        switch (block.type) {
+            case "text":
+                if (block.textContent === "<br>") {
+                    block.textContent = "";
+                }
+                break;
+
+            case "heading":
+                if (block.textContent === "<br>") {
+                    block.textContent = "";
+                }
+                break;
+
+            case "list":
+                block.child.forEach((child) => {
+                    if (child.textContent === "<br>") {
+                        child.textContent = "";
+                    }
+                });
+                break;
+
+            case "image":
+                if (block.caption === "<br>") {
+                    block.caption = "";
+                }
+                break;
+
+            case "code":
+                if (block.filename === "<br>") {
+                    block.filename = "";
+                }
+
+                if (block.textContent === "<br>") {
+                    block.textContent = "";
+                }
+                break;
+        }
+    });
+
+    return data;
+}
 
 // 텍스트 블럭 데이터 생성
 export function _createTextBlockData(textContent: string = ""): DETextBlock {
