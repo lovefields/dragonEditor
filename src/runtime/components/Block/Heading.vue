@@ -82,7 +82,7 @@ function renderHeading(): VNode {
         [memoKey],
         () =>
             h(`h${props.data.level}`, {
-                class: ["de-block", "de-heading-block", ...props.data.classList],
+                class: ["de-block", "de-heading-block"],
                 id: props.data.id,
                 contenteditable: props.isEdit === true,
                 "data-depth": props.data.depth,

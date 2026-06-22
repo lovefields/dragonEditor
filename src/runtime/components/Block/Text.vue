@@ -3,7 +3,6 @@
         v-memo="memoData"
         v-html="props.data.textContent"
         class="de-block de-text-block"
-        :class="[...props.data.classList]"
         :contenteditable="props.isEdit === true"
         :data-depth="props.data.depth"
         @focus="setEdit"

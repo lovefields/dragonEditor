@@ -41,7 +41,6 @@ interface DEOption {
 interface DETextBlock {
     id: string;
     type: "text";
-    classList: string[];
     depth?: number;
     textContent: string;
 }
@@ -52,7 +51,6 @@ interface DEHeadingBlock {
     type: "heading";
     level: DEHeadingElementLevel;
     depth?: number;
-    classList: string[];
     textContent: string;
 }
 
@@ -60,7 +58,6 @@ interface DEHeadingBlock {
 interface DEListItem {
     id: string;
     depth?: number;
-    classList: string[];
     textContent: string;
 }
 
@@ -81,7 +78,6 @@ interface DEImageBlock {
     width: number;
     height: number;
     caption: string;
-    classList: string[];
 }
 
 // 컨텐츠 코드 블럭 타입
@@ -97,7 +93,6 @@ interface DECodeBlock {
 interface DECustomBlock {
     id: string;
     type: "custom";
-    classList: string[];
     textContent: string;
 }
 

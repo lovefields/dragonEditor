@@ -3,7 +3,6 @@
         v-memo="memoData"
         v-html="props.data.textContent"
         class="de-block de-custom-block"
-        :class="[...props.data.classList]"
         @click="setEdit"
     ></div>
 </template>

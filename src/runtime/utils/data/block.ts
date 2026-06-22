@@ -4,6 +4,10 @@ import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel,
 // 데이터 정리
 export function _arrangementContentData(data: DEContentData): DEContentData {
     data.forEach((block) => {
+        if ("classList" in block) {
+            delete block.classList;
+        }
+
         switch (block.type) {
             case "text":
                 if (block.textContent === "<br>") {
@@ -19,6 +23,10 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
 
             case "list":
                 block.child.forEach((child) => {
+                    if ("classList" in child) {
+                        delete child.classList;
+                    }
+
                     if (child.textContent === "<br>") {
                         child.textContent = "";
                     }
@@ -32,6 +40,10 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
                 break;
 
             case "code":
+                if ("theme" in block) {
+                    delete block.theme;
+                }
+
                 if (block.filename === "<br>") {
                     block.filename = "";
                 }
@@ -51,7 +63,6 @@ export function _createTextBlockData(textContent: string = ""): DETextBlock {
     return {
         id: _generateId(),
         type: "text",
-        classList: [],
         textContent: textContent,
     };
 }
@@ -62,7 +73,6 @@ export function _createHeadingBlockData(level: DEHeadingElementLevel, textConten
         id: _generateId(),
         type: "heading",
         level: level,
-        classList: [],
         textContent: textContent,
     };
 }
@@ -79,7 +89,7 @@ export function _createListBlockData(element: DEListElementName, childList: DELi
 
 // 리스트 블럭 자식 데이터 생성
 export function _createListBlockChildData(textContent: string = "", depth: number = 0): DEListItem {
-    return { id: _generateId(), depth: depth === 0 ? undefined : depth, classList: [], textContent: textContent };
+    return { id: _generateId(), depth: depth === 0 ? undefined : depth, textContent: textContent };
 }
 
 // 블럭 타입 반환

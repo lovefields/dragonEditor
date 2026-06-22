@@ -179,7 +179,7 @@ function renderTreeNodes(nodes: ListTreeNode[]): VNode[] {
             () => {
                 const children: VNode[] = [
                     h("p", {
-                        class: ["de-item-text", ...node.child.classList],
+                        class: ["de-item-text"],
                         innerHTML: node.child.textContent,
                         contenteditable: props.isEdit === true,
                         onFocus: () => setEdit(node.liIndex, node.child.id),

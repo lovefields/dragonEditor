@@ -2,7 +2,6 @@
     <div
         v-memo="memoData"
         class="de-block de-image-block"
-        :class="[...props.data.classList]"
         @click="setEdit"
     >
         <div
