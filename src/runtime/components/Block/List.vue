@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { ref, h, withMemo } from "vue";
-import { _listBlockEnterEvent, _listChildTabEvent, _moveListChildEvent } from "../../utils/event";
+import { _listBlockEnterEvent, _listChildTabEvent, _moveListChildEvent, _listBackspaceEvent } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEListBlock, DEListItem } from "../../type.d.mts";
 
@@ -79,6 +79,7 @@ function keydownEvent(event: KeyboardEvent): void {
             break;
 
         case "Backspace":
+            _listBackspaceEvent(event, childIndex.value, abortEdit);
             break;
 
         case "Delete":
@@ -182,7 +183,6 @@ function renderTreeNodes(nodes: ListTreeNode[]): VNode[] {
                         innerHTML: node.child.textContent,
                         contenteditable: props.isEdit === true,
                         onFocus: () => setEdit(node.liIndex, node.child.id),
-                        onBlur: abortEdit,
                         onKeydown: keydownEvent,
                         onInput: (event: Event) => updateData(event, node.liIndex),
                     }),

@@ -587,7 +587,7 @@ export function _moveCodeBlockEvent(event: KeyboardEvent, direction: "up" | "dow
     }
 }
 
-// 기본 삭제 이벤트
+// 기본 백스페이스 이벤트
 export async function _defaultBackspaceEvent(event: KeyboardEvent): Promise<void> {
     const editorStore = useEditorStore();
     const $target = event.currentTarget as HTMLElement;
@@ -664,3 +664,71 @@ export async function _defaultBackspaceEvent(event: KeyboardEvent): Promise<void
     }
 }
 
+// 리스트 백스페이스 이벤트
+export async function _listBackspaceEvent(event: KeyboardEvent, childIndex: number, abortEdit: () => void): Promise<void> {
+    const editorStore = useEditorStore();
+    const $target = event.currentTarget as HTMLElement;
+
+    _updateCursorData();
+
+    if ($target !== null && editorStore.element.body !== null && editorStore.fn.updateEditorData !== null) {
+        const multilinePosition = _getMultilinePosition($target);
+        const cursorPosition = _isCursorAtLineBoundary();
+
+        if (multilinePosition.curruntLine === 1 && cursorPosition.isStart === true) {
+            event.preventDefault();
+
+            const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+            const curruntData = newData[editorStore.selectedBlockIndex] as DEListBlock;
+            const curruntListItem = curruntData.child[childIndex];
+            const $block = _findParentBlock($target);
+
+            if ($block !== null && curruntListItem !== undefined) {
+                if (childIndex === 0) {
+                    if (curruntData.child.length === 1) {
+                        newData.splice(editorStore.selectedBlockIndex, 1, _createTextBlockData(curruntListItem.textContent));
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+
+                        const $targetBlock = editorStore.element.body.children[editorStore.selectedBlockIndex] as HTMLElement;
+
+                        if ($targetBlock !== undefined) {
+                            $targetBlock.focus();
+                        }
+                    } else {
+                        curruntData.child.splice(childIndex, 1);
+                        newData.splice(editorStore.selectedBlockIndex, 1, _createTextBlockData(curruntListItem.textContent), curruntData);
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+
+                        const $targetBlock = editorStore.element.body.children[editorStore.selectedBlockIndex] as HTMLElement;
+
+                        if ($targetBlock !== undefined) {
+                            $targetBlock.focus();
+                        }
+                    }
+                } else {
+                    const preveiousListItem = curruntData.child[childIndex - 1];
+                    const $listItems = $block.querySelectorAll(".de-item-text");
+                    const $preveiousListBlock = $listItems[childIndex - 1] as HTMLParagraphElement;
+
+                    if (preveiousListItem !== undefined && $preveiousListBlock !== undefined) {
+                        const listChildEndOffset = _getEditorbleEndPosition($preveiousListBlock);
+
+                        preveiousListItem.textContent += curruntListItem.textContent;
+                        curruntData.child.splice(childIndex, 1);
+                        newData.splice(editorStore.selectedBlockIndex, 1, curruntData);
+                        editorStore.fn.updateEditorData(newData);
+                        await nextTick();
+
+                        const $targetNode = $preveiousListBlock.childNodes[listChildEndOffset.nodeIndex];
+
+                        if ($targetNode !== undefined) {
+                            _setCursorPosition($targetNode, listChildEndOffset.offset);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
