@@ -82,12 +82,6 @@ function keydownEvent(event: KeyboardEvent): void {
         case "ArrowDown":
             _moveBlockDefaultEvent(event, "down");
             break;
-
-        case "Backspace":
-            break;
-
-        case "Delete":
-            break;
     }
 }
 

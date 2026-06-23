@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { ref, h, withMemo } from "vue";
-import { _listBlockEnterEvent, _listChildTabEvent, _moveListChildEvent, _listBackspaceEvent } from "../../utils/event";
+import { _listBlockEnterEvent, _listChildTabEvent, _moveListChildEvent, _listBackspaceEvent, _listDeleteEvent } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEListBlock, DEListItem } from "../../type.d.mts";
 
@@ -79,13 +79,11 @@ function keydownEvent(event: KeyboardEvent): void {
             break;
 
         case "Backspace":
-            _listBackspaceEvent(event, childIndex.value, abortEdit);
+            _listBackspaceEvent(event, childIndex.value);
             break;
 
         case "Delete":
-            break;
-
-        case "`":
+            _listDeleteEvent(event, childIndex.value, setEdit, abortEdit);
             break;
     }
 }
