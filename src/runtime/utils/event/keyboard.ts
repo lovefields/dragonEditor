@@ -1,7 +1,7 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _updateCursorData, _setCursorPosition } from "./index";
-import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition } from "../data";
+import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition } from "../data";
 import { _findEditableElement, _findParentBlock } from "../node";
 import type { DETextBlock, DEHeadingBlock, DEContentData } from "../../type.mjs";
 
@@ -284,11 +284,14 @@ export async function _codeBlockShiftEnterEvent(event: KeyboardEvent, index: num
 export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | DEHeadingBlock, index: number, setEvent: Function, abortEvent: Function): Promise<void> {
     const editorStore = useEditorStore();
     const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+    const $target = event.currentTarget as HTMLElement;
 
     event.preventDefault();
     _updateCursorData();
 
-    if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null) {
+    if (editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null && $target !== null) {
+        const offset = _getEditorbleCursorPosition($target);
+
         // 탭 이벤트
         if (event.shiftKey === false) {
             if (data.depth === undefined) {
@@ -315,6 +318,12 @@ export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | D
         editorStore.fn.updateEditorData(newData);
         await nextTick();
         setEvent();
+
+        const $node = $target.childNodes[offset.nodeIndex];
+
+        if ($node !== undefined) {
+            _setCursorPosition($node, offset.offset);
+        }
     }
 }
 
@@ -323,12 +332,15 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
     const editorStore = useEditorStore();
     const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
     const targetChild = data.child[childIndex];
+    const $target = event.currentTarget as HTMLParagraphElement;
     let type: "plus" | "minus" = "plus";
 
     event.preventDefault();
     _updateCursorData();
 
     if (data.child.length > 1 && editorStore.cursorSelection !== null && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null && targetChild !== undefined) {
+        const offset = _getEditorbleCursorPosition($target);
+
         // 탭 이벤트
         if (event.shiftKey === false) {
             if (targetChild.depth === undefined) {
@@ -399,11 +411,93 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
                 const $textArea = $childElement.querySelector(".de-item-text") as HTMLParagraphElement;
 
                 if ($textArea !== null) {
-                    $textArea.focus();
+                    const $node = $textArea.childNodes[offset.nodeIndex];
+
+                    if ($node !== undefined) {
+                        _setCursorPosition($node, offset.offset);
+                    }
                 }
             }
         }
     }
+}
+
+// 코드블럭 탭 이벤트
+export async function _codeBlockTabEvent(event: KeyboardEvent): Promise<void> {
+    const editorStore = useEditorStore();
+    const $target = event.currentTarget as HTMLElement;
+
+    event.preventDefault();
+    _updateCursorData();
+
+    if (editorStore.cursorSelection === null || editorStore.cursorSelection.rangeCount === 0 || $target === null) {
+        return;
+    }
+
+    const range = editorStore.cursorSelection.getRangeAt(0);
+
+    if (!$target.contains(range.startContainer)) {
+        return;
+    }
+
+    const preCaretRange = range.cloneRange();
+    preCaretRange.selectNodeContents($target);
+    preCaretRange.setEnd(range.startContainer, range.endOffset);
+    const cursorOffset = preCaretRange.toString().length;
+
+    const fullText = $target.innerText || $target.textContent || "";
+    const beforeText = fullText.slice(0, cursorOffset);
+    const afterText = fullText.slice(cursorOffset);
+
+    const lastNewlineIdx = beforeText.lastIndexOf("\n");
+    const lineStartIdx = lastNewlineIdx === -1 ? 0 : lastNewlineIdx + 1;
+
+    const nextNewlineIdx = afterText.indexOf("\n");
+    const lineEndIdx = nextNewlineIdx === -1 ? fullText.length : cursorOffset + nextNewlineIdx;
+
+    const currentLineText = fullText.slice(lineStartIdx, lineEndIdx);
+
+    let updatedText = "";
+    let newCursorOffset = cursorOffset;
+
+    if (event.shiftKey === false) {
+        // 기본 탭 공백 추가
+        const addedSpaces = " ".repeat(editorStore.option.codeBlockSpaces);
+        updatedText = fullText.slice(0, lineStartIdx) + addedSpaces + fullText.slice(lineStartIdx);
+        newCursorOffset += addedSpaces.length;
+    } else {
+        // shift+탭 공백 제거
+        let spacesToRemove = 0;
+
+        for (let i = 0; i < editorStore.option.codeBlockSpaces; i += 1) {
+            if (currentLineText[i] === " ") {
+                spacesToRemove += 1;
+            } else if (currentLineText[i] === "\t") {
+                spacesToRemove = 1;
+                break;
+            } else {
+                break;
+            }
+        }
+
+        if (spacesToRemove > 0) {
+            updatedText = fullText.slice(0, lineStartIdx) + currentLineText.slice(spacesToRemove) + fullText.slice(lineEndIdx);
+            if (cursorOffset - lineStartIdx < spacesToRemove) {
+                newCursorOffset = lineStartIdx;
+            } else {
+                newCursorOffset -= spacesToRemove;
+            }
+        } else {
+            return;
+        }
+    }
+
+    $target.textContent = updatedText;
+    $target.dispatchEvent(new Event("input"));
+
+    await nextTick();
+
+    _setCursorPosition($target, newCursorOffset);
 }
 
 // 커서 위치 이동

@@ -24,6 +24,7 @@ interface DragonEditorOption {
     mediaHostURL?: string;
     isMobile?: boolean;
     theme?: "dark" | "white";
+    codeBlockSpaces?: number;
 }
 
 const editorStore = useEditorStore();
@@ -32,6 +33,7 @@ const props = withDefaults(defineProps<DragonEditorOption>(), {
     isMobile: false,
     mediaHostURL: "",
     theme: "white",
+    codeBlockSpaces: 4,
 });
 const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
@@ -42,6 +44,7 @@ const $body = ref<HTMLDivElement | null>(null);
 // 옵션 저장
 editorStore.option.isMobile = props.isMobile;
 editorStore.option.mediaHostURL = props.mediaHostURL;
+editorStore.option.codeBlockSpaces = props.codeBlockSpaces;
 
 // 신규데이터 적용 함수
 function updateEditorData(data: DEContentData): void {

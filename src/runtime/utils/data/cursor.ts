@@ -1,5 +1,5 @@
 import { useEditorStore } from "../../store/editor";
-import type { DELinePosition, DECurSorPosition } from "../../type.mjs";
+import type { DELinePosition, DECurSorPosition, DECursorOffset } from "../../type.mjs";
 
 // 현재 멀티라인 줄 위치
 export function _getMultilinePosition(element: HTMLElement): DELinePosition {
@@ -139,7 +139,7 @@ export function _isCursorAtLineBoundary(): DECurSorPosition {
 }
 
 // 에디팅 영역의 마지막커서 위치 반환
-export function _getEditorbleEndPosition($element: HTMLElement): { nodeIndex: number; offset: number } {
+export function _getEditorbleEndPosition($element: HTMLElement): DECursorOffset {
     const data = { nodeIndex: 0, offset: 0 };
     const lastIndex = $element.childNodes.length - 1;
     const $lastChild = $element.childNodes[lastIndex];
@@ -147,6 +147,35 @@ export function _getEditorbleEndPosition($element: HTMLElement): { nodeIndex: nu
     if ($lastChild !== undefined) {
         data.nodeIndex = lastIndex;
         data.offset = $lastChild.textContent?.length ?? 0;
+    }
+
+    return data;
+}
+
+// 에디팅 영역의 현재 커서 위치 반환
+export function _getEditorbleCursorPosition($element: HTMLElement): DECursorOffset {
+    const editorStore = useEditorStore();
+    const data = { nodeIndex: 0, offset: 0 };
+
+    if (editorStore.cursorSelection !== null && editorStore.cursorSelection.rangeCount > 0) {
+        const range = editorStore.cursorSelection.getRangeAt(0);
+        let container = range.startContainer;
+
+        // startContainer가 $element 자체인 경우
+        if (container === $element) {
+            data.nodeIndex = range.startOffset;
+            data.offset = 0;
+        } else {
+            // startContainer가 $element의 하위 노드인 경우, 직계 자식이 될 때까지 부모를 타고 올라감
+            while (container.parentNode !== null && container.parentNode !== $element) {
+                container = container.parentNode;
+            }
+
+            if (container.parentNode === $element) {
+                data.nodeIndex = Array.prototype.indexOf.call($element.childNodes, container);
+                data.offset = range.startOffset;
+            }
+        }
     }
 
     return data;

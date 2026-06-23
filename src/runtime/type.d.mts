@@ -35,6 +35,7 @@ interface DragonEditorStore {
 interface DEOption {
     mediaHostURL: string;
     isMobile: boolean;
+    codeBlockSpaces: number;
 }
 
 // 컨텐츠 블럭 타입
@@ -114,6 +115,12 @@ interface DECurSorPosition {
     isEnd: boolean;
 }
 
+// 커서 오프샛
+interface DECursorOffset {
+    nodeIndex: number;
+    offset: number;
+}
+
 /**
  * 레거시
  */
@@ -123,31 +130,9 @@ type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
 
 type DETextalign = "left" | "right" | "center" | "justify";
 
-type DEBlock = "text" | "heading" | "ul" | "ol" | "image" | "code" | "divider" | "custom";
-
 type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom" | "divider";
-
-type DECodeblockTheme = "github-light" | "github-dark-dimmed";
-
-// type DECodeblockLang = "text" | "csharp" | "c" | "cpp" | "css" | "django" | "dockerfile" | "go" | "html" | "json" | "java" | "javascript" | "typescript" | "kotlin" | "lua" | "markdown" | "nginx" | "php" | "python" | "ruby" | "scss" | "sql" | "shellscript" | "swift" | "yaml";
-
-type DEBlockElement = HTMLParagraphElement | HTMLHeadingElement | HTMLElement | HTMLDivElement;
 
 interface DECodeItem<T = string> {
     text: string;
     value: T;
-}
-
-interface DEHeadingItem {
-    name: string;
-    id: string;
-}
-
-interface DEArrangeCursorData {
-    startNode: Node;
-    startNodeIdx: number;
-    startOffset: number;
-    endNode: Node;
-    endNodeIdx: number;
-    endOffset: number;
 }

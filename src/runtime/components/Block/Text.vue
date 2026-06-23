@@ -40,46 +40,46 @@ function abortEdit() {
 }
 
 function keydownEvent(event: KeyboardEvent): void {
-    switch (event.key) {
-        case "Enter":
-            // 엔터 이벤트
-            if (event.shiftKey === false) {
-                if (event.isComposing === false) {
+    if (event.isComposing === false) {
+        switch (event.key) {
+            case "Enter":
+                // 엔터 이벤트
+                if (event.shiftKey === false) {
                     _sliceAndNewTextBlock(event, props.data, props.index);
                 } else {
-                    event.preventDefault();
+                    // 쉬프트 엔터 이벤트
                 }
-            } else {
-                // 쉬프트 엔터 이벤트
-            }
 
-            break;
+                break;
 
-        case "Tab":
-            _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
-            break;
+            case "Tab":
+                _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
+                break;
 
-        case "ArrowUp":
-            _moveBlockDefaultEvent(event, "up");
-            break;
+            case "ArrowUp":
+                _moveBlockDefaultEvent(event, "up");
+                break;
 
-        case "ArrowDown":
-            _moveBlockDefaultEvent(event, "down");
-            break;
+            case "ArrowDown":
+                _moveBlockDefaultEvent(event, "down");
+                break;
 
-        case "Backspace":
-            _defaultBackspaceEvent(event);
-            break;
+            case "Backspace":
+                _defaultBackspaceEvent(event);
+                break;
 
-        case "Delete":
-            _defaultDeleteEvent(event, setEdit, abortEdit);
-            break;
+            case "Delete":
+                _defaultDeleteEvent(event, setEdit, abortEdit);
+                break;
 
-        case "`":
-            break;
+            case "`":
+                break;
 
-        case " ":
-            break;
+            case " ":
+                break;
+        }
+    } else {
+        event.preventDefault();
     }
 }
 

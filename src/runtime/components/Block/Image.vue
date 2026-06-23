@@ -59,29 +59,31 @@ function setEdit() {
 }
 
 function keydownEvent(event: KeyboardEvent): void {
-    switch (event.key) {
-        case "Enter":
-            // 엔터 이벤트
-            if (event.shiftKey === false) {
-                if (event.isComposing === false) {
+    if (event.isComposing === false) {
+        switch (event.key) {
+            case "Enter":
+                // 엔터 이벤트
+                if (event.shiftKey === false) {
                     _imageEnterEvent(event, props.data, props.index);
                 } else {
+                    // 쉬프트 엔터 이벤트
                     event.preventDefault();
                 }
-            } else {
-                // 쉬프트 엔터 이벤트
-                event.preventDefault();
-            }
 
-            break;
+                break;
 
-        case "ArrowUp":
-            _moveBlockDefaultEvent(event, "up");
-            break;
+            case "ArrowUp":
+                _moveBlockDefaultEvent(event, "up");
 
-        case "ArrowDown":
-            _moveBlockDefaultEvent(event, "down");
-            break;
+                break;
+
+            case "ArrowDown":
+                _moveBlockDefaultEvent(event, "down");
+
+                break;
+        }
+    } else {
+        event.preventDefault();
     }
 }
 

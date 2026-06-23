@@ -15,6 +15,10 @@ export function _setCursorPosition(node: Node, offset: number): void {
     const editorStore = useEditorStore();
 
     if (editorStore.cursorSelection !== null) {
+        if (node.nodeType !== Node.TEXT_NODE) {
+            node = node.childNodes[0] as Node;
+        }
+
         editorStore.cursorSelection.removeAllRanges();
 
         const range = document.createRange();
@@ -24,4 +28,3 @@ export function _setCursorPosition(node: Node, offset: number): void {
         editorStore.cursorSelection.addRange(range);
     }
 }
-

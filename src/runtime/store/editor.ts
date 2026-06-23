@@ -9,6 +9,7 @@ export const useEditorStore = defineStore("editorStore", {
         option: {
             mediaHostURL: "",
             isMobile: false,
+            codeBlockSpaces: 4,
         },
         cursorSelection: null,
         element: {
