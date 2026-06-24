@@ -1,8 +1,11 @@
 <template>
     <div
         class="dragon-editor"
+        :class="{ '--has-menu': props.useMenuBar === true }"
         :data-theme="props.theme"
+        ref="$editor"
     >
+        <MenuBar />
         <component
             :is="_getBody(props.modelValue, true)"
             ref="$body"
@@ -12,10 +15,12 @@
 
 <script setup lang="ts">
 import "../scss/editor.scss";
+import MenuBar from "./MenuBar.vue";
 import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
 import { ref, onMounted, watch } from "vue";
-import { _createTextBlockData, _arrangementContentData } from "../utils/data";
+import { onClickOutside } from "@vueuse/core";
+import { _createTextBlockData, _arrangementContentData, _addBlock } from "../utils/data";
 import type { DEContentData } from "../type.mjs";
 
 interface DragonEditorOption {
@@ -40,6 +45,7 @@ const emit = defineEmits<{
     (e: "uploadImageEvent", file: File): void;
 }>();
 const $body = ref<HTMLDivElement | null>(null);
+const $editor = ref<HTMLDivElement>();
 
 // 옵션 저장
 editorStore.option.isMobile = props.isMobile;
@@ -57,6 +63,15 @@ function ifEmptyUpdateData(): void {
         emit("update:modelValue", [_createTextBlockData()]);
     }
 }
+
+onClickOutside($editor, () => {
+    editorStore.selectedBlockIndex = -1;
+    editorStore.selectedBlockId = "";
+});
+
+defineExpose({
+    addBlock: _addBlock,
+});
 
 watch(
     () => props.modelValue,

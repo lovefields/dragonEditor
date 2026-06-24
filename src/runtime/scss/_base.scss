@@ -7,6 +7,7 @@ $color-list:
     --radius-default: 4px;
 
     &[data-theme="dark"] {
+        --editor-background: #09090b;
         --editor-border: #555;
         --editor-divider: #333;
 
@@ -36,6 +37,7 @@ $color-list:
     }
 
     &[data-theme="white"] {
+        --editor-background: #f9f9f9;
         --editor-border: #ccc;
         --editor-divider: #e5e5e5;
 

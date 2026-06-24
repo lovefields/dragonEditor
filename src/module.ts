@@ -12,6 +12,7 @@ export default defineNuxtModule({
         const typeContent = await readFile(resolve("./runtime/type.d.mts"));
 
         await importModule("@pinia/nuxt");
+        await importModule("@vueuse/nuxt");
 
         addComponent({
             name: "DragonEditor",
