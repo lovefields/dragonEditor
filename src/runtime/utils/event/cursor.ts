@@ -16,7 +16,11 @@ export function _setCursorPosition(node: Node, offset: number): void {
 
     if (editorStore.cursorSelection !== null) {
         if (node.nodeType !== Node.TEXT_NODE) {
-            node = node.childNodes[0] as Node;
+            if (node.childNodes.length !== 0) {
+                node = node.childNodes[0] as Node;
+            } else {
+                offset = 0;
+            }
         }
 
         editorStore.cursorSelection.removeAllRanges();

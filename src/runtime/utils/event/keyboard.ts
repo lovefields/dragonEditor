@@ -405,17 +405,16 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
         const $parentBlock = editorStore.element.body.children[index] as HTMLElement;
 
         if ($parentBlock !== undefined) {
-            const $childElement = $parentBlock.querySelectorAll("li")[childIndex];
+            const $textArea = $parentBlock.querySelectorAll(".de-item-text");
+            const $targetTextArea = $textArea[childIndex];
 
-            if ($childElement !== undefined) {
-                const $textArea = $childElement.querySelector(".de-item-text") as HTMLParagraphElement;
+            if ($targetTextArea !== undefined) {
+                const $node = $targetTextArea.childNodes[offset.nodeIndex];
 
-                if ($textArea !== null) {
-                    const $node = $textArea.childNodes[offset.nodeIndex];
-
-                    if ($node !== undefined) {
-                        _setCursorPosition($node, offset.offset);
-                    }
+                if ($node !== undefined) {
+                    _setCursorPosition($node, offset.offset);
+                } else {
+                    _setCursorPosition($targetTextArea, 0);
                 }
             }
         }
@@ -632,6 +631,7 @@ export function _moveListChildEvent(event: KeyboardEvent, data: DEListBlock, ind
 }
 
 // 코드블럭 커서 위치 이동
+// TODO : 위로이동 커서 isFirst체크 오류 확인
 export function _moveCodeBlockEvent(event: KeyboardEvent, direction: "up" | "down", type: "filename" | "content", $targetElement: HTMLElement): void {
     const editorStore = useEditorStore();
 
