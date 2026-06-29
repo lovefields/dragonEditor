@@ -1,9 +1,10 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _updateCursorData, _setCursorPosition } from "./index";
-import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition } from "../data";
+import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition, _createDividerBlockData, _convertMarkdownToEditor } from "../data";
 import { _findEditableElement, _findParentBlock } from "../node";
-import type { DETextBlock, DEHeadingBlock, DEContentData } from "../../type.mjs";
+import { DECodeLanguage } from "../../enums/codeLanguage";
+import type { DETextBlock, DEHeadingBlock, DECodeBlock, DEContentData, DECodeLanguageList, DEBlockData } from "../../type.d.mts";
 
 // 내용 짤라서 새로운 텍스트 블럭 생성 (엔터 이벤트)
 export async function _sliceAndNewTextBlock(event: KeyboardEvent, data: DETextBlock | DEHeadingBlock, index: number): Promise<void> {
@@ -631,7 +632,6 @@ export function _moveListChildEvent(event: KeyboardEvent, data: DEListBlock, ind
 }
 
 // 코드블럭 커서 위치 이동
-// TODO : 위로이동 커서 isFirst체크 오류 확인
 export function _moveCodeBlockEvent(event: KeyboardEvent, direction: "up" | "down", type: "filename" | "content", $targetElement: HTMLElement): void {
     const editorStore = useEditorStore();
 
@@ -981,6 +981,83 @@ export async function _listDeleteEvent(event: KeyboardEvent, childIndex: number,
                     }
                 }
             }
+        }
+    }
+}
+
+// 기본 붙여넣기 이벤트
+export async function _allDataPasteEvent(event: ClipboardEvent, setEvent: Function, abortEvent: Function): Promise<void> {
+    event.preventDefault();
+    _updateCursorData();
+
+    const editorStore = useEditorStore();
+    const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+    const curruntData = newData[editorStore.selectedBlockIndex];
+    const textData = await navigator.clipboard.readText();
+    const $target = event.target as HTMLElement;
+
+    if (editorStore.fn.updateEditorData !== null && editorStore.cursorSelection !== null) {
+        if (textData === "") {
+            // 이미지 데이터
+            const clipboardItems = await navigator.clipboard.read();
+
+            // TODO : 이미지 이벤트 연결
+        } else {
+            // 텍스트 데이터
+            const dataLine: string[] = textData.split("\n");
+            const blockData = await _convertMarkdownToEditor(dataLine);
+            const firstBlockData = blockData[0] as DEBlockData;
+
+            if (dataLine.length === 1 && firstBlockData.type === "text") {
+                // 단순 붙여넣기
+                const textNode = document.createTextNode(firstBlockData.textContent);
+                abortEvent();
+                editorStore.cursorSelection.deleteFromDocument();
+                editorStore.cursorSelection.getRangeAt(0).insertNode(textNode);
+                $target.dispatchEvent(new Event("input"));
+                setEvent();
+                _setCursorPosition(textNode, textNode.length);
+            } else {
+                // 마크다운 붙여넣기
+                if (editorStore.selectedBlockIndex > -1) {
+                    newData.splice(editorStore.selectedBlockIndex + 1, 0, ...blockData);
+                } else {
+                    newData.push(...blockData);
+                }
+
+                abortEvent();
+                editorStore.fn.updateEditorData(newData);
+                await nextTick();
+            }
+        }
+    }
+}
+
+// 코드 블럭 붙여넣기 이벤트
+export async function _normalPasteEvent(event: ClipboardEvent, setEvent: Function, abortEvent: Function): Promise<void> {
+    event.preventDefault();
+    _updateCursorData();
+
+    const editorStore = useEditorStore();
+    const textData = await navigator.clipboard.readText();
+    const $target = event.target as HTMLElement;
+
+    if (textData !== "" && editorStore.cursorSelection !== null && $target !== null) {
+        const textNode = document.createTextNode(textData);
+
+        if ($target.classList.contains("de-item-text") === true) {
+            // 리스트 블럭 화면 컨트롤 겹침에 의한 분리
+            editorStore.cursorSelection.deleteFromDocument();
+            editorStore.cursorSelection.getRangeAt(0).insertNode(textNode);
+            $target.dispatchEvent(new Event("input"));
+            _setCursorPosition(textNode, textNode.length);
+        } else {
+            abortEvent();
+            editorStore.cursorSelection.deleteFromDocument();
+            editorStore.cursorSelection.getRangeAt(0).insertNode(textNode);
+            $target.dispatchEvent(new Event("input"));
+            setEvent();
+            _setCursorPosition(textNode, textNode.length);
         }
     }
 }

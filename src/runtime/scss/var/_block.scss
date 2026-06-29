@@ -263,8 +263,8 @@
 
         .de-pre-wrap {
             display: flex;
-            flex-wrap: wrap;
             width: 100%;
+            overflow-x:auto;
 
             .de-number {
                 padding: 10px 4px;
@@ -288,9 +288,8 @@
             .de-code-content {
                 display: block;
                 min-height: 1.6em;
-                width: 100%;
+                min-width: 100%;
                 font-family: Inconsolata, monospace, sans-serif;
-                word-break: break-word;
                 outline: 0;
 
                 @if $isEdit == "true" {

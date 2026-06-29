@@ -12,6 +12,7 @@
             @focus="setEdit"
             @keydown="fileNameKeydownEvent"
             @input="updateFilename"
+            @paste="_normalPasteEvent($event,setEdit,abortEdit)"
         ></p>
 
         <p class="de-language">{{ DECodeLanguage[props.data.language] }}</p>
@@ -26,7 +27,7 @@
                 </p>
             </div>
 
-            <pre class="de-pre"><code v-memo="memoData" v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" ref="$content" @focus="setEdit" @keydown="contentKeydownEvent" @input="updateContent" @blur=""></code></pre>
+            <pre class="de-pre"><code v-memo="memoData" v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" ref="$content" @focus="setEdit" @keydown="contentKeydownEvent" @input="updateContent" @blur="" @paste="_normalPasteEvent($event,setEdit,abortEdit)"></code></pre>
         </div>
     </div>
 </template>
@@ -35,7 +36,7 @@
 import { useEditorStore } from "../../store/editor";
 import { ref, computed } from "vue";
 import { DECodeLanguage } from "../../enums/codeLanguage";
-import { _moveCodeBlockEvent, _codeBlockShiftEnterEvent, _codeBlockTabEvent } from "../../utils/event";
+import { _moveCodeBlockEvent, _codeBlockShiftEnterEvent, _codeBlockTabEvent, _normalPasteEvent } from "../../utils/event";
 import type { DECodeBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -66,6 +67,11 @@ const memoData = computed<any[]>(() => {
 function setEdit() {
     editorStore.selectedBlockId = props.data.id;
     editorStore.selectedBlockIndex = props.index;
+}
+
+function abortEdit() {
+    editorStore.selectedBlockId = "";
+    editorStore.selectedBlockIndex = -1;
 }
 
 function updateFilename(event: Event): void {

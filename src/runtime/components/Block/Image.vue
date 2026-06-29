@@ -19,7 +19,7 @@
             <img
                 class="de-img"
                 :src="editorStore.option.mediaHostURL + props.data.src"
-                alt=""
+                :alt="props.data.caption"
                 draggable="false"
             />
         </div>
@@ -31,6 +31,7 @@
             @focus="setEdit"
             @keydown="keydownEvent"
             @input="updateData"
+            @paste="_normalPasteEvent($event, setEdit, abortEdit)"
         ></p>
     </div>
 </template>
@@ -38,7 +39,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useEditorStore } from "../../store/editor";
-import { _imageEnterEvent, _blockTabEvent, _moveBlockDefaultEvent } from "../../utils/event";
+import { _imageEnterEvent, _blockTabEvent, _moveBlockDefaultEvent, _normalPasteEvent } from "../../utils/event";
 import type { DEImageBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -56,6 +57,11 @@ const memoData = computed<any[]>(() => {
 function setEdit() {
     editorStore.selectedBlockIndex = props.index;
     editorStore.selectedBlockId = props.data.id;
+}
+
+function abortEdit() {
+    editorStore.selectedBlockIndex = -1;
+    editorStore.selectedBlockId = "";
 }
 
 function keydownEvent(event: KeyboardEvent): void {

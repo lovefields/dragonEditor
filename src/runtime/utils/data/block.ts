@@ -3,17 +3,13 @@ import { useEditorStore } from "../../store/editor";
 import { _generateId } from "../data";
 import { _findEditableElement } from "../node";
 import { DECodeLanguage } from "../../enums/codeLanguage";
-import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType, DEBlockMenutype, DECodeBlock, DEImageBlock, DEDividerBlock, DECustomBlock } from "../../type.d.mts";
+import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType, DEBlockMenutype, DECodeBlock, DEImageBlock, DEDividerBlock, DECustomBlock, DEBlockData } from "../../type.d.mts";
 
 // 데이터 정리
 export function _arrangementContentData(data: DEContentData): DEContentData {
     const editorStore = useEditorStore();
 
     data.forEach((block) => {
-        if ("classList" in block) {
-            delete block.classList;
-        }
-
         switch (block.type) {
             case "text":
                 if (block.textContent === "<br>") {
@@ -28,11 +24,11 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
                 break;
 
             case "list":
-                block.child.forEach((child) => {
-                    if ("classList" in child) {
-                        delete child.classList;
-                    }
+                if ("classList" in block) {
+                    delete block.classList;
+                }
 
+                block.child.forEach((child) => {
                     if (child.textContent === "<br>") {
                         child.textContent = "";
                     }
@@ -50,6 +46,10 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
                 break;
 
             case "code":
+                if ("classList" in block) {
+                    delete block.classList;
+                }
+
                 if ("theme" in block) {
                     delete block.theme;
                 }
@@ -72,6 +72,7 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
 export function _createTextBlockData(textContent: string = ""): DETextBlock {
     return {
         id: _generateId(),
+        classList: [],
         type: "text",
         textContent: textContent,
     };
@@ -82,6 +83,7 @@ export function _createHeadingBlockData(level: DEHeadingElementLevel, textConten
     return {
         id: _generateId(),
         type: "heading",
+        classList: [],
         level: level,
         textContent: textContent,
     };
@@ -99,21 +101,22 @@ export function _createListBlockData(element: DEListElementName, childList: DELi
 
 // 리스트 블럭 자식 데이터 생성
 export function _createListBlockChildData(textContent: string = "", depth: number = 0): DEListItem {
-    return { id: _generateId(), depth: depth === 0 ? undefined : depth, textContent: textContent };
+    return { id: _generateId(), classList: [], depth: depth === 0 ? undefined : depth, textContent: textContent };
 }
 
 // 이미지 블럭 데이터 생성
-export function _createImageBlockData(src: string, width: number, height: number): DEImageBlock {
+export function _createImageBlockData(src: string, width: number, height: number, caption: string = "", useHost: boolean = true): DEImageBlock {
     const editorStore = useEditorStore();
 
     return {
         id: _generateId(),
         type: "image",
+        classList: [],
         maxWidth: 50,
-        src: editorStore.option.mediaHostURL + src,
+        src: useHost === true ? editorStore.option.mediaHostURL + src : src,
         width: width,
         height: height,
-        caption: "",
+        caption: caption,
     };
 }
 
@@ -248,6 +251,230 @@ export async function _addBlock(name: DEBlockMenutype, textContent: string = "")
                 $targetNode.focus();
                 $targetNode.dispatchEvent(new Event("input"));
             }
+        }
+    }
+}
+
+// 마크다운 -> 에디터 데이터
+export async function _convertMarkdownToEditor(textDataList: string[]): Promise<DEBlockData[]> {
+    const blockList: DEBlockData[] = [];
+    const unorderListReg = new RegExp("^( +)?(\\+|\\*|-)(?= )( )");
+    const orderListReg = new RegExp("^( +)?(\\d+.)(?= )( )");
+    const codeBlockReg = new RegExp("^```");
+    let tempData: DEBlockData | null = null;
+    let isCodeBlock: boolean = false;
+
+    textDataList.forEach(async (blockData, lineIndex) => {
+        switch (true) {
+            case new RegExp("^(---|___|\\*\\*\\*)").test(blockData):
+                blockList.push(_createDividerBlockData());
+                break;
+
+            case codeBlockReg.test(blockData) || isCodeBlock === true:
+                if (isCodeBlock === false) {
+                    // 코드 블럭 시작
+                    const startLineText = blockData.split("```");
+                    let codeBlockLang: DECodeLanguageList = "text";
+
+                    isCodeBlock = true;
+
+                    if (startLineText[1]! in DECodeLanguage === true) {
+                        codeBlockLang = startLineText[1] as DECodeLanguageList;
+                    }
+
+                    tempData = {
+                        id: _generateId(),
+                        type: "code",
+                        filename: "",
+                        language: codeBlockLang,
+                        textContent: "",
+                    } as DECodeBlock;
+                } else {
+                    if (tempData !== null) {
+                        if (codeBlockReg.test(blockData) !== true) {
+                            // 중간
+                            if (tempData.type === "code") {
+                                tempData.textContent += `${blockData}\n`;
+                            }
+                        } else {
+                            // 마지막
+                            if (tempData.type === "code") {
+                                tempData.textContent = tempData.textContent.trim();
+                                blockList.push(tempData);
+                                isCodeBlock = false;
+                                tempData = null;
+                            }
+                        }
+                    }
+                }
+                break;
+
+            case orderListReg.test(blockData):
+                // 순서 있는 리스트
+                const olSplitText: string[] = blockData.split(new RegExp("\\d+.(?= )"));
+                const olDepth: number = Math.floor(olSplitText[0]!.length / 4);
+
+                if (tempData === null) {
+                    // 리스트 시작
+                    tempData = _createListBlockData("ol", [_createListBlockChildData(convertMarkdownTextToEditorText(olSplitText[1]!.trim()), olDepth)]);
+                } else {
+                    // 리스트 중간
+                    if (tempData.type === "list") {
+                        const nextLine = textDataList[lineIndex + 1];
+
+                        tempData.child.push(_createListBlockChildData(convertMarkdownTextToEditorText(olSplitText[1]!.trim()), olDepth));
+
+                        // 리스트 종료
+                        if (nextLine !== undefined) {
+                            if (orderListReg.test(nextLine) === false) {
+                                blockList.push(tempData);
+                                tempData = null;
+                            }
+                        } else {
+                            blockList.push(tempData);
+                            tempData = null;
+                        }
+                    }
+                }
+                break;
+
+            case unorderListReg.test(blockData):
+                // 순서 없는 리스트
+                const ulSplitText: string[] = blockData.split(new RegExp("\\+|\\*|-"));
+                const ulDepth: number = Math.floor(ulSplitText[0]!.length / 4);
+
+                if (tempData === null) {
+                    // 리스트 시작
+                    tempData = _createListBlockData("ul", [_createListBlockChildData(convertMarkdownTextToEditorText(ulSplitText[1]!.trim()), ulDepth)]);
+                } else {
+                    // 리스트 중간
+                    if (tempData.type === "list") {
+                        const nextLine = textDataList[lineIndex + 1];
+
+                        tempData.child.push(_createListBlockChildData(convertMarkdownTextToEditorText(ulSplitText[1]!.trim()), ulDepth));
+
+                        // 리스트 종료
+                        if (nextLine !== undefined) {
+                            if (unorderListReg.test(nextLine) === false) {
+                                blockList.push(tempData);
+                                tempData = null;
+                            }
+                        } else {
+                            blockList.push(tempData);
+                            tempData = null;
+                        }
+                    }
+                }
+                break;
+
+            case new RegExp("^###(?= )").test(blockData):
+                // h3 블럭
+                blockList.push(_createHeadingBlockData(3, convertMarkdownTextToEditorText(blockData.substring(4).trim())));
+                break;
+
+            case new RegExp("^##(?= )").test(blockData):
+                // h2 블럭
+                blockList.push(_createHeadingBlockData(2, convertMarkdownTextToEditorText(blockData.substring(3).trim())));
+                break;
+
+            case new RegExp("^#(?= )").test(blockData):
+                // h1 블럭
+                blockList.push(_createHeadingBlockData(1, convertMarkdownTextToEditorText(blockData.substring(2).trim())));
+                break;
+
+            case new RegExp("^\\!\\[.*(?=\\))").test(blockData):
+                // 이미지 블럭
+                const caption = blockData.match(new RegExp("^\\!\\[(.*)(?=\\])\\]\\(([^ ]*)(\\)?)"))![1];
+                const src = blockData.match(new RegExp("^\\!\\[(.*)(?=\\])\\]\\(([^ ]*)(\\)?)"))![2];
+
+                if (caption !== undefined && src !== undefined) {
+                    blockList.push(_createImageBlockData(src.replace(")", ""), 0, 0, caption, false));
+                }
+                break;
+
+            default:
+                // 기본 텍스트 블럭
+                blockList.push(_createTextBlockData(convertMarkdownTextToEditorText(blockData)));
+                break;
+        }
+    });
+
+    return blockList;
+}
+// 마크다운 텍스트 -> 에디터 스타일 텍스트
+function convertMarkdownTextToEditorText(text: string): string {
+    const convertText = text
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll(new RegExp("(`)([^`]+)(`)", "g"), `<span class="de-code">$2</span>`)
+        .replaceAll(new RegExp("(\\*\\*)([^\\*]+)(?=\\*\\*)(\\*\\*)", "g"), `<span class="de-bold">$2</span>`)
+        .replaceAll(new RegExp("(\\_\\_)([^\\_]+)(?=\\_\\_)(\\_\\_)", "g"), `<span class="de-bold">$2</span>`)
+        .replaceAll(new RegExp("(\\~\\~)([^\\~]+)(?=\\~\\~)(\\~\\~)", "g"), `<span class="de-strikethrough">$2</span>`)
+        .replaceAll(new RegExp("(\\*)([^\\*]+)(?=\\*)(\\*)", "g"), `<span class="de-italic">$2</span>`)
+        .replaceAll(new RegExp("(\\_)([^\\_]+)(?=\\_)(\\_)", "g"), `<span class="de-italic">$2</span>`)
+        .replaceAll(new RegExp("(\\[)([^\\[\\]]+)(\\])(?=\\()(\\()([^\\(\\)]+)(?=\\))(\\))", "g"), `<a class="de-link" href="$5" target="_blank">$2</a>`);
+    const $block = document.createElement("p");
+
+    $block.innerHTML = convertText;
+
+    const newNodes: Node[] = [];
+
+    Array.from($block.childNodes).forEach((child) => __collectLeafNodes(child));
+
+    $block.innerHTML = "";
+    newNodes.forEach((node) => {
+        $block.appendChild(node);
+    });
+
+    return $block.innerHTML;
+
+    function __collectLeafNodes(node: Node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+            if (node.textContent === "") {
+                return;
+            }
+
+            let current = node.parentNode;
+            const classes: string[] = [];
+            let href = "";
+            let target = "";
+
+            while (current !== null && current !== $block) {
+                if (current.nodeType === Node.ELEMENT_NODE) {
+                    const el = current as HTMLElement;
+                    el.classList.forEach((cls) => {
+                        if (classes.includes(cls) === false) {
+                            classes.push(cls);
+                        }
+                    });
+                    if (el.tagName === "A") {
+                        href = el.getAttribute("href") || "";
+                        target = el.getAttribute("target") || "";
+                    }
+                }
+                current = current.parentNode;
+            }
+
+            if (href !== "") {
+                const $a = document.createElement("a");
+                $a.setAttribute("href", href);
+                if (target !== "") {
+                    $a.setAttribute("target", target);
+                }
+                classes.forEach((cls) => $a.classList.add(cls));
+                $a.textContent = node.textContent;
+                newNodes.push($a);
+            } else if (classes.length > 0) {
+                const $span = document.createElement("span");
+                classes.forEach((cls) => $span.classList.add(cls));
+                $span.textContent = node.textContent;
+                newNodes.push($span);
+            } else {
+                newNodes.push(document.createTextNode(node.textContent || ""));
+            }
+        } else {
+            const children = Array.from(node.childNodes);
+            children.forEach((child) => __collectLeafNodes(child));
         }
     }
 }

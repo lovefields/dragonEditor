@@ -21,6 +21,9 @@ type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "
 // 메뉴용 블럭 추가 타입
 type DEBlockMenutype = Exclude<DEBlockType, "heading" | "list" | "image"> | "heading1" | "heading2" | "heading3" | "unordered-list" | "ordered-list";
 
+// 코드블럭 언어 리스트
+type DECodeLanguageList = keyof typeof DECodeLanguage;
+
 // 에디터 컴포넌트
 interface DragonEditor {
     addBlock(name: DEBlockMenutype, textContent: string = ""): Promise<void>;
@@ -52,6 +55,7 @@ interface DEOption {
 interface DETextBlock {
     id: string;
     type: "text";
+    classList: string[];
     depth?: number;
     textContent: string;
 }
@@ -60,6 +64,7 @@ interface DETextBlock {
 interface DEHeadingBlock {
     id: string;
     type: "heading";
+    classList: string[];
     level: DEHeadingElementLevel;
     depth?: number;
     textContent: string;
@@ -68,6 +73,7 @@ interface DEHeadingBlock {
 // 컨텐츠 리스트 자식 타입
 interface DEListItem {
     id: string;
+    classList: string[];
     depth?: number;
     textContent: string;
 }
@@ -84,6 +90,7 @@ interface DEListBlock {
 interface DEImageBlock {
     id: string;
     type: "image";
+    classList: string[];
     maxWidth: number;
     src: string;
     width: number;
@@ -95,7 +102,7 @@ interface DEImageBlock {
 interface DECodeBlock {
     id: string;
     type: "code";
-    language: keyof typeof DECodeLanguage;
+    language:DECodeLanguageList;
     filename: string;
     textContent: string;
 }

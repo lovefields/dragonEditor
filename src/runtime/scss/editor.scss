@@ -4,7 +4,8 @@
 
 .dragon-editor {
     position: relative;
-    background:var(--editor-background);
+    background: var(--editor-background);
+    color: var(--editor-text);
     border: 1px solid var(--editor-border);
     border-radius: var(--radius-default);
 
@@ -48,7 +49,7 @@
         left: 0;
         right: 0;
         height: 34px;
-        background:var(--editor-background);
+        background: var(--editor-background);
         border-bottom: 1px solid var(--editor-border);
         border-radius: var(--radius-default) var(--radius-default) 0 0;
         z-index: 10;
@@ -61,7 +62,7 @@
         .de-col {
             display: flex;
             position: relative;
-            border-right: 1px solid #ccc;
+            border-right: 1px solid var(--editor-border);
 
             &:last-child {
                 border-right: 0;
@@ -78,7 +79,7 @@
 
             &.--disabled {
                 .de-path {
-                    fill: #ccc;
+                    fill: var(--editor-text-disabled);
                 }
             }
 
@@ -92,11 +93,7 @@
             }
 
             .de-path {
-                fill: #333;
-
-                &.--red {
-                    fill: #dd0000;
-                }
+                fill: var(--editor-text);
             }
         }
 
