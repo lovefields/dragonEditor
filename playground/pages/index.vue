@@ -142,21 +142,13 @@ function addCustomBlock() {
     });
 }
 
-function pasteImageProcess(file: File) {
-    const url = URL.createObjectURL(file);
+function pasteImageProcess(files: File[]) {
+    const url = URL.createObjectURL(files[0]!);
     const $img = document.createElement("img");
 
     $img.src = url;
     $img.onload = () => {
-        $editor.value?.addBlock({
-            type: "image",
-            maxWidth: 100,
-            src: url,
-            width: $img.width,
-            height: $img.height,
-            caption: "",
-            classList: [],
-        });
+        $editor.value?.addImageBlock(url, $img.width, $img.height);
     };
 }
 

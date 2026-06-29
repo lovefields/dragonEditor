@@ -20,7 +20,7 @@ import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
 import { ref, onMounted, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
-import { _createTextBlockData, _arrangementContentData, _addBlock } from "../utils/data";
+import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock } from "../utils/data";
 import type { DEContentData } from "../type.mjs";
 
 interface DragonEditorOption {
@@ -42,7 +42,7 @@ const props = withDefaults(defineProps<DragonEditorOption>(), {
 });
 const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
-    (e: "uploadImageEvent", file: File): void;
+    (e: "uploadImageEvent", files: File[]): void;
 }>();
 const $body = ref<HTMLDivElement | null>(null);
 const $editor = ref<HTMLDivElement>();
@@ -64,6 +64,11 @@ function ifEmptyUpdateData(): void {
     }
 }
 
+// 이미지 업로드 함수 래핑
+function uploadImage(files: File[]): void {
+    emit("uploadImageEvent", files);
+}
+
 onClickOutside($editor, () => {
     editorStore.selectedBlockIndex = -1;
     editorStore.selectedBlockId = "";
@@ -71,6 +76,7 @@ onClickOutside($editor, () => {
 
 defineExpose({
     addBlock: _addBlock,
+    addImageBlock: _addImageBlock,
 });
 
 watch(
@@ -86,5 +92,6 @@ onMounted(() => {
     ifEmptyUpdateData();
     editorStore.element.body = $body.value;
     editorStore.fn.updateEditorData = updateEditorData;
+    editorStore.fn.uploadImage = uploadImage;
 });
 </script>

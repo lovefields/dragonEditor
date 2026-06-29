@@ -1,10 +1,9 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _updateCursorData, _setCursorPosition } from "./index";
-import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition, _createDividerBlockData, _convertMarkdownToEditor } from "../data";
+import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition, _createDividerBlockData, _convertMarkdownToEditor, _generateId } from "../data";
 import { _findEditableElement, _findParentBlock } from "../node";
-import { DECodeLanguage } from "../../enums/codeLanguage";
-import type { DETextBlock, DEHeadingBlock, DECodeBlock, DEContentData, DECodeLanguageList, DEBlockData } from "../../type.d.mts";
+import type { DETextBlock, DEHeadingBlock, DEContentData, DEBlockData } from "../../type.d.mts";
 
 // 내용 짤라서 새로운 텍스트 블럭 생성 (엔터 이벤트)
 export async function _sliceAndNewTextBlock(event: KeyboardEvent, data: DETextBlock | DEHeadingBlock, index: number): Promise<void> {
@@ -1001,7 +1000,16 @@ export async function _allDataPasteEvent(event: ClipboardEvent, setEvent: Functi
             // 이미지 데이터
             const clipboardItems = await navigator.clipboard.read();
 
-            // TODO : 이미지 이벤트 연결
+            if (editorStore.fn.uploadImage !== null) {
+                const imageItem = clipboardItems[0]!.types.find((type) => type.startsWith("image/"));
+
+                if (imageItem !== undefined) {
+                    const blob = await clipboardItems[0]!.getType(imageItem);
+                    const file = new File([blob], `${_generateId()}.${imageItem.split("/")[1]}`);
+
+                    editorStore.fn.uploadImage([file]);
+                }
+            }
         } else {
             // 텍스트 데이터
             const dataLine: string[] = textData.split("\n");

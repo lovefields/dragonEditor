@@ -27,6 +27,7 @@ type DECodeLanguageList = keyof typeof DECodeLanguage;
 // 에디터 컴포넌트
 interface DragonEditor {
     addBlock(name: DEBlockMenutype, textContent: string = ""): Promise<void>;
+    addImageBlock(src: string, width: number, height: number, caption: string = ""): Promise<void>;
 }
 
 // 스토어 구조체
@@ -38,6 +39,7 @@ interface DragonEditorStore {
     cursorSelection: null | Selection;
     fn: {
         updateEditorData: ((data: DEContentData) => void) | null;
+        uploadImage: ((files: File[]) => void) | null;
     };
     element: {
         body: null | HTMLDivElement;
@@ -102,7 +104,7 @@ interface DEImageBlock {
 interface DECodeBlock {
     id: string;
     type: "code";
-    language:DECodeLanguageList;
+    language: DECodeLanguageList;
     filename: string;
     textContent: string;
 }

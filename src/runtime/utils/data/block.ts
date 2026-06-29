@@ -255,6 +255,38 @@ export async function _addBlock(name: DEBlockMenutype, textContent: string = "")
     }
 }
 
+// 이미지 데이터 추가
+export async function _addImageBlock(src: string, width: number, height: number, caption: string = ""): Promise<void> {
+    const editorStore = useEditorStore();
+    const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEBlockData[];
+    const imageBlock = _createImageBlockData(src, width, height, caption);
+    let targetIndex = editorStore.selectedBlockIndex;
+
+    if (editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        if (targetIndex === -1) {
+            newData.push(imageBlock);
+            targetIndex = newData.length - 1;
+        } else {
+            newData.splice(editorStore.selectedBlockIndex + 1, 0, imageBlock);
+            targetIndex = editorStore.selectedBlockIndex + 1;
+        }
+
+        editorStore.fn.updateEditorData(newData as DEContentData);
+        await nextTick();
+
+        const $targetBlock = editorStore.element.body.children[targetIndex] as HTMLElement;
+
+        if ($targetBlock !== undefined) {
+            const $targetNode = _findEditableElement($targetBlock, "down");
+
+            if ($targetNode !== null) {
+                $targetNode.focus();
+                $targetNode.dispatchEvent(new Event("input"));
+            }
+        }
+    }
+}
+
 // 마크다운 -> 에디터 데이터
 export async function _convertMarkdownToEditor(textDataList: string[]): Promise<DEBlockData[]> {
     const blockList: DEBlockData[] = [];

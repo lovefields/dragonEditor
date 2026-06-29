@@ -17,6 +17,7 @@ export const useEditorStore = defineStore("editorStore", {
         },
         fn: {
             updateEditorData: null,
+            uploadImage: null,
         },
     }),
     actions: {},
