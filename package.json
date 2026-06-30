@@ -43,6 +43,7 @@
         "@nuxt/kit": "^4.4.8",
         "@pinia/nuxt": "^0.11.3",
         "@vueuse/nuxt": "^14.3.0",
+        "highlight.js": "^11.11.1",
         "pinia": "^3.0.4"
     },
     "devDependencies": {

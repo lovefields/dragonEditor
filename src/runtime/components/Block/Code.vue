@@ -12,10 +12,40 @@
             @focus="setEdit"
             @keydown="fileNameKeydownEvent"
             @input="updateFilename"
-            @paste="_normalPasteEvent($event,setEdit,abortEdit)"
+            @paste="_normalPasteEvent($event, setEdit, abortEdit)"
         ></p>
 
-        <p class="de-language">{{ DECodeLanguage[props.data.language] }}</p>
+        <p
+            v-if="props.isEdit === false"
+            class="de-language"
+            >{{ DECodeLanguage[props.data.language] }}</p
+        >
+
+        <div
+            v-else
+            class="de-language"
+        >
+            <button
+                class="de-btn-language"
+                @click="isLanguageListActive = !isLanguageListActive"
+                ref="$btnLanguageList"
+                >{{ DECodeLanguage[props.data.language] }}</button
+            >
+
+            <div
+                class="de-list-language"
+                :class="{ '--active': isLanguageListActive === true }"
+                ref="$languageList"
+            >
+                <button
+                    v-for="[name, value] in Object.entries(DECodeLanguage)"
+                    class="de-lang"
+                    @click="setLanguageEvent(name as DECodeLanguageList)"
+                >
+                    {{ value }}
+                </button>
+            </div>
+        </div>
 
         <div class="de-pre-wrap">
             <div class="de-number">
@@ -27,25 +57,30 @@
                 </p>
             </div>
 
-            <pre class="de-pre"><code v-memo="memoData" v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" ref="$content" @focus="setEdit" @keydown="contentKeydownEvent" @input="updateContent" @blur="" @paste="_normalPasteEvent($event,setEdit,abortEdit)"></code></pre>
+            <pre class="de-pre"><code v-memo="memoData" v-html="props.data.textContent" class="de-code-content" :contenteditable="props.isEdit === true" ref="$content" @focus="setEdit" @keydown="contentKeydownEvent" @input="updateContent" @blur="setStyleEvent" @paste="_normalPasteEvent($event,setEdit,abortEdit)"></code></pre>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import hljs from "highlight.js";
 import { useEditorStore } from "../../store/editor";
-import { ref, computed } from "vue";
+import { ref, computed, nextTick } from "vue";
+import { onClickOutside } from "@vueuse/core";
 import { DECodeLanguage } from "../../enums/codeLanguage";
 import { _moveCodeBlockEvent, _codeBlockShiftEnterEvent, _codeBlockTabEvent, _normalPasteEvent } from "../../utils/event";
-import type { DECodeBlock } from "../../type.d.mts";
+import type { DECodeBlock, DECodeLanguageList } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
 const props = defineProps<{ data: DECodeBlock; isEdit: boolean; index: number }>();
 const emit = defineEmits<{
     (e: "update", data: DECodeBlock): void;
 }>();
+const isLanguageListActive = ref<boolean>(false);
 const $fileName = ref<HTMLParagraphElement | null>(null);
 const $content = ref<HTMLDivElement | null>(null);
+const $languageList = ref<HTMLDivElement | null>(null);
+const $btnLanguageList = ref<HTMLButtonElement | null>(null);
 const lineNumber = computed<number>(() => {
     const match = props.data.textContent.match(/\n/g);
     const matchEmptyLast = props.data.textContent.match(/\n\n$/g);
@@ -143,4 +178,43 @@ function contentKeydownEvent(event: KeyboardEvent): void {
         }
     }
 }
+
+// 언어 설정
+async function setLanguageEvent(lang: DECodeLanguageList): Promise<void> {
+    if ($content.value !== null) {
+        const textContent = $content.value.textContent;
+        const highlights = hljs.highlight(textContent, { language: lang });
+        const newData = JSON.parse(JSON.stringify(props.data)) as DECodeBlock;
+
+        isLanguageListActive.value = false;
+        abortEdit();
+        newData.language = lang;
+        newData.textContent = highlights.value;
+        emit("update", newData);
+        await nextTick();
+        setEdit();
+    }
+}
+
+// 블러시 스타일 셋
+function setStyleEvent(): void {
+    if ($content.value !== null) {
+        const textContent = $content.value.textContent;
+        const highlights = hljs.highlight(textContent, { language: props.data.language });
+        const newData = JSON.parse(JSON.stringify(props.data)) as DECodeBlock;
+
+        newData.textContent = highlights.value;
+        emit("update", newData);
+    }
+}
+
+onClickOutside(
+    $languageList,
+    () => {
+        isLanguageListActive.value = false;
+    },
+    {
+        ignore: [$btnLanguageList],
+    }
+);
 </script>

@@ -429,6 +429,10 @@ export async function _codeBlockTabEvent(event: KeyboardEvent): Promise<void> {
     event.preventDefault();
     _updateCursorData();
 
+    if (editorStore.cursorSelection?.type === "Range") {
+        return;
+    }
+
     if (editorStore.cursorSelection === null || editorStore.cursorSelection.rangeCount === 0 || $target === null) {
         return;
     }

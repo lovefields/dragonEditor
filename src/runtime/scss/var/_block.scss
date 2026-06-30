@@ -223,7 +223,6 @@
         color: var(--editor-code-color);
         background: var(--editor-code-bg);
         border-radius: var(--radius-default);
-        overflow: hidden;
 
         .de-filename {
             flex: 1;
@@ -254,9 +253,34 @@
             box-sizing: border-box;
 
             @if $isEdit == "true" {
+                position: relative;
+
                 &:empty:hover::before,
                 &:empty:focus::before {
                     color: var(--editor-code-placeholder);
+                }
+
+                .de-btn-language {
+                    width: 100%;
+                    text-align: right;
+                }
+
+                .de-list-language {
+                    display: none;
+                    flex-direction: column;
+                    row-gap: 6px;
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    left: 0;
+                    height: 200px;
+                    padding: 2px 4px;
+                    background: var(--editor-code-file-bg);
+                    overflow-y: scroll;
+
+                    &.--active {
+                        display: flex;
+                    }
                 }
             }
         }
@@ -264,7 +288,7 @@
         .de-pre-wrap {
             display: flex;
             width: 100%;
-            overflow-x:auto;
+            overflow-x: auto;
 
             .de-number {
                 padding: 10px 4px;
@@ -283,7 +307,6 @@
             flex: 1;
             padding: 10px;
             box-sizing: border-box;
-            white-space: pre-wrap;
 
             .de-code-content {
                 display: block;
