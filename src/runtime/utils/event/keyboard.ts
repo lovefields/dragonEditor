@@ -1,7 +1,7 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _updateCursorData, _setCursorPosition } from "./index";
-import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition, _createDividerBlockData, _convertMarkdownToEditor, _generateId } from "../data";
+import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition, _createDividerBlockData, _convertMarkdownToEditor, _generateId, _createCodeBlockData } from "../data";
 import { _findEditableElement, _findParentBlock } from "../node";
 import type { DETextBlock, DEHeadingBlock, DEContentData, DEBlockData } from "../../type.d.mts";
 
@@ -429,78 +429,206 @@ export async function _codeBlockTabEvent(event: KeyboardEvent): Promise<void> {
     event.preventDefault();
     _updateCursorData();
 
-    if (editorStore.cursorSelection?.type === "Range") {
-        return;
-    }
+    if (editorStore.cursorSelection !== null && editorStore.cursorSelection.rangeCount > 0 && $target !== null && $target.contains(editorStore.cursorSelection.getRangeAt(0).startContainer)) {
+        const range = editorStore.cursorSelection.getRangeAt(0);
 
-    if (editorStore.cursorSelection === null || editorStore.cursorSelection.rangeCount === 0 || $target === null) {
-        return;
-    }
+        // 1. 전체 텍스트 상의 startOffsetChar, endOffsetChar 구하기
+        const startRange = range.cloneRange();
+        startRange.selectNodeContents($target);
+        startRange.setEnd(range.startContainer, range.startOffset);
+        const startOffsetChar = startRange.toString().length;
 
-    const range = editorStore.cursorSelection.getRangeAt(0);
+        const endRange = range.cloneRange();
+        endRange.selectNodeContents($target);
+        endRange.setEnd(range.endContainer, range.endOffset);
+        const endOffsetChar = endRange.toString().length;
 
-    if (!$target.contains(range.startContainer)) {
-        return;
-    }
+        const fullText = $target.innerText || $target.textContent || "";
+        const lines = fullText.split("\n");
 
-    const preCaretRange = range.cloneRange();
-    preCaretRange.selectNodeContents($target);
-    preCaretRange.setEnd(range.startContainer, range.endOffset);
-    const cursorOffset = preCaretRange.toString().length;
+        // 2. 각 라인별 메타데이터 빌드
+        const linesInfo: { text: string; start: number; end: number }[] = [];
+        let currentOffset = 0;
+        lines.forEach((lineText) => {
+            const start = currentOffset;
+            const end = currentOffset + lineText.length;
+            linesInfo.push({ text: lineText, start, end });
+            currentOffset = end + 1;
+        });
 
-    const fullText = $target.innerText || $target.textContent || "";
-    const beforeText = fullText.slice(0, cursorOffset);
-    const afterText = fullText.slice(cursorOffset);
-
-    const lastNewlineIdx = beforeText.lastIndexOf("\n");
-    const lineStartIdx = lastNewlineIdx === -1 ? 0 : lastNewlineIdx + 1;
-
-    const nextNewlineIdx = afterText.indexOf("\n");
-    const lineEndIdx = nextNewlineIdx === -1 ? fullText.length : cursorOffset + nextNewlineIdx;
-
-    const currentLineText = fullText.slice(lineStartIdx, lineEndIdx);
-
-    let updatedText = "";
-    let newCursorOffset = cursorOffset;
-
-    if (event.shiftKey === false) {
-        // 기본 탭 공백 추가
-        const addedSpaces = " ".repeat(editorStore.option.codeBlockSpaces);
-        updatedText = fullText.slice(0, lineStartIdx) + addedSpaces + fullText.slice(lineStartIdx);
-        newCursorOffset += addedSpaces.length;
-    } else {
-        // shift+탭 공백 제거
-        let spacesToRemove = 0;
-
-        for (let i = 0; i < editorStore.option.codeBlockSpaces; i += 1) {
-            if (currentLineText[i] === " ") {
-                spacesToRemove += 1;
-            } else if (currentLineText[i] === "\t") {
-                spacesToRemove = 1;
-                break;
-            } else {
-                break;
+        // 3. 선택 영역(startOffsetChar ~ endOffsetChar)에 포함되는 줄들 식별
+        const selectedLineIndices: number[] = [];
+        if (startOffsetChar === endOffsetChar) {
+            // 단일 커서(Caret)의 경우 커서가 걸쳐진 줄 탐색
+            let targetLineIdx = -1;
+            for (let i = 0; i < linesInfo.length; i++) {
+                const line = linesInfo[i]!;
+                const isLast = i === linesInfo.length - 1;
+                if (startOffsetChar >= line.start && (startOffsetChar <= line.end || (isLast && startOffsetChar <= line.end + 1))) {
+                    targetLineIdx = i;
+                    break;
+                }
+                if (i < linesInfo.length - 1 && startOffsetChar === linesInfo[i + 1]!.start - 1) {
+                    targetLineIdx = i;
+                    break;
+                }
             }
-        }
-
-        if (spacesToRemove > 0) {
-            updatedText = fullText.slice(0, lineStartIdx) + currentLineText.slice(spacesToRemove) + fullText.slice(lineEndIdx);
-            if (cursorOffset - lineStartIdx < spacesToRemove) {
-                newCursorOffset = lineStartIdx;
-            } else {
-                newCursorOffset -= spacesToRemove;
+            if (targetLineIdx !== -1) {
+                selectedLineIndices.push(targetLineIdx);
             }
         } else {
-            return;
+            // 드래그 선택 범위가 있을 때 겹치는 모든 줄 식별
+            linesInfo.forEach((line, idx) => {
+                const hasOverlap = Math.max(startOffsetChar, line.start) < Math.min(endOffsetChar, line.end + 1);
+                if (hasOverlap) {
+                    selectedLineIndices.push(idx);
+                }
+            });
         }
+
+        // 4. 원래 커서의 줄 기준 상대 오프셋 계산
+        let startLineIdx = 0;
+        let endLineIdx = 0;
+
+        for (let i = 0; i < linesInfo.length; i++) {
+            const line = linesInfo[i]!;
+            const isLast = i === linesInfo.length - 1;
+            if (startOffsetChar >= line.start && (startOffsetChar <= line.end || (isLast && startOffsetChar <= line.end + 1))) {
+                startLineIdx = i;
+            }
+            if (endOffsetChar >= line.start && (endOffsetChar <= line.end || (isLast && endOffsetChar <= line.end + 1))) {
+                endLineIdx = i;
+            }
+        }
+
+        const startRelative = startOffsetChar - linesInfo[startLineIdx]!.start;
+        const endRelative = endOffsetChar - linesInfo[endLineIdx]!.start;
+
+        // 5. 각 줄 탭 가공 및 오프셋 보정량 계산
+        const updatedLines = [...lines];
+        const lineDiffs: number[] = Array(lines.length).fill(0);
+        const codeBlockSpaces = editorStore.option.codeBlockSpaces;
+        const addedSpacesStr = " ".repeat(codeBlockSpaces);
+
+        linesInfo.forEach((line, idx) => {
+            const isSelected = selectedLineIndices.includes(idx);
+            if (isSelected) {
+                let lineText = line.text;
+                let diff = 0;
+
+                if (event.shiftKey === false) {
+                    // Tab 추가
+                    lineText = addedSpacesStr + lineText;
+                    diff = codeBlockSpaces;
+                } else {
+                    // Shift + Tab 제거
+                    let spacesToRemove = 0;
+                    for (let i = 0; i < codeBlockSpaces; i++) {
+                        if (lineText[i] === " ") {
+                            spacesToRemove++;
+                        } else if (lineText[i] === "\t") {
+                            spacesToRemove = 1;
+                            break;
+                        } else {
+                            break;
+                        }
+                    }
+                    if (spacesToRemove > 0) {
+                        lineText = lineText.slice(spacesToRemove);
+                        diff = -spacesToRemove;
+                    }
+                }
+                updatedLines[idx] = lineText;
+                lineDiffs[idx] = diff;
+            }
+        });
+
+        const updatedText = updatedLines.join("\n");
+
+        // 6. 변경된 줄 정보를 기초로 새로운 절대 줄 오프셋 계산
+        const newLinesStart: number[] = [];
+        let curOffset = 0;
+        updatedLines.forEach((lineText) => {
+            newLinesStart.push(curOffset);
+            curOffset += lineText.length + 1;
+        });
+
+        // 7. 최종 Selection 시작 및 끝 오프셋 도출
+        let finalStartRelative = startRelative;
+        if (selectedLineIndices.includes(startLineIdx)) {
+            const diff = lineDiffs[startLineIdx]!;
+            if (diff > 0) {
+                finalStartRelative += diff;
+            } else {
+                finalStartRelative = Math.max(0, finalStartRelative + diff);
+            }
+        }
+        const newStartOffset = newLinesStart[startLineIdx]! + finalStartRelative;
+
+        let finalEndRelative = endRelative;
+        if (selectedLineIndices.includes(endLineIdx)) {
+            const diff = lineDiffs[endLineIdx]!;
+            if (diff > 0) {
+                finalEndRelative += diff;
+            } else {
+                finalEndRelative = Math.max(0, finalEndRelative + diff);
+            }
+        }
+        const newEndOffset = newLinesStart[endLineIdx]! + finalEndRelative;
+
+        // 8. 뷰 및 DOM 반영
+        $target.textContent = updatedText;
+        $target.dispatchEvent(new Event("input"));
+
+        await nextTick();
+
+        // 9. 새로운 캐릭터 범위 기반 Selection 복원
+        let selectionOffset = 0;
+        let startNode: Node | null = null;
+        let startNodeOffset = 0;
+        let endNode: Node | null = null;
+        let endNodeOffset = 0;
+
+        function traverse(node: Node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const len = node.textContent?.length || 0;
+                if (startNode === null && selectionOffset + len >= newStartOffset) {
+                    startNode = node;
+                    startNodeOffset = newStartOffset - selectionOffset;
+                }
+                if (endNode === null && selectionOffset + len >= newEndOffset) {
+                    endNode = node;
+                    endNodeOffset = newEndOffset - selectionOffset;
+                }
+                selectionOffset += len;
+            } else {
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    traverse(node.childNodes[i]!);
+                    if (startNode !== null && endNode !== null) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        traverse($target);
+
+        // Fallback 처리
+        if (startNode === null) {
+            startNode = $target;
+            startNodeOffset = 0;
+        }
+        if (endNode === null) {
+            endNode = $target;
+            endNodeOffset = 0;
+        }
+
+        editorStore.cursorSelection.removeAllRanges();
+        const newRange = document.createRange();
+        newRange.setStart(startNode, startNodeOffset);
+        newRange.setEnd(endNode, endNodeOffset);
+        editorStore.cursorSelection.addRange(newRange);
     }
-
-    $target.textContent = updatedText;
-    $target.dispatchEvent(new Event("input"));
-
-    await nextTick();
-
-    _setCursorPosition($target, newCursorOffset);
 }
 
 // 커서 위치 이동
@@ -1070,6 +1198,145 @@ export async function _normalPasteEvent(event: ClipboardEvent, setEvent: Functio
             $target.dispatchEvent(new Event("input"));
             setEvent();
             _setCursorPosition(textNode, textNode.length);
+        }
+    }
+}
+
+// 텍스트블럭 포멧 변경 단축키
+export async function _convertTextBlockType(event: KeyboardEvent, data: DETextBlock, index: number): Promise<void> {
+    const editorStore = useEditorStore();
+    const headingReg = new RegExp("^(#{1,3})");
+    const orderedReg = new RegExp("^\\d*\\.");
+    const unorderedReg = new RegExp("^-");
+
+    if (editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+
+        switch (true) {
+            case headingReg.test(data.textContent):
+                event.preventDefault();
+
+                const match = data.textContent.match(headingReg);
+
+                if (match !== null) {
+                    const level = match[0].length as DEHeadingElementLevel;
+
+                    newData.splice(index, 1, _createHeadingBlockData(level, data.textContent.replace(headingReg, "")));
+                }
+                break;
+
+            case orderedReg.test(data.textContent):
+                event.preventDefault();
+                newData.splice(index, 1, _createListBlockData("ol", [_createListBlockChildData(data.textContent.replace(orderedReg, ""))]));
+                break;
+
+            case unorderedReg.test(data.textContent):
+                event.preventDefault();
+                newData.splice(index, 1, _createListBlockData("ul", [_createListBlockChildData(data.textContent.replace(unorderedReg, ""))]));
+                break;
+        }
+
+        editorStore.fn.updateEditorData(newData);
+        await nextTick();
+
+        const $block = editorStore.element.body.children[index] as HTMLHeadingElement;
+
+        if ($block !== undefined) {
+            const $target = _findEditableElement($block, "down");
+
+            if ($target !== null) {
+                $target.focus();
+                $target.dispatchEvent(new Event("input"));
+            }
+        }
+    }
+}
+
+// 텍스트 블럭 코드블럭 전환
+export async function _convertTextBlockToCodeBlock(event: KeyboardEvent, data: DETextBlock, index: number): Promise<void> {
+    const editorStore = useEditorStore();
+    const regexp = new RegExp("^``");
+
+    if (regexp.test(data.textContent) === true && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        event.preventDefault();
+
+        const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+
+        newData.splice(index, 1, _createCodeBlockData());
+        editorStore.fn.updateEditorData(newData);
+        await nextTick();
+
+        const $block = editorStore.element.body.children[index] as HTMLHeadingElement;
+
+        if ($block !== undefined) {
+            const $target = _findEditableElement($block, "down");
+
+            if ($target !== null) {
+                $target.focus();
+                $target.dispatchEvent(new Event("input"));
+            }
+        }
+    }
+}
+
+// 텍스트 블럭 구분선 전환
+export async function _convertTextBlockToDividerBlock(event: KeyboardEvent, data: DETextBlock, index: number): Promise<void> {
+    const editorStore = useEditorStore();
+    const regexp = new RegExp("^--");
+
+    if (regexp.test(data.textContent) === true && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        event.preventDefault();
+
+        const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+
+        data.textContent = "";
+        newData.splice(index - 1, 0, _createDividerBlockData());
+        newData.splice(index + 1, 1, data);
+        editorStore.fn.updateEditorData(newData);
+        await nextTick();
+
+        const $block = editorStore.element.body.children[index + 1] as HTMLHeadingElement;
+
+        if ($block !== undefined) {
+            const $target = _findEditableElement($block, "down");
+
+            if ($target !== null) {
+                $target.innerHTML = ""; // 데이터 강제 업데이트
+                $target.focus();
+                $target.dispatchEvent(new Event("input"));
+            }
+        }
+    }
+}
+
+// 헤딩 블럭 포멧 변경 단축키
+export async function _convertHeadingBlockType(event: KeyboardEvent, data: DEHeadingBlock, index: number, setEvent: Function, abortEvent: Function): Promise<void> {
+    const editorStore = useEditorStore();
+    const regexp = new RegExp("^(#{1,3})");
+
+    if (regexp.test(data.textContent) === true && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        event.preventDefault();
+
+        const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+        const match = regexp.exec(data.textContent);
+
+        if (match !== null) {
+            const level = match[0].length;
+
+            data.level = level as DEHeadingElementLevel;
+            data.textContent = data.textContent.replace(regexp, "");
+            newData.splice(index, 1, data);
+            abortEvent();
+            editorStore.fn.updateEditorData(newData);
+            await nextTick();
+            setEvent();
+
+            const $block = editorStore.element.body.children[index] as HTMLHeadingElement;
+
+            if ($block !== undefined) {
+                $block.focus();
+                $block.dispatchEvent(new Event("input"));
+            }
         }
     }
 }

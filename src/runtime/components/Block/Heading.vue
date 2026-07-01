@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { h, withMemo } from "vue";
-import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertHeadingBlockType } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEHeadingBlock } from "../../type.d.mts";
 
@@ -59,6 +59,7 @@ function keydownEvent(event: KeyboardEvent): void {
                 break;
 
             case " ":
+                _convertHeadingBlockType(event,props.data, props.index, setEdit, abortEdit);
                 break;
         }
     } else {

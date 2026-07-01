@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { computed } from "vue";
-import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertTextBlockType, _convertTextBlockToCodeBlock, _convertTextBlockToDividerBlock } from "../../utils/event";
 import type { DETextBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -74,9 +74,15 @@ function keydownEvent(event: KeyboardEvent): void {
                 break;
 
             case "`":
+                _convertTextBlockToCodeBlock(event, props.data, props.index);
+                break;
+
+            case "-":
+                _convertTextBlockToDividerBlock(event, props.data, props.index);
                 break;
 
             case " ":
+                _convertTextBlockType(event, props.data, props.index);
                 break;
         }
     } else {
