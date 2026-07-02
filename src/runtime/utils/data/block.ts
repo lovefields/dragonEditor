@@ -1,5 +1,6 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
+// import { _setCursorPosition } from "../event";
 import { _generateId } from "../data";
 import { _findEditableElement } from "../node";
 import { DECodeLanguage } from "../../enums/codeLanguage";
@@ -523,6 +524,56 @@ function convertMarkdownTextToEditorText(text: string): string {
         } else {
             const children = Array.from(node.childNodes);
             children.forEach((child) => __collectLeafNodes(child));
+        }
+    }
+}
+
+// 블럭 순서 이동
+export async function _moveBlockIndex(duration: "first" | "up" | "down" | "last"): Promise<void> {
+    const editorStore = useEditorStore();
+
+    if (editorStore.selectedBlockIndex !== -1 && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEBlockData[];
+        const curruntData = newData[editorStore.selectedBlockIndex];
+
+        if (curruntData !== undefined) {
+            switch (duration) {
+                case "first":
+                    newData.splice(editorStore.selectedBlockIndex, 1);
+                    newData.splice(0, 0, curruntData);
+                    editorStore.selectedBlockIndex = 0;
+                    break;
+
+                case "up":
+                    newData.splice(editorStore.selectedBlockIndex, 1);
+                    newData.splice(editorStore.selectedBlockIndex - 1, 0, curruntData);
+                    editorStore.selectedBlockIndex = editorStore.selectedBlockIndex - 1;
+                    break;
+                case "down":
+                    newData.splice(editorStore.selectedBlockIndex, 1);
+                    newData.splice(editorStore.selectedBlockIndex + 1, 0, curruntData);
+                    editorStore.selectedBlockIndex = editorStore.selectedBlockIndex + 1;
+                    break;
+                case "last":
+                    newData.splice(editorStore.selectedBlockIndex, 1);
+                    newData.push(curruntData);
+                    editorStore.selectedBlockIndex = newData.length - 1;
+                    break;
+            }
+
+            editorStore.fn.updateEditorData(newData);
+            await nextTick();
+
+            const $block = editorStore.element.body.children[editorStore.selectedBlockIndex] as HTMLElement;
+
+            if ($block !== undefined) {
+                const $editableElement = _findEditableElement($block, "down");
+
+                if ($editableElement !== null && curruntData.type !== "custom" && curruntData.type !== "divider") {
+                    $editableElement.focus();
+                    $editableElement.dispatchEvent(new Event("input"));
+                }
+            }
         }
     }
 }

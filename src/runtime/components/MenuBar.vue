@@ -131,6 +131,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="editorStore.selectedBlockIndex < 1"
+                    @click="_moveBlockIndex('first')"
                 >
                     <component :is="_getIconNode('move-first')" />
                 </button>
@@ -138,6 +140,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="editorStore.selectedBlockIndex < 1"
+                    @click="_moveBlockIndex('up')"
                 >
                     <component :is="_getIconNode('move-up')" />
                 </button>
@@ -145,6 +149,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="editorStore.selectedBlockIndex === editorStore.data.length - 1 || editorStore.selectedBlockIndex === -1"
+                    @click="_moveBlockIndex('down')"
                 >
                     <component :is="_getIconNode('move-down')" />
                 </button>
@@ -152,6 +158,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="editorStore.selectedBlockIndex === editorStore.data.length - 1 || editorStore.selectedBlockIndex === -1"
+                    @click="_moveBlockIndex('last')"
                 >
                     <component :is="_getIconNode('move-last')" />
                 </button>
@@ -229,7 +237,7 @@
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useEditorStore } from "../store/editor";
-import { _addBlock } from "../utils/data";
+import { _addBlock, _moveBlockIndex } from "../utils/data";
 import { _getIconNode } from "../utils/layout";
 import type { DEBlockMenutype } from "../type.mjs";
 

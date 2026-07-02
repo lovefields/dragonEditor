@@ -77,7 +77,7 @@
             height: 34px;
             cursor: pointer;
 
-            &.--disabled {
+            &[disabled] {
                 .de-path {
                     fill: var(--editor-text-disabled);
                 }
