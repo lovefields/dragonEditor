@@ -6,10 +6,14 @@ export const useEditorStore = defineStore("editorStore", {
         data: [],
         selectedBlockId: "",
         selectedBlockIndex: -1,
+        status: {
+            isImageResizeActive: false,
+        },
         option: {
             mediaHostURL: "",
             isMobile: false,
             codeBlockSpaces: 4,
+            acceptImageFormat: "",
         },
         cursorSelection: null,
         element: {

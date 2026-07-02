@@ -48,25 +48,25 @@ function changeTheme(): void {
 
 function setContent() {
     contentData.value = [
-        { type: "text", classList: [], textContent: "1" },
-        { type: "text", classList: [], textContent: "2" },
+        { type: "text", classList: [], textContent: "1", id: "QT28ss" },
+        { type: "text", classList: [], textContent: "2", id: "JP68kL" },
         { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
-        { type: "divider" },
-        { type: "divider" },
-        { type: "divider" },
+        { type: "divider", id: "NjTdEf" },
+        { type: "divider", id: "gmSApo" },
+        { type: "divider", id: "FkbMXd" },
         { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
         { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
-        { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [] },
-        { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "divider" },
-        { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-        { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
-        { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
+        { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, caption: "", classList: [], id: "b7EwiK" },
+        { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "PVfrgk" }], id: "vQdO2I" },
+        { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "7DV3G2" }], id: "OWeCvb" },
+        { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "OIcEVV" }], id: "9fLd38" },
+        { type: "divider", id: "hvEMVO" },
+        { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "sEVrGr" }], id: "AWIhj3" },
+        { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "WU04nx" }], id: "ViLzZc" },
+        { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "FlucL7" }], id: "y6Hzvv" },
+        { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "Wb7gkV" }], id: "A4WGlp" },
+        { type: "custom", textContent: '<div class="my-custom-block">123</div>', id: "GJZcXD" },
+        { type: "code", filename: "123", language: "text", textContent: "332213231232132131313", id: "tLIvOl" },
     ];
 }
 
@@ -119,37 +119,22 @@ function changeData() {
 
     isChange = !isChange;
     contentData.value = data;
-    // $editor.value?.changeEditorData(data);
 }
 
 function addImage() {
-    $editor.value?.addBlock({
-        type: "image",
-        maxWidth: 100,
-        src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg",
-        width: 1365,
-        height: 899,
-        caption: "",
-        classList: [],
-    });
+    $editor.value?.addImageBlock("https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg");
 }
 
 function addCustomBlock() {
-    $editor.value?.addBlock({
-        type: "custom",
-        classList: ["new-data"],
-        textContent: `<div class="my-custom-block">123</div>`,
-    });
+    $editor.value?.addBlock("custom", `<div class="my-custom-block">123</div>`);
 }
 
-function pasteImageProcess(files: File[]) {
-    const url = URL.createObjectURL(files[0]!);
-    const $img = document.createElement("img");
+async function pasteImageProcess(files: File[]) {
+    for (let file of files) {
+        const url = URL.createObjectURL(file);
 
-    $img.src = url;
-    $img.onload = () => {
-        $editor.value?.addImageBlock(url, $img.width, $img.height);
-    };
+        await $editor.value?.addImageBlock(url);
+    }
 }
 
 function changeLayout(): void {

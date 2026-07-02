@@ -3,6 +3,12 @@
         v-memo="memoData"
         class="de-block de-image-block"
         @click="setEdit"
+        @mousemove="resizingEvent"
+        @touchmove="resizingEvent"
+        @mouseup="endResizeEvent"
+        @mouseleave="endResizeEvent"
+        @touchcancel="endResizeEvent"
+        @touchend="endResizeEvent"
     >
         <div
             class="de-image-area"
@@ -11,10 +17,14 @@
             <button
                 v-if="props.isEdit === true"
                 class="de-btn de-btn-left"
+                @mousedown="startResizeEvent($event, 'left')"
+                @touchstart="startResizeEvent($event, 'left')"
             ></button>
             <button
                 v-if="props.isEdit === true"
                 class="de-btn de-btn-right"
+                @mousedown="startResizeEvent($event, 'right')"
+                @touchstart="startResizeEvent($event, 'right')"
             ></button>
             <img
                 class="de-img"
@@ -53,6 +63,9 @@ const memoData = computed<any[]>(() => {
 
     return [memoKey];
 });
+let mouseXPosition: number = 0;
+let mouseDuration: "left" | "right" = "left";
+let startMaxWidth: number = 0;
 
 function setEdit() {
     editorStore.selectedBlockIndex = props.index;
@@ -99,5 +112,72 @@ function updateData(event: Event): void {
     newData.caption = (event.target as HTMLParagraphElement).innerHTML;
 
     emit("update", newData);
+}
+
+// 이미지 리사이즈 시작
+function startResizeEvent(event: MouseEvent | TouchEvent, duration: "left" | "right"): void {
+    if (editorStore.status.isImageResizeActive === false) {
+        editorStore.status.isImageResizeActive = true;
+
+        if ("touches" in event) {
+            const touch = event.touches[0] || event.changedTouches[0];
+
+            if (touch !== undefined) {
+                mouseXPosition = touch.screenX;
+            }
+        } else {
+            mouseXPosition = event.screenX;
+        }
+
+        mouseDuration = duration;
+        startMaxWidth = props.data.maxWidth;
+    }
+}
+
+// 이미지 리사이즈 동작
+function resizingEvent(event: MouseEvent | TouchEvent): void {
+    if (editorStore.status.isImageResizeActive === true && editorStore.element.body !== null) {
+        const newData = JSON.parse(JSON.stringify(props.data)) as DEImageBlock;
+        const bodyRect = editorStore.element.body.getBoundingClientRect();
+        const bodyWidthHalf = bodyRect.width / 2 - 45;
+        let currentX: number = 0;
+
+        if ("touches" in event) {
+            const touch = event.touches[0] || event.changedTouches[0];
+
+            if (touch !== undefined) {
+                currentX = touch.screenX;
+            }
+        } else {
+            currentX = event.screenX;
+        }
+
+        const diffX = mouseXPosition - currentX;
+        let movePercent = (100 / bodyWidthHalf) * diffX;
+
+        if (mouseDuration === "right") {
+            movePercent = -1 * movePercent;
+        }
+
+        let newMaxWidth = startMaxWidth + Math.floor(movePercent);
+
+        if (newMaxWidth < 25) {
+            newMaxWidth = 25;
+        }
+
+        if (newMaxWidth > 100) {
+            newMaxWidth = 100;
+        }
+
+        newData.maxWidth = newMaxWidth;
+        abortEdit();
+        emit("update", newData);
+    }
+}
+
+// 이미지 리사이즈 종료
+function endResizeEvent(): void {
+    editorStore.status.isImageResizeActive = false;
+    setEdit();
 }
 </script>

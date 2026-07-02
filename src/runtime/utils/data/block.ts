@@ -28,6 +28,10 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
                     delete block.classList;
                 }
 
+                if ("style" in block) {
+                    delete block.style;
+                }
+
                 block.child.forEach((child) => {
                     if (child.textContent === "<br>") {
                         child.textContent = "";
@@ -36,6 +40,14 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
                 break;
 
             case "image":
+                if ("width" in block) {
+                    delete block.width;
+                }
+
+                if ("height" in block) {
+                    delete block.height;
+                }
+
                 if (editorStore.option.mediaHostURL !== "") {
                     block.src = block.src.replace(editorStore.option.mediaHostURL, "");
                 }
@@ -60,6 +72,12 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
 
                 if (block.textContent === "<br>") {
                     block.textContent = "";
+                }
+                break;
+
+            case "custom":
+                if ("classList" in block) {
+                    delete block.classList;
                 }
                 break;
         }
@@ -105,7 +123,7 @@ export function _createListBlockChildData(textContent: string = "", depth: numbe
 }
 
 // 이미지 블럭 데이터 생성
-export function _createImageBlockData(src: string, width: number, height: number, caption: string = "", useHost: boolean = true): DEImageBlock {
+export function _createImageBlockData(src: string, caption: string = "", useHost: boolean = true): DEImageBlock {
     const editorStore = useEditorStore();
 
     return {
@@ -114,8 +132,6 @@ export function _createImageBlockData(src: string, width: number, height: number
         classList: [],
         maxWidth: 50,
         src: useHost === true ? editorStore.option.mediaHostURL + src : src,
-        width: width,
-        height: height,
         caption: caption,
     };
 }
@@ -256,10 +272,10 @@ export async function _addBlock(name: DEBlockMenutype, textContent: string = "")
 }
 
 // 이미지 데이터 추가
-export async function _addImageBlock(src: string, width: number, height: number, caption: string = ""): Promise<void> {
+export async function _addImageBlock(src: string, caption: string = ""): Promise<void> {
     const editorStore = useEditorStore();
     const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEBlockData[];
-    const imageBlock = _createImageBlockData(src, width, height, caption);
+    const imageBlock = _createImageBlockData(src, caption);
     let targetIndex = editorStore.selectedBlockIndex;
 
     if (editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
@@ -420,7 +436,7 @@ export async function _convertMarkdownToEditor(textDataList: string[]): Promise<
                 const src = blockData.match(new RegExp("^\\!\\[(.*)(?=\\])\\]\\(([^ ]*)(\\)?)"))![2];
 
                 if (caption !== undefined && src !== undefined) {
-                    blockList.push(_createImageBlockData(src.replace(")", ""), 0, 0, caption, false));
+                    blockList.push(_createImageBlockData(src.replace(")", ""), caption, false));
                 }
                 break;
 

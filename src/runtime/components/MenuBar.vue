@@ -66,12 +66,19 @@
             </div>
 
             <div class="de-col">
-                <button
+                <label
                     class="de-menu"
                     type="button"
                 >
                     <component :is="_getIconNode('image')" />
-                </button>
+                    <input
+                        type="file"
+                        hidden
+                        :accept="editorStore.option.acceptImageFormat"
+                        multiple
+                        @change="imageUploadEvent"
+                    />
+                </label>
             </div>
 
             <div class="de-col">
@@ -221,10 +228,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
+import { useEditorStore } from "../store/editor";
 import { _addBlock } from "../utils/data";
 import { _getIconNode } from "../utils/layout";
 import type { DEBlockMenutype } from "../type.mjs";
 
+const editorStore = useEditorStore();
 const isActiveMenuArea = ref<boolean>(false);
 const $addBlockMenu = ref<HTMLDivElement>();
 const $addMenuButton = ref<HTMLButtonElement>();
@@ -238,6 +247,20 @@ function toggleAddMenuActive(): void {
 function addBlockEvent(name: DEBlockMenutype): void {
     _addBlock(name);
     isActiveMenuArea.value = false;
+}
+
+// 이미지 업로드 이벤트
+function imageUploadEvent(event: Event): void {
+    const $target = event.currentTarget as HTMLInputElement;
+
+    if ($target !== null) {
+        const files = $target.files;
+
+        if (files !== null && files.length > 0 && editorStore.fn.uploadImage !== null) {
+            editorStore.fn.uploadImage(Array.from(files));
+            $target.value = "";
+        }
+    }
 }
 
 // 블럭 추가 메뉴 닫기

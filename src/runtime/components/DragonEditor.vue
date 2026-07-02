@@ -30,6 +30,7 @@ interface DragonEditorOption {
     isMobile?: boolean;
     theme?: "dark" | "white";
     codeBlockSpaces?: number;
+    acceptImageFormat?: string;
 }
 
 const editorStore = useEditorStore();
@@ -39,6 +40,7 @@ const props = withDefaults(defineProps<DragonEditorOption>(), {
     mediaHostURL: "",
     theme: "white",
     codeBlockSpaces: 4,
+    acceptImageFormat: ".jpg,.jpeg,.png,.webp,.gif",
 });
 const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
@@ -51,6 +53,7 @@ const $editor = ref<HTMLDivElement>();
 editorStore.option.isMobile = props.isMobile;
 editorStore.option.mediaHostURL = props.mediaHostURL;
 editorStore.option.codeBlockSpaces = props.codeBlockSpaces;
+editorStore.option.acceptImageFormat = props.acceptImageFormat;
 
 // 신규데이터 적용 함수
 function updateEditorData(data: DEContentData): void {
