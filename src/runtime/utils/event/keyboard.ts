@@ -307,7 +307,7 @@ export async function _blockTabEvent(event: KeyboardEvent, data: DETextBlock | D
             if (data.depth !== undefined) {
                 data.depth -= 1;
 
-                if (data.depth < 0) {
+                if (data.depth <= 0) {
                     delete data.depth;
                 }
             }
@@ -343,6 +343,8 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
 
         // 탭 이벤트
         if (event.shiftKey === false) {
+            const preChildData = data.child[childIndex - 1];
+
             if (targetChild.depth === undefined) {
                 targetChild.depth = 1;
             } else {
@@ -351,6 +353,10 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
 
             if (targetChild.depth > 5) {
                 targetChild.depth = 5;
+            }
+
+            if (preChildData !== undefined && targetChild.depth > (preChildData.depth || 0)) {
+                targetChild.depth = (preChildData.depth || 0) + 1;
             }
         } else {
             type = "minus";
@@ -370,7 +376,7 @@ export async function _listChildTabEvent(event: KeyboardEvent, data: DEListBlock
             const child = data.child[i];
 
             if (i > childIndex && child !== undefined) {
-                if ((child.depth || 0) <= (targetChild.depth || 0) - 1) {
+                if ((child.depth || 0) <= (targetChild.depth || 0) - 1 || (targetChild.depth || 0) === 0) {
                     break;
                 } else {
                     if (type === "plus") {
@@ -737,7 +743,9 @@ export function _moveListChildEvent(event: KeyboardEvent, data: DEListBlock, ind
             if (targetType === "block") {
                 const $targetBlock = type === "up" ? $block.previousElementSibling : $block.nextElementSibling;
 
-                $editableTarget = _findEditableElement($targetBlock as HTMLElement, type);
+                if ($targetBlock !== null) {
+                    $editableTarget = _findEditableElement($targetBlock as HTMLElement, type);
+                }
             } else {
                 const $targetChildElement = $block.querySelectorAll(".de-item-text");
 

@@ -17,7 +17,7 @@ export function _findFocusableBlock($block: HTMLElement, direction: "up" | "down
     }
 }
 
-// 에디터 가능한 요소 찾기
+// 에디팅 가능한 요소 찾기
 export function _findEditableElement($block: HTMLElement, direction: "up" | "down"): HTMLElement | null {
     const targetBlockType = _getBlockType($block as HTMLElement);
     let $editableTarget: HTMLElement | null = $block as HTMLElement;
@@ -76,6 +76,21 @@ export function _findParentBlock($element: HTMLElement | null): HTMLElement | nu
             return $element;
         } else {
             return _findParentBlock($element.parentElement);
+        }
+    } else {
+        return null;
+    }
+}
+
+// 에디팅 가능한 부모 찾기
+export function _findEditableParent($element: HTMLElement | null): HTMLElement | null {
+    if ($element !== null) {
+        const isEditable = $element.contentEditable === "true";
+
+        if (isEditable === true) {
+            return $element;
+        } else {
+            return _findEditableParent($element.parentElement);
         }
     } else {
         return null;

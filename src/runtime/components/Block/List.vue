@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { ref, h, withMemo } from "vue";
-import { _listBlockEnterEvent, _listChildTabEvent, _moveListChildEvent, _listBackspaceEvent, _listDeleteEvent, _normalPasteEvent } from "../../utils/event";
+import { _listBlockEnterEvent, _listChildTabEvent, _moveListChildEvent, _listBackspaceEvent, _listDeleteEvent, _normalPasteEvent, _updateCursorData } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEListBlock, DEListItem } from "../../type.d.mts";
 
@@ -31,11 +31,10 @@ function setEdit(liIndex: number, id: string) {
     editorStore.selectedBlockIndex = props.index;
     childIndex.value = liIndex;
     childId.value = id;
+    _updateCursorData();
 }
 
 function abortEdit() {
-    editorStore.selectedBlockId = "";
-    editorStore.selectedBlockIndex = -1;
     childIndex.value = -1;
     childId.value = "";
     memoCache = [];
@@ -179,13 +178,14 @@ function renderTreeNodes(nodes: ListTreeNode[]): VNode[] {
             () => {
                 const children: VNode[] = [
                     h("p", {
-                        class: ["de-item-text"],
+                        class: ["de-item-text", ...node.child.classList],
                         innerHTML: node.child.textContent,
                         contenteditable: props.isEdit === true,
                         onFocus: () => setEdit(node.liIndex, node.child.id),
                         onKeydown: keydownEvent,
                         onInput: (event: Event) => updateData(event, node.liIndex),
                         onPaste: (event: ClipboardEvent) => _normalPasteEvent(event, setEdit, abortEdit),
+                        onBlur: abortEdit,
                     }),
                 ];
 

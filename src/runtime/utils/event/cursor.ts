@@ -23,8 +23,6 @@ export function _setCursorPosition(node: Node, offset: number): void {
             }
         }
 
-        console.log(node);
-
         editorStore.cursorSelection.removeAllRanges();
 
         const range = document.createRange();

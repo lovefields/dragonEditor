@@ -3,6 +3,7 @@
         v-memo="memoData"
         v-html="props.data.textContent"
         class="de-block de-text-block"
+        :class="props.data.classList"
         :contenteditable="props.isEdit === true"
         :data-depth="props.data.depth"
         @focus="setEdit"
@@ -15,7 +16,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { computed } from "vue";
-import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertTextBlockType, _convertTextBlockToCodeBlock, _convertTextBlockToDividerBlock } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertTextBlockType, _convertTextBlockToCodeBlock, _convertTextBlockToDividerBlock, _updateCursorData } from "../../utils/event";
 import type { DETextBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -33,6 +34,7 @@ const memoData = computed<any[]>(() => {
 function setEdit() {
     editorStore.selectedBlockIndex = props.index;
     editorStore.selectedBlockId = props.data.id;
+    _updateCursorData();
 }
 
 function abortEdit() {

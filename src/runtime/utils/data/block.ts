@@ -1,8 +1,8 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
-// import { _setCursorPosition } from "../event";
-import { _generateId } from "../data";
-import { _findEditableElement } from "../node";
+import { _setCursorPosition } from "../event";
+import { _generateId, _getEditorbleCursorPosition } from "../data";
+import { _findEditableElement, _findEditableParent, _findParentBlock } from "../node";
 import { DECodeLanguage } from "../../enums/codeLanguage";
 import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType, DEBlockMenutype, DECodeBlock, DEImageBlock, DEDividerBlock, DECustomBlock, DEBlockData } from "../../type.d.mts";
 
@@ -576,4 +576,199 @@ export async function _moveBlockIndex(duration: "first" | "up" | "down" | "last"
             }
         }
     }
+}
+
+// 들여쓰기 사용 가능 블럭 체크
+export function _checkCanUseIndent(): boolean {
+    const editorStore = useEditorStore();
+    let suitable: boolean = false;
+
+    if (editorStore.selectedBlockIndex > -1) {
+        const blockData = editorStore.data[editorStore.selectedBlockIndex];
+
+        if (blockData !== undefined) {
+            if (["text", "heading", "list"].includes(blockData.type) === true) {
+                suitable = true;
+            }
+        }
+    }
+
+    return suitable;
+}
+
+// 들여쓰기 적용
+export async function _setIndentData(type: "decrease" | "increase"): Promise<void> {
+    const editorStore = useEditorStore();
+    const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEBlockData[];
+    const blockData = newData[editorStore.selectedBlockIndex] as DETextBlock | DEHeadingBlock | DEListBlock;
+
+    if (blockData !== undefined && editorStore.fn.updateEditorData !== null && editorStore.cursorSelection !== null && editorStore.element.body !== null) {
+        const $editableElement = _findEditableParent(editorStore.cursorSelection.anchorNode as HTMLElement);
+
+        if ($editableElement !== null) {
+            const offset = _getEditorbleCursorPosition($editableElement);
+
+            if (blockData.type === "list") {
+                if (blockData.child.length > 1) {
+                    const $block = _findParentBlock($editableElement);
+                    let indentType: "plus" | "minus" = "plus";
+
+                    if ($block !== null) {
+                        const $childList = $block.querySelectorAll(".de-item-text");
+                        let childIndex: number = -1;
+
+                        for (let i = 0; i < $childList.length; i += 1) {
+                            const $child = $childList[i];
+
+                            if ($child === $editableElement) {
+                                childIndex = i;
+                                break;
+                            }
+                        }
+
+                        const curruntChildData = blockData.child[childIndex];
+
+                        if (curruntChildData !== undefined) {
+                            if (type === "increase") {
+                                const preChildData = blockData.child[childIndex - 1];
+
+                                if (curruntChildData.depth === undefined) {
+                                    curruntChildData.depth = 1;
+                                } else {
+                                    curruntChildData.depth += 1;
+                                }
+
+                                if (curruntChildData.depth > 5) {
+                                    curruntChildData.depth = 5;
+                                }
+
+                                if (preChildData !== undefined && curruntChildData.depth > (preChildData.depth || 0)) {
+                                    curruntChildData.depth = (preChildData.depth || 0) + 1;
+                                }
+                            } else {
+                                indentType = "minus";
+
+                                if (curruntChildData.depth !== undefined) {
+                                    curruntChildData.depth -= 1;
+
+                                    if (curruntChildData.depth <= 0) {
+                                        delete curruntChildData.depth;
+                                    }
+                                }
+                            }
+
+                            blockData.child[childIndex] = curruntChildData;
+
+                            for (let i = 0; i < blockData.child.length; i += 1) {
+                                const child = blockData.child[i];
+
+                                if (i > childIndex && child !== undefined) {
+                                    if ((child.depth || 0) <= (curruntChildData.depth || 0) - 1 || (curruntChildData.depth || 0) === 0) {
+                                        break;
+                                    } else {
+                                        if (indentType === "plus") {
+                                            if (child.depth === undefined) {
+                                                child.depth = 1;
+                                            } else {
+                                                child.depth += 1;
+                                            }
+                                            if (child.depth > 5) {
+                                                child.depth = 5;
+                                            }
+                                        } else {
+                                            if (child.depth !== undefined) {
+                                                child.depth -= 1;
+                                                if (child.depth <= 0) {
+                                                    delete child.depth;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            editorStore.selectedBlockId = "";
+                            newData[editorStore.selectedBlockIndex] = blockData;
+                            editorStore.fn.updateEditorData(newData);
+                            await nextTick();
+
+                            const $parentBlock = editorStore.element.body.children[editorStore.selectedBlockIndex] as HTMLElement;
+
+                            if ($parentBlock !== undefined) {
+                                const $textArea = $parentBlock.querySelectorAll(".de-item-text");
+                                const $targetTextArea = $textArea[childIndex];
+
+                                if ($targetTextArea !== undefined) {
+                                    const $node = $targetTextArea.childNodes[offset.nodeIndex];
+
+                                    $targetTextArea.dispatchEvent(new Event("blur"));
+
+                                    if ($node !== undefined) {
+                                        _setCursorPosition($node, offset.offset);
+                                    } else {
+                                        _setCursorPosition($targetTextArea, 0);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                // 탭 이벤트
+                if (type === "increase") {
+                    if (blockData.depth === undefined) {
+                        blockData.depth = 1;
+                    } else {
+                        blockData.depth += 1;
+                    }
+
+                    if (blockData.depth > 5) {
+                        blockData.depth = 5;
+                    }
+                } else {
+                    if (blockData.depth !== undefined) {
+                        blockData.depth -= 1;
+
+                        if (blockData.depth <= 0) {
+                            delete blockData.depth;
+                        }
+                    }
+                }
+
+                editorStore.selectedBlockId = "";
+                newData.splice(editorStore.selectedBlockIndex, 1, blockData);
+                editorStore.fn.updateEditorData(newData);
+                await nextTick();
+
+                const $block = editorStore.element.body.children[editorStore.selectedBlockIndex] as HTMLElement;
+
+                if ($block !== undefined) {
+                    const $node = $block.childNodes[offset.nodeIndex];
+
+                    if ($node !== undefined) {
+                        $block.dispatchEvent(new Event("input"));
+                        _setCursorPosition($node, offset.offset);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// 정렬 사용 가능 확인
+export function _checkCanUseAlign(): boolean {
+    const editorStore = useEditorStore();
+    let suitable: boolean = false;
+
+    if (editorStore.selectedBlockIndex > -1) {
+        const blockData = editorStore.data[editorStore.selectedBlockIndex];
+
+        if (blockData !== undefined) {
+            if (["text", "heading", "list", "image"].includes(blockData.type) === true) {
+                suitable = true;
+            }
+        }
+    }
+
+    return suitable;
 }

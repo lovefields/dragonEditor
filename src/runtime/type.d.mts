@@ -24,6 +24,9 @@ type DEBlockMenutype = Exclude<DEBlockType, "heading" | "list" | "image"> | "hea
 // 코드블럭 언어 리스트
 type DECodeLanguageList = keyof typeof DECodeLanguage;
 
+// 정렬 종류
+type DETextalign = "left" | "right" | "center" | "justify";
+
 // 에디터 컴포넌트
 interface DragonEditor {
     addBlock(name: DEBlockMenutype, textContent: string = ""): Promise<void>;
@@ -143,12 +146,11 @@ interface DECursorOffset {
 }
 
 /**
+ 
  * 레거시
  */
 
 type DEDecoration = "bold" | "italic" | "underline" | "strikethrough" | "code";
-
-type DETextalign = "left" | "right" | "center" | "justify";
 
 type DEBlockMenutype = "text" | "heading1" | "heading2" | "heading3" | "ul" | "ol" | "image" | "code" | "custom" | "divider";
 

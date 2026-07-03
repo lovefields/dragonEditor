@@ -85,6 +85,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseAlign() === false"
+                    @click="_setAlign('left')"
                 >
                     <component :is="_getIconNode('align-left')" />
                 </button>
@@ -92,6 +94,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseAlign() === false"
+                    @click="_setAlign('center')"
                 >
                     <component :is="_getIconNode('align-center')" />
                 </button>
@@ -99,6 +103,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseAlign() === false"
+                    @click="_setAlign('right')"
                 >
                     <component :is="_getIconNode('align-right')" />
                 </button>
@@ -106,6 +112,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseAlign() === false"
+                    @click="_setAlign('justify')"
                 >
                     <component :is="_getIconNode('align-justify')" />
                 </button>
@@ -115,6 +123,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseIndent() === false"
+                    @click="_setIndentData('decrease')"
                 >
                     <component :is="_getIconNode('indent-decrease')" />
                 </button>
@@ -122,6 +132,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseIndent() === false"
+                    @click="_setIndentData('increase')"
                 >
                     <component :is="_getIconNode('indent-increase')" />
                 </button>
@@ -237,8 +249,9 @@
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useEditorStore } from "../store/editor";
-import { _addBlock, _moveBlockIndex } from "../utils/data";
+import { _addBlock, _moveBlockIndex, _checkCanUseIndent, _setIndentData, _checkCanUseAlign } from "../utils/data";
 import { _getIconNode } from "../utils/layout";
+import { _setAlign } from "../utils/node";
 import type { DEBlockMenutype } from "../type.mjs";
 
 const editorStore = useEditorStore();

@@ -2,6 +2,7 @@
     <div
         v-memo="memoData"
         class="de-block de-image-block"
+        :class="props.data.classList"
         @click="setEdit"
         @mousemove="resizingEvent"
         @touchmove="resizingEvent"
@@ -49,7 +50,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useEditorStore } from "../../store/editor";
-import { _imageEnterEvent, _blockTabEvent, _moveBlockDefaultEvent, _normalPasteEvent } from "../../utils/event";
+import { _imageEnterEvent, _blockTabEvent, _moveBlockDefaultEvent, _normalPasteEvent, _updateCursorData } from "../../utils/event";
 import type { DEImageBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -70,6 +71,7 @@ let startMaxWidth: number = 0;
 function setEdit() {
     editorStore.selectedBlockIndex = props.index;
     editorStore.selectedBlockId = props.data.id;
+    _updateCursorData();
 }
 
 function abortEdit() {
@@ -177,7 +179,9 @@ function resizingEvent(event: MouseEvent | TouchEvent): void {
 
 // 이미지 리사이즈 종료
 function endResizeEvent(): void {
-    editorStore.status.isImageResizeActive = false;
-    setEdit();
+    if (editorStore.status.isImageResizeActive === true) {
+        editorStore.status.isImageResizeActive = false;
+        setEdit();
+    }
 }
 </script>

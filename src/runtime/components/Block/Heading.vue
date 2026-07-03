@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { h, withMemo } from "vue";
-import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertHeadingBlockType } from "../../utils/event";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertHeadingBlockType, _updateCursorData } from "../../utils/event";
 import type { VNode } from "vue";
 import type { DEHeadingBlock } from "../../type.d.mts";
 
@@ -19,6 +19,7 @@ const memoCache: any[] = [];
 function setEdit() {
     editorStore.selectedBlockId = props.data.id;
     editorStore.selectedBlockIndex = props.index;
+    _updateCursorData();
 }
 
 function abortEdit() {
@@ -59,7 +60,7 @@ function keydownEvent(event: KeyboardEvent): void {
                 break;
 
             case " ":
-                _convertHeadingBlockType(event,props.data, props.index, setEdit, abortEdit);
+                _convertHeadingBlockType(event, props.data, props.index, setEdit, abortEdit);
                 break;
         }
     } else {
@@ -83,7 +84,7 @@ function renderHeading(): VNode {
         [memoKey],
         () =>
             h(`h${props.data.level}`, {
-                class: ["de-block", "de-heading-block"],
+                class: ["de-block", "de-heading-block", ...props.data.classList],
                 id: props.data.id,
                 contenteditable: props.isEdit === true,
                 "data-depth": props.data.depth,
