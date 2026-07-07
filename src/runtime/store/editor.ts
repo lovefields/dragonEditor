@@ -8,6 +8,7 @@ export const useEditorStore = defineStore("editorStore", {
         selectedBlockIndex: -1,
         status: {
             isImageResizeActive: false,
+            anchorHerf: "",
         },
         option: {
             mediaHostURL: "",

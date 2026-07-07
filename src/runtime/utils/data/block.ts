@@ -772,3 +772,21 @@ export function _checkCanUseAlign(): boolean {
 
     return suitable;
 }
+
+// 데코레이션 사용 가능 블럭 체크
+export function _checkCanUseDecoration(): boolean {
+    const editorStore = useEditorStore();
+    let suitable: boolean = false;
+
+    if (editorStore.selectedBlockIndex > -1) {
+        const blockData = editorStore.data[editorStore.selectedBlockIndex];
+
+        if (blockData !== undefined) {
+            if (["text", "heading", "list"].includes(blockData.type) === true) {
+                suitable = true;
+            }
+        }
+    }
+
+    return suitable;
+}

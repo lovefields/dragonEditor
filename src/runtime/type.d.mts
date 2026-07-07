@@ -27,6 +27,9 @@ type DECodeLanguageList = keyof typeof DECodeLanguage;
 // 정렬 종류
 type DETextalign = "left" | "right" | "center" | "justify";
 
+// 데코레이션 클레스 종류
+type DEDecorationClass = "de-bold" | "de-italic" | "de-underline" | "de-strikethrough" | "de-code";
+
 // 에디터 컴포넌트
 interface DragonEditor {
     addBlock(name: DEBlockMenutype, textContent: string = ""): Promise<void>;
@@ -41,6 +44,7 @@ interface DragonEditorStore {
     option: DEOption;
     status: {
         isImageResizeActive: boolean;
+        anchorHerf: string;
     };
     cursorSelection: null | Selection;
     fn: {

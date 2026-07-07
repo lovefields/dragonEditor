@@ -16,6 +16,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseDecoration() === false"
+                    @click="_setDecoration('de-bold')"
                 >
                     <component :is="_getIconNode('bold')" />
                 </button>
@@ -23,6 +25,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseDecoration() === false"
+                    @click="_setDecoration('de-italic')"
                 >
                     <component :is="_getIconNode('italic')" />
                 </button>
@@ -30,6 +34,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseDecoration() === false"
+                    @click="_setDecoration('de-underline')"
                 >
                     <component :is="_getIconNode('underline')" />
                 </button>
@@ -37,6 +43,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseDecoration() === false"
+                    @click="_setDecoration('de-strikethrough')"
                 >
                     <component :is="_getIconNode('strikethrough')" />
                 </button>
@@ -44,6 +52,8 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseDecoration() === false"
+                    @click="_setDecoration('de-code')"
                 >
                     <component :is="_getIconNode('codeblock')" />
                 </button>
@@ -53,6 +63,7 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseDecoration() === false"
                 >
                     <component :is="_getIconNode('add-link')" />
                 </button>
@@ -60,6 +71,7 @@
                 <button
                     class="de-menu"
                     type="button"
+                    :disabled="_checkCanUseDecoration() === false || editorStore.status.anchorHerf === ''"
                 >
                     <component :is="_getIconNode('remove-link')" />
                 </button>
@@ -249,9 +261,9 @@
 import { ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useEditorStore } from "../store/editor";
-import { _addBlock, _moveBlockIndex, _checkCanUseIndent, _setIndentData, _checkCanUseAlign } from "../utils/data";
+import { _addBlock, _moveBlockIndex, _checkCanUseIndent, _setIndentData, _checkCanUseAlign, _checkCanUseDecoration } from "../utils/data";
 import { _getIconNode } from "../utils/layout";
-import { _setAlign } from "../utils/node";
+import { _setAlign, _setDecoration } from "../utils/node";
 import type { DEBlockMenutype } from "../type.mjs";
 
 const editorStore = useEditorStore();

@@ -203,39 +203,6 @@
         }
     }
 
-    // 컨트롤 바 스타일
-    .de-controlbar {
-        display: flex;
-        position: fixed;
-        height: 34px;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: var(--radius-default);
-        transform: translateX(-50%);
-        z-index: 20;
-
-        .de-col {
-            display: flex;
-            align-items: center;
-            column-gap: 6px;
-            padding: 0 10px;
-            border-right: 1px solid #ccc;
-
-            &:last-child {
-                border-right: 0;
-            }
-
-            .de-selector {
-                height: 100%;
-                border: 0;
-            }
-
-            .de-name {
-                width: 70px;
-            }
-        }
-    }
-
     @include blockStyle("true");
     @include NodeStyle;
 }
