@@ -15,8 +15,10 @@ export const useEditorStore = defineStore("editorStore", {
             isMobile: false,
             codeBlockSpaces: 4,
             acceptImageFormat: "",
+            anchorTagTarget: "",
         },
         cursorSelection: null,
+        cursorRange: null,
         element: {
             body: null,
         },

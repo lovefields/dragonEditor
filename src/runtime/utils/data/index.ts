@@ -1,5 +1,6 @@
 export * from "./block";
 export * from "./cursor";
+export * from "./node";
 
 // 난수 아이디 생성
 export function _generateId() {

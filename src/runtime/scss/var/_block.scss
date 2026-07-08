@@ -168,7 +168,7 @@
             .de-img {
                 width: 100%;
                 height: auto;
-                border-radius: var(--radius-default);
+                border-radius: var(--editor-radius-default);
             }
 
             .de-btn {
@@ -178,7 +178,7 @@
                 height: 15%;
                 background: #f1f1f1;
                 border: 1px solid #ccc;
-                border-radius: var(--radius-default);
+                border-radius: var(--editor-radius-default);
                 transform: translate(-50%, -50%);
                 cursor: col-resize;
                 user-select: none;
@@ -222,7 +222,7 @@
         padding: 0;
         color: var(--editor-code-color);
         background: var(--editor-code-bg);
-        border-radius: var(--radius-default);
+        border-radius: var(--editor-radius-default);
 
         .de-filename {
             flex: 1;

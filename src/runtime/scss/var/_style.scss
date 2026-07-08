@@ -29,8 +29,8 @@
     .de-code {
         display: inline-block;
         padding: 2px 4px;
-        background: #f1f1f1;
-        color: #ff0000;
+        background: var(--editor-decoration-code-bg);
+        color: var(--editor-decoration-code-color);
         border-radius: 5px;
     }
 

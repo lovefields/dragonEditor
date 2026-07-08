@@ -47,6 +47,7 @@ interface DragonEditorStore {
         anchorHerf: string;
     };
     cursorSelection: null | Selection;
+    cursorRange: null | Range;
     fn: {
         updateEditorData: ((data: DEContentData) => void) | null;
         uploadImage: ((files: File[]) => void) | null;
@@ -62,6 +63,7 @@ interface DEOption {
     isMobile: boolean;
     codeBlockSpaces: number;
     acceptImageFormat: string;
+    anchorTagTarget: string;
 }
 
 // 컨텐츠 블럭 타입

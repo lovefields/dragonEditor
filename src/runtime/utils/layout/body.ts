@@ -8,6 +8,7 @@ import DividerBlock from "../../components/Block/Divider.vue";
 import CustomBlock from "../../components/Block/Custom.vue";
 import { useEditorStore } from "../../store/editor";
 import { _generateId } from "../data";
+import { _updateCursorData } from "../event";
 import type { VNode } from "vue";
 import type { DEContentData, DEBlockData } from "../../type.mjs";
 
@@ -84,5 +85,5 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
         }
     });
 
-    return h("div", { class: ["de-body"] }, blockList);
+    return h("div", { class: ["de-body"], onMouseup: _updateCursorData }, blockList);
 }

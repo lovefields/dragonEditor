@@ -4,7 +4,28 @@ export function _updateCursorData(): void {
     const editorStore = useEditorStore();
 
     if (window !== undefined) {
+        editorStore.cursorSelection = null;
         editorStore.cursorSelection = window.getSelection() as Selection;
+
+        if (editorStore.cursorSelection.rangeCount > 0) {
+            const range = editorStore.cursorSelection.getRangeAt(0);
+
+            editorStore.cursorRange = range.cloneRange();
+
+            if (range.startContainer === range.endContainer) {
+                if (range.startContainer.nodeType === Node.TEXT_NODE) {
+                    const $parentElement = range.startContainer.parentElement;
+
+                    if ($parentElement !== null && $parentElement.tagName === "A") {
+                        editorStore.status.anchorHerf = ($parentElement as HTMLAnchorElement).href;
+                    } else {
+                        editorStore.status.anchorHerf = "";
+                    }
+                }
+            } else {
+                editorStore.status.anchorHerf = "";
+            }
+        }
     } else {
         console.error("[Dragon Editor]: It's not client environment");
     }
@@ -41,6 +62,22 @@ export function _setRangeCursorPosition(startNode: Node, startNodeOffset: number
         editorStore.cursorSelection.removeAllRanges();
 
         const newRange = document.createRange();
+
+        if (startNode.nodeType !== Node.TEXT_NODE) {
+            if (startNode.childNodes.length !== 0) {
+                startNode = startNode.childNodes[0] as Node;
+            } else {
+                startNodeOffset = 0;
+            }
+        }
+
+        if (endNode.nodeType !== Node.TEXT_NODE) {
+            if (endNode.childNodes.length !== 0) {
+                endNode = endNode.childNodes[0] as Node;
+            } else {
+                endNodeOffset = 0;
+            }
+        }
 
         newRange.setStart(startNode, startNodeOffset);
         newRange.setEnd(endNode, endNodeOffset);

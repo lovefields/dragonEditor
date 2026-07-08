@@ -1,7 +1,7 @@
 import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _findEditableElement, _findEditableParent, _findParentBlock } from "./index";
-import { _getEditorbleCursorPosition, _isStrictlyEqualArrays } from "../data";
+import { _arrangementNodeList, _getEditorbleCursorPosition, _isStrictlyEqualArrays } from "../data";
 import { _setCursorPosition, _setRangeCursorPosition, _updateCursorData } from "../event";
 import type { DEBlockData, DETextBlock, DEHeadingBlock, DEListBlock, DEImageBlock, DETextalign } from "../../type.d.mts";
 
@@ -146,24 +146,23 @@ export async function _setAlign(style: DETextalign): Promise<void> {
     }
 }
 
+// 스타일 적용
 export async function _setDecoration(className: DEDecorationClass): Promise<void> {
     const editorStore = useEditorStore();
 
-    if (editorStore.cursorSelection !== null) {
-        const range = editorStore.cursorSelection.getRangeAt(0);
-        const $editableParent = _findEditableParent(range.startContainer.nodeType === Node.TEXT_NODE ? range.startContainer.parentElement : (range.startContainer as HTMLElement));
+    if (editorStore.cursorRange !== null) {
+        const cloneRange = editorStore.cursorRange.cloneRange();
+        const $editableParent = _findEditableParent(cloneRange.startContainer.nodeType === Node.TEXT_NODE ? cloneRange.startContainer.parentElement : (cloneRange.startContainer as HTMLElement));
 
         if ($editableParent !== null) {
-            const cloneRange = range.cloneRange();
             const nodeList: Node[] = [];
-            const arrangementNodeList: Node[] = [];
             let selectedAll: boolean = false;
             let cursorStartNode: Node | null = null;
             let cursorStartNodeOffset: number = 0;
             let cursorEndNode: Node | null = null;
             let cursorEndNodeOffset: number = 0;
 
-            if (editorStore.cursorSelection.isCollapsed === true) {
+            if (cloneRange.collapsed === true) {
                 // 단일커서
 
                 $editableParent.childNodes.forEach((node: Node) => {
@@ -243,19 +242,19 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
                                 const text = textNode.textContent;
 
                                 if (text !== null) {
-                                    const firstNode = document.createTextNode(text.substring(0, cloneRange.startOffset));
-                                    const middleNode = document.createElement("span");
-                                    const lastNode = document.createTextNode(text.substring(cloneRange.endOffset, text.length));
+                                    const $firstNode = document.createTextNode(text.substring(0, cloneRange.startOffset));
+                                    const $middleNode = document.createElement("span");
+                                    const $lastNode = document.createTextNode(text.substring(cloneRange.endOffset, text.length));
 
-                                    middleNode.className = className;
-                                    middleNode.textContent = text.substring(cloneRange.startOffset, cloneRange.endOffset);
+                                    $middleNode.className = className;
+                                    $middleNode.textContent = text.substring(cloneRange.startOffset, cloneRange.endOffset);
 
-                                    nodeList.push(firstNode, middleNode, lastNode);
+                                    nodeList.push($firstNode, $middleNode, $lastNode);
 
-                                    cursorStartNode = middleNode.childNodes[0] || null;
+                                    cursorStartNode = $middleNode.childNodes[0] || null;
                                     cursorStartNodeOffset = 0;
-                                    cursorEndNode = middleNode.childNodes[0] || null;
-                                    cursorEndNodeOffset = middleNode.textContent.length;
+                                    cursorEndNode = $middleNode.childNodes[0] || null;
+                                    cursorEndNodeOffset = $middleNode.textContent.length;
                                 }
                             } else {
                                 nodeList.push(node);
@@ -292,7 +291,25 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
                                     }
                                 } else {
                                     // 노드 일부 선택
-                                    // TODO : 구현
+
+                                    const text = $span.textContent;
+                                    const $firstNode = $span.cloneNode() as HTMLSpanElement;
+                                    const $middleNode = $span.cloneNode() as HTMLSpanElement;
+                                    const $lastNode = $span.cloneNode() as HTMLSpanElement;
+
+                                    $firstNode.textContent = text.substring(0, cloneRange.startOffset);
+                                    $middleNode.textContent = text.substring(cloneRange.startOffset, cloneRange.endOffset);
+                                    $lastNode.textContent = text.substring(cloneRange.endOffset, text.length);
+
+                                    if ($middleNode.classList.contains(className) === false) {
+                                        $middleNode.classList.add(className);
+                                    }
+
+                                    nodeList.push($firstNode, $middleNode, $lastNode);
+                                    cursorStartNode = $middleNode.childNodes[0] || null;
+                                    cursorStartNodeOffset = 0;
+                                    cursorEndNode = $middleNode.childNodes[0] || null;
+                                    cursorEndNodeOffset = $middleNode.textContent.length;
                                 }
                             } else {
                                 nodeList.push(node);
@@ -411,45 +428,12 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
 
             $editableParent.innerHTML = "";
 
-            nodeList.forEach((node) => {
-                if (arrangementNodeList.length === 0) {
-                    arrangementNodeList.push(node);
-                } else {
-                    const prevNode = arrangementNodeList[arrangementNodeList.length - 1]!;
-
-                    if (prevNode.nodeType === Node.TEXT_NODE && node.nodeType === Node.TEXT_NODE) {
-                        if (prevNode.textContent !== null && node.textContent !== null) {
-                            if (cursorStartNode === node) {
-                                cursorStartNode = prevNode;
-                                cursorStartNodeOffset += prevNode.textContent.length;
-                            }
-
-                            if (cursorEndNode === node) {
-                                cursorEndNode = prevNode;
-                                cursorEndNodeOffset += prevNode.textContent.length;
-                            }
-
-                            prevNode.textContent += node.textContent;
-                        }
-                    } else if (prevNode.nodeType === Node.ELEMENT_NODE && node.nodeType === Node.ELEMENT_NODE) {
-                        const $prevNode = prevNode as HTMLSpanElement;
-                        const $node = node as HTMLSpanElement;
-
-                        if (_isStrictlyEqualArrays(Array.from($prevNode.classList), Array.from($node.classList)) === true) {
-                            $prevNode.textContent += $node.textContent;
-                        } else {
-                            arrangementNodeList.push(node);
-                        }
-                    } else {
-                        arrangementNodeList.push(node);
-                    }
-                }
-            });
+            const { list: newList, cursorStartNode: StartNode, cursorStartNodeOffset: StartNodeOffset, cursorEndNode: EndNode, cursorEndNodeOffset: EndNodeOffset } = _arrangementNodeList(nodeList, cursorStartNode, cursorStartNodeOffset, cursorEndNode, cursorEndNodeOffset);
 
             // @ts-ignore : 순회문에 의한 재할당 확인 불가 이슈로 제외처리
             if (selectedAll === true) {
-                const targetStartNode = arrangementNodeList[0];
-                const targetEndNode = arrangementNodeList[arrangementNodeList.length - 1];
+                const targetStartNode = newList[0];
+                const targetEndNode = newList[newList.length - 1];
 
                 if (targetStartNode !== undefined) {
                     if (targetStartNode.nodeType === Node.TEXT_NODE) {
@@ -474,7 +458,7 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
                 }
             }
 
-            arrangementNodeList.forEach((node) => {
+            newList.forEach((node) => {
                 if (node.textContent !== "") {
                     $editableParent.appendChild(node);
                 }
@@ -483,8 +467,8 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
             $editableParent.dispatchEvent(new Event("input"));
             await nextTick();
 
-            if (cursorStartNode !== null && cursorEndNode !== null) {
-                _setRangeCursorPosition(cursorStartNode, cursorStartNodeOffset, cursorEndNode, cursorEndNodeOffset);
+            if (StartNode !== null && EndNode !== null) {
+                _setRangeCursorPosition(StartNode, StartNodeOffset, EndNode, EndNodeOffset);
                 _updateCursorData();
             }
         }
@@ -492,8 +476,194 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
 }
 
 // 링크 적용
-export async function _setLink(): Promise<void> {
+export async function _setLink(url: string): Promise<void> {
     const editorStore = useEditorStore();
+
+    if (editorStore.cursorRange !== null && editorStore.cursorRange.collapsed === false) {
+        const $editableParent = _findEditableParent(editorStore.cursorRange.startContainer.nodeType === Node.TEXT_NODE ? editorStore.cursorRange.startContainer.parentElement : (editorStore.cursorRange.startContainer as HTMLElement));
+
+        if ($editableParent !== null) {
+            const cloneRange = editorStore.cursorRange.cloneRange();
+            const nodeList: Node[] = [];
+            let cursorStartNode: Node | null = null;
+            let cursorStartNodeOffset: number = 0;
+            let cursorEndNode: Node | null = null;
+            let cursorEndNodeOffset: number = 0;
+            let isBettween: boolean = false;
+
+            $editableParent.childNodes.forEach((node: Node) => {
+                if (cloneRange.startContainer === cloneRange.endContainer) {
+                    // 같은 노드
+
+                    if (cloneRange.startContainer.parentElement === $editableParent) {
+                        // 최상위 노드
+
+                        let textNode: Node | null = node;
+
+                        if (node.nodeType !== Node.TEXT_NODE) {
+                            if (node.textContent === "") {
+                                textNode = null;
+                            } else {
+                                textNode = node.childNodes[0] || null;
+                            }
+                        }
+
+                        if (textNode !== null && textNode === cloneRange.startContainer) {
+                            const text = textNode.textContent;
+
+                            if (text !== null) {
+                                const $firstNode = document.createTextNode(text.substring(0, cloneRange.startOffset));
+                                const $middleNode = document.createElement("a");
+                                const $lastNode = document.createTextNode(text.substring(cloneRange.endOffset, text.length));
+
+                                if (editorStore.option.anchorTagTarget !== "") {
+                                    $middleNode.target = editorStore.option.anchorTagTarget;
+                                }
+
+                                $middleNode.className = "de-link";
+                                $middleNode.href = url;
+                                $middleNode.textContent = text.substring(cloneRange.startOffset, cloneRange.endOffset);
+                                nodeList.push($firstNode, $middleNode, $lastNode);
+                                cursorStartNode = $middleNode.childNodes[0] || null;
+                                cursorStartNodeOffset = 0;
+                                cursorEndNode = $middleNode.childNodes[0] || null;
+                                cursorEndNodeOffset = $middleNode.textContent.length;
+                            }
+                        } else {
+                            nodeList.push(node);
+                        }
+                    } else {
+                        // 스타일 노드
+
+                        if (cloneRange.startContainer.parentElement === node) {
+                            const $span = node as HTMLSpanElement;
+
+                            if (cloneRange.startOffset === 0 && cloneRange.endOffset === (node.textContent || "").length) {
+                                const $aTag = document.createElement("a");
+
+                                if (editorStore.option.anchorTagTarget !== "") {
+                                    $aTag.target = editorStore.option.anchorTagTarget;
+                                }
+
+                                $aTag.className = "de-link";
+                                $aTag.href = url;
+                                $aTag.textContent = $span.textContent;
+                                nodeList.push($aTag);
+                                cursorStartNode = $aTag.childNodes[0] || null;
+                                cursorStartNodeOffset = 0;
+                                cursorEndNode = $aTag.childNodes[0] || null;
+                                cursorEndNodeOffset = $aTag.textContent.length;
+                            } else {
+                                // 노드 일부 선택
+
+                                const text = $span.textContent;
+                                const $firstNode = $span.cloneNode() as HTMLSpanElement;
+                                const $middleNode = document.createElement("a");
+                                const $lastNode = $span.cloneNode() as HTMLSpanElement;
+
+                                if (editorStore.option.anchorTagTarget !== "") {
+                                    $middleNode.target = editorStore.option.anchorTagTarget;
+                                }
+
+                                $middleNode.className = "de-link";
+                                $middleNode.href = url;
+
+                                $firstNode.textContent = text.substring(0, cloneRange.startOffset);
+                                $middleNode.textContent = text.substring(cloneRange.startOffset, cloneRange.endOffset);
+                                $lastNode.textContent = text.substring(cloneRange.endOffset, text.length);
+                                nodeList.push($firstNode, $middleNode, $lastNode);
+                                cursorStartNode = $middleNode.childNodes[0] || null;
+                                cursorStartNodeOffset = 0;
+                                cursorEndNode = $middleNode.childNodes[0] || null;
+                                cursorEndNodeOffset = $middleNode.textContent.length;
+                            }
+                        } else {
+                            nodeList.push(node);
+                        }
+                    }
+                } else {
+                    // 다른 노드
+
+                    if (cloneRange.startContainer === node || cloneRange.endContainer === node || cloneRange.startContainer.parentElement === node || cloneRange.endContainer.parentElement === node) {
+                        const text = node.textContent;
+
+                        if (text !== null) {
+                            const textStartOffset = cloneRange.startOffset;
+                            const textEndOffset = cloneRange.endOffset;
+
+                            if (cloneRange.startContainer === node || cloneRange.startContainer.parentElement === node) {
+                                const $aTag = document.createElement("a");
+
+                                if (editorStore.option.anchorTagTarget !== "") {
+                                    $aTag.target = editorStore.option.anchorTagTarget;
+                                }
+
+                                $aTag.className = "de-link";
+                                $aTag.href = url;
+                                $aTag.textContent = text.substring(textStartOffset);
+                                nodeList.push(document.createTextNode(text.substring(0, textStartOffset)));
+                                nodeList.push($aTag);
+                                cursorStartNode = $aTag.childNodes[0] || null;
+                                cursorStartNodeOffset = 0;
+                                isBettween = true;
+                            }
+
+                            if (cloneRange.endContainer === node || cloneRange.endContainer.parentElement === node) {
+                                const $aTag = document.createElement("a");
+
+                                if (editorStore.option.anchorTagTarget !== "") {
+                                    $aTag.target = editorStore.option.anchorTagTarget;
+                                }
+
+                                $aTag.className = "de-link";
+                                $aTag.href = url;
+                                $aTag.textContent = text.substring(0, textEndOffset);
+                                nodeList.push($aTag);
+                                nodeList.push(document.createTextNode(text.substring(textEndOffset)));
+                                cursorEndNode = $aTag.childNodes[0] || null;
+                                cursorEndNodeOffset = text.substring(0, textEndOffset).length;
+                                isBettween = false;
+                            }
+                        }
+                    } else {
+                        if (isBettween === false) {
+                            nodeList.push(node);
+                        } else {
+                            const $aTag = document.createElement("a");
+
+                            if (editorStore.option.anchorTagTarget !== "") {
+                                $aTag.target = editorStore.option.anchorTagTarget;
+                            }
+
+                            $aTag.className = "de-link";
+                            $aTag.href = url;
+                            $aTag.textContent = node.textContent;
+                            nodeList.push($aTag);
+                        }
+                    }
+                }
+            });
+
+            $editableParent.innerHTML = "";
+
+            const { list: newList, cursorStartNode: StartNode, cursorStartNodeOffset: StartNodeOffset, cursorEndNode: EndNode, cursorEndNodeOffset: EndNodeOffset } = _arrangementNodeList(nodeList, cursorStartNode, cursorStartNodeOffset, cursorEndNode, cursorEndNodeOffset);
+
+            newList.forEach((node) => {
+                if (node.textContent !== "") {
+                    $editableParent.appendChild(node);
+                }
+            });
+
+            editorStore.status.anchorHerf = "";
+            $editableParent.dispatchEvent(new Event("input"));
+            await nextTick();
+
+            if (StartNode !== null && EndNode !== null) {
+                _setRangeCursorPosition(StartNode, StartNodeOffset, EndNode, EndNodeOffset);
+                _updateCursorData();
+            }
+        }
+    }
 }
 
 // 링크 해제

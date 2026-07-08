@@ -5,7 +5,7 @@
                 <button
                     class="de-menu"
                     type="button"
-                    @click="toggleAddMenuActive"
+                    @click="isActiveMenuArea = !isActiveMenuArea"
                     ref="$addMenuButton"
                 >
                     <component :is="_getIconNode('plus')" />
@@ -63,7 +63,9 @@
                 <button
                     class="de-menu"
                     type="button"
-                    :disabled="_checkCanUseDecoration() === false"
+                    :disabled="_checkCanUseDecoration() === false || editorStore.cursorSelection?.isCollapsed === true"
+                    @click="isActiveLinkArea = !isActiveLinkArea"
+                    ref="$exitLinkMenuButton"
                 >
                     <component :is="_getIconNode('add-link')" />
                 </button>
@@ -71,7 +73,7 @@
                 <button
                     class="de-menu"
                     type="button"
-                    :disabled="_checkCanUseDecoration() === false || editorStore.status.anchorHerf === ''"
+                    :disabled="_checkCanUseDecoration() === false"
                 >
                     <component :is="_getIconNode('remove-link')" />
                 </button>
@@ -254,6 +256,66 @@
                 </button>
             </div>
         </div>
+
+        <div
+            class="de-link-exit-area"
+            :class="{ '--active': isActiveLinkArea === true }"
+            ref="$exitLinkMenu"
+        >
+            <div class="de-btn-area">
+                <button
+                    class="de-btn"
+                    :class="{ '--active': anchorInputType === 'url' }"
+                    type="button"
+                    @click="anchorInputType = 'url'"
+                >
+                    Text
+                </button>
+                <button
+                    class="de-btn"
+                    :class="{ '--active': anchorInputType === 'hash' }"
+                    type="button"
+                    @click="anchorInputType = 'hash'"
+                >
+                    Heading
+                </button>
+            </div>
+
+            <div
+                v-if="anchorInputType === 'url'"
+                class="de-link-text-area"
+            >
+                <input
+                    v-model="editorStore.status.anchorHerf"
+                    class="de-input"
+                    :class="{ '--error': urlValidation === false }"
+                    name="url"
+                    type="url"
+                />
+                <button
+                    class="de-btn"
+                    type="button"
+                    @click="setLinkEvent()"
+                >
+                    Set
+                </button>
+            </div>
+
+            <div
+                v-else
+                class="de-link-heading-area"
+            >
+                <button
+                    v-for="item in editorStore.data.filter((i) => i.type === 'heading')"
+                    v-html="item.textContent"
+                    class="de-btn"
+                    :class="{ '--active': `#${item.id}` === editorStore.status.anchorHerf }"
+                    :key="item.id"
+                    @click="setLinkEvent(`#${item.id}`)"
+                >
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -263,18 +325,18 @@ import { onClickOutside } from "@vueuse/core";
 import { useEditorStore } from "../store/editor";
 import { _addBlock, _moveBlockIndex, _checkCanUseIndent, _setIndentData, _checkCanUseAlign, _checkCanUseDecoration } from "../utils/data";
 import { _getIconNode } from "../utils/layout";
-import { _setAlign, _setDecoration } from "../utils/node";
+import { _setAlign, _setDecoration, _setLink } from "../utils/node";
 import type { DEBlockMenutype } from "../type.mjs";
 
 const editorStore = useEditorStore();
 const isActiveMenuArea = ref<boolean>(false);
+const isActiveLinkArea = ref<boolean>(false);
+const anchorInputType = ref<"url" | "hash">("url");
+const urlValidation = ref<boolean>(true);
 const $addBlockMenu = ref<HTMLDivElement>();
 const $addMenuButton = ref<HTMLButtonElement>();
-
-// 블럭 추가 메뉴 토글
-function toggleAddMenuActive(): void {
-    isActiveMenuArea.value = !isActiveMenuArea.value;
-}
+const $exitLinkMenu = ref<HTMLDivElement>();
+const $exitLinkMenuButton = ref<HTMLButtonElement>();
 
 // 블럭 추가 메뉴
 function addBlockEvent(name: DEBlockMenutype): void {
@@ -296,6 +358,23 @@ function imageUploadEvent(event: Event): void {
     }
 }
 
+// 링크 할당 이벤트
+function setLinkEvent(url?: string): void {
+    const urlReg = /^(https?:\/\/|#).+/;
+
+    if (url === undefined) {
+        url = editorStore.status.anchorHerf;
+    }
+
+    if (urlReg.test(url) === true) {
+        isActiveLinkArea.value = false;
+        urlValidation.value = true;
+        _setLink(url);
+    } else {
+        urlValidation.value = false;
+    }
+}
+
 // 블럭 추가 메뉴 닫기
 onClickOutside(
     $addBlockMenu,
@@ -304,6 +383,18 @@ onClickOutside(
     },
     {
         ignore: [$addMenuButton],
+    }
+);
+
+// 링크 메뉴 닫기
+onClickOutside(
+    $exitLinkMenu,
+    () => {
+        isActiveLinkArea.value = false;
+        urlValidation.value = true;
+    },
+    {
+        ignore: [$exitLinkMenuButton],
     }
 );
 </script>

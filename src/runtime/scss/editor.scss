@@ -7,7 +7,7 @@
     background: var(--editor-background);
     color: var(--editor-text);
     border: 1px solid var(--editor-border);
-    border-radius: var(--radius-default);
+    border-radius: var(--editor-radius-default);
 
     &.--has-menu {
         padding-top: 35px;
@@ -51,7 +51,7 @@
         height: 34px;
         background: var(--editor-background);
         border-bottom: 1px solid var(--editor-border);
-        border-radius: var(--radius-default) var(--radius-default) 0 0;
+        border-radius: var(--editor-radius-default) var(--editor-radius-default) 0 0;
         z-index: 10;
 
         .de-menu-wrap {
@@ -107,7 +107,7 @@
             border-width: 0 1px 1px 0;
             border-style: solid;
             border-color: #ccc;
-            border-bottom-right-radius: var(--radius-default);
+            border-bottom-right-radius: var(--editor-radius-default);
             z-index: 1000;
 
             &.--active {
@@ -133,10 +133,10 @@
             top: calc(100% + 1px);
             left: 205px;
             width: 200px;
-            background: #fff;
-            border: 1px solid #ccc;
+            background: var(--editor-background);
+            border: 1px solid var(--editor-border);
             border-top: 0;
-            border-radius: 0 0 var(--radius-default) var(--radius-default);
+            border-radius: 0 0 var(--editor-radius-default) var(--editor-radius-default);
             z-index: 1000;
 
             &.--active {
@@ -145,15 +145,15 @@
 
             .de-btn-area {
                 display: flex;
-                border-bottom: 1px solid #ccc;
+                border-bottom: 1px solid var(--editor-border);
 
                 .de-btn {
                     flex: 1;
                     height: 24px;
-                    color: #999;
+                    color: var(--editor-text-disabled);
 
                     &.--active {
-                        color: #333;
+                        color: var(--editor-text);
                     }
                 }
             }
@@ -168,10 +168,12 @@
                     min-width: 0;
                     height: 20px;
                     padding: 0 8px;
-                    border: 1px solid #ccc;
+                    background: var(--editor-background);
+                    color: var(--editor-text);
+                    border: 1px solid var(--editor-border);
                     box-sizing: border-box;
 
-                    &.--red {
+                    &.--error {
                         border-color: red;
                     }
                 }
@@ -193,10 +195,10 @@
                 .de-btn {
                     padding: 2px 4px;
                     text-align: left;
-                    border-radius: var(--radius-default);
+                    border-radius: var(--editor-radius-default);
 
                     &:hover {
-                        background: #f1f1f1;
+                        background: var(--editor-decoration-code-bg);
                     }
                 }
             }
