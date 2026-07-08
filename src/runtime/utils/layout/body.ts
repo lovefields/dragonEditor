@@ -85,5 +85,5 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
         }
     });
 
-    return h("div", { class: ["de-body"], onMouseup: _updateCursorData }, blockList);
+    return h("div", { class: ["de-body"], onMouseup: _updateCursorData, onKeyup: _updateCursorData }, blockList);
 }

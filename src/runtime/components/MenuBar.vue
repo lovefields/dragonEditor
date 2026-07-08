@@ -74,6 +74,7 @@
                     class="de-menu"
                     type="button"
                     :disabled="_checkCanUseDecoration() === false"
+                    @click="_removeLink"
                 >
                     <component :is="_getIconNode('remove-link')" />
                 </button>
@@ -325,7 +326,7 @@ import { onClickOutside } from "@vueuse/core";
 import { useEditorStore } from "../store/editor";
 import { _addBlock, _moveBlockIndex, _checkCanUseIndent, _setIndentData, _checkCanUseAlign, _checkCanUseDecoration } from "../utils/data";
 import { _getIconNode } from "../utils/layout";
-import { _setAlign, _setDecoration, _setLink } from "../utils/node";
+import { _setAlign, _setDecoration, _setLink, _removeLink } from "../utils/node";
 import type { DEBlockMenutype } from "../type.mjs";
 
 const editorStore = useEditorStore();

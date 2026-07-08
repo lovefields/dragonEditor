@@ -303,13 +303,29 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
 
                                     if ($middleNode.classList.contains(className) === false) {
                                         $middleNode.classList.add(className);
+                                    } else {
+                                        $middleNode.classList.remove(className);
                                     }
 
-                                    nodeList.push($firstNode, $middleNode, $lastNode);
-                                    cursorStartNode = $middleNode.childNodes[0] || null;
-                                    cursorStartNodeOffset = 0;
-                                    cursorEndNode = $middleNode.childNodes[0] || null;
-                                    cursorEndNodeOffset = $middleNode.textContent.length;
+                                    nodeList.push($firstNode);
+
+                                    if ($middleNode.className === "") {
+                                        const textNode = document.createTextNode($middleNode.textContent || "");
+
+                                        nodeList.push(textNode);
+                                        cursorStartNode = textNode;
+                                        cursorStartNodeOffset = 0;
+                                        cursorEndNode = textNode;
+                                        cursorEndNodeOffset = textNode.textContent.length;
+                                    } else {
+                                        nodeList.push($middleNode);
+                                        cursorStartNode = $middleNode.childNodes[0] || null;
+                                        cursorStartNodeOffset = 0;
+                                        cursorEndNode = $middleNode.childNodes[0] || null;
+                                        cursorEndNodeOffset = $middleNode.textContent.length;
+                                    }
+
+                                    nodeList.push($lastNode);
                                 }
                             } else {
                                 nodeList.push(node);
@@ -669,4 +685,217 @@ export async function _setLink(url: string): Promise<void> {
 // 링크 해제
 export async function _removeLink(): Promise<void> {
     const editorStore = useEditorStore();
+
+    if (editorStore.cursorRange !== null) {
+        const cloneRange = editorStore.cursorRange.cloneRange();
+        const $editableParent = _findEditableParent(cloneRange.startContainer.nodeType === Node.TEXT_NODE ? cloneRange.startContainer.parentElement : (cloneRange.startContainer as HTMLElement));
+
+        if ($editableParent !== null) {
+            const nodeList: Node[] = [];
+            let cursorStartNode: Node | null = null;
+            let cursorStartNodeOffset: number = 0;
+            let cursorEndNode: Node | null = null;
+            let cursorEndNodeOffset: number = 0;
+
+            if (cloneRange.collapsed === true) {
+                // 단일커서
+
+                $editableParent.childNodes.forEach((node: Node) => {
+                    if (cloneRange.startContainer.parentElement === $editableParent) {
+                        // 최상위 노드
+
+                        nodeList.push(node);
+                    } else {
+                        // 스타일 노드
+
+                        const $tag = node as HTMLElement;
+
+                        if (cloneRange.startContainer.parentElement === $tag) {
+                            if ($tag.tagName === "A") {
+                                const $textNode = document.createTextNode($tag.textContent);
+
+                                nodeList.push($textNode);
+                                cursorStartNode = $textNode;
+                                cursorStartNodeOffset = 0;
+                                cursorEndNode = $textNode;
+                                cursorEndNodeOffset = $textNode.textContent.length;
+                            } else {
+                                nodeList.push(node);
+                            }
+                        } else {
+                            nodeList.push(node);
+                        }
+                    }
+                });
+            } else {
+                // 선택커서
+
+                let isBettween: boolean = false;
+
+                $editableParent.childNodes.forEach((node: Node) => {
+                    if (cloneRange.startContainer === cloneRange.endContainer) {
+                        // 같은 노드
+
+                        if (cloneRange.startContainer.parentElement === $editableParent) {
+                            // 최상위 노드
+
+                            nodeList.push(node);
+                            cursorStartNode = node;
+                            cursorStartNodeOffset = cloneRange.startOffset;
+                            cursorEndNode = node;
+                            cursorEndNodeOffset = cloneRange.endOffset;
+                        } else {
+                            // 스타일 노드
+
+                            if (cloneRange.startContainer.parentElement === node) {
+                                const $tag = node as HTMLElement;
+
+                                if ($tag.tagName === "A") {
+                                    if (cloneRange.startOffset === 0 && cloneRange.endOffset === (node.textContent || "").length) {
+                                        // 노드 전체 선택
+                                        const $textNode = document.createTextNode($tag.textContent || "");
+
+                                        nodeList.push($textNode);
+                                        cursorStartNode = $textNode;
+                                        cursorStartNodeOffset = 0;
+                                        cursorEndNode = $textNode;
+                                        cursorEndNodeOffset = $textNode.textContent.length;
+                                    } else {
+                                        // 노드 일부 선택
+
+                                        const text = $tag.textContent;
+                                        const $firstNode = $tag.cloneNode() as HTMLElement;
+                                        const $middleNode = document.createTextNode(text.substring(cloneRange.startOffset, cloneRange.endOffset));
+                                        const $lastNode = $tag.cloneNode() as HTMLElement;
+
+                                        $firstNode.textContent = text.substring(0, cloneRange.startOffset);
+                                        $lastNode.textContent = text.substring(cloneRange.endOffset, text.length);
+
+                                        nodeList.push($firstNode, $middleNode, $lastNode);
+                                        cursorStartNode = $middleNode;
+                                        cursorStartNodeOffset = 0;
+                                        cursorEndNode = $middleNode;
+                                        cursorEndNodeOffset = $middleNode.textContent.length;
+                                    }
+                                } else {
+                                    nodeList.push(node);
+                                    cursorStartNode = node;
+                                    cursorStartNodeOffset = cloneRange.startOffset;
+                                    cursorEndNode = node;
+                                    cursorEndNodeOffset = cloneRange.endOffset;
+                                }
+                            } else {
+                                nodeList.push(node);
+                            }
+                        }
+                    } else {
+                        // 다른 노드
+
+                        if (cloneRange.startContainer === node || cloneRange.endContainer === node || cloneRange.startContainer.parentElement === node || cloneRange.endContainer.parentElement === node) {
+                            const text = node.textContent;
+
+                            if (text !== null) {
+                                const textStartOffset = cloneRange.startOffset;
+                                const textEndOffset = cloneRange.endOffset;
+
+                                if (cloneRange.startContainer === node) {
+                                    nodeList.push(node);
+                                    cursorStartNode = node;
+                                    cursorStartNodeOffset = textStartOffset;
+                                    isBettween = true;
+                                }
+
+                                if (cloneRange.startContainer.parentElement === node) {
+                                    const $tag = node as HTMLElement;
+
+                                    if ($tag.tagName === "A") {
+                                        const $span = $tag.cloneNode() as HTMLSpanElement;
+                                        const $textNode = document.createTextNode(text.substring(textStartOffset));
+
+                                        $span.textContent = text.substring(0, textStartOffset);
+
+                                        nodeList.push($span);
+                                        nodeList.push($textNode);
+                                        cursorStartNode = $textNode;
+                                        cursorStartNodeOffset = 0;
+                                    } else {
+                                        nodeList.push(node);
+                                        cursorStartNode = node;
+                                        cursorStartNodeOffset = textStartOffset;
+                                    }
+
+                                    isBettween = true;
+                                }
+
+                                if (cloneRange.endContainer === node) {
+                                    nodeList.push(node);
+                                    cursorEndNode = node;
+                                    cursorEndNodeOffset = textEndOffset;
+                                    isBettween = false;
+                                }
+
+                                if (cloneRange.endContainer.parentElement === node) {
+                                    const $tag = node as HTMLElement;
+
+                                    if ($tag.tagName === "A") {
+                                        const $textNode = document.createTextNode(text.substring(0, textEndOffset));
+                                        const $span = $tag.cloneNode() as HTMLSpanElement;
+
+                                        $span.textContent = text.substring(textEndOffset);
+
+                                        nodeList.push($textNode);
+                                        nodeList.push($span);
+                                        cursorEndNode = $textNode;
+                                        cursorEndNodeOffset = textEndOffset;
+                                    } else {
+                                        nodeList.push(node);
+                                        cursorEndNode = node;
+                                        cursorEndNodeOffset = textEndOffset;
+                                    }
+
+                                    isBettween = false;
+                                }
+                            }
+                        } else {
+                            if (isBettween === false) {
+                                nodeList.push(node);
+                            } else {
+                                if (node.nodeType === Node.TEXT_NODE) {
+                                    nodeList.push(node);
+                                } else {
+                                    const $tag = node as HTMLElement;
+
+                                    if ($tag.tagName === "A") {
+                                        const $textNode = document.createTextNode($tag.textContent);
+
+                                        nodeList.push($textNode);
+                                    } else {
+                                        nodeList.push(node);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            $editableParent.innerHTML = "";
+
+            const { list: newList, cursorStartNode: StartNode, cursorStartNodeOffset: StartNodeOffset, cursorEndNode: EndNode, cursorEndNodeOffset: EndNodeOffset } = _arrangementNodeList(nodeList, cursorStartNode, cursorStartNodeOffset, cursorEndNode, cursorEndNodeOffset);
+
+            newList.forEach((node) => {
+                if (node.textContent !== "") {
+                    $editableParent.appendChild(node);
+                }
+            });
+
+            $editableParent.dispatchEvent(new Event("input"));
+            await nextTick();
+
+            if (StartNode !== null && EndNode !== null) {
+                _setRangeCursorPosition(StartNode, StartNodeOffset, EndNode, EndNodeOffset);
+                _updateCursorData();
+            }
+        }
+    }
 }
