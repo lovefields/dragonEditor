@@ -11,7 +11,7 @@
 import "../scss/viewer.scss";
 import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
-import type { DEContentData } from "../type.mjs";
+import type { DEContentData } from "../type.d.mts";
 
 interface DragonEditorViewerOption {
     content: DEContentData;

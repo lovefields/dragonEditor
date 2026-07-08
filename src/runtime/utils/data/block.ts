@@ -3,7 +3,6 @@ import { useEditorStore } from "../../store/editor";
 import { _setCursorPosition } from "../event";
 import { _generateId, _getEditorbleCursorPosition } from "../data";
 import { _findEditableElement, _findEditableParent, _findParentBlock } from "../node";
-import { DECodeLanguage } from "../../enums/codeLanguage";
 import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType, DEBlockMenutype, DECodeBlock, DEImageBlock, DEDividerBlock, DECustomBlock, DEBlockData } from "../../type.d.mts";
 
 // 데이터 정리
@@ -138,7 +137,7 @@ export function _createImageBlockData(src: string, caption: string = "", useHost
 }
 
 // 코드 블럭 데이터 생성
-export function _createCodeBlockData(language: keyof typeof DECodeLanguage = "text", textContent: string = "", filename: string = ""): DECodeBlock {
+export function _createCodeBlockData(language: string = "text", textContent: string = "", filename: string = ""): DECodeBlock {
     return {
         id: _generateId(),
         type: "code",
@@ -306,6 +305,7 @@ export async function _addImageBlock(src: string, caption: string = ""): Promise
 
 // 마크다운 -> 에디터 데이터
 export async function _convertMarkdownToEditor(textDataList: string[]): Promise<DEBlockData[]> {
+    const editorStore = useEditorStore();
     const blockList: DEBlockData[] = [];
     const unorderListReg = new RegExp("^( +)?(\\+|\\*|-)(?= )( )");
     const orderListReg = new RegExp("^( +)?(\\d+.)(?= )( )");
@@ -323,12 +323,12 @@ export async function _convertMarkdownToEditor(textDataList: string[]): Promise<
                 if (isCodeBlock === false) {
                     // 코드 블럭 시작
                     const startLineText = blockData.split("```");
-                    let codeBlockLang: DECodeLanguageList = "text";
+                    let codeBlockLang = "text";
 
                     isCodeBlock = true;
 
-                    if (startLineText[1]! in DECodeLanguage === true) {
-                        codeBlockLang = startLineText[1] as DECodeLanguageList;
+                    if (startLineText[1]! in editorStore.codeBlockLnaguageList === true) {
+                        codeBlockLang = startLineText[1] as string;
                     }
 
                     tempData = {
@@ -787,6 +787,68 @@ export function _checkCanUseDecoration(): boolean {
             }
         }
     }
+
+    return suitable;
+}
+
+// 데이터 비어있는지 확인
+export function _checkDataIsEmpty(data?: DEContentData): boolean {
+    const editorStore = useEditorStore();
+    let suitable: boolean = true;
+
+    if (data === undefined) {
+        data = editorStore.data;
+    }
+
+    data.forEach((blockData) => {
+        switch (blockData.type) {
+            case "text":
+                if (blockData.textContent !== "") {
+                    suitable = false;
+                }
+                break;
+
+            case "heading":
+                if (blockData.textContent !== "") {
+                    suitable = false;
+                }
+                break;
+
+            case "image":
+                if (blockData.caption !== "") {
+                    suitable = false;
+                }
+                break;
+
+            case "list":
+                blockData.child.forEach((child) => {
+                    if (child.textContent !== "") {
+                        suitable = false;
+                    }
+                });
+                break;
+
+            case "code":
+                if (blockData.filename !== "") {
+                    suitable = false;
+                }
+
+                if (blockData.textContent !== "") {
+                    suitable = false;
+                }
+                break;
+
+            case "divider":
+                suitable = false;
+                break;
+
+            case "custom":
+                if (blockData.textContent !== "") {
+                    suitable = false;
+                }
+                break;
+        }
+    });
 
     return suitable;
 }

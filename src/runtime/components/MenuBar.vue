@@ -1,5 +1,5 @@
 <template>
-    <div class="de-menu-bar">
+    <div class="de-menu-bar" :style="{top: `${editorStore.status.menuTop}px`}">
         <div class="de-menu-wrap">
             <div class="de-col">
                 <button

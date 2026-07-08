@@ -18,7 +18,7 @@
         <p
             v-if="props.isEdit === false"
             class="de-language"
-            >{{ DECodeLanguage[props.data.language] }}</p
+            >{{ editorStore.codeBlockLnaguageList[props.data.language] }}</p
         >
 
         <div
@@ -29,7 +29,7 @@
                 class="de-btn-language"
                 @click="isLanguageListActive = !isLanguageListActive"
                 ref="$btnLanguageList"
-                >{{ DECodeLanguage[props.data.language] }}</button
+                >{{ editorStore.codeBlockLnaguageList[props.data.language] }}</button
             >
 
             <div
@@ -38,9 +38,9 @@
                 ref="$languageList"
             >
                 <button
-                    v-for="[name, value] in Object.entries(DECodeLanguage)"
+                    v-for="[name, value] in Object.entries(editorStore.codeBlockLnaguageList)"
                     class="de-lang"
-                    @click="setLanguageEvent(name as DECodeLanguageList)"
+                    @click="setLanguageEvent(name)"
                 >
                     {{ value }}
                 </button>
@@ -67,9 +67,8 @@ import hljs from "highlight.js";
 import { useEditorStore } from "../../store/editor";
 import { ref, computed, nextTick } from "vue";
 import { onClickOutside } from "@vueuse/core";
-import { DECodeLanguage } from "../../enums/codeLanguage";
 import { _moveCodeBlockEvent, _codeBlockShiftEnterEvent, _codeBlockTabEvent, _normalPasteEvent } from "../../utils/event";
-import type { DECodeBlock, DECodeLanguageList } from "../../type.d.mts";
+import type { DECodeBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
 const props = defineProps<{ data: DECodeBlock; isEdit: boolean; index: number }>();
@@ -180,7 +179,7 @@ function contentKeydownEvent(event: KeyboardEvent): void {
 }
 
 // 언어 설정
-async function setLanguageEvent(lang: DECodeLanguageList): Promise<void> {
+async function setLanguageEvent(lang: string): Promise<void> {
     if ($content.value !== null) {
         const textContent = $content.value.textContent;
         const highlights = hljs.highlight(textContent, { language: lang });

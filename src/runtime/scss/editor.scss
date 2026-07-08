@@ -15,13 +15,10 @@
 
     &.--mobile {
         .de-menu-bar {
-            .de-menu-wrap {
-                overflow-x: auto;
-            }
-
             .de-link-exit-area {
-                left: auto;
+                left: 50%;
                 right: 0;
+                transform: translateX(-50%);
             }
         }
     }

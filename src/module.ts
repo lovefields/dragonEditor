@@ -28,7 +28,7 @@ export default defineNuxtModule({
             filename: "types/dragon-editor.d.ts",
             getContents: () => `
                 declare global {
-                    ${typeContent}
+                    ${typeContent.replaceAll(new RegExp("^export", "gm"), "")}
                 }
 
                 export {}

@@ -5,11 +5,12 @@
     >
         <div
             class="editor-area"
-            :class="{ '--sort': isChangeLayout === true, '--transform': isTransformLayout === true }"
+            :class="{ '--sort': isChangeLayout === true }"
         >
             <DragonEditor
                 v-model="contentData"
                 :theme="theme"
+                :isMobile="isMobile"
                 ref="$editor"
                 @uploadImageEvent="pasteImageProcess"
             />
@@ -23,7 +24,6 @@
             <button @click="addCustomBlock">Add Custom Block</button>
             <button @click="changeData">change data</button>
             <button @click="changeLayout">Change Layout</button>
-            <button @click="changeLayout2">Change transform Layout</button>
             <button @click="checkEmpty">Check Empty</button>
             <button @click="checkEmpty2">Check Empty2</button>
             <button @click="changeTheme">Change Theme</button>
@@ -34,10 +34,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "#imports";
+import { ref, onMounted, nextTick } from "#imports";
 const contentData = ref<DEContentData>([]);
 const isChangeLayout = ref<boolean>(false);
-const isTransformLayout = ref<boolean>(false);
+const isMobile = ref<boolean>(false);
 const theme = ref<"dark" | "white">("white");
 const $editor = ref<DragonEditor>();
 let isChange: boolean = true;
@@ -75,7 +75,7 @@ function clearContent() {
 }
 
 function checkEmpty2(): void {
-    console.log($editor.value?.checkDataEmpty(contentData.value));
+    console.log($editor.value?.checkDataIsEmpty(contentData.value));
 }
 
 function changeData() {
@@ -83,37 +83,37 @@ function changeData() {
 
     if (isChange === true) {
         data = [
-            { type: "text", classList: [], textContent: "1" },
+            { type: "text", classList: [], textContent: "1", id: "tJKa7D" },
             { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
             { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
             { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
-            { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [] },
-            { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
-            { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
+            { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, caption: "", classList: [], id: "KvhMrm" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "vO80qc" }], id: "VuZNjz" },
+            { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "uMw4nF" }], id: "ynY6lJ" },
+            { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "PkgqXy" }], id: "S56u7g" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "T8Z8TR" }], id: "BgGZTm" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "rS40gY" }], id: "PIqTbA" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "bWryWi" }], id: "3W9pVZ" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "moaBGd" }], id: "PtCet4" },
+            { type: "custom", textContent: '<div class="my-custom-block">123</div>', id: "Dljus7" },
+            { type: "code", filename: "123", language: "text", textContent: "332213231232132131313", id: "pyRKHD" },
         ];
     } else {
         data = [
-            { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313" },
-            { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>' },
-            { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "upper-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "lower-roman", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "lower-alpha", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ul", style: "square", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ul", style: "disc", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "list", element: "ol", style: "decimal", child: [{ classList: ["de-item"], textContent: "1" }] },
-            { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, width: 379, height: 250, caption: "", classList: [] },
+            { type: "code", filename: "123", language: "text", textContent: "332213231232132131313", id: "6EeJNX" },
+            { type: "custom", textContent: '<div class="my-custom-block">123</div>', id: "Pozswd" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "B2RMtR" }], id: "BRy9d5" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "q50rvX" }], id: "bPWy9l" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "ZaJJyM" }], id: "BdfHze" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "TziYMO" }], id: "0degz5" },
+            { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "l9gaCx" }], id: "doGm1u" },
+            { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "CAsTko" }], id: "Ryzr7B" },
+            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "XXWBnG" }], id: "UTPMv0" },
+            { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, caption: "", classList: [], id: "Hf5zm3" },
             { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
             { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
             { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
-            { type: "text", classList: [], textContent: "123" },
+            { type: "text", classList: [], textContent: "123", id: "yJ80mS" },
         ];
     }
 
@@ -137,19 +137,23 @@ async function pasteImageProcess(files: File[]) {
     }
 }
 
-function changeLayout(): void {
+async function changeLayout(): Promise<void> {
     isChangeLayout.value = !isChangeLayout.value;
-    $editor.value?.updateLayout();
-}
-
-function changeLayout2(): void {
-    isTransformLayout.value = !isTransformLayout.value;
+    await nextTick();
     $editor.value?.updateLayout();
 }
 
 function checkEmpty(): void {
-    console.log($editor.value?.checkDataEmpty());
+    console.log($editor.value?.checkDataIsEmpty());
 }
+
+onMounted(() => {
+    isMobile.value = window.innerWidth < 1024;
+
+    window.addEventListener("resize", () => {
+        isMobile.value = window.innerWidth < 1024;
+    });
+});
 </script>
 
 <style lang="scss">

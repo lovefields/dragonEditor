@@ -1,7 +1,7 @@
 <template>
     <div
         class="dragon-editor"
-        :class="{ '--has-menu': props.useMenuBar === true }"
+        :class="{ '--has-menu': props.useMenuBar === true, '--mobile': editorStore.option.isMobile === true, '--hidden-parent': editorStore.status.isParentOverflowHidden === true }"
         :data-theme="props.theme"
         ref="$editor"
     >
@@ -18,10 +18,11 @@ import "../scss/editor.scss";
 import MenuBar from "./MenuBar.vue";
 import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onBeforeUnmount } from "vue";
 import { onClickOutside } from "@vueuse/core";
-import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock } from "../utils/data";
-import type { DEContentData } from "../type.mjs";
+import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty } from "../utils/data";
+import { _editorMountedEvent, _eidtorUnmountEvent } from "../utils/event";
+import type { DEContentData } from "../type.d.mts";
 
 interface DragonEditorOption {
     modelValue: DEContentData;
@@ -49,7 +50,7 @@ const emit = defineEmits<{
     (e: "uploadImageEvent", files: File[]): void;
 }>();
 const $body = ref<HTMLDivElement | null>(null);
-const $editor = ref<HTMLDivElement>();
+const $editor = ref<HTMLDivElement | null>(null);
 
 // 옵션 저장
 editorStore.option.isMobile = props.isMobile;
@@ -83,6 +84,8 @@ onClickOutside($editor, () => {
 defineExpose({
     addBlock: _addBlock,
     addImageBlock: _addImageBlock,
+    updateLayout: _editorMountedEvent,
+    checkDataIsEmpty: _checkDataIsEmpty,
 });
 
 watch(
@@ -94,10 +97,23 @@ watch(
     }
 );
 
+watch(
+    () => props.isMobile,
+    () => {
+        editorStore.option.isMobile = props.isMobile;
+    }
+);
+
 onMounted(() => {
     ifEmptyUpdateData();
     editorStore.element.body = $body.value;
+    editorStore.element.editor = $editor.value;
     editorStore.fn.updateEditorData = updateEditorData;
     editorStore.fn.uploadImage = uploadImage;
+    _editorMountedEvent();
+});
+
+onBeforeUnmount(() => {
+    _eidtorUnmountEvent();
 });
 </script>

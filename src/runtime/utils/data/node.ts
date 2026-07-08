@@ -76,3 +76,45 @@ export function _arrangementNodeList(list: Node[], cursorStartNode: Node | null,
         cursorEndNodeOffset: cursorEndNodeOffset,
     };
 }
+
+// 히든 스타일 가진 요소 찾기
+export function _findHiddenStyleElement($target: HTMLElement): HTMLElement | null {
+    const $wrap = $target.parentElement;
+
+    if ($wrap !== null) {
+        const style = window.getComputedStyle($wrap);
+
+        if (style.overflow === "hidden") {
+            return $wrap;
+        } else {
+            if ($wrap.tagName === "HTML") {
+                return null;
+            } else {
+                return _findHiddenStyleElement($wrap);
+            }
+        }
+    } else {
+        return null;
+    }
+}
+
+// 스크롤 가능한 요소 찾기
+export function _findScrollingElement($target: HTMLElement): HTMLElement | Window {
+    const $wrap = $target.parentElement;
+
+    if ($wrap !== null) {
+        const style = window.getComputedStyle($wrap);
+
+        if (style.overflow !== "visible" && style.overflow !== "hidden") {
+            return $wrap;
+        } else {
+            if ($wrap.tagName === "BODY") {
+                return window;
+            } else {
+                return _findScrollingElement($wrap);
+            }
+        }
+    } else {
+        return window;
+    }
+}
