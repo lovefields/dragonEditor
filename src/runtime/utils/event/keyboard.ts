@@ -2,7 +2,7 @@ import { nextTick } from "#imports";
 import { useEditorStore } from "../../store/editor";
 import { _updateCursorData, _setCursorPosition } from "./index";
 import { _createTextBlockData, _createHeadingBlockData, _getMultilinePosition, _getBlockType, _getBeforeAndAfterHTMLOfCursor, _createListBlockData, _createListBlockChildData, _isCursorAtLineBoundary, _getEditorbleEndPosition, _getEditorbleCursorPosition, _createDividerBlockData, _convertMarkdownToEditor, _generateId, _createCodeBlockData } from "../data";
-import { _findEditableElement, _findParentBlock } from "../node";
+import { _findEditableElement, _findParentBlock, _setDecoration } from "../node";
 import type { DETextBlock, DEHeadingBlock, DEContentData, DEBlockData } from "../../type.d.mts";
 
 // 내용 짤라서 새로운 텍스트 블럭 생성 (엔터 이벤트)
@@ -1298,7 +1298,7 @@ export async function _convertTextBlockToDividerBlock(event: KeyboardEvent, data
         const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
 
         data.textContent = "";
-        newData.splice(index - 1, 0, _createDividerBlockData());
+        newData.splice(index, 0, _createDividerBlockData());
         newData.splice(index + 1, 1, data);
         editorStore.fn.updateEditorData(newData);
         await nextTick();
@@ -1345,6 +1345,44 @@ export async function _convertHeadingBlockType(event: KeyboardEvent, data: DEHea
                 $block.focus();
                 $block.dispatchEvent(new Event("input"));
             }
+        }
+    }
+}
+
+// 핫키 이벤트
+export function _hotKeyEvent(event: KeyboardEvent): void {
+    const isControllKeyActive = event.ctrlKey || event.metaKey;
+
+    if (isControllKeyActive === true) {
+        switch (event.key) {
+            case "b":
+                event.preventDefault();
+                _setDecoration("de-bold");
+                break;
+
+            case "i":
+                event.preventDefault();
+                _setDecoration("de-italic");
+                break;
+
+            case "u":
+                event.preventDefault();
+                _setDecoration("de-underline");
+                break;
+
+            case "s":
+                if (event.shiftKey === true) {
+                    event.preventDefault();
+                    _setDecoration("de-strikethrough");
+                }
+                break;
+
+            case "c":
+                if (event.shiftKey === true) {
+                    event.preventDefault();
+                    _setDecoration("de-code");
+                }
+                break;
         }
     }
 }

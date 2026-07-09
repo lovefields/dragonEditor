@@ -8,7 +8,7 @@ import DividerBlock from "../../components/Block/Divider.vue";
 import CustomBlock from "../../components/Block/Custom.vue";
 import { useEditorStore } from "../../store/editor";
 import { _generateId } from "../data";
-import { _updateCursorData } from "../event";
+import { _updateCursorData,_hotKeyEvent } from "../event";
 import type { VNode } from "vue";
 import type { DEContentData, DEBlockData } from "../../type.mjs";
 
@@ -85,5 +85,29 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
         }
     });
 
-    return h("div", { class: ["de-body"], onMouseup: _updateCursorData, onKeyup: _updateCursorData }, blockList);
+    return h(
+        "div",
+        {
+            class: ["de-body"],
+            onMouseup: () => {
+                _updateCursorData();
+                endImageResizeEvent();
+            },
+            onKeydown: _hotKeyEvent,
+            onKeyup: _updateCursorData,
+            onMouseleave: endImageResizeEvent,
+            onTouchcancel: endImageResizeEvent,
+            onTouchend: endImageResizeEvent,
+        },
+        blockList
+    );
+}
+
+// 이미지 리사이즈 종료
+function endImageResizeEvent(): void {
+    const editorStore = useEditorStore();
+
+    if (editorStore.status.isImageResizeActive === true) {
+        editorStore.status.isImageResizeActive = false;
+    }
 }
