@@ -1,6 +1,6 @@
 {
     "name": "dragon-editor",
-    "version": "4.0.2",
+    "version": "4.0.3",
     "description": "Javascript WYSIWYG editor in Nuxt!",
     "repository": {
         "type": "git",
