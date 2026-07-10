@@ -1,5 +1,12 @@
+import hljs from "highlight.js";
 import { _isStrictlyEqualArrays } from "./index";
 
+// 하이라이팅
+export function _highlightingCode(text: string, language: string): string {
+    return hljs.highlight(text, { language: language }).value;
+}
+
+// 노드 리스트 정리
 export function _arrangementNodeList(list: Node[], cursorStartNode: Node | null, cursorStartNodeOffset: number, cursorEndNode: Node | null, cursorEndNodeOffset: number): { list: Node[]; cursorStartNode: Node | null; cursorStartNodeOffset: number; cursorEndNode: Node | null; cursorEndNodeOffset: number } {
     const arrangementNodeList: Node[] = [];
 

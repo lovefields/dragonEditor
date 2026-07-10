@@ -63,11 +63,11 @@
 </template>
 
 <script setup lang="ts">
-import hljs from "highlight.js";
 import { useEditorStore } from "../../store/editor";
 import { ref, computed, nextTick } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { _moveCodeBlockEvent, _codeBlockShiftEnterEvent, _codeBlockTabEvent, _normalPasteEvent } from "../../utils/event";
+import { _highlightingCode } from "../../utils/data";
 import type { DECodeBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -182,13 +182,12 @@ function contentKeydownEvent(event: KeyboardEvent): void {
 async function setLanguageEvent(lang: string): Promise<void> {
     if ($content.value !== null) {
         const textContent = $content.value.textContent;
-        const highlights = hljs.highlight(textContent, { language: lang });
         const newData = JSON.parse(JSON.stringify(props.data)) as DECodeBlock;
 
         isLanguageListActive.value = false;
         abortEdit();
         newData.language = lang;
-        newData.textContent = highlights.value;
+        newData.textContent = _highlightingCode(textContent, lang);
         emit("update", newData);
         await nextTick();
         setEdit();
@@ -199,10 +198,9 @@ async function setLanguageEvent(lang: string): Promise<void> {
 function setStyleEvent(): void {
     if ($content.value !== null) {
         const textContent = $content.value.textContent;
-        const highlights = hljs.highlight(textContent, { language: props.data.language });
         const newData = JSON.parse(JSON.stringify(props.data)) as DECodeBlock;
 
-        newData.textContent = highlights.value;
+        newData.textContent = _highlightingCode(textContent, props.data.language);
         emit("update", newData);
     }
 }
