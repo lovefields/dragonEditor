@@ -1,10 +1,78 @@
-$color-list: #fff, #efefef, #ccc, #999, #777, #555, #333, #e6b8af, #dd7e6b, #cc4125, #980000, #a61c00, #85200c, #5b0f00, #f4cccc, #ea9999, #e06666, #ff0000, #cc0000, #990000, #660000, #fce5cd, #f9cb9c, #f6b36b, #ff9900, #e69138, #b45f06, #783f04, #fff2cc, #ffe599, #ffd966, #ffff00, #f1c232, #bf9000, #7f6000, #d9ead3, #b6d7a8, #93c47d, #00ff00, #6aa84f, #38761d, #274e13, #d0e0e3, #a2c4c9, #76a5af, #00ffff, #45818e, #134f5c, #0c343d, #c9daf8, #a4c2f4, #6d9eeb, #4a87e8, #3c78d8, #1156cc, #1c4587,
-    #cfe2f3, #9fc5e8, #6fa8dc, #0000ff, #3d85c6, #0b5394, #073763, #d9d2e9, #b4a7d6, #8e7cc3, #9900ff, #674ea7, #351c75, #20124d, #ead1dc, #d5a6bd, #c27ba0, #ff00ff, #a64d79, #741b47, #4c1130;
+$color-list:
+    #fff, #efefef, #ccc, #999, #777, #555, #333, #e6b8af, #dd7e6b, #cc4125, #980000, #a61c00, #85200c, #5b0f00, #f4cccc, #ea9999, #e06666, #ff0000, #cc0000, #990000, #660000, #fce5cd, #f9cb9c, #f6b36b, #ff9900, #e69138, #b45f06, #783f04, #fff2cc, #ffe599, #ffd966, #ffff00, #f1c232, #bf9000, #7f6000, #d9ead3, #b6d7a8, #93c47d, #00ff00, #6aa84f, #38761d, #274e13, #d0e0e3, #a2c4c9, #76a5af, #00ffff, #45818e, #134f5c, #0c343d, #c9daf8, #a4c2f4, #6d9eeb, #4a87e8, #3c78d8, #1156cc, #1c4587, #cfe2f3,
+    #9fc5e8, #6fa8dc, #0000ff, #3d85c6, #0b5394, #073763, #d9d2e9, #b4a7d6, #8e7cc3, #9900ff, #674ea7, #351c75, #20124d, #ead1dc, #d5a6bd, #c27ba0, #ff00ff, #a64d79, #741b47, #4c1130;
 
 .dragon-editor,
 .dragon-editor-viewer {
-    // TODO : 디자인 시스템 넣기
-    --radius-default: 4px;
+    --editor-radius-default: 4px;
+
+    &[data-theme="dark"] {
+        --editor-text: #dfdfe1;
+        --editor-text-disabled: #768390;
+        --editor-background: #09090b;
+        --editor-border: #555;
+        --editor-divider: #333;
+        --editor-decoration-code-color:#fff;
+        --editor-decoration-code-bg:#555;
+
+        // 코드블럭 스타일
+        --editor-code-color: #adbac7;
+        --editor-code-bg: #22272e;
+        --editor-code-file-bg: #494e54;
+        --editor-code-placeholder: #96a0aa;
+        --editor-code-number: #555;
+        --editor-code-number-bg: #e5e5e5;
+        --editor-code-keyword: #f47067;
+        --editor-code-entity: #dcbdfb;
+        --editor-code-constant: #6cb6ff;
+        --editor-code-string: #96d0ff;
+        --editor-code-variable: #f69d50;
+        --editor-code-comment: #768390;
+        --editor-code-entity-tag: #8ddb8c;
+        --editor-code-storage-modifier-import: #adbac7;
+        --editor-code-markup-heading: #316dca;
+        --editor-code-markup-list: #eac55f;
+        --editor-code-markup-italic: #adbac7;
+        --editor-code-markup-bold: #adbac7;
+        --editor-code-markup-inserted: #b4f1b4;
+        --editor-code-markup-inserted-bg: #1b4721;
+        --editor-code-markup-deleted: #ffd8d3;
+        --editor-code-markup-deleted-bg: #78191b;
+    }
+
+    &[data-theme="white"] {
+        --editor-text: #333;
+        --editor-text-disabled: #ccc;
+        --editor-background: #f9f9f9;
+        --editor-border: #ccc;
+        --editor-divider: #e5e5e5;
+        --editor-decoration-code-color:#ff0000;
+        --editor-decoration-code-bg:#f1f1f1;
+
+        // 코드블럭 스타일
+        --editor-code-color: #24292e;
+        --editor-code-bg: #f1f1f1;
+        --editor-code-file-bg: #ccc;
+        --editor-code-placeholder: #8b8d8f;
+        --editor-code-number: #e5e5e5;
+        --editor-code-number-bg: #8c8c8c;
+        --editor-code-keyword: #d73a49;
+        --editor-code-entity: #6f42c1;
+        --editor-code-constant: #005cc5;
+        --editor-code-string: #032f62;
+        --editor-code-variable: #e36209;
+        --editor-code-comment: #6a737d;
+        --editor-code-entity-tag: #22863a;
+        --editor-code-storage-modifier-import: #24292e;
+        --editor-code-markup-heading: #005cc5;
+        --editor-code-markup-list: #735c0f;
+        --editor-code-markup-italic: #24292e;
+        --editor-code-markup-bold: #24292e;
+        --editor-code-markup-inserted: #22863a;
+        --editor-code-markup-inserted-bg: #f0fff4;
+        --editor-code-markup-deleted: #b31d28;
+        --editor-code-markup-deleted-bg: #ffeef0;
+    }
 
     /**
     * Reset style start
@@ -89,14 +157,6 @@ $color-list: #fff, #efefef, #ccc, #999, #777, #555, #333, #e6b8af, #dd7e6b, #cc4
         @for $i from 1 through 5 {
             &[data-depth="#{$i}"] {
                 padding-left: $i * 30px;
-            }
-        }
-
-        &.de-list-block {
-            @for $i from 1 through 5 {
-                &[data-depth="#{$i}"] {
-                    padding-left: ($i * 30px) + 24px;
-                }
             }
         }
     }

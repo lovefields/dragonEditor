@@ -1,111 +1,98 @@
-// 스크롤 가능한 요소 찾기
-export function _findScrollingElement($target: HTMLElement): HTMLElement | Window {
-    const $wrap = $target.parentElement;
+import { _getBlockType } from "../data";
 
-    if ($wrap !== null) {
-        const style = window.getComputedStyle($wrap);
+// 커서가 가능한 블럭 찾기
+export function _findFocusableBlock($block: HTMLElement, direction: "up" | "down"): HTMLElement | null {
+    const $sibling = (direction === "up" ? $block.previousElementSibling : $block.nextElementSibling) as HTMLElement | null;
 
-        if (style.overflow !== "visible" && style.overflow !== "hidden") {
-            return $wrap;
-        } else {
-            if ($wrap.tagName === "BODY") {
-                return window;
-            } else {
-                return _findScrollingElement($wrap);
-            }
-        }
+    if ($sibling === null) {
+        return null;
     } else {
-        return window;
+        const type = _getBlockType($sibling);
+
+        if (type !== "custom" && type !== "divider") {
+            return $sibling;
+        } else {
+            return _findFocusableBlock($sibling, direction);
+        }
     }
 }
 
-// 히든 스타일 가진 요소 찾기
-export function _findHiddenStyleElement($target: HTMLElement): HTMLElement | null {
-    const $wrap = $target.parentElement;
+// 에디팅 가능한 요소 찾기
+export function _findEditableElement($block: HTMLElement, direction: "up" | "down"): HTMLElement | null {
+    const targetBlockType = _getBlockType($block as HTMLElement);
+    let $editableTarget: HTMLElement | null = $block as HTMLElement;
 
-    if ($wrap !== null) {
-        const style = window.getComputedStyle($wrap);
+    switch (targetBlockType) {
+        case "list":
+            const children = $block.querySelectorAll(".de-item-text");
 
-        if (style.overflow === "hidden") {
-            return $wrap;
-        } else {
-            if ($wrap.tagName === "HTML") {
-                return null;
-            } else {
-                return _findHiddenStyleElement($wrap);
+            if (children.length > 0) {
+                $editableTarget = (direction === "up" ? children[children.length - 1] : children[0]) as HTMLElement;
             }
+            break;
+
+        case "code":
+            if (direction === "up") {
+                $editableTarget = $block.querySelector(".de-code-content");
+            } else {
+                $editableTarget = $block.querySelector(".de-filename");
+            }
+            break;
+
+        case "image":
+            $editableTarget = $block.querySelector(".de-caption") as HTMLElement | null;
+            break;
+
+        case "custom":
+            const customNerbyElement = _findFocusableBlock($block, direction);
+
+            if (customNerbyElement !== null) {
+                $editableTarget = _findEditableElement(customNerbyElement, direction);
+            } else {
+                $editableTarget = null;
+            }
+            break;
+
+        case "divider":
+            const dividerNerbyElement = _findFocusableBlock($block, direction);
+
+            if (dividerNerbyElement !== null) {
+                $editableTarget = _findEditableElement(dividerNerbyElement, direction);
+            } else {
+                $editableTarget = null;
+            }
+            break;
+    }
+
+    return $editableTarget;
+}
+
+// 부모 블럭 찾기
+export function _findParentBlock($element: HTMLElement | null): HTMLElement | null {
+    if ($element !== null) {
+        const hasClass = $element.classList.contains("de-block");
+
+        if (hasClass === true) {
+            return $element;
+        } else {
+            return _findParentBlock($element.parentElement);
         }
     } else {
         return null;
     }
 }
 
-// transform 스타일을 가진 요소 찾기
-export function _findTransformElement($target: HTMLElement): HTMLElement | null {
-    const $wrap = $target.parentElement;
+// 에디팅 가능한 부모 찾기
+export function _findEditableParent($element: HTMLElement | null): HTMLElement | null {
+    if ($element !== null) {
+        const isEditable = $element.contentEditable === "true";
 
-    if ($wrap !== null) {
-        const style = window.getComputedStyle($wrap);
-
-        if (style.transform !== "none") {
-            return $wrap;
+        if (isEditable === true) {
+            return $element;
         } else {
-            if ($wrap.tagName === "BODY") {
-                return null;
-            } else {
-                return _findTransformElement($wrap);
-            }
+            return _findEditableParent($element.parentElement);
         }
     } else {
         return null;
-    }
-}
-
-// 타겟이 텍스트 인경우 상위 엘리먼트 추출
-export function _getParentElementIfNodeIsText($target: Node, $block: HTMLElement): Node {
-    if ($target.constructor.name === "Text") {
-        const $parent = $target.parentElement as HTMLElement;
-
-        if ($parent !== $block) {
-            $target = $parent;
-        }
-    }
-
-    return $target as Node;
-}
-
-// 에디팅 요소 찾기
-export function _findContentEditableElement($target: Node): HTMLElement | null {
-    if ($target.constructor.name === "Text") {
-        $target = $target.parentNode as Node;
-    }
-
-    const $baseElement = $target as HTMLElement;
-
-    if ($baseElement.parentElement === null) {
-        return null;
-    } else {
-        if (($baseElement.parentElement as HTMLElement).tagName === "BODY") {
-            return null;
-        } else {
-            if ($baseElement.getAttribute("contentEditable") === null) {
-                return _findContentEditableElement($baseElement.parentNode as Node);
-            } else {
-                return $baseElement;
-            }
-        }
-    }
-}
-
-// 이전 텍스트 노드 찾기
-export function _findPoverTextNode(node: Element, idx: number) {
-    if (node.previousSibling !== null) {
-        if (node.previousSibling.constructor.name === "Text") {
-            return _findPoverTextNode(node.previousSibling as Element, (idx -= 1));
-        } else {
-            return idx;
-        }
-    } else {
-        return idx;
     }
 }

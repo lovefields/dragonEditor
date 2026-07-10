@@ -1,252 +1,124 @@
 <template>
-    <component :is="mainStrucutre"></component>
+    <div
+        class="dragon-editor"
+        :class="{ '--has-menu': props.useMenuBar === true, '--mobile': editorStore.option.isMobile === true, '--hidden-parent': editorStore.status.isParentOverflowHidden === true }"
+        :data-theme="props.theme"
+        ref="$editor"
+    >
+        <MenuBar />
+        <component
+            :is="_getBody(props.modelValue, true)"
+            ref="$body"
+        />
+    </div>
 </template>
 
 <script setup lang="ts">
-import { ref, h, onMounted, onBeforeUnmount, watch } from "vue";
-import { _getBodyVNodeStructure, _getMenuBarVNodeStructure, _getControlbarVNodeStructure, _updateBodyStructure } from "../utils/layout";
-import { _eidtorMountEvent, _eidtorUnmountEvent, _editorMousemoveEvent, _editorMouseupEvent, _editorMouseleaveEvent, _editorTouchmoveEvent, _editorTouchendEvent, _checkOthersideClick, _parentWrapScollEvent, _editorContextMenuEvent, _windowResizeEvent, _checkDataEmpty } from "../utils/event";
-import { _addBlock } from "../utils/node";
-import { _setDecoration, _setTextAlign } from "../utils/style";
-import type { VNode } from "vue";
-import { codeToHtml } from "shiki";
-import type { DEBlockData, DEBlockMenutype, DEContentData, DEDecoration, DETextalign, DragonEditorStore } from "../type.d.mts";
+import "../scss/editor.scss";
+import MenuBar from "./MenuBar.vue";
+import { _getBody } from "../utils/layout";
+import { useEditorStore } from "../store/editor";
+import { ref, onMounted, watch, onBeforeUnmount } from "vue";
+import { onClickOutside } from "@vueuse/core";
+import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty } from "../utils/data";
+import { _editorMountedEvent, _eidtorUnmountEvent } from "../utils/event";
+import { _setDecoration, _setAlign } from "../utils/node";
+import type { DEContentData } from "../type.d.mts";
 
-interface DEOption {
+interface DragonEditorOption {
     modelValue: DEContentData;
     useMenuBar?: boolean;
-    imageHostURL?: string;
-    screenChangePoint?: number;
+    mediaHostURL?: string;
+    isMobile?: boolean;
+    theme?: "dark" | "white";
+    codeBlockSpaces?: number;
+    acceptImageFormat?: string;
+    anchorTagTarget?: string;
 }
 
-const props = withDefaults(defineProps<DEOption>(), {
+const editorStore = useEditorStore();
+const props = withDefaults(defineProps<DragonEditorOption>(), {
     useMenuBar: true,
-    imageHostURL: "",
-    screenChangePoint: 1200,
+    isMobile: false,
+    mediaHostURL: "",
+    theme: "white",
+    codeBlockSpaces: 4,
+    acceptImageFormat: ".jpg,.jpeg,.png,.webp,.gif",
+    anchorTagTarget: "_blank",
 });
 const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
-    (e: "uploadImageEvent", file: File): void;
+    (e: "uploadImageEvent", files: File[]): void;
 }>();
-const editorStore = ref<DragonEditorStore>({
-    cursorData: null,
-    message: {
-        linkTextNoStyle: "Link text can't set any style.",
-    },
-    controlBar: {
-        active: false,
-        x: 0,
-        y: 0,
-        $element: null,
-    },
-    useMenuBar: props.useMenuBar,
-    imageHostURL: props.imageHostURL,
-    firstData: props.modelValue,
-    screenChangePoint: props.screenChangePoint,
-    menuBarTop: 0,
-    activeStatus: {
-        addBlockMenu: false,
-        anchorInputArea: false,
-        imageResizeEvent: false,
-    },
-    eventStatus: {
-        imageResizeEventStartX: 0,
-        imageResizeEventType: "left",
-        imageResizeEventEndX: 0,
-        imageResizeCurrentWidth: 0,
-    },
-    controlStatus: {
-        isMobile: false,
-        hasTransformParent: false,
-        hasHiddenStyleParent: false,
-        currentBlockType: "text",
-        codeBlockTheme: "github-light",
-        codeBlockLang: "text",
-        listBlockStyle: "disc",
-        anchorTabType: "url",
-        anchorHeadingList: [],
-        anchorHref: "",
-        anchorValidation: false,
-        previousCorsorData: null,
-        $anchorInput: null,
-        $currentBlock: null,
-        $transformElement: null,
-    },
-    codeBlockTheme: [
-        {
-            text: "GitHub Ligth",
-            code: "github-light",
-        },
-        {
-            text: "GitHub Dark Dimmed",
-            code: "github-dark-dimmed",
-        },
-    ],
-    listUlType: [
-        {
-            text: "Disc",
-            code: "disc",
-        },
-        {
-            text: "Square",
-            code: "square",
-        },
-    ],
-    listOlType: [
-        {
-            text: "Decimal",
-            code: "decimal",
-        },
-        {
-            text: "Lower-Alpha",
-            code: "lower-alpha",
-        },
-        {
-            text: "Upper-Alpha",
-            code: "upper-alpha",
-        },
-        {
-            text: "Lower-Roman",
-            code: "lower-roman",
-        },
-        {
-            text: "Upper-Roman",
-            code: "upper-roman",
-        },
-    ],
-    $editor: null,
-    $body: null,
-    $controlBar: null,
-    $parentWrap: null,
-    codeToHtml: codeToHtml,
-    emit: emit,
-    windowClickEvent: function (event: MouseEvent) {
-        _checkOthersideClick(event, editorStore);
-    },
-    windowResizeEvent: function (event: Event) {
-        _windowResizeEvent(event, editorStore);
-    },
-    windowMouseUpEvent: function (event: MouseEvent) {
-        _editorMouseupEvent(event, editorStore);
-    },
-    parentWrapScollEvent: function (event: Event) {
-        _parentWrapScollEvent(event, editorStore);
-    },
-});
+const $body = ref<HTMLDivElement | null>(null);
+const $editor = ref<HTMLDivElement | null>(null);
 
-function mainStrucutre(): VNode {
-    const childList: VNode[] = [];
+// 옵션 저장
+editorStore.option.isMobile = props.isMobile;
+editorStore.option.mediaHostURL = props.mediaHostURL;
+editorStore.option.codeBlockSpaces = props.codeBlockSpaces;
+editorStore.option.acceptImageFormat = props.acceptImageFormat;
+editorStore.option.anchorTagTarget = props.anchorTagTarget;
 
-    if (editorStore.value.useMenuBar === true) {
-        childList.push(_getMenuBarVNodeStructure(editorStore));
-    }
-
-    childList.push(_getBodyVNodeStructure(editorStore));
-
-    if (editorStore.value.controlBar.active === true) {
-        childList.push(_getControlbarVNodeStructure(editorStore));
-    }
-
-    return h(
-        "div",
-        {
-            class: ["dragon-editor", "js-dragon-editor", { "--has-menu": editorStore.value.useMenuBar === true }, { "--mobile": editorStore.value.controlStatus.isMobile === true }, { "--hidden-parent": editorStore.value.controlStatus.hasHiddenStyleParent === true }],
-            onMousemove: (event: MouseEvent) => _editorMousemoveEvent(event, editorStore),
-            onMouseup: (event: MouseEvent) => _editorMouseupEvent(event, editorStore),
-            onMouseleave: (event: MouseEvent) => _editorMouseleaveEvent(event, editorStore),
-            onTouchmove: (event: TouchEvent) => _editorTouchmoveEvent(event, editorStore),
-            onTouchend: (event: TouchEvent) => _editorTouchendEvent(event, editorStore),
-            onContextmenu: (event: MouseEvent) => _editorContextMenuEvent(event, editorStore),
-        },
-        childList
-    );
+// 신규데이터 적용 함수
+function updateEditorData(data: DEContentData): void {
+    emit("update:modelValue", _arrangementContentData(data));
 }
 
-// 외부용 블럭 추가 함수
-function addBlock(data: DEBlockData): void {
-    let type: DEBlockMenutype = "text";
-
-    switch (data.type) {
-        case "heading":
-            if (data.level === 1) {
-                type = "heading1";
-            } else if (data.level === 2) {
-                type = "heading2";
-            } else {
-                type = "heading3";
-            }
-            break;
-
-        case "list":
-            if (data.element === "ol") {
-                type = "ol";
-            } else {
-                type = "ul";
-            }
-            break;
-    }
-
-    _addBlock(type, editorStore, data);
-}
-
-// 외부용 스타일 적용 함수
-function setDecoration(style: DEDecoration): void {
-    _setDecoration(`de-${style}`, editorStore);
-}
-
-// 외부용 정렬 함수
-function setAlign(align: DETextalign): void {
-    _setTextAlign(align, editorStore);
-}
-
-// 데이터 변경용 함수
-function changeEditorData(data: DEContentData): void {
-    if (editorStore.value.$body !== null) {
-        editorStore.value.$body.innerHTML = "";
-        _updateBodyStructure(data, editorStore);
+// 데이터 없는경우 텍스트 블럭 생성
+function ifEmptyUpdateData(): void {
+    if (props.modelValue.length === 0) {
+        emit("update:modelValue", [_createTextBlockData()]);
     }
 }
 
-// 레이아웃 변경시 리마운트
-function updateLayout(): void {
-    _eidtorUnmountEvent(editorStore);
-
-    setTimeout(() => {
-        _eidtorMountEvent(editorStore);
-    }, 500);
+// 이미지 업로드 함수 래핑
+function uploadImage(files: File[]): void {
+    emit("uploadImageEvent", files);
 }
 
-// 빈데이터 체크 함수
-function checkDataEmpty(data?: DEContentData): boolean {
-    let suitable: boolean = false;
-
-    if (data !== undefined) {
-        suitable = _checkDataEmpty(data);
-    } else {
-        suitable = _checkDataEmpty(props.modelValue);
-    }
-
-    return suitable;
-}
-
-onMounted(() => {
-    _eidtorMountEvent(editorStore);
-});
-
-onBeforeUnmount(() => {
-    _eidtorUnmountEvent(editorStore);
+onClickOutside($editor, () => {
+    editorStore.selectedBlockIndex = -1;
+    editorStore.selectedBlockId = "";
 });
 
 defineExpose({
-    addBlock,
-    setDecoration,
-    setAlign,
-    changeEditorData,
-    updateLayout,
-    checkDataEmpty,
+    addBlock: _addBlock,
+    addImageBlock: _addImageBlock,
+    updateLayout: _editorMountedEvent,
+    checkDataIsEmpty: _checkDataIsEmpty,
+    setDecoration: (type: "bold" | "italic" | "underline" | "strikethrough" | "code") => {
+        _setDecoration(`de-${type}` as DEDecorationClass);
+    },
+    setAlign: _setAlign,
+});
+
+watch(
+    () => props.modelValue,
+    () => {
+        // 데이터 싱크
+        editorStore.data = props.modelValue;
+        ifEmptyUpdateData();
+    }
+);
+
+watch(
+    () => props.isMobile,
+    () => {
+        editorStore.option.isMobile = props.isMobile;
+    }
+);
+
+onMounted(() => {
+    ifEmptyUpdateData();
+    editorStore.element.body = $body.value;
+    editorStore.element.editor = $editor.value;
+    editorStore.fn.updateEditorData = updateEditorData;
+    editorStore.fn.uploadImage = uploadImage;
+    _editorMountedEvent();
+});
+
+onBeforeUnmount(() => {
+    _eidtorUnmountEvent();
 });
 </script>
-
-<style lang="scss">
-@use "../scss/editor.scss";
-</style>

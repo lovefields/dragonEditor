@@ -4,5 +4,5 @@
     "trailingComma": "es5",
     "requireConfig": true,
     "htmlWhitespaceSensitivity": "strict",
-    "singleAttributePerLine": false
+    "singleAttributePerLine": true
 }

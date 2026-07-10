@@ -1,0 +1,102 @@
+<template>
+    <component :is="renderHeading()" />
+</template>
+
+<script setup lang="ts">
+import { useEditorStore } from "../../store/editor";
+import { h, withMemo } from "vue";
+import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertHeadingBlockType, _updateCursorData } from "../../utils/event";
+import type { VNode } from "vue";
+import type { DEHeadingBlock } from "../../type.d.mts";
+
+const editorStore = useEditorStore();
+const props = defineProps<{ data: DEHeadingBlock; isEdit: boolean; index: number }>();
+const emit = defineEmits<{
+    (e: "update", data: DEHeadingBlock): void;
+}>();
+const memoCache: any[] = [];
+
+function setEdit() {
+    editorStore.selectedBlockId = props.data.id;
+    editorStore.selectedBlockIndex = props.index;
+    _updateCursorData();
+}
+
+function abortEdit() {
+    editorStore.selectedBlockId = "";
+    editorStore.selectedBlockIndex = -1;
+}
+
+function keydownEvent(event: KeyboardEvent): void {
+    if (event.isComposing === false) {
+        switch (event.key) {
+            case "Enter":
+                // 엔터 이벤트
+                if (event.shiftKey === false) {
+                    _sliceAndNewTextBlock(event, props.data, props.index);
+                } else {
+                    // 쉬프트 엔터 이벤트
+                }
+                break;
+
+            case "Tab":
+                _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
+                break;
+
+            case "ArrowUp":
+                _moveBlockDefaultEvent(event, "up");
+                break;
+
+            case "ArrowDown":
+                _moveBlockDefaultEvent(event, "down");
+                break;
+
+            case "Backspace":
+                _defaultBackspaceEvent(event);
+                break;
+
+            case "Delete":
+                _defaultDeleteEvent(event, setEdit, abortEdit);
+                break;
+
+            case " ":
+                _convertHeadingBlockType(event, props.data, props.index, setEdit, abortEdit);
+                break;
+        }
+    } else {
+        event.preventDefault();
+    }
+}
+
+function updateData(event: Event): void {
+    const newData = JSON.parse(JSON.stringify(props.data)) as DEHeadingBlock;
+
+    newData.textContent = (event.target as HTMLHeadingElement).innerHTML;
+
+    emit("update", newData);
+}
+
+function renderHeading(): VNode {
+    const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
+    const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
+
+    return withMemo(
+        [memoKey],
+        () =>
+            h(`h${props.data.level}`, {
+                class: ["de-block", "de-heading-block", ...props.data.classList],
+                id: props.data.id,
+                contenteditable: props.isEdit === true,
+                "data-depth": props.data.depth,
+                "data-level": props.data.level,
+                innerHTML: props.data.textContent,
+                onFocus: setEdit,
+                onInput: updateData,
+                onkeydown: keydownEvent,
+                onPaste: (event) => _allDataPasteEvent(event, setEdit, abortEdit),
+            }),
+        memoCache,
+        0
+    );
+}
+</script>

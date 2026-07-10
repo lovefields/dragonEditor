@@ -1,6 +1,6 @@
 {
     "name": "dragon-editor",
-    "version": "3.8.7",
+    "version": "4.0.0",
     "description": "Javascript WYSIWYG editor in Nuxt!",
     "repository": {
         "type": "git",
@@ -18,34 +18,48 @@
     "files": [
         "dist"
     ],
+    "typesVersions": {
+        "*": {
+            ".": [
+                "./dist/types.d.mts"
+            ]
+        }
+    },
+    "workspaces": [
+        "playground"
+    ],
     "scripts": {
         "prepack": "nuxt-module-build build",
-        "dev": "nuxi dev playground",
-        "dev:build": "nuxi build playground",
-        "dev:prepare": "nuxt-module-build build --stub && nuxi prepare playground",
+        "dev": "npm run dev:prepare && nuxt dev playground",
+        "dev:build": "nuxt build playground",
+        "dev:prepare": "nuxt-module-build build --stub && nuxt-module-build prepare && nuxt prepare playground",
         "release": "npm run lint && npm run test && npm run prepack && changelogen --release && npm publish && git push --follow-tags",
         "lint": "eslint .",
         "test": "vitest run",
-        "test:watch": "vitest watch"
+        "test:watch": "vitest watch",
+        "test:types": "vue-tsc --noEmit && cd playground && vue-tsc --noEmit"
     },
     "dependencies": {
-        "@nuxt/kit": "^4.0.3",
-        "shiki": "^3.12.1"
+        "@nuxt/kit": "^4.4.8",
+        "@pinia/nuxt": "^0.11.3",
+        "@vueuse/nuxt": "^14.3.0",
+        "highlight.js": "^11.11.1",
+        "pinia": "^3.0.4"
     },
     "devDependencies": {
-        "@nuxt/eslint-config": "^1.9.0",
+        "@nuxt/eslint-config": "^1.16.0",
         "@nuxt/module-builder": "^1.0.2",
-        "@nuxt/schema": "^4.0.3",
-        "@nuxt/test-utils": "^3.19.2",
-        "@types/bun": "^1.2.21",
+        "@nuxt/schema": "^4.4.8",
+        "@nuxt/test-utils": "^4.0.3",
+        "@types/bun": "^1.3.14",
         "changelogen": "^0.6.2",
-        "eslint": "^9.34.0",
-        "nuxt": "^4.0.3",
-        "sass": "^1.91.0",
-        "sass-embedded": "^1.91.0",
+        "eslint": "^10.5.0",
+        "nuxt": "^4.4.8",
+        "sass": "^1.101.0",
+        "sass-embedded": "^1.100.0",
         "typescript": "^5.1.6",
-        "vitest": "^3.2.4",
-        "vue-tsc": "^3.0.6"
+        "vitest": "^4.1.9",
+        "vue-tsc": "^3.3.5"
     },
     "keywords": [
         "editor",

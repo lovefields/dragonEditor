@@ -1,11 +1,13 @@
 @use "./base";
-@use "./block" as *;
-@use "./style" as *;
+@use "./var/block" as *;
+@use "./var/style" as *;
 
 .dragon-editor {
     position: relative;
-    border: 1px solid #ccc;
-    border-radius: var(--radius-default);
+    background: var(--editor-background);
+    color: var(--editor-text);
+    border: 1px solid var(--editor-border);
+    border-radius: var(--editor-radius-default);
 
     &.--has-menu {
         padding-top: 35px;
@@ -13,13 +15,10 @@
 
     &.--mobile {
         .de-menu-bar {
-            .de-menu-wrap {
-                overflow-x: auto;
-            }
-
             .de-link-exit-area {
-                left: auto;
+                left: 50%;
                 right: 0;
+                transform: translateX(-50%);
             }
         }
     }
@@ -47,9 +46,9 @@
         left: 0;
         right: 0;
         height: 34px;
-        background: #fff;
-        border-bottom: 1px solid #ccc;
-        border-radius: var(--radius-default) var(--radius-default) 0 0;
+        background: var(--editor-background);
+        border-bottom: 1px solid var(--editor-border);
+        border-radius: var(--editor-radius-default) var(--editor-radius-default) 0 0;
         z-index: 10;
 
         .de-menu-wrap {
@@ -60,7 +59,7 @@
         .de-col {
             display: flex;
             position: relative;
-            border-right: 1px solid #ccc;
+            border-right: 1px solid var(--editor-border);
 
             &:last-child {
                 border-right: 0;
@@ -75,9 +74,9 @@
             height: 34px;
             cursor: pointer;
 
-            &.--disabled {
+            &[disabled] {
                 .de-path {
-                    fill: #ccc;
+                    fill: var(--editor-text-disabled);
                 }
             }
 
@@ -91,11 +90,7 @@
             }
 
             .de-path {
-                fill: #333;
-
-                &.--red {
-                    fill: #dd0000;
-                }
+                fill: var(--editor-text);
             }
         }
 
@@ -109,7 +104,7 @@
             border-width: 0 1px 1px 0;
             border-style: solid;
             border-color: #ccc;
-            border-bottom-right-radius: var(--radius-default);
+            border-bottom-right-radius: var(--editor-radius-default);
             z-index: 1000;
 
             &.--active {
@@ -135,10 +130,10 @@
             top: calc(100% + 1px);
             left: 205px;
             width: 200px;
-            background: #fff;
-            border: 1px solid #ccc;
+            background: var(--editor-background);
+            border: 1px solid var(--editor-border);
             border-top: 0;
-            border-radius: 0 0 var(--radius-default) var(--radius-default);
+            border-radius: 0 0 var(--editor-radius-default) var(--editor-radius-default);
             z-index: 1000;
 
             &.--active {
@@ -147,15 +142,15 @@
 
             .de-btn-area {
                 display: flex;
-                border-bottom: 1px solid #ccc;
+                border-bottom: 1px solid var(--editor-border);
 
                 .de-btn {
                     flex: 1;
                     height: 24px;
-                    color: #999;
+                    color: var(--editor-text-disabled);
 
                     &.--active {
-                        color: #333;
+                        color: var(--editor-text);
                     }
                 }
             }
@@ -170,10 +165,12 @@
                     min-width: 0;
                     height: 20px;
                     padding: 0 8px;
-                    border: 1px solid #ccc;
+                    background: var(--editor-background);
+                    color: var(--editor-text);
+                    border: 1px solid var(--editor-border);
                     box-sizing: border-box;
 
-                    &.--red {
+                    &.--error {
                         border-color: red;
                     }
                 }
@@ -195,45 +192,12 @@
                 .de-btn {
                     padding: 2px 4px;
                     text-align: left;
-                    border-radius: var(--radius-default);
+                    border-radius: var(--editor-radius-default);
 
                     &:hover {
-                        background: #f1f1f1;
+                        background: var(--editor-decoration-code-bg);
                     }
                 }
-            }
-        }
-    }
-
-    // 컨트롤 바 스타일
-    .de-controlbar {
-        display: flex;
-        position: fixed;
-        height: 34px;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-radius: var(--radius-default);
-        transform: translateX(-50%);
-        z-index: 20;
-
-        .de-col {
-            display: flex;
-            align-items: center;
-            column-gap: 6px;
-            padding: 0 10px;
-            border-right: 1px solid #ccc;
-
-            &:last-child {
-                border-right: 0;
-            }
-
-            .de-selector {
-                height: 100%;
-                border: 0;
-            }
-
-            .de-name {
-                width: 70px;
             }
         }
     }

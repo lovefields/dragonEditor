@@ -1,0 +1,61 @@
+import { defineStore } from "pinia";
+import type { DragonEditorStore, DEOption } from "../type.mjs";
+
+export const useEditorStore = defineStore("editorStore", {
+    state: (): DragonEditorStore => ({
+        data: [],
+        selectedBlockId: "",
+        selectedBlockIndex: -1,
+        status: {
+            isParentOverflowHidden: false,
+            isImageResizeActive: false,
+            anchorHerf: "",
+            menuTop: 0,
+        },
+        option: {
+            mediaHostURL: "",
+            isMobile: false,
+            codeBlockSpaces: 4,
+            acceptImageFormat: "",
+            anchorTagTarget: "",
+        },
+        cursorSelection: null,
+        cursorRange: null,
+        element: {
+            body: null,
+            editor: null,
+            scrollParentElement: null,
+        },
+        fn: {
+            updateEditorData: null,
+            uploadImage: null,
+        },
+        codeBlockLnaguageList: {
+            text: "Plain Text",
+            csharp: "C#",
+            c: "C",
+            cpp: "C++",
+            css: "CSS",
+            dockerfile: "Dockerfile",
+            go: "Go",
+            html: "HTML, XML",
+            json: "JSON",
+            java: "Java",
+            javascript: "JavaScript",
+            typescript: "TypeScript",
+            kotlin: "Kotlin",
+            lua: "Lua",
+            markdown: "Markdown",
+            nginx: "Nginx",
+            php: "PHP",
+            python: "Python",
+            ruby: "Ruby",
+            scss: "SCSS",
+            sql: "SQL",
+            shellscript: "Shell",
+            swift: "Swift",
+            yaml: "YAML",
+        },
+    }),
+    actions: {},
+});

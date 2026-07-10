@@ -1,37 +1,36 @@
 <template>
-    <component :is="structure()"></component>
+    <div
+        class="dragon-editor-viewer"
+        :data-theme="props.theme"
+    >
+        <component :is="_getBody(props.content)"
+    /></div>
 </template>
 
 <script setup lang="ts">
-import { h } from "vue";
-import type { VNode } from "vue";
-import { _createBlockList } from "../utils/layout";
+import "../scss/viewer.scss";
+import { _getBody } from "../utils/layout";
+import { useEditorStore } from "../store/editor";
+import type { DEContentData } from "../type.d.mts";
 
-const props = withDefaults(
-    defineProps<{
-        content: DEContentData;
-        imageHostURL?: string;
-    }>(),
-    {
-        imageHostURL: "",
-    }
-);
-
-function structure(): VNode {
-    return h(
-        "div",
-        {
-            class: ["dragon-editor-viewer"],
-        },
-        _createBlockList({
-            blockList: props.content,
-            isEditable: false,
-            imageHostURL: props.imageHostURL,
-        })
-    );
+interface DragonEditorViewerOption {
+    content: DEContentData;
+    mediaHostURL?: string;
+    isMobile?: boolean;
+    theme?: "dark" | "white";
+    codeBlockSpaces?: number;
 }
-</script>
 
-<style lang="scss">
-@use "../scss/viewer.scss";
-</style>
+const editorStore = useEditorStore();
+const props = withDefaults(defineProps<DragonEditorViewerOption>(), {
+    mediaHostURL: "",
+    isMobile: false,
+    theme: "white",
+    codeBlockSpaces: 4,
+});
+
+// 옵션 저장
+editorStore.option.isMobile = props.isMobile;
+editorStore.option.mediaHostURL = props.mediaHostURL;
+editorStore.option.codeBlockSpaces = props.codeBlockSpaces;
+</script>

@@ -1,0 +1,448 @@
+@mixin blockStyle($isEdit: "false") {
+    .de-block {
+        width: 100%;
+        padding: 2px 0;
+        box-sizing: border-box;
+    }
+
+    // 텍스트 블럭
+    .de-text-block {
+        min-height: 1.6em;
+        word-break: break-all;
+        outline: 0;
+
+        @if $isEdit == "true" {
+            &:empty:hover::before,
+            &:empty:focus::before {
+                display: inline;
+                content: "Type a paragraph";
+                color: #ccc;
+                cursor: text;
+            }
+        }
+    }
+
+    // 해딩 블럭
+    .de-heading-block {
+        min-height: 1.6em;
+        font-weight: bold;
+        word-break: break-all;
+        outline: 0;
+
+        &[data-level="1"] {
+            font-size: 2em;
+        }
+
+        &[data-level="2"] {
+            font-size: 1.5em;
+        }
+
+        &[data-level="3"] {
+            font-size: 1.17em;
+        }
+
+        @if $isEdit == "true" {
+            &:empty:hover::before,
+            &:empty:focus::before {
+                display: inline;
+                content: "Type a Heading";
+                color: #ccc;
+                cursor: text;
+            }
+        }
+    }
+
+    // 리스트 블럭
+    .de-list-block {
+        display: flex;
+        flex-direction: column;
+        row-gap: 4px;
+        padding-left: 24px;
+
+        &[data-type="unordered"] {
+            list-style: disc;
+
+            .de-list-sub {
+                list-style: circle;
+
+                .de-list-sub {
+                    list-style: square;
+
+                    .de-list-sub {
+                        list-style: disclosure-closed;
+
+                        .de-list-sub {
+                            list-style: "- ";
+
+                            .de-list-sub {
+                                list-style: "* ";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &[data-type="ordered"] {
+            list-style: decimal;
+
+            .de-list-sub {
+                list-style: lower-alpha;
+
+                .de-list-sub {
+                    list-style: lower-roman;
+
+                    .de-list-sub {
+                        list-style: upper-alpha;
+
+                        .de-list-sub {
+                            list-style: upper-roman;
+
+                            .de-list-sub {
+                                list-style: decimal;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .de-item {
+            list-style: inherit;
+        }
+
+        .de-item-text {
+            min-height: 1.6em;
+            word-break: break-all;
+            outline: 0;
+
+            @if $isEdit == "true" {
+                &:empty:hover::before,
+                &:empty:focus::before {
+                    display: inline;
+                    content: "Type a list item";
+                    color: #ccc;
+                    cursor: text;
+                }
+            }
+        }
+
+        .de-list-sub {
+            padding-left: 30px;
+        }
+    }
+
+    // 이미지 블럭
+    .de-image-block {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        row-gap: 8px;
+
+        &.de-align-left {
+            align-items: flex-start;
+
+            .de-caption {
+                text-align: left;
+            }
+        }
+
+        &.de-align-right {
+            align-items: flex-end;
+
+            .de-caption {
+                text-align: right;
+            }
+        }
+
+        .de-image-area {
+            position: relative;
+            max-width: 25%;
+
+            @for $i from 25 to 101 {
+                &[data-maxwidth="#{$i}"] {
+                    max-width: $i * 1%;
+                }
+            }
+
+            .de-img {
+                width: 100%;
+                height: auto;
+                border-radius: var(--editor-radius-default);
+            }
+
+            .de-btn {
+                position: absolute;
+                top: 50%;
+                width: 8px;
+                height: 15%;
+                background: #f1f1f1;
+                border: 1px solid #ccc;
+                border-radius: var(--editor-radius-default);
+                transform: translate(-50%, -50%);
+                cursor: col-resize;
+                user-select: none;
+                z-index: 100;
+
+                &.de-btn-left {
+                    left: 0;
+                }
+
+                &.de-btn-right {
+                    left: 100%;
+                }
+            }
+        }
+
+        .de-caption {
+            width: 100%;
+            min-height: 1.6em;
+            color: #909090;
+            text-align: center;
+            word-break: break-all;
+            outline: 0;
+
+            @if $isEdit == "true" {
+                &:empty:hover::before,
+                &:empty:focus::before {
+                    display: inline;
+                    content: "Type a caption";
+                    color: #ccc;
+                    cursor: text;
+                }
+            }
+        }
+    }
+
+    // 코드 블럭
+    .de-code-block {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 2px 0;
+        padding: 0;
+        color: var(--editor-code-color);
+        background: var(--editor-code-bg);
+        border-radius: var(--editor-radius-default);
+
+        .de-filename {
+            flex: 1;
+            max-width: calc(100% - 120px);
+            padding: 5px 10px;
+            color: var(--editor-code-color);
+            background: var(--editor-code-file-bg);
+            box-sizing: border-box;
+            outline: 0;
+
+            @if $isEdit == "true" {
+                &:empty:hover::before,
+                &:empty:focus::before {
+                    display: inline;
+                    content: "Type a Filename";
+                    color: var(--editor-code-placeholder);
+                    cursor: text;
+                }
+            }
+        }
+
+        .de-language {
+            width: 120px;
+            text-align: right;
+            padding: 5px 10px;
+            color: var(--editor-code-color);
+            background: var(--editor-code-file-bg);
+            box-sizing: border-box;
+
+            @if $isEdit == "true" {
+                position: relative;
+
+                &:empty:hover::before,
+                &:empty:focus::before {
+                    color: var(--editor-code-placeholder);
+                }
+
+                .de-btn-language {
+                    width: 100%;
+                    text-align: right;
+                }
+
+                .de-list-language {
+                    display: none;
+                    flex-direction: column;
+                    row-gap: 6px;
+                    position: absolute;
+                    top: 100%;
+                    right: 0;
+                    left: 0;
+                    height: 200px;
+                    padding: 2px 4px;
+                    background: var(--editor-code-file-bg);
+                    overflow-y: scroll;
+
+                    &.--active {
+                        display: flex;
+                    }
+                }
+            }
+        }
+
+        .de-pre-wrap {
+            display: flex;
+            width: 100%;
+            overflow-x: auto;
+
+            .de-number {
+                padding: 10px 4px;
+                background: var(--editor-code-number);
+                color: var(--editor-code-number-bg);
+
+                .de-number-item {
+                    min-height: 1.6em;
+                    font-family: Inconsolata, monospace, sans-serif;
+                    text-align: right;
+                }
+            }
+        }
+
+        .de-pre {
+            flex: 1;
+            padding: 10px;
+            box-sizing: border-box;
+
+            .de-code-content {
+                display: block;
+                min-height: 1.6em;
+                min-width: 100%;
+                font-family: Inconsolata, monospace, sans-serif;
+                outline: 0;
+
+                @if $isEdit == "true" {
+                    &:empty:hover::before,
+                    &:empty:focus::before {
+                        display: inline;
+                        content: "Type a Code";
+                        color: var(--editor-code-placeholder);
+                        cursor: text;
+                    }
+                }
+            }
+        }
+
+        .hljs-doctag,
+        .hljs-keyword,
+        .hljs-meta .hljs-keyword,
+        .hljs-template-tag,
+        .hljs-template-variable,
+        .hljs-type,
+        .hljs-variable.language_ {
+            /* prettylights-syntax-keyword */
+            color: var(--editor-code-keyword);
+        }
+
+        .hljs-title,
+        .hljs-title.class_,
+        .hljs-title.class_.inherited__,
+        .hljs-title.function_ {
+            /* prettylights-syntax-entity */
+            color: var(--editor-code-entity);
+        }
+
+        .hljs-attr,
+        .hljs-attribute,
+        .hljs-literal,
+        .hljs-meta,
+        .hljs-number,
+        .hljs-operator,
+        .hljs-variable,
+        .hljs-selector-attr,
+        .hljs-selector-class,
+        .hljs-selector-id {
+            /* prettylights-syntax-constant */
+            color: var(--editor-code-constant);
+        }
+
+        .hljs-regexp,
+        .hljs-string,
+        .hljs-meta .hljs-string {
+            /* prettylights-syntax-string */
+            color: var(--editor-code-string);
+        }
+
+        .hljs-built_in,
+        .hljs-symbol {
+            /* prettylights-syntax-variable */
+            color: var(--editor-code-variable);
+        }
+
+        .hljs-comment,
+        .hljs-code,
+        .hljs-formula {
+            /* prettylights-syntax-comment */
+            color: var(--editor-code-comment);
+        }
+
+        .hljs-name,
+        .hljs-quote,
+        .hljs-selector-tag,
+        .hljs-selector-pseudo {
+            /* prettylights-syntax-entity-tag */
+            color: var(--editor-code-entity-tag);
+        }
+
+        .hljs-subst {
+            /* prettylights-syntax-storage-modifier-import */
+            color: var(--editor-code-storage-modifier-import);
+        }
+
+        .hljs-section {
+            /* prettylights-syntax-markup-heading */
+            color: var(--editor-code-markup-heading);
+            font-weight: bold;
+        }
+
+        .hljs-bullet {
+            /* prettylights-syntax-markup-list */
+            color: var(--editor-code-markup-list);
+        }
+
+        .hljs-emphasis {
+            /* prettylights-syntax-markup-italic */
+            color: var(--editor-code-markup-italic);
+            font-style: italic;
+        }
+
+        .hljs-strong {
+            /* prettylights-syntax-markup-bold */
+            color: var(--editor-code-markup-bold);
+            font-weight: bold;
+        }
+
+        .hljs-addition {
+            /* prettylights-syntax-markup-inserted */
+            color: var(--editor-code-markup-inserted);
+            background-color: var(--editor-code-markup-inserted-bg);
+        }
+
+        .hljs-deletion {
+            /* prettylights-syntax-markup-deleted */
+            color: var(--editor-code-markup-deleted);
+            background-color: var(--editor-code-markup-deleted-bg);
+        }
+    }
+
+    // 구분선
+    .de-divider-block {
+        display: flex;
+        align-items: center;
+        height: 20px;
+
+        &::before {
+            display: block;
+            content: "";
+            width: 100%;
+            height: 2px;
+            padding: 0;
+            background: var(--editor-divider);
+            border-radius: 2px;
+        }
+    }
+}

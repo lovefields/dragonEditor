@@ -1,74 +1,113 @@
 import { h } from "vue";
-import type { VNode, Ref } from "vue";
-import { _createBlockList } from "./index";
-import { _contentKeydownEvent, _contentKeyupEvent, _contentPasteEvent, _contentMouseupEvent, _contentMousedownEvnet, _contentTouchstartEvent, _getDefaultBlockData, _updateModelData } from "../event";
-import { _createTextBlock, _createHeadingBlock, _createListBlock, _createListItemBlock, _createImageBlock, _createCodeBlock, _createCustomBlock, _createDividerBlock } from "../node";
-import type { DragonEditorStore, DEContentData } from "../../type.d.mts";
+import TextBlock from "../../components/Block/Text.vue";
+import HeadingBlock from "../../components/Block/Heading.vue";
+import ListBlock from "../../components/Block/List.vue";
+import ImageBlock from "../../components/Block/Image.vue";
+import CodeBlock from "../../components/Block/Code.vue";
+import DividerBlock from "../../components/Block/Divider.vue";
+import CustomBlock from "../../components/Block/Custom.vue";
+import { useEditorStore } from "../../store/editor";
+import { _generateId } from "../data";
+import { _updateCursorData,_hotKeyEvent } from "../event";
+import type { VNode } from "vue";
+import type { DEContentData, DEBlockData } from "../../type.mjs";
 
-// 바디 구조체 생성
-export function _getBodyVNodeStructure(store: Ref<DragonEditorStore>): VNode {
+// 데이터 바디 구조체 | HTML 구조의 깔끔함을 위해 컴포넌트 보다 h 함수를 사용
+export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
+    const editorStore = useEditorStore();
+    const blockList: VNode[] = [];
+
+    data.forEach((block, index) => {
+        let component: any;
+
+        if (block.id === "" || block.id === null || block.id === undefined) {
+            block.id = _generateId();
+        }
+
+        switch (block.type) {
+            case "text":
+                component = TextBlock;
+                break;
+
+            case "heading":
+                component = HeadingBlock;
+                break;
+
+            case "list":
+                component = ListBlock;
+
+                block.child.forEach((child) => {
+                    if (child.id === "" || child.id === null || child.id === undefined) {
+                        child.id = _generateId();
+                    }
+                });
+                break;
+
+            case "image":
+                component = ImageBlock;
+                break;
+
+            case "code":
+                component = CodeBlock;
+                break;
+
+            case "divider":
+                component = DividerBlock;
+                break;
+
+            case "custom":
+                component = CustomBlock;
+                break;
+        }
+
+        if (component !== undefined) {
+            blockList.push(
+                h(component, {
+                    data: block,
+                    isEdit: isEdit,
+                    index: index,
+                    onUpdate: (newBlockData: DEBlockData) => {
+                        const newData = JSON.parse(JSON.stringify(data)) as DEContentData;
+
+                        if (newData[index] !== undefined) {
+                            newData[index] = newBlockData;
+                        }
+
+                        if (editorStore.fn.updateEditorData !== null) {
+                            editorStore.fn.updateEditorData(newData);
+                        } else {
+                            console.error("[Dragon Editor]: Editor initialize fail.");
+                        }
+                    },
+                    key: `block-${block.id}`,
+                })
+            );
+        }
+    });
+
     return h(
         "div",
         {
-            class: ["de-body", "js-de-body"],
-            onKeydown: (event: KeyboardEvent) => _contentKeydownEvent(event, store),
-            onKeyup: (event: KeyboardEvent) => _contentKeyupEvent(event, store),
-            onMouseup: (event: MouseEvent) => _contentMouseupEvent(event, store),
-            onMousedown: (event: MouseEvent) => _contentMousedownEvnet(event, store),
-            onTouchstart: (event: TouchEvent) => _contentTouchstartEvent(event, store),
-            onPaste: (event: ClipboardEvent) => _contentPasteEvent(event, store),
+            class: ["de-body"],
+            onMouseup: () => {
+                _updateCursorData();
+                endImageResizeEvent();
+            },
+            onKeydown: _hotKeyEvent,
+            onKeyup: _updateCursorData,
+            onMouseleave: endImageResizeEvent,
+            onTouchcancel: endImageResizeEvent,
+            onTouchend: endImageResizeEvent,
         },
-        _createBlockList({
-            blockList: store.value.firstData,
-            isEditable: true,
-            imageHostURL: store.value.imageHostURL,
-        })
+        blockList
     );
 }
 
-export function _updateBodyStructure(bodyData: DEContentData, store: Ref<DragonEditorStore>): void {
-    if (store.value.$body !== null) {
-        let htmlSturcutre: string = "";
+// 이미지 리사이즈 종료
+function endImageResizeEvent(): void {
+    const editorStore = useEditorStore();
 
-        if (bodyData.length === 0) {
-            htmlSturcutre += _createTextBlock(_getDefaultBlockData("text") as DETextBlock).outerHTML;
-        } else {
-            bodyData.forEach((data) => {
-                switch (data.type) {
-                    case "text":
-                        htmlSturcutre += _createTextBlock(data).outerHTML;
-                        break;
-
-                    case "heading":
-                        htmlSturcutre += _createHeadingBlock(data).outerHTML;
-                        break;
-
-                    case "image":
-                        htmlSturcutre += _createImageBlock(data, store.value.imageHostURL).outerHTML;
-                        break;
-
-                    case "list":
-                        htmlSturcutre += _createListBlock(data).outerHTML;
-                        break;
-
-                    case "code":
-                        htmlSturcutre += _createCodeBlock(data, store).outerHTML;
-                        break;
-
-                    case "divider":
-                        htmlSturcutre += _createDividerBlock().outerHTML;
-                        break;
-
-                    default:
-                        htmlSturcutre += _createCustomBlock(data).outerHTML;
-                }
-            });
-        }
-
-        store.value.$body.innerHTML = htmlSturcutre;
-
-        setTimeout(() => {
-            _updateModelData(store);
-        }, 250);
+    if (editorStore.status.isImageResizeActive === true) {
+        editorStore.status.isImageResizeActive = false;
     }
 }
