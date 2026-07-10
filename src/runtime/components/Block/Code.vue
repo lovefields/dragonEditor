@@ -64,10 +64,9 @@
 
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
-import { ref, computed, nextTick } from "vue";
+import { ref, computed, nextTick, onMounted } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { _moveCodeBlockEvent, _codeBlockShiftEnterEvent, _codeBlockTabEvent, _normalPasteEvent } from "../../utils/event";
-import { _highlightingCode } from "../../utils/data";
 import type { DECodeBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -182,12 +181,14 @@ function contentKeydownEvent(event: KeyboardEvent): void {
 async function setLanguageEvent(lang: string): Promise<void> {
     if ($content.value !== null) {
         const textContent = $content.value.textContent;
+        // @ts-ignore : 망할 하이라이팅 로드 이슈
+        const highlights = hljs.highlight(textContent, { language: lang });
         const newData = JSON.parse(JSON.stringify(props.data)) as DECodeBlock;
 
         isLanguageListActive.value = false;
         abortEdit();
         newData.language = lang;
-        newData.textContent = _highlightingCode(textContent, lang);
+        newData.textContent = highlights.value;
         emit("update", newData);
         await nextTick();
         setEdit();
@@ -198,9 +199,11 @@ async function setLanguageEvent(lang: string): Promise<void> {
 function setStyleEvent(): void {
     if ($content.value !== null) {
         const textContent = $content.value.textContent;
+        // @ts-ignore : 망할 하이라이팅 로드 이슈
+        const highlights = hljs.highlight(textContent, { language: props.data.language });
         const newData = JSON.parse(JSON.stringify(props.data)) as DECodeBlock;
 
-        newData.textContent = _highlightingCode(textContent, props.data.language);
+        newData.textContent = highlights.value;
         emit("update", newData);
     }
 }
@@ -214,4 +217,15 @@ onClickOutside(
         ignore: [$btnLanguageList],
     }
 );
+
+onMounted(() => {
+    // @ts-ignore : 망할 하이라이팅 로드 이슈
+    if (window.hljs === undefined) {
+        const script = document.createElement("script");
+
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js";
+        script.async = true;
+        document.head.appendChild(script);
+    }
+});
 </script>

@@ -1,11 +1,4 @@
-import * as hljs from "highlight.js";
 import { _isStrictlyEqualArrays } from "./index";
-
-// 하이라이팅
-export function _highlightingCode(text: string, language: string): string {
-    // @ts-ignore : 구 모듈 타입 미제공
-    return hljs.default.highlight(text, { language: language }).value;
-}
 
 // 노드 리스트 정리
 export function _arrangementNodeList(list: Node[], cursorStartNode: Node | null, cursorStartNodeOffset: number, cursorEndNode: Node | null, cursorEndNodeOffset: number): { list: Node[]; cursorStartNode: Node | null; cursorStartNodeOffset: number; cursorEndNode: Node | null; cursorEndNodeOffset: number } {
