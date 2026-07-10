@@ -8,7 +8,6 @@
 </template>
 
 <script setup lang="ts">
-import "../scss/viewer.scss";
 import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
 import type { DEContentData } from "../type.d.mts";
@@ -34,3 +33,7 @@ editorStore.option.isMobile = props.isMobile;
 editorStore.option.mediaHostURL = props.mediaHostURL;
 editorStore.option.codeBlockSpaces = props.codeBlockSpaces;
 </script>
+
+<style lang="scss">
+@use "../scss/viewer.scss";
+</style>
