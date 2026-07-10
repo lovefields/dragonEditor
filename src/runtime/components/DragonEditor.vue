@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import "../scss/editor.scss";
 import MenuBar from "./MenuBar.vue";
 import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
@@ -122,3 +121,7 @@ onBeforeUnmount(() => {
     _eidtorUnmountEvent();
 });
 </script>
+
+<style lang="scss">
+@use "../scss/editor.scss";
+</style>

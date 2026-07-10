@@ -1,6 +1,6 @@
 {
     "name": "dragon-editor",
-    "version": "4.0.0",
+    "version": "4.0.1",
     "description": "Javascript WYSIWYG editor in Nuxt!",
     "repository": {
         "type": "git",
@@ -66,7 +66,7 @@
         "wysiwyg-editor",
         "korean",
         "language",
-        "nuxt3"
+        "nuxt4"
     ],
     "author": "Lovefields <lovefield@dico.me> (https://dico.me)",
     "bugs": {
