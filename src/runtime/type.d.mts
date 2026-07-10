@@ -31,6 +31,8 @@ export interface DragonEditor {
     addImageBlock(src: string, caption: string = ""): Promise<void>;
     updateLayout(): void;
     checkDataIsEmpty(data?: DEContentData): boolean;
+    setDecoration(type: "bold" | "italic" | "underline" | "strikethrough" | "code"): void;
+    setAlign(align: DETextalign): void;
 }
 
 // 스토어 구조체

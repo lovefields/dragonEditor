@@ -22,6 +22,7 @@ import { ref, onMounted, watch, onBeforeUnmount } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty } from "../utils/data";
 import { _editorMountedEvent, _eidtorUnmountEvent } from "../utils/event";
+import { _setDecoration, _setAlign } from "../utils/node";
 import type { DEContentData } from "../type.d.mts";
 
 interface DragonEditorOption {
@@ -86,6 +87,10 @@ defineExpose({
     addImageBlock: _addImageBlock,
     updateLayout: _editorMountedEvent,
     checkDataIsEmpty: _checkDataIsEmpty,
+    setDecoration: (type: "bold" | "italic" | "underline" | "strikethrough" | "code") => {
+        _setDecoration(`de-${type}` as DEDecorationClass);
+    },
+    setAlign: _setAlign,
 });
 
 watch(
