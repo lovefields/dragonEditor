@@ -220,7 +220,7 @@ onClickOutside(
 
 onMounted(() => {
     // @ts-ignore : 망할 하이라이팅 로드 이슈
-    if (window.hljs === undefined) {
+    if (window.hljs === undefined && props.isEdit === true) {
         const script = document.createElement("script");
 
         script.src = "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js";
