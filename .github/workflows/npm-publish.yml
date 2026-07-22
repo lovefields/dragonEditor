@@ -9,8 +9,9 @@ on:
 
 jobs:
     publish:
-        runs-on: macos-latest
+        runs-on: ubuntu-latest
         permissions:
+            id-token: write
             contents: read
             packages: write
         steps:
@@ -20,7 +21,6 @@ jobs:
                   node-version: "24"
                   registry-url: "https://registry.npmjs.org"
                   package-manager-cache: false
-            - run: npm ci
             - run: npm install
             - run: npm run dev:prepare
             - run: npm run prepack
