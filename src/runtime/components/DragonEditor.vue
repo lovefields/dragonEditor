@@ -110,6 +110,7 @@ watch(
 
 onMounted(() => {
     ifEmptyUpdateData();
+    editorStore.data = props.modelValue;
     editorStore.element.body = $body.value;
     editorStore.element.editor = $editor.value;
     editorStore.fn.updateEditorData = updateEditorData;
