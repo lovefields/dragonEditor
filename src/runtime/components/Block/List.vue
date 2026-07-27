@@ -6,6 +6,7 @@
 import { useEditorStore } from "../../store/editor";
 import { ref, h, withMemo } from "vue";
 import { _listBlockEnterEvent, _listChildTabEvent, _moveListChildEvent, _listBackspaceEvent, _listDeleteEvent, _normalPasteEvent, _updateCursorData } from "../../utils/event";
+import { _getEditingElementTextContent } from "../../utils/data";
 import type { VNode } from "vue";
 import type { DEListBlock, DEListItem } from "../../type.d.mts";
 
@@ -44,7 +45,7 @@ function updateData(event: Event, liIndex: number): void {
     const newData = JSON.parse(JSON.stringify(props.data)) as DEListBlock;
 
     if (newData.child[liIndex] !== undefined) {
-        newData.child[liIndex].textContent = (event.target as HTMLParagraphElement).innerHTML;
+        newData.child[liIndex].textContent = _getEditingElementTextContent(event.target as HTMLParagraphElement);
     }
 
     emit("update", newData);

@@ -6,6 +6,7 @@
 import { useEditorStore } from "../../store/editor";
 import { h, withMemo } from "vue";
 import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertHeadingBlockType, _updateCursorData } from "../../utils/event";
+import { _getEditingElementTextContent } from "../../utils/data";
 import type { VNode } from "vue";
 import type { DEHeadingBlock } from "../../type.d.mts";
 
@@ -71,7 +72,7 @@ function keydownEvent(event: KeyboardEvent): void {
 function updateData(event: Event): void {
     const newData = JSON.parse(JSON.stringify(props.data)) as DEHeadingBlock;
 
-    newData.textContent = (event.target as HTMLHeadingElement).innerHTML;
+    newData.textContent = _getEditingElementTextContent(event.target as HTMLHeadingElement);
 
     emit("update", newData);
 }

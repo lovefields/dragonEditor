@@ -47,6 +47,7 @@
 import { computed } from "vue";
 import { useEditorStore } from "../../store/editor";
 import { _imageEnterEvent, _blockTabEvent, _moveBlockDefaultEvent, _normalPasteEvent, _updateCursorData } from "../../utils/event";
+import { _getEditingElementTextContent } from "../../utils/data";
 import type { DEImageBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
@@ -107,7 +108,7 @@ function keydownEvent(event: KeyboardEvent): void {
 function updateData(event: Event): void {
     const newData = JSON.parse(JSON.stringify(props.data)) as DEImageBlock;
 
-    newData.caption = (event.target as HTMLParagraphElement).innerHTML;
+    newData.caption = _getEditingElementTextContent(event.target as HTMLParagraphElement);
 
     emit("update", newData);
 }

@@ -22,3 +22,22 @@ export function _isStrictlyEqualArrays(arr1: any[], arr2: any[]): boolean {
 
     return arr1.every((value, index) => value === arr2[index]);
 }
+
+// 에디팅 엘리먼트 내부 구조를 텍스트로 추출
+export function _getEditingElementTextContent($element: HTMLElement): string {
+    let value: string = "";
+
+    if ($element.textContent !== "") {
+        $element.childNodes.forEach(($node) => {
+            if ($node.nodeType === Node.TEXT_NODE) {
+                const text = $node.textContent || "";
+
+                value += text.replaceAll(/&/g, "&amp;").replaceAll(/</g, "&lt;").replaceAll(/>/g, "&gt;");
+            } else {
+                value += ($node as HTMLElement).outerHTML;
+            }
+        });
+    }
+
+    return value;
+}

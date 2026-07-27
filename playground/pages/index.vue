@@ -36,23 +36,26 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from "#imports";
 const contentData = ref<DEContentData>([
-            { type: "text", classList: [], textContent: "1sdafsadfsafasdf", id: "tJKa7D" },
-            { type: "text", classList: [], textContent: "1dsfasdfsadfsfafdsafsadfafdsafsadf", id: "tJK37D" },
-            { type: "text", classList: [], textContent: "1sadfsadfsadfsafsafsadfasdf", id: "tJ3a7D" },
-            { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
-            { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
-            { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
-            { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, caption: "", classList: [], id: "KvhMrm" },
-            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "vO80qc" }], id: "VuZNjz" },
-            { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "uMw4nF" }], id: "ynY6lJ" },
-            { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "PkgqXy" }], id: "S56u7g" },
-            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "T8Z8TR" }], id: "BgGZTm" },
-            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "rS40gY" }], id: "PIqTbA" },
-            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "bWryWi" }], id: "3W9pVZ" },
-            { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "moaBGd" }], id: "PtCet4" },
-            { type: "custom", textContent: '<div class="my-custom-block">123</div>', id: "Dljus7" },
-            { type: "code", filename: "123", language: "text", textContent: "332213231232132131313", id: "pyRKHD" },
-        ]);
+    { id: "wSIJZY", classList: [], type: "text", textContent: "&amp;adsmfsadf &amp;amp;" },
+    { id: "SoYnol", type: "heading", classList: [], level: 1, textContent: "&amp; &amp;amp; dskljflasdf" },
+    { id: "tCtNes", type: "list", element: "ul", child: [{ id: "LEkcgz", classList: [], textContent: "ksdajfklsadfj &amp; ksafdjlsakf &amp;amp; kasdljfksadf" }] },
+    { type: "text", classList: [], textContent: "1sdafsadfsafasdf", id: "tJKa7D" },
+    { type: "text", classList: [], textContent: "1dsfasdfsadfsfafdsafsadfafdsafsadf", id: "tJK37D" },
+    { type: "text", classList: [], textContent: '&amp; d<span class="de-underline">sakfj</span>slf &amp;amp;', id: "tJ3a7D" },
+    { type: "heading", level: 1, id: "NPdq5F", classList: [], textContent: "2" },
+    { type: "heading", level: 2, id: "jGhtze", classList: [], textContent: "3" },
+    { type: "heading", level: 3, id: "ekGfGF", classList: [], textContent: "4" },
+    { type: "image", src: "https://cdn.britannica.com/34/235834-050-C5843610/two-different-breeds-of-cats-side-by-side-outdoors-in-the-garden.jpg", maxWidth: 50, caption: "", classList: [], id: "KvhMrm" },
+    { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "vO80qc" }], id: "VuZNjz" },
+    { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "uMw4nF" }], id: "ynY6lJ" },
+    { type: "list", element: "ul", child: [{ classList: ["de-item"], textContent: "1", id: "PkgqXy" }], id: "S56u7g" },
+    { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "T8Z8TR" }], id: "BgGZTm" },
+    { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "rS40gY" }], id: "PIqTbA" },
+    { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "bWryWi" }], id: "3W9pVZ" },
+    { type: "list", element: "ol", child: [{ classList: ["de-item"], textContent: "1", id: "moaBGd" }], id: "PtCet4" },
+    { type: "custom", textContent: '<div class="my-custom-block">123</div>', id: "Dljus7" },
+    { type: "code", filename: "123", language: "text", textContent: "332213231232132131313", id: "pyRKHD" },
+]);
 const isChangeLayout = ref<boolean>(false);
 const isMobile = ref<boolean>(false);
 const theme = ref<"dark" | "white">("white");

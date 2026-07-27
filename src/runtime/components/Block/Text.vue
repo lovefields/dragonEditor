@@ -16,6 +16,7 @@
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
 import { computed } from "vue";
+import { _getEditingElementTextContent } from "../../utils/data";
 import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertTextBlockType, _convertTextBlockToCodeBlock, _convertTextBlockToDividerBlock, _updateCursorData } from "../../utils/event";
 import type { DETextBlock } from "../../type.d.mts";
 
@@ -95,7 +96,7 @@ function keydownEvent(event: KeyboardEvent): void {
 function updateData(event: Event): void {
     const newData = JSON.parse(JSON.stringify(props.data)) as DETextBlock;
 
-    newData.textContent = (event.target as HTMLParagraphElement).innerHTML;
+    newData.textContent = _getEditingElementTextContent(event.target as HTMLParagraphElement);
 
     emit("update", newData);
 }
