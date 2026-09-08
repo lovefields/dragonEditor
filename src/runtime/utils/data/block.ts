@@ -3,7 +3,7 @@ import { useEditorStore } from "../../store/editor";
 import { _setCursorPosition } from "../event";
 import { _generateId, _getEditorbleCursorPosition } from "../data";
 import { _findEditableElement, _findEditableParent, _findParentBlock } from "../node";
-import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType, DEBlockMenutype, DECodeBlock, DEImageBlock, DEDividerBlock, DECustomBlock, DEBlockData } from "../../type.d.mts";
+import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType, DEBlockMenutype, DECodeBlock, DEImageBlock, DEDividerBlock, DECustomBlock, DEBlockData, DEComponentBlock } from "../../type.d.mts";
 
 // 데이터 정리
 export function _arrangementContentData(data: DEContentData): DEContentData {
@@ -851,4 +851,42 @@ export function _checkDataIsEmpty(data?: DEContentData): boolean {
     });
 
     return suitable;
+}
+
+// 컴포넌트 블럭 추가
+export async function _addComponentBlock(name: string, props: object = {}): Promise<void> {
+    const editorStore = useEditorStore();
+    const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEBlockData[];
+    let targetIndex = editorStore.selectedBlockIndex;
+
+    if (editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        const newBlock: DEComponentBlock = {
+            id: _generateId(),
+            type: "component",
+            name: name,
+            props: props,
+        };
+
+        if (targetIndex === -1) {
+            newData.push(newBlock);
+            targetIndex = newData.length - 1;
+        } else {
+            newData.splice(editorStore.selectedBlockIndex + 1, 0, newBlock);
+            targetIndex = editorStore.selectedBlockIndex + 1;
+        }
+
+        editorStore.fn.updateEditorData(newData as DEContentData);
+        await nextTick();
+
+        const $targetBlock = editorStore.element.body.children[targetIndex] as HTMLElement;
+
+        if ($targetBlock !== undefined) {
+            const $targetNode = _findEditableElement($targetBlock, "down");
+
+            if ($targetNode !== null) {
+                $targetNode.focus();
+                $targetNode.dispatchEvent(new Event("input"));
+            }
+        }
+    }
 }

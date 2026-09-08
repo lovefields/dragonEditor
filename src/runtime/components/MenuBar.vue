@@ -321,7 +321,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from "#imports";
 import { onClickOutside } from "@vueuse/core";
 import { useEditorStore } from "../store/editor";
 import { _addBlock, _moveBlockIndex, _checkCanUseIndent, _setIndentData, _checkCanUseAlign, _checkCanUseDecoration } from "../utils/data";

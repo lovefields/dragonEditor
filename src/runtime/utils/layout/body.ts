@@ -1,4 +1,4 @@
-import { h } from "vue";
+import { h } from "#imports";
 import TextBlock from "../../components/Block/Text.vue";
 import HeadingBlock from "../../components/Block/Heading.vue";
 import ListBlock from "../../components/Block/List.vue";
@@ -6,9 +6,10 @@ import ImageBlock from "../../components/Block/Image.vue";
 import CodeBlock from "../../components/Block/Code.vue";
 import DividerBlock from "../../components/Block/Divider.vue";
 import CustomBlock from "../../components/Block/Custom.vue";
+import ComponetBlock from "../../components/Block/Componet.vue";
 import { useEditorStore } from "../../store/editor";
 import { _generateId } from "../data";
-import { _updateCursorData,_hotKeyEvent } from "../event";
+import { _updateCursorData, _hotKeyEvent } from "../event";
 import type { VNode } from "vue";
 import type { DEContentData, DEBlockData } from "../../type.mjs";
 
@@ -53,6 +54,10 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
 
             case "divider":
                 component = DividerBlock;
+                break;
+
+            case "component":
+                component = ComponetBlock;
                 break;
 
             case "custom":

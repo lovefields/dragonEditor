@@ -2,7 +2,7 @@
 export type DEContentData = DEBlockData[];
 
 // 컨텐츠 타입
-export type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock | DEDividerBlock;
+export type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock | DEDividerBlock | DEComponentBlock;
 
 // 블록 타입
 export type DEBlockType = DEBlockData["type"];
@@ -33,6 +33,7 @@ export interface DragonEditor {
     checkDataIsEmpty(data?: DEContentData): boolean;
     setDecoration(type: "bold" | "italic" | "underline" | "strikethrough" | "code"): void;
     setAlign(align: DETextalign): void;
+    addComponentBlock(name: string, props: object = {}): Promise<void>;
 }
 
 // 스토어 구조체
@@ -68,6 +69,7 @@ export interface DEOption {
     codeBlockSpaces: number;
     acceptImageFormat: string;
     anchorTagTarget: string;
+    componentNameList: string[];
 }
 
 // 컨텐츠 블럭 타입
@@ -122,6 +124,13 @@ export interface DECodeBlock {
     language: string;
     filename: string;
     textContent: string;
+}
+
+export interface DEComponentBlock {
+    id: string;
+    type: "component";
+    name: string;
+    props: object;
 }
 
 // 컨텐츠 커스텀 타입

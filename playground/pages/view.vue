@@ -24,6 +24,7 @@ const data = ref<DEContentData>([
     { type: "list", element: "ol", style: "upper-alpha", child: [{ classList: ["de-item"], textContent: "1" }], id: "WK9akP" },
     { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>', id: "ssCjpu" },
     { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313", id: "VNJJak" },
+    { id: "bln9MG", type: "component", name: "MyComponent", props: { a: 5, b: 8 } },
 ]);
 </script>
 
