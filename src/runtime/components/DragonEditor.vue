@@ -1,5 +1,6 @@
 <template>
     <div
+        :id="editorId"
         class="dragon-editor"
         :class="{ '--has-menu': props.useMenuBar === true, '--mobile': editorStore.option.isMobile === true, '--hidden-parent': editorStore.status.isParentOverflowHidden === true }"
         :data-theme="props.theme"
@@ -19,7 +20,7 @@ import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
 import { ref, onMounted, watch, onBeforeUnmount } from "#imports";
 import { onClickOutside } from "@vueuse/core";
-import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty, _addComponentBlock } from "../utils/data";
+import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty, _addComponentBlock, _generateId } from "../utils/data";
 import { _editorMountedEvent, _eidtorUnmountEvent } from "../utils/event";
 import { _setDecoration, _setAlign } from "../utils/node";
 import type { DEContentData } from "../type.d.mts";
@@ -49,6 +50,7 @@ const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
     (e: "uploadImageEvent", files: File[]): void;
 }>();
+const editorId = ref<string>("");
 const $body = ref<HTMLDivElement | null>(null);
 const $editor = ref<HTMLDivElement | null>(null);
 
@@ -117,6 +119,7 @@ onMounted(() => {
     editorStore.fn.updateEditorData = updateEditorData;
     editorStore.fn.uploadImage = uploadImage;
     _editorMountedEvent();
+    editorId.value = `dragon-editor-${_generateId()}`;
 });
 
 onBeforeUnmount(() => {

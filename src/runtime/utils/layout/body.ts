@@ -100,7 +100,10 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
             },
             onKeydown: _hotKeyEvent,
             onKeyup: _updateCursorData,
-            onMouseleave: endImageResizeEvent,
+            onMouseleave: ()=>{
+                endImageResizeEvent();
+                
+            },
             onTouchcancel: endImageResizeEvent,
             onTouchend: endImageResizeEvent,
         },

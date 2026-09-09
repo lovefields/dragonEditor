@@ -36,7 +36,14 @@ This module support only Nuxt.
 
 If you use Codeblock. I recommented use `Inconsolata` font. [(link)](https://fonts.google.com/specimen/Inconsolata?query=Inconsolata)
 
-## Install
+# Install
+
+This Module Has Dependencies Next List:
+- highlight.js 
+- @pinia/nuxt 
+- @vueuse/nuxt
+
+You Must Add All Dependencies To Your Project.
 
 ```shell
 npm i dragon-editor
@@ -44,19 +51,39 @@ npm i dragon-editor
 yarn add dragon-editor
 # or
 bun add dragon-editor
+
+# If You don't have these dependencies
+npm i dragon-editor highlight.js @pinia/nuxt @vueuse/nuxt
+# or
+yarn add dragon-editor highlight.js @pinia/nuxt @vueuse/nuxt
+# or
+bun add dragon-editor highlight.js @pinia/nuxt @vueuse/nux
 ```
 
-## How To Use
+# How to Use
 
-First. Set module
+## Config
 
 ```typescript
 export default defineNuxtConfig({
-    modules: ["dragon-editor"],
+    modules: [
+        [
+            "dragon-editor",
+            {
+                componentNameList: [], // If you use specific component, Set component name
+            },
+        ],
+    ],
+
+    vite: {
+        optimizeDeps: {
+            include: ["highlight.js/lib/*"], // highlight module Optimize
+        },
+    },
 });
 ```
 
-Second. Use Component
+## Edit Page
 
 ```html
 <template>
@@ -65,7 +92,10 @@ Second. Use Component
     </div>
 </template>
 
-<script setup lang="ts">
+<script
+    setup
+    lang="ts"
+>
     const contentData = ref<DEContentData>([]);
 </script>
 ```
@@ -79,7 +109,10 @@ Second. Use Component
     </div>
 </template>
 
-<script setup lang="ts">
+<script
+    setup
+    lang="ts"
+>
     const data = ref<DEContentData>([]);
 </script>
 ```

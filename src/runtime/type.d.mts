@@ -69,7 +69,6 @@ export interface DEOption {
     codeBlockSpaces: number;
     acceptImageFormat: string;
     anchorTagTarget: string;
-    componentNameList: string[];
 }
 
 // 컨텐츠 블럭 타입
