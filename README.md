@@ -67,10 +67,12 @@ bun add dragon-editor highlight.js @pinia/nuxt @vueuse/nux
 ```typescript
 export default defineNuxtConfig({
     modules: [
+        "dragon-editor",
+        // or
         [
             "dragon-editor",
             {
-                componentNameList: [], // If you use specific component, Set component name
+                componentNameList: ["MyComponent"], // If you use specific component, Set component name
             },
         ],
     ],

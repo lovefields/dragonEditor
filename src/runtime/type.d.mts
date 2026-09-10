@@ -2,7 +2,7 @@
 export type DEContentData = DEBlockData[];
 
 // 컨텐츠 타입
-export type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock | DEDividerBlock | DEComponentBlock;
+export type DEBlockData = DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock | DECodeBlock | DECustomBlock | DEDividerBlock | DEComponentBlock | DEFileBlock;
 
 // 블록 타입
 export type DEBlockType = DEBlockData["type"];
@@ -14,7 +14,7 @@ export type DEListElementName = "ul" | "ol";
 export type DEHeadingElementLevel = 1 | 2 | 3;
 
 // 아이콘 종류
-export type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "move-first" | "move-last" | "indent-decrease" | "indent-increase";
+export type DEIconKind = "plus" | "bold" | "italic" | "underline" | "strikethrough" | "codeblock" | "add-link" | "remove-link" | "image" | "align-center" | "align-left" | "align-right" | "align-justify" | "move-up" | "move-down" | "move-first" | "move-last" | "indent-decrease" | "indent-increase" | "upload";
 
 // 메뉴용 블럭 추가 타입
 export type DEBlockMenutype = Exclude<DEBlockType, "heading" | "list" | "image"> | "heading1" | "heading2" | "heading3" | "unordered-list" | "ordered-list";
@@ -29,6 +29,7 @@ export type DEDecorationClass = "de-bold" | "de-italic" | "de-underline" | "de-s
 export interface DragonEditor {
     addBlock(name: DEBlockMenutype, textContent: string = ""): Promise<void>;
     addImageBlock(src: string, caption: string = ""): Promise<void>;
+    addFileBlock(src: string, name: string, size: number): Promise<void>;
     updateLayout(): void;
     checkDataIsEmpty(data?: DEContentData): boolean;
     setDecoration(type: "bold" | "italic" | "underline" | "strikethrough" | "code"): void;
@@ -53,6 +54,7 @@ export interface DragonEditorStore {
     fn: {
         updateEditorData: ((data: DEContentData) => void) | null;
         uploadImage: ((files: File[]) => void) | null;
+        uploadFile: ((files: File[]) => void) | null;
     };
     element: {
         editor: null | HTMLDivElement;
@@ -68,6 +70,7 @@ export interface DEOption {
     isMobile: boolean;
     codeBlockSpaces: number;
     acceptImageFormat: string;
+    acceptFileFormat: string;
     anchorTagTarget: string;
 }
 
@@ -125,6 +128,7 @@ export interface DECodeBlock {
     textContent: string;
 }
 
+// 컨텐츠 컴포넌트 타입
 export interface DEComponentBlock {
     id: string;
     type: "component";
@@ -143,6 +147,15 @@ export interface DECustomBlock {
 export interface DEDividerBlock {
     id: string;
     type: "divider";
+}
+
+// 컨텐츠 파일 타입
+export interface DEFileBlock {
+    id: string;
+    type: "file";
+    name: string;
+    size: number;
+    src: string;
 }
 
 // 멀티라인 포지션

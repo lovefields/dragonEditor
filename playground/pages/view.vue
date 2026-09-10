@@ -25,6 +25,7 @@ const data = ref<DEContentData>([
     { type: "custom", classList: ["de-custom-block", "new-data"], textContent: '<div class="my-custom-block">123</div>', id: "ssCjpu" },
     { type: "code", theme: "github-light", filename: "123", language: "text", textContent: "332213231232132131313", id: "VNJJak" },
     { id: "bln9MG", type: "component", name: "MyComponent", props: { a: 5, b: 8 } },
+    { id: "cAar5d", type: "file", src: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Gatto_europeo4.jpg/250px-Gatto_europeo4.jpg", name: "250px-Gatto_europeo4.jpg", size: 194291 },
 ]);
 </script>
 

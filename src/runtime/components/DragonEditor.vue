@@ -20,7 +20,7 @@ import { _getBody } from "../utils/layout";
 import { useEditorStore } from "../store/editor";
 import { ref, onMounted, watch, onBeforeUnmount } from "#imports";
 import { onClickOutside } from "@vueuse/core";
-import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty, _addComponentBlock, _generateId } from "../utils/data";
+import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty, _addComponentBlock, _generateId, _addFileBlock } from "../utils/data";
 import { _editorMountedEvent, _eidtorUnmountEvent } from "../utils/event";
 import { _setDecoration, _setAlign } from "../utils/node";
 import type { DEContentData } from "../type.d.mts";
@@ -33,6 +33,7 @@ interface DragonEditorOption {
     theme?: "dark" | "white";
     codeBlockSpaces?: number;
     acceptImageFormat?: string;
+    acceptFileFormat?: string;
     anchorTagTarget?: string;
 }
 
@@ -44,11 +45,13 @@ const props = withDefaults(defineProps<DragonEditorOption>(), {
     theme: "white",
     codeBlockSpaces: 4,
     acceptImageFormat: ".jpg,.jpeg,.png,.webp,.gif",
+    acceptFileFormat: "*",
     anchorTagTarget: "_blank",
 });
 const emit = defineEmits<{
     (e: "update:modelValue", data: DEContentData): void;
     (e: "uploadImageEvent", files: File[]): void;
+    (e: "uploadFileEvent", files: File[]): void;
 }>();
 const editorId = ref<string>("");
 const $body = ref<HTMLDivElement | null>(null);
@@ -59,6 +62,7 @@ editorStore.option.isMobile = props.isMobile;
 editorStore.option.mediaHostURL = props.mediaHostURL;
 editorStore.option.codeBlockSpaces = props.codeBlockSpaces;
 editorStore.option.acceptImageFormat = props.acceptImageFormat;
+editorStore.option.acceptFileFormat = props.acceptFileFormat;
 editorStore.option.anchorTagTarget = props.anchorTagTarget;
 
 // 신규데이터 적용 함수
@@ -78,6 +82,11 @@ function uploadImage(files: File[]): void {
     emit("uploadImageEvent", files);
 }
 
+// 파일 업로드 함수 래핑
+function uploadFile(files: File[]): void {
+    emit("uploadFileEvent", files);
+}
+
 onClickOutside($editor, () => {
     editorStore.selectedBlockIndex = -1;
     editorStore.selectedBlockId = "";
@@ -86,6 +95,7 @@ onClickOutside($editor, () => {
 defineExpose({
     addBlock: _addBlock,
     addImageBlock: _addImageBlock,
+    addFileBlock: _addFileBlock,
     updateLayout: _editorMountedEvent,
     checkDataIsEmpty: _checkDataIsEmpty,
     setDecoration: (type: "bold" | "italic" | "underline" | "strikethrough" | "code") => {
@@ -118,6 +128,7 @@ onMounted(() => {
     editorStore.element.editor = $editor.value;
     editorStore.fn.updateEditorData = updateEditorData;
     editorStore.fn.uploadImage = uploadImage;
+    editorStore.fn.uploadFile = uploadFile;
     _editorMountedEvent();
     editorId.value = `dragon-editor-${_generateId()}`;
 });

@@ -14,6 +14,7 @@
                 :componentNameList="componentNameList"
                 ref="$editor"
                 @uploadImageEvent="pasteImageProcess"
+                @uploadFileEvent="uploadFileEvent"
             />
         </div>
 
@@ -138,6 +139,14 @@ async function pasteImageProcess(files: File[]) {
         const url = URL.createObjectURL(file);
 
         await $editor.value?.addImageBlock(url);
+    }
+}
+
+async function uploadFileEvent(files: File[]) {
+    for (let file of files) {
+        const url = URL.createObjectURL(file);
+
+        await $editor.value?.addFileBlock(url, file.name, file.size);
     }
 }
 

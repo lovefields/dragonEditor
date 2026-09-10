@@ -867,6 +867,8 @@ export async function _defaultBackspaceEvent(event: KeyboardEvent): Promise<void
 
                             if ($blockTargetNode !== undefined) {
                                 _setCursorPosition($blockTargetNode, blockLastOffset.offset);
+                            } else {
+                                _setCursorPosition($block, 0);
                             }
                         } else if (preveiousData.type === "list") {
                             const $listItems = $preveiousBlock.querySelectorAll(".de-item-text");
@@ -1317,6 +1319,8 @@ export async function _convertTextBlockToDividerBlock(event: KeyboardEvent, data
             const $target = _findEditableElement($block, "down");
 
             if ($target !== null) {
+                editorStore.selectedBlockIndex = index + 1;
+                editorStore.selectedBlockId = data.id;
                 $target.innerHTML = ""; // 데이터 강제 업데이트
                 $target.focus();
                 $target.dispatchEvent(new Event("input"));
@@ -1391,6 +1395,58 @@ export function _hotKeyEvent(event: KeyboardEvent): void {
                     _setDecoration("de-code");
                 }
                 break;
+        }
+    }
+}
+
+// 글로벌 키 이벤트 (비 에디팅 블럭 삭제 및 컨트롤 용)
+export async function _globalKeyEvent(event: KeyboardEvent): Promise<void> {
+    const editorStore = useEditorStore();
+
+    if (editorStore.selectedBlockIndex !== -1 && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        const newBlockData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
+        const blockData = newBlockData[editorStore.selectedBlockIndex];
+
+        if (blockData !== undefined) {
+            switch (event.key) {
+                case "Backspace":
+                    // 구분선, 컴포넌트, 커스텀, 파일 블럭이 선택되어 있는 경우 블럭 삭제 이벤트 진행
+                    if (blockData.type === "divider" || blockData.type === "component" || blockData.type === "custom" || blockData.type === "file") {
+                        newBlockData.splice(editorStore.selectedBlockIndex, 1);
+                        editorStore.fn.updateEditorData(newBlockData);
+                        await nextTick();
+
+                        const $block = editorStore.element.body.children[editorStore.selectedBlockIndex - 1] as HTMLElement;
+
+                        if ($block !== undefined) {
+                            const $target = _findEditableElement($block, "up");
+
+                            if ($target !== null) {
+                                $target.focus();
+                            }
+                        }
+                    }
+                    break;
+
+                case "Delete":
+                    // 구분선, 컴포넌트, 커스텀, 파일 블럭이 선택되어 있는 경우 블럭 삭제 이벤트 진행
+                    if (blockData.type === "divider" || blockData.type === "component" || blockData.type === "custom" || blockData.type === "file") {
+                        newBlockData.splice(editorStore.selectedBlockIndex, 1);
+                        editorStore.fn.updateEditorData(newBlockData);
+                        await nextTick();
+
+                        const $block = editorStore.element.body.children[editorStore.selectedBlockIndex + 1] as HTMLElement;
+
+                        if ($block !== undefined) {
+                            const $target = _findEditableElement($block, "down");
+
+                            if ($target !== null) {
+                                $target.focus();
+                            }
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

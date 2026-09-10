@@ -890,3 +890,42 @@ export async function _addComponentBlock(name: string, props: object = {}): Prom
         }
     }
 }
+
+// 파일 블럭 추가
+export async function _addFileBlock(src: string, name: string, size: number): Promise<void> {
+    const editorStore = useEditorStore();
+    const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEBlockData[];
+    let targetIndex = editorStore.selectedBlockIndex;
+
+    if (editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
+        const newBlock: DEFileBlock = {
+            id: _generateId(),
+            type: "file",
+            src: src,
+            name: name,
+            size: size,
+        };
+
+        if (targetIndex === -1) {
+            newData.push(newBlock);
+            targetIndex = newData.length - 1;
+        } else {
+            newData.splice(editorStore.selectedBlockIndex + 1, 0, newBlock);
+            targetIndex = editorStore.selectedBlockIndex + 1;
+        }
+
+        editorStore.fn.updateEditorData(newData as DEContentData);
+        await nextTick();
+
+        const $targetBlock = editorStore.element.body.children[targetIndex] as HTMLElement;
+
+        if ($targetBlock !== undefined) {
+            const $targetNode = _findEditableElement($targetBlock, "down");
+
+            if ($targetNode !== null) {
+                $targetNode.focus();
+                $targetNode.dispatchEvent(new Event("input"));
+            }
+        }
+    }
+}

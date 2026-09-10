@@ -56,7 +56,7 @@ hljs.registerAliases("shellscript", { languageName: "shell" });
 
 export function _highlightCode(code: string, language: string): string {
     if (hljs.getLanguage(language) === undefined) {
-        return code;
+        language = "plaintext";
     }
 
     return hljs.highlight(code, { language }).value;

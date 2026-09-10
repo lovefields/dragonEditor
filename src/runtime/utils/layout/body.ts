@@ -7,6 +7,7 @@ import CodeBlock from "../../components/Block/Code.vue";
 import DividerBlock from "../../components/Block/Divider.vue";
 import CustomBlock from "../../components/Block/Custom.vue";
 import ComponetBlock from "../../components/Block/Componet.vue";
+import FileBlock from "../../components/Block/File.vue";
 import { useEditorStore } from "../../store/editor";
 import { _generateId } from "../data";
 import { _updateCursorData, _hotKeyEvent } from "../event";
@@ -63,6 +64,10 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
             case "custom":
                 component = CustomBlock;
                 break;
+
+            case "file":
+                component = FileBlock;
+                break;
         }
 
         if (component !== undefined) {
@@ -100,9 +105,8 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
             },
             onKeydown: _hotKeyEvent,
             onKeyup: _updateCursorData,
-            onMouseleave: ()=>{
+            onMouseleave: () => {
                 endImageResizeEvent();
-                
             },
             onTouchcancel: endImageResizeEvent,
             onTouchend: endImageResizeEvent,
