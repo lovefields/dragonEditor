@@ -7,9 +7,17 @@ export default defineNuxtModule({
             nuxt: ">=3.0.0",
         },
     },
-    async setup() {
+    async setup(options, nuxt) {
         const { resolve } = createResolver(import.meta.url);
         const typeContent = await readFile(resolve("./runtime/type.d.mts"));
+
+        nuxt.hook("components:extend", (components) => {
+            components.forEach((component) => {
+                if (options.componentNameList && options.componentNameList.includes(component.pascalName) === true) {
+                    component.global = true;
+                }
+            });
+        });
 
         await importModule("@pinia/nuxt");
         await importModule("@vueuse/nuxt");

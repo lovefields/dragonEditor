@@ -4,10 +4,10 @@
 
 <script setup lang="ts">
 import { useEditorStore } from "../../store/editor";
-import { h, withMemo } from "vue";
+import { h, withMemo } from "#imports";
 import { _sliceAndNewTextBlock, _blockTabEvent, _moveBlockDefaultEvent, _defaultBackspaceEvent, _defaultDeleteEvent, _allDataPasteEvent, _convertHeadingBlockType, _updateCursorData } from "../../utils/event";
 import { _getEditingElementTextContent } from "../../utils/data";
-import type { VNode } from "vue";
+import type { VNode } from "#imports";
 import type { DEHeadingBlock } from "../../type.d.mts";
 
 const editorStore = useEditorStore();
