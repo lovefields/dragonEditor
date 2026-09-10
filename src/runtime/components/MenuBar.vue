@@ -1,5 +1,8 @@
 <template>
-    <div class="de-menu-bar" :style="{top: `${editorStore.status.menuTop}px`}">
+    <div
+        class="de-menu-bar"
+        :style="{ top: `${editorStore.status.menuTop}px` }"
+    >
         <div class="de-menu-wrap">
             <div class="de-col">
                 <button
@@ -92,6 +95,20 @@
                         :accept="editorStore.option.acceptImageFormat"
                         multiple
                         @change="imageUploadEvent"
+                    />
+                </label>
+
+                <label
+                    class="de-menu"
+                    type="button"
+                >
+                    <component :is="_getIconNode('upload')" />
+                    <input
+                        type="file"
+                        hidden
+                        :accept="editorStore.option.acceptFileFormat"
+                        multiple
+                        @change="fileUploadEvent"
                     />
                 </label>
             </div>
@@ -321,7 +338,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from "#imports";
 import { onClickOutside } from "@vueuse/core";
 import { useEditorStore } from "../store/editor";
 import { _addBlock, _moveBlockIndex, _checkCanUseIndent, _setIndentData, _checkCanUseAlign, _checkCanUseDecoration } from "../utils/data";
@@ -354,6 +371,20 @@ function imageUploadEvent(event: Event): void {
 
         if (files !== null && files.length > 0 && editorStore.fn.uploadImage !== null) {
             editorStore.fn.uploadImage(Array.from(files));
+            $target.value = "";
+        }
+    }
+}
+
+// 파일 업로드 이벤트
+function fileUploadEvent(event: Event): void {
+    const $target = event.currentTarget as HTMLInputElement;
+
+    if ($target !== null) {
+        const files = $target.files;
+
+        if (files !== null && files.length > 0 && editorStore.fn.uploadFile !== null) {
+            editorStore.fn.uploadFile(Array.from(files));
             $target.value = "";
         }
     }

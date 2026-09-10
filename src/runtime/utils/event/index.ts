@@ -1,5 +1,6 @@
 export * from "./keyboard";
 export * from "./cursor";
+import { _globalKeyEvent } from "./keyboard";
 import { useEditorStore } from "../../store/editor";
 import { _findHiddenStyleElement, _findScrollingElement } from "../data";
 
@@ -17,6 +18,8 @@ export function _editorMountedEvent(): void {
         if (editorStore.element.scrollParentElement !== null) {
             editorStore.element.scrollParentElement.addEventListener("scroll", parentElementScrollEvent);
         }
+
+        window.addEventListener("keydown", _globalKeyEvent);
     }
 }
 
@@ -27,6 +30,8 @@ export function _eidtorUnmountEvent(): void {
     if (editorStore.element.scrollParentElement !== null) {
         editorStore.element.scrollParentElement.removeEventListener("scroll", parentElementScrollEvent);
     }
+
+    window.removeEventListener("keydown", _globalKeyEvent);
 }
 
 // 부모요소 스크롤 이벤트

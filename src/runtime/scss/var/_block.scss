@@ -445,4 +445,81 @@
             border-radius: 2px;
         }
     }
+
+    // 파일 블럭
+    .de-file-block {
+        display: flex;
+        justify-content: center;
+
+        .de-file-wrap {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            gap: 10px;
+            background: var(--editor-code-bg);
+            border-radius: var(--editor-radius-default);
+            text-decoration: none;
+
+            .de-icon-area {
+                position: relative;
+                width: 50px;
+                height: 60px;
+
+                &::before {
+                    display: block;
+                    content: "";
+                    width: 45px;
+                    height: 54px;
+                    background: var(--editor-border);
+                    border-radius: var(--editor-radius-default);
+                }
+
+                &::after {
+                    display: block;
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 5px;
+                    width: 0;
+                    height: 0;
+                    border: 8px solid var(--editor-code-number-bg);
+                    border-top-color: var(--editor-code-bg);
+                    border-right-color: var(--editor-code-bg);
+                    border-radius: 0 0 0 5px;
+                }
+
+                .de-extension {
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    padding: 2px 4px;
+                    background: var(--editor-code-number-bg);
+                    color: var(--editor-code-number);
+                    border-radius: var(--editor-radius-default);
+                    font-size: 12px;
+                }
+            }
+
+            .de-text-area {
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                justify-content: center;
+                row-gap: 5px;
+                max-width: calc(100% - 60px);
+
+                .de-name {
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    white-space: nowrap;
+                }
+
+                .de-size {
+                    text-align: right;
+                }
+            }
+        }
+    }
 }
