@@ -29,43 +29,43 @@ function abortEdit() {
 }
 
 function keydownEvent(event: KeyboardEvent): void {
-    if (event.isComposing === false) {
-        switch (event.key) {
-            case "Enter":
-                // 엔터 이벤트
-                if (event.shiftKey === false) {
-                    _sliceAndNewTextBlock(event, props.data, props.index);
-                } else {
-                    // 쉬프트 엔터 이벤트
-                }
-                break;
+    if (event.isComposing === true || event.key === "Process" || event.key === "Unidentified") {
+        return;
+    }
 
-            case "Tab":
-                _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
-                break;
+    switch (event.key) {
+        case "Enter":
+            // 엔터 이벤트
+            if (event.shiftKey === false) {
+                _sliceAndNewTextBlock(event, props.data, props.index);
+            } else {
+                // 쉬프트 엔터 이벤트
+            }
+            break;
 
-            case "ArrowUp":
-                _moveBlockDefaultEvent(event, "up");
-                break;
+        case "Tab":
+            _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
+            break;
 
-            case "ArrowDown":
-                _moveBlockDefaultEvent(event, "down");
-                break;
+        case "ArrowUp":
+            _moveBlockDefaultEvent(event, "up");
+            break;
 
-            case "Backspace":
-                _defaultBackspaceEvent(event);
-                break;
+        case "ArrowDown":
+            _moveBlockDefaultEvent(event, "down");
+            break;
 
-            case "Delete":
-                _defaultDeleteEvent(event, setEdit, abortEdit);
-                break;
+        case "Backspace":
+            _defaultBackspaceEvent(event);
+            break;
 
-            case " ":
-                _convertHeadingBlockType(event, props.data, props.index, setEdit, abortEdit);
-                break;
-        }
-    } else {
-        event.preventDefault();
+        case "Delete":
+            _defaultDeleteEvent(event, setEdit, abortEdit);
+            break;
+
+        case " ":
+            _convertHeadingBlockType(event, props.data, props.index, setEdit, abortEdit);
+            break;
     }
 }
 

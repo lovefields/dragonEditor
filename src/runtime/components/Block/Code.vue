@@ -117,28 +117,26 @@ function updateFilename(event: Event): void {
 }
 
 function fileNameKeydownEvent(event: KeyboardEvent): void {
-    if ($content.value !== null) {
-        if (event.isComposing === false) {
-            switch (event.key) {
-                case "Enter":
-                    _moveCodeBlockEvent(event, "down", "filename", $content.value);
-                    break;
+    if ($content.value === null || event.isComposing === true || event.key === "Process" || event.key === "Unidentified") {
+        return;
+    }
 
-                case "Tab":
-                    _moveCodeBlockEvent(event, "down", "filename", $content.value);
-                    break;
+    switch (event.key) {
+        case "Enter":
+            _moveCodeBlockEvent(event, "down", "filename", $content.value);
+            break;
 
-                case "ArrowUp":
-                    _moveCodeBlockEvent(event, "up", "filename", $content.value);
-                    break;
+        case "Tab":
+            _moveCodeBlockEvent(event, "down", "filename", $content.value);
+            break;
 
-                case "ArrowDown":
-                    _moveCodeBlockEvent(event, "down", "filename", $content.value);
-                    break;
-            }
-        }
-    } else {
-        event.preventDefault();
+        case "ArrowUp":
+            _moveCodeBlockEvent(event, "up", "filename", $content.value);
+            break;
+
+        case "ArrowDown":
+            _moveCodeBlockEvent(event, "down", "filename", $content.value);
+            break;
     }
 }
 
@@ -151,30 +149,28 @@ function updateContent(event: Event): void {
 }
 
 function contentKeydownEvent(event: KeyboardEvent): void {
-    if ($fileName.value !== null) {
-        if (event.isComposing === false) {
-            switch (event.key) {
-                case "Enter":
-                    if (event.shiftKey === true) {
-                        _codeBlockShiftEnterEvent(event, props.index);
-                    }
-                    break;
+    if ($fileName.value === null || event.isComposing === true || event.keyCode === 229) {
+        return;
+    }
 
-                case "Tab":
-                    _codeBlockTabEvent(event);
-                    break;
-
-                case "ArrowUp":
-                    _moveCodeBlockEvent(event, "up", "content", $fileName.value);
-                    break;
-
-                case "ArrowDown":
-                    _moveCodeBlockEvent(event, "down", "content", $fileName.value);
-                    break;
+    switch (event.key) {
+        case "Enter":
+            if (event.shiftKey === true) {
+                _codeBlockShiftEnterEvent(event, props.index);
             }
-        } else {
-            event.preventDefault();
-        }
+            break;
+
+        case "Tab":
+            _codeBlockTabEvent(event);
+            break;
+
+        case "ArrowUp":
+            _moveCodeBlockEvent(event, "up", "content", $fileName.value);
+            break;
+
+        case "ArrowDown":
+            _moveCodeBlockEvent(event, "down", "content", $fileName.value);
+            break;
     }
 }
 
