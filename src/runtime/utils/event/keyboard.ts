@@ -1224,7 +1224,7 @@ export async function _normalPasteEvent(event: ClipboardEvent, setEvent: Functio
 export async function _convertTextBlockType(event: KeyboardEvent, data: DETextBlock, index: number): Promise<void> {
     const editorStore = useEditorStore();
     const headingReg = new RegExp("^(#{1,3})");
-    const orderedReg = new RegExp("^\\d*\\.");
+    const orderedReg = new RegExp("^\\d+\\.");
     const unorderedReg = new RegExp("^-");
 
     if (editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
@@ -1366,30 +1366,30 @@ export function _hotKeyEvent(event: KeyboardEvent): void {
     const isControllKeyActive = event.ctrlKey || event.metaKey;
 
     if (isControllKeyActive === true) {
-        switch (event.key) {
-            case "b":
+        switch (event.code) {
+            case "KeyB":
                 event.preventDefault();
                 _setDecoration("de-bold");
                 break;
 
-            case "i":
+            case "KeyI":
                 event.preventDefault();
                 _setDecoration("de-italic");
                 break;
 
-            case "u":
+            case "KeyU":
                 event.preventDefault();
                 _setDecoration("de-underline");
                 break;
 
-            case "s":
+            case "KeyS":
                 if (event.shiftKey === true) {
                     event.preventDefault();
                     _setDecoration("de-strikethrough");
                 }
                 break;
 
-            case "c":
+            case "KeyC":
                 if (event.shiftKey === true) {
                     event.preventDefault();
                     _setDecoration("de-code");

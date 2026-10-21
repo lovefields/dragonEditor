@@ -18,7 +18,7 @@
         <p
             v-if="props.isEdit === false"
             class="de-language"
-            >{{ editorStore.codeBlockLnaguageList[props.data.language] }}</p
+            >{{ editorStore.codeBlockLanguageList[props.data.language] }}</p
         >
 
         <div
@@ -29,7 +29,7 @@
                 class="de-btn-language"
                 @click="isLanguageListActive = !isLanguageListActive"
                 ref="$btnLanguageList"
-                >{{ editorStore.codeBlockLnaguageList[props.data.language] }}</button
+                >{{ editorStore.codeBlockLanguageList[props.data.language] }}</button
             >
 
             <div
@@ -38,7 +38,7 @@
                 ref="$languageList"
             >
                 <button
-                    v-for="[name, value] in Object.entries(editorStore.codeBlockLnaguageList)"
+                    v-for="[name, value] in Object.entries(editorStore.codeBlockLanguageList)"
                     class="de-lang"
                     @click="setLanguageEvent(name)"
                 >

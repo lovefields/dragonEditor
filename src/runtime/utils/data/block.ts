@@ -327,7 +327,7 @@ export async function _convertMarkdownToEditor(textDataList: string[]): Promise<
 
                     isCodeBlock = true;
 
-                    if (startLineText[1]! in editorStore.codeBlockLnaguageList === true) {
+                    if (startLineText[1]! in editorStore.codeBlockLanguageList === true) {
                         codeBlockLang = startLineText[1] as string;
                     }
 
@@ -815,7 +815,7 @@ export function _checkDataIsEmpty(data?: DEContentData): boolean {
                 break;
 
             case "image":
-                if (blockData.caption !== "") {
+                if (blockData.src !== "" || blockData.caption !== "") {
                     suitable = false;
                 }
                 break;
@@ -846,6 +846,14 @@ export function _checkDataIsEmpty(data?: DEContentData): boolean {
                 if (blockData.textContent !== "") {
                     suitable = false;
                 }
+                break;
+
+            case "file":
+                suitable = false;
+                break;
+
+            case "component":
+                suitable = false;
                 break;
         }
     });

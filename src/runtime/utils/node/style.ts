@@ -670,7 +670,7 @@ export async function _setLink(url: string): Promise<void> {
                 }
             });
 
-            editorStore.status.anchorHerf = "";
+            editorStore.status.anchorHref = "";
             $editableParent.dispatchEvent(new Event("input"));
             await nextTick();
 

@@ -24,7 +24,7 @@ export function _editorMountedEvent(): void {
 }
 
 // 에디터 언마운트 이벤트
-export function _eidtorUnmountEvent(): void {
+export function _editorUnmountEvent(): void {
     const editorStore = useEditorStore();
 
     if (editorStore.element.scrollParentElement !== null) {

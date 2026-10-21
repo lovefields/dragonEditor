@@ -21,7 +21,7 @@ import { useEditorStore } from "../store/editor";
 import { ref, onMounted, watch, onBeforeUnmount } from "#imports";
 import { onClickOutside } from "@vueuse/core";
 import { _createTextBlockData, _arrangementContentData, _addBlock, _addImageBlock, _checkDataIsEmpty, _addComponentBlock, _generateId, _addFileBlock } from "../utils/data";
-import { _editorMountedEvent, _eidtorUnmountEvent } from "../utils/event";
+import { _editorMountedEvent, _editorUnmountEvent } from "../utils/event";
 import { _setDecoration, _setAlign } from "../utils/node";
 import type { DEContentData } from "../type.d.mts";
 
@@ -134,7 +134,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    _eidtorUnmountEvent();
+    _editorUnmountEvent();
 });
 </script>
 

@@ -7,7 +7,7 @@
             class="de-file-wrap"
             :href="editorStore.option.mediaHostURL + props.data.src"
             :download="props.data.name"
-            target="_black"
+            target="_blank"
             @click="blockWhenEdit"
         >
             <div class="de-icon-area">
