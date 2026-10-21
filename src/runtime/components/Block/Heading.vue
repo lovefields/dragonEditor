@@ -79,7 +79,7 @@ function updateData(event: Event): void {
 
 function renderHeading(): VNode {
     const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
-    const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
+    const memoKey = isFrozen ? `frozen-${(props.data.classList || []).join(" ")}-${props.data.level}` : JSON.stringify(props.data);
 
     return withMemo(
         [memoKey],

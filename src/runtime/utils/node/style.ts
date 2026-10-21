@@ -11,30 +11,33 @@ export async function _setAlign(style: DETextalign): Promise<void> {
     const newData = JSON.parse(JSON.stringify(editorStore.data)) as DEBlockData[];
     const blockData = newData[editorStore.selectedBlockIndex] as DETextBlock | DEHeadingBlock | DEListBlock | DEImageBlock;
 
-    if (blockData !== undefined && editorStore.fn.updateEditorData !== null && editorStore.cursorSelection !== null && editorStore.element.body !== null) {
+    if (blockData !== undefined && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
         let className: string = "";
-        const $editableElement = _findEditableParent(editorStore.cursorSelection.anchorNode as HTMLElement);
+        const classList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];
 
-        if ($editableElement !== null) {
-            const offset = _getEditorbleCursorPosition($editableElement);
-            const classList: string[] = ["de-align-left", "de-align-right", "de-align-center", "de-align-justify"];
+        switch (style) {
+            case "left":
+                className = "de-align-left";
+                break;
+            case "right":
+                className = "de-align-right";
+                break;
+            case "center":
+                className = "de-align-center";
+                break;
+            case "justify":
+                className = "de-align-justify";
+                break;
+        }
 
-            switch (style) {
-                case "left":
-                    className = "de-align-left";
-                    break;
-                case "right":
-                    className = "de-align-right";
-                    break;
-                case "center":
-                    className = "de-align-center";
-                    break;
-                case "justify":
-                    className = "de-align-justify";
-                    break;
+        if (blockData.type === "list") {
+            let $editableElement: HTMLElement | null = null;
+            if (editorStore.cursorSelection !== null && editorStore.cursorSelection.anchorNode !== null) {
+                $editableElement = _findEditableParent(editorStore.cursorSelection.anchorNode as HTMLElement);
             }
 
-            if (blockData.type === "list") {
+            if ($editableElement !== null) {
+                const offset = _getEditorbleCursorPosition($editableElement);
                 const $block = _findParentBlock($editableElement);
 
                 if ($block !== null) {
@@ -92,54 +95,103 @@ export async function _setAlign(style: DETextalign): Promise<void> {
                         }
                     }
                 }
-            } else {
-                classList.forEach((name) => {
-                    if (name !== className) {
-                        const index = blockData.classList.indexOf(name);
+            }
+        } else if (blockData.type === "image") {
+            if (!Array.isArray(blockData.classList)) {
+                blockData.classList = [];
+            }
 
-                        if (index !== -1) {
-                            blockData.classList.splice(index, 1);
-                        }
+            let $editableElement: HTMLElement | null = null;
+            if (editorStore.cursorSelection !== null && editorStore.cursorSelection.anchorNode !== null) {
+                $editableElement = _findEditableParent(editorStore.cursorSelection.anchorNode as HTMLElement);
+            }
+
+            let offset: DECursorOffset | null = null;
+            if ($editableElement !== null && $editableElement.classList.contains("de-caption")) {
+                offset = _getEditorbleCursorPosition($editableElement);
+            }
+
+            classList.forEach((name) => {
+                if (name !== className) {
+                    const index = blockData.classList.indexOf(name);
+
+                    if (index !== -1) {
+                        blockData.classList.splice(index, 1);
                     }
-                });
-
-                const classIndex = blockData.classList.indexOf(className);
-
-                if (classIndex === -1) {
-                    blockData.classList.push(className);
-                } else {
-                    blockData.classList.splice(classIndex, 1);
                 }
+            });
 
-                editorStore.selectedBlockId = "";
-                newData[editorStore.selectedBlockIndex] = blockData;
-                editorStore.fn.updateEditorData(newData);
-                await nextTick();
+            const classIndex = blockData.classList.indexOf(className);
 
+            if (classIndex === -1) {
+                blockData.classList.push(className);
+            } else {
+                blockData.classList.splice(classIndex, 1);
+            }
+
+            newData[editorStore.selectedBlockIndex] = blockData;
+            editorStore.fn.updateEditorData(newData);
+            await nextTick();
+
+            if (offset !== null) {
                 const $block = editorStore.element.body.children[editorStore.selectedBlockIndex] as HTMLElement;
-
                 if ($block !== undefined) {
-                    if (blockData.type === "image") {
-                        const $editableElement = _findEditableElement($block, "down");
-
-                        if ($editableElement !== null) {
-                            const $node = $editableElement.childNodes[offset.nodeIndex];
-
-                            if ($node !== undefined) {
-                                $node.dispatchEvent(new Event("input"));
-                                _setCursorPosition($node, offset.offset);
-                            } else {
-                                _setCursorPosition($editableElement, offset.offset);
-                            }
-                        }
-                    } else {
-                        const $node = $block.childNodes[offset.nodeIndex];
-
+                    const $caption = $block.querySelector(".de-caption") as HTMLElement | null;
+                    if ($caption !== null) {
+                        const $node = $caption.childNodes[offset.nodeIndex];
                         if ($node !== undefined) {
-                            $block.dispatchEvent(new Event("input"));
                             _setCursorPosition($node, offset.offset);
+                        } else {
+                            _setCursorPosition($caption, offset.offset);
                         }
                     }
+                }
+            }
+        } else {
+            if (!Array.isArray(blockData.classList)) {
+                blockData.classList = [];
+            }
+
+            let $editableElement: HTMLElement | null = null;
+            if (editorStore.cursorSelection !== null && editorStore.cursorSelection.anchorNode !== null) {
+                $editableElement = _findEditableParent(editorStore.cursorSelection.anchorNode as HTMLElement);
+            }
+
+            const offset = $editableElement !== null ? _getEditorbleCursorPosition($editableElement) : { nodeIndex: 0, offset: 0 };
+
+            classList.forEach((name) => {
+                if (name !== className) {
+                    const index = blockData.classList.indexOf(name);
+
+                    if (index !== -1) {
+                        blockData.classList.splice(index, 1);
+                    }
+                }
+            });
+
+            const classIndex = blockData.classList.indexOf(className);
+
+            if (classIndex === -1) {
+                blockData.classList.push(className);
+            } else {
+                blockData.classList.splice(classIndex, 1);
+            }
+
+            newData[editorStore.selectedBlockIndex] = blockData;
+            editorStore.fn.updateEditorData(newData);
+            await nextTick();
+
+            const $block = editorStore.element.body.children[editorStore.selectedBlockIndex] as HTMLElement;
+
+            if ($block !== undefined) {
+                const $node = $block.childNodes[offset.nodeIndex];
+
+                if ($node !== undefined) {
+                    $block.dispatchEvent(new Event("input"));
+                    _setCursorPosition($node, offset.offset);
+                } else {
+                    $block.dispatchEvent(new Event("input"));
+                    _setCursorPosition($block, 0);
                 }
             }
         }

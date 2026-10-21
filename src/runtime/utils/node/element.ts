@@ -9,7 +9,7 @@ export function _findFocusableBlock($block: HTMLElement, direction: "up" | "down
     } else {
         const type = _getBlockType($sibling);
 
-        if (type !== "custom" && type !== "divider") {
+        if (type !== "custom" && type !== "divider" && type !== "file" && type !== "component") {
             return $sibling;
         } else {
             return _findFocusableBlock($sibling, direction);
@@ -44,20 +44,13 @@ export function _findEditableElement($block: HTMLElement, direction: "up" | "dow
             break;
 
         case "custom":
-            const customNerbyElement = _findFocusableBlock($block, direction);
-
-            if (customNerbyElement !== null) {
-                $editableTarget = _findEditableElement(customNerbyElement, direction);
-            } else {
-                $editableTarget = null;
-            }
-            break;
-
         case "divider":
-            const dividerNerbyElement = _findFocusableBlock($block, direction);
+        case "file":
+        case "component":
+            const nearbyElement = _findFocusableBlock($block, direction);
 
-            if (dividerNerbyElement !== null) {
-                $editableTarget = _findEditableElement(dividerNerbyElement, direction);
+            if (nearbyElement !== null) {
+                $editableTarget = _findEditableElement(nearbyElement, direction);
             } else {
                 $editableTarget = null;
             }

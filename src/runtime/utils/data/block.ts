@@ -196,6 +196,14 @@ export function _getBlockType($block: HTMLElement): DEBlockType {
         case $block.classList.contains("de-divider-block"):
             type = "divider";
             break;
+
+        case $block.classList.contains("de-file-block"):
+            type = "file";
+            break;
+
+        case $block.classList.contains("de-component-block"):
+            type = "component";
+            break;
     }
 
     return type;

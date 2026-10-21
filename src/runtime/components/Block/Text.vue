@@ -27,7 +27,7 @@ const emit = defineEmits<{
 }>();
 const memoData = computed<any[]>(() => {
     const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
-    const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
+    const memoKey = isFrozen ? `frozen-${(props.data.classList || []).join(" ")}-${props.data.depth ?? 0}` : JSON.stringify(props.data);
 
     return [memoKey];
 });
