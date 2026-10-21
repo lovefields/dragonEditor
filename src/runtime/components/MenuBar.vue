@@ -84,10 +84,7 @@
             </div>
 
             <div class="de-col">
-                <label
-                    class="de-menu"
-                    type="button"
-                >
+                <label class="de-menu">
                     <component :is="_getIconNode('image')" />
                     <input
                         type="file"
@@ -98,10 +95,7 @@
                     />
                 </label>
 
-                <label
-                    class="de-menu"
-                    type="button"
-                >
+                <label class="de-menu">
                     <component :is="_getIconNode('upload')" />
                     <input
                         type="file"
@@ -249,14 +243,14 @@
                     type="button"
                     @click="addBlockEvent('unordered-list')"
                 >
-                    Unodered List
+                    Unordered List
                 </button>
                 <button
                     class="de-add-block"
                     type="button"
                     @click="addBlockEvent('ordered-list')"
                 >
-                    Odered List
+                    Ordered List
                 </button>
                 <button
                     class="de-add-block"
@@ -304,7 +298,7 @@
                 class="de-link-text-area"
             >
                 <input
-                    v-model="editorStore.status.anchorHerf"
+                    v-model="editorStore.status.anchorHref"
                     class="de-input"
                     :class="{ '--error': urlValidation === false }"
                     name="url"
@@ -327,7 +321,7 @@
                     v-for="item in editorStore.data.filter((i) => i.type === 'heading')"
                     v-html="item.textContent"
                     class="de-btn"
-                    :class="{ '--active': `#${item.id}` === editorStore.status.anchorHerf }"
+                    :class="{ '--active': `#${item.id}` === editorStore.status.anchorHref }"
                     :key="item.id"
                     @click="setLinkEvent(`#${item.id}`)"
                 >
@@ -395,7 +389,7 @@ function setLinkEvent(url?: string): void {
     const urlReg = /^(https?:\/\/|#).+/;
 
     if (url === undefined) {
-        url = editorStore.status.anchorHerf;
+        url = editorStore.status.anchorHref;
     }
 
     if (urlReg.test(url) === true) {

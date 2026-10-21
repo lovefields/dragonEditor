@@ -841,34 +841,45 @@ export async function _defaultBackspaceEvent(event: KeyboardEvent): Promise<void
 
                     if (editorStore.selectedBlockIndex === 0) {
                         if (curruntData.type === "heading") {
-                            newData.splice(editorStore.selectedBlockIndex, 1, _createTextBlockData(curruntData.textContent));
+                            const newTextBlock = _createTextBlockData(curruntData.textContent);
+                            newData.splice(editorStore.selectedBlockIndex, 1, newTextBlock);
+                            editorStore.selectedBlockId = newTextBlock.id;
                             editorStore.fn.updateEditorData(newData);
                             await nextTick();
 
                             const $block = editorStore.element.body.children[0] as HTMLElement;
 
-                            $block.focus();
+                            if ($block !== undefined) {
+                                $block.focus();
+                            }
                         }
                     } else {
-                        const preveiousData = newData[editorStore.selectedBlockIndex - 1] as DEBlockData;
-                        const $preveiousBlock = editorStore.element.body.children[editorStore.selectedBlockIndex - 1] as HTMLElement;
+                        const targetIndex = editorStore.selectedBlockIndex;
+                        const preveiousData = newData[targetIndex - 1] as DEBlockData;
+                        const $preveiousBlock = editorStore.element.body.children[targetIndex - 1] as HTMLElement;
 
                         if (preveiousData.type === "text" || preveiousData.type === "heading") {
                             const blockLastOffset = _getEditorbleEndPosition($preveiousBlock);
 
                             preveiousData.textContent += curruntData.textContent;
-                            newData.splice(editorStore.selectedBlockIndex - 1, 1, preveiousData);
-                            newData.splice(editorStore.selectedBlockIndex, 1);
+                            newData.splice(targetIndex - 1, 1, preveiousData);
+                            newData.splice(targetIndex, 1);
+
+                            editorStore.selectedBlockIndex = targetIndex - 1;
+                            editorStore.selectedBlockId = preveiousData.id;
                             editorStore.fn.updateEditorData(newData);
                             await nextTick();
 
-                            const $block = editorStore.element.body.children[editorStore.selectedBlockIndex - 1] as HTMLElement;
-                            const $blockTargetNode = $block.childNodes[blockLastOffset.nodeIndex];
+                            const $block = editorStore.element.body.children[targetIndex - 1] as HTMLElement;
 
-                            if ($blockTargetNode !== undefined) {
-                                _setCursorPosition($blockTargetNode, blockLastOffset.offset);
-                            } else {
-                                _setCursorPosition($block, 0);
+                            if ($block !== undefined) {
+                                const $blockTargetNode = $block.childNodes[blockLastOffset.nodeIndex];
+
+                                if ($blockTargetNode !== undefined) {
+                                    _setCursorPosition($blockTargetNode, blockLastOffset.offset);
+                                } else {
+                                    _setCursorPosition($block, 0);
+                                }
                             }
                         } else if (preveiousData.type === "list") {
                             const $listItems = $preveiousBlock.querySelectorAll(".de-item-text");
@@ -880,21 +891,43 @@ export async function _defaultBackspaceEvent(event: KeyboardEvent): Promise<void
 
                                 listChildData.textContent += curruntData.textContent;
                                 preveiousData.child[preveiousData.child.length - 1] = listChildData;
-                                newData.splice(editorStore.selectedBlockIndex - 1, 1, preveiousData);
-                                newData.splice(editorStore.selectedBlockIndex, 1);
+                                newData.splice(targetIndex - 1, 1, preveiousData);
+                                newData.splice(targetIndex, 1);
+
+                                editorStore.selectedBlockIndex = targetIndex - 1;
+                                editorStore.selectedBlockId = preveiousData.id;
                                 editorStore.fn.updateEditorData(newData);
                                 await nextTick();
 
-                                const $node = $listLastChild.childNodes[listChildOffset.nodeIndex];
+                                const $block = editorStore.element.body.children[targetIndex - 1] as HTMLElement;
+                                if ($block !== undefined) {
+                                    const $items = $block.querySelectorAll(".de-item-text");
+                                    const $targetItem = $items[$items.length - 1];
 
-                                if ($node !== undefined) {
-                                    _setCursorPosition($node, listChildOffset.offset);
+                                    if ($targetItem !== undefined) {
+                                        const $node = $targetItem.childNodes[listChildOffset.nodeIndex];
+                                        if ($node !== undefined) {
+                                            _setCursorPosition($node, listChildOffset.offset);
+                                        } else {
+                                            _setCursorPosition($targetItem, listChildOffset.offset);
+                                        }
+                                    }
                                 }
                             }
                         } else {
-                            newData.splice(editorStore.selectedBlockIndex - 1, 1);
+                            newData.splice(targetIndex - 1, 1);
+                            editorStore.selectedBlockIndex = targetIndex - 1;
+                            editorStore.selectedBlockId = curruntData.id;
                             editorStore.fn.updateEditorData(newData);
-                            editorStore.selectedBlockIndex -= 1;
+                            await nextTick();
+
+                            const $block = editorStore.element.body.children[targetIndex - 1] as HTMLElement;
+                            if ($block !== undefined) {
+                                const $targetEl = _findEditableElement($block, "down");
+                                if ($targetEl !== null) {
+                                    $targetEl.focus();
+                                }
+                            }
                         }
                     }
                 }
@@ -1224,7 +1257,7 @@ export async function _normalPasteEvent(event: ClipboardEvent, setEvent: Functio
 export async function _convertTextBlockType(event: KeyboardEvent, data: DETextBlock, index: number): Promise<void> {
     const editorStore = useEditorStore();
     const headingReg = new RegExp("^(#{1,3})");
-    const orderedReg = new RegExp("^\\d*\\.");
+    const orderedReg = new RegExp("^\\d+\\.");
     const unorderedReg = new RegExp("^-");
 
     if (editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
@@ -1366,30 +1399,30 @@ export function _hotKeyEvent(event: KeyboardEvent): void {
     const isControllKeyActive = event.ctrlKey || event.metaKey;
 
     if (isControllKeyActive === true) {
-        switch (event.key) {
-            case "b":
+        switch (event.code) {
+            case "KeyB":
                 event.preventDefault();
                 _setDecoration("de-bold");
                 break;
 
-            case "i":
+            case "KeyI":
                 event.preventDefault();
                 _setDecoration("de-italic");
                 break;
 
-            case "u":
+            case "KeyU":
                 event.preventDefault();
                 _setDecoration("de-underline");
                 break;
 
-            case "s":
+            case "KeyS":
                 if (event.shiftKey === true) {
                     event.preventDefault();
                     _setDecoration("de-strikethrough");
                 }
                 break;
 
-            case "c":
+            case "KeyC":
                 if (event.shiftKey === true) {
                     event.preventDefault();
                     _setDecoration("de-code");
@@ -1401,28 +1434,67 @@ export function _hotKeyEvent(event: KeyboardEvent): void {
 
 // 글로벌 키 이벤트 (비 에디팅 블럭 삭제 및 컨트롤 용)
 export async function _globalKeyEvent(event: KeyboardEvent): Promise<void> {
+    if (event.isComposing === true || event.key === "Process" || event.key === "Unidentified") {
+        return;
+    }
+
     const editorStore = useEditorStore();
 
     if (editorStore.selectedBlockIndex !== -1 && editorStore.fn.updateEditorData !== null && editorStore.element.body !== null) {
         const newBlockData = JSON.parse(JSON.stringify(editorStore.data)) as DEContentData;
-        const blockData = newBlockData[editorStore.selectedBlockIndex];
+        const targetIndex = editorStore.selectedBlockIndex;
+        const blockData = newBlockData[targetIndex];
 
         if (blockData !== undefined) {
             switch (event.key) {
                 case "Backspace":
                     // 구분선, 컴포넌트, 커스텀, 파일 블럭이 선택되어 있는 경우 블럭 삭제 이벤트 진행
                     if (blockData.type === "divider" || blockData.type === "component" || blockData.type === "custom" || blockData.type === "file") {
-                        newBlockData.splice(editorStore.selectedBlockIndex, 1);
-                        editorStore.fn.updateEditorData(newBlockData);
-                        await nextTick();
+                        event.preventDefault();
+                        newBlockData.splice(targetIndex, 1);
 
-                        const $block = editorStore.element.body.children[editorStore.selectedBlockIndex - 1] as HTMLElement;
+                        if (newBlockData.length === 0) {
+                            const newTextBlock = _createTextBlockData();
+                            newBlockData.push(newTextBlock);
+                            editorStore.selectedBlockIndex = 0;
+                            editorStore.selectedBlockId = newTextBlock.id;
+                            editorStore.fn.updateEditorData(newBlockData);
+                            await nextTick();
 
-                        if ($block !== undefined) {
-                            const $target = _findEditableElement($block, "up");
+                            const $block = editorStore.element.body.children[0] as HTMLElement;
+                            if ($block !== undefined) {
+                                const $target = _findEditableElement($block, "down");
+                                if ($target !== null) {
+                                    $target.focus();
+                                }
+                            }
+                        } else if (targetIndex > 0) {
+                            const nextIndex = targetIndex - 1;
+                            editorStore.selectedBlockIndex = nextIndex;
+                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.fn.updateEditorData(newBlockData);
+                            await nextTick();
 
-                            if ($target !== null) {
-                                $target.focus();
+                            const $block = editorStore.element.body.children[nextIndex] as HTMLElement;
+                            if ($block !== undefined) {
+                                const $target = _findEditableElement($block, "up");
+                                if ($target !== null) {
+                                    $target.focus();
+                                }
+                            }
+                        } else {
+                            const nextIndex = 0;
+                            editorStore.selectedBlockIndex = nextIndex;
+                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.fn.updateEditorData(newBlockData);
+                            await nextTick();
+
+                            const $block = editorStore.element.body.children[nextIndex] as HTMLElement;
+                            if ($block !== undefined) {
+                                const $target = _findEditableElement($block, "down");
+                                if ($target !== null) {
+                                    $target.focus();
+                                }
                             }
                         }
                     }
@@ -1431,17 +1503,51 @@ export async function _globalKeyEvent(event: KeyboardEvent): Promise<void> {
                 case "Delete":
                     // 구분선, 컴포넌트, 커스텀, 파일 블럭이 선택되어 있는 경우 블럭 삭제 이벤트 진행
                     if (blockData.type === "divider" || blockData.type === "component" || blockData.type === "custom" || blockData.type === "file") {
-                        newBlockData.splice(editorStore.selectedBlockIndex, 1);
-                        editorStore.fn.updateEditorData(newBlockData);
-                        await nextTick();
+                        event.preventDefault();
+                        newBlockData.splice(targetIndex, 1);
 
-                        const $block = editorStore.element.body.children[editorStore.selectedBlockIndex + 1] as HTMLElement;
+                        if (newBlockData.length === 0) {
+                            const newTextBlock = _createTextBlockData();
+                            newBlockData.push(newTextBlock);
+                            editorStore.selectedBlockIndex = 0;
+                            editorStore.selectedBlockId = newTextBlock.id;
+                            editorStore.fn.updateEditorData(newBlockData);
+                            await nextTick();
 
-                        if ($block !== undefined) {
-                            const $target = _findEditableElement($block, "down");
+                            const $block = editorStore.element.body.children[0] as HTMLElement;
+                            if ($block !== undefined) {
+                                const $target = _findEditableElement($block, "down");
+                                if ($target !== null) {
+                                    $target.focus();
+                                }
+                            }
+                        } else if (targetIndex < newBlockData.length) {
+                            const nextIndex = targetIndex;
+                            editorStore.selectedBlockIndex = nextIndex;
+                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.fn.updateEditorData(newBlockData);
+                            await nextTick();
 
-                            if ($target !== null) {
-                                $target.focus();
+                            const $block = editorStore.element.body.children[nextIndex] as HTMLElement;
+                            if ($block !== undefined) {
+                                const $target = _findEditableElement($block, "down");
+                                if ($target !== null) {
+                                    $target.focus();
+                                }
+                            }
+                        } else {
+                            const nextIndex = newBlockData.length - 1;
+                            editorStore.selectedBlockIndex = nextIndex;
+                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.fn.updateEditorData(newBlockData);
+                            await nextTick();
+
+                            const $block = editorStore.element.body.children[nextIndex] as HTMLElement;
+                            if ($block !== undefined) {
+                                const $target = _findEditableElement($block, "up");
+                                if ($target !== null) {
+                                    $target.focus();
+                                }
                             }
                         }
                     }

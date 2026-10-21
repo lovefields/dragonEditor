@@ -196,6 +196,14 @@ export function _getBlockType($block: HTMLElement): DEBlockType {
         case $block.classList.contains("de-divider-block"):
             type = "divider";
             break;
+
+        case $block.classList.contains("de-file-block"):
+            type = "file";
+            break;
+
+        case $block.classList.contains("de-component-block"):
+            type = "component";
+            break;
     }
 
     return type;
@@ -308,145 +316,188 @@ export async function _convertMarkdownToEditor(textDataList: string[]): Promise<
     const editorStore = useEditorStore();
     const blockList: DEBlockData[] = [];
     const unorderListReg = new RegExp("^( +)?(\\+|\\*|-)(?= )( )");
-    const orderListReg = new RegExp("^( +)?(\\d+.)(?= )( )");
+    const orderListReg = new RegExp("^( +)?(\\d+\\.)(?= )( )");
     const codeBlockReg = new RegExp("^```");
     let tempData: DEBlockData | null = null;
     let isCodeBlock: boolean = false;
 
-    textDataList.forEach(async (blockData, lineIndex) => {
-        switch (true) {
-            case new RegExp("^(---|___|\\*\\*\\*)").test(blockData):
-                blockList.push(_createDividerBlockData());
-                break;
+    for (let lineIndex = 0; lineIndex < textDataList.length; lineIndex += 1) {
+        const blockData = textDataList[lineIndex]!;
 
-            case codeBlockReg.test(blockData) || isCodeBlock === true:
-                if (isCodeBlock === false) {
-                    // 코드 블럭 시작
-                    const startLineText = blockData.split("```");
-                    let codeBlockLang = "text";
-
-                    isCodeBlock = true;
-
-                    if (startLineText[1]! in editorStore.codeBlockLnaguageList === true) {
-                        codeBlockLang = startLineText[1] as string;
-                    }
-
-                    tempData = {
-                        id: _generateId(),
-                        type: "code",
-                        filename: "",
-                        language: codeBlockLang,
-                        textContent: "",
-                    } as DECodeBlock;
-                } else {
-                    if (tempData !== null) {
-                        if (codeBlockReg.test(blockData) !== true) {
-                            // 중간
-                            if (tempData.type === "code") {
-                                tempData.textContent += `${blockData}\n`;
-                            }
-                        } else {
-                            // 마지막
-                            if (tempData.type === "code") {
-                                tempData.textContent = tempData.textContent.trim();
-                                blockList.push(tempData);
-                                isCodeBlock = false;
-                                tempData = null;
-                            }
-                        }
-                    }
+        // 1. 코드 블록 내부 처리 (우선순위 1위)
+        if (isCodeBlock === true) {
+            if (codeBlockReg.test(blockData) === true) {
+                // 코드 블록 종료
+                if (tempData !== null && tempData.type === "code") {
+                    tempData.textContent = tempData.textContent.trim();
+                    blockList.push(tempData);
+                    isCodeBlock = false;
+                    tempData = null;
                 }
-                break;
-
-            case orderListReg.test(blockData):
-                // 순서 있는 리스트
-                const olSplitText: string[] = blockData.split(new RegExp("\\d+.(?= )"));
-                const olDepth: number = Math.floor(olSplitText[0]!.length / 4);
-
-                if (tempData === null) {
-                    // 리스트 시작
-                    tempData = _createListBlockData("ol", [_createListBlockChildData(convertMarkdownTextToEditorText(olSplitText[1]!.trim()), olDepth)]);
-                } else {
-                    // 리스트 중간
-                    if (tempData.type === "list") {
-                        const nextLine = textDataList[lineIndex + 1];
-
-                        tempData.child.push(_createListBlockChildData(convertMarkdownTextToEditorText(olSplitText[1]!.trim()), olDepth));
-
-                        // 리스트 종료
-                        if (nextLine !== undefined) {
-                            if (orderListReg.test(nextLine) === false) {
-                                blockList.push(tempData);
-                                tempData = null;
-                            }
-                        } else {
-                            blockList.push(tempData);
-                            tempData = null;
-                        }
-                    }
+            } else {
+                // 코드 블록 내부 내용 누적
+                if (tempData !== null && tempData.type === "code") {
+                    tempData.textContent += `${blockData}\n`;
                 }
-                break;
-
-            case unorderListReg.test(blockData):
-                // 순서 없는 리스트
-                const ulSplitText: string[] = blockData.split(new RegExp("\\+|\\*|-"));
-                const ulDepth: number = Math.floor(ulSplitText[0]!.length / 4);
-
-                if (tempData === null) {
-                    // 리스트 시작
-                    tempData = _createListBlockData("ul", [_createListBlockChildData(convertMarkdownTextToEditorText(ulSplitText[1]!.trim()), ulDepth)]);
-                } else {
-                    // 리스트 중간
-                    if (tempData.type === "list") {
-                        const nextLine = textDataList[lineIndex + 1];
-
-                        tempData.child.push(_createListBlockChildData(convertMarkdownTextToEditorText(ulSplitText[1]!.trim()), ulDepth));
-
-                        // 리스트 종료
-                        if (nextLine !== undefined) {
-                            if (unorderListReg.test(nextLine) === false) {
-                                blockList.push(tempData);
-                                tempData = null;
-                            }
-                        } else {
-                            blockList.push(tempData);
-                            tempData = null;
-                        }
-                    }
-                }
-                break;
-
-            case new RegExp("^###(?= )").test(blockData):
-                // h3 블럭
-                blockList.push(_createHeadingBlockData(3, convertMarkdownTextToEditorText(blockData.substring(4).trim())));
-                break;
-
-            case new RegExp("^##(?= )").test(blockData):
-                // h2 블럭
-                blockList.push(_createHeadingBlockData(2, convertMarkdownTextToEditorText(blockData.substring(3).trim())));
-                break;
-
-            case new RegExp("^#(?= )").test(blockData):
-                // h1 블럭
-                blockList.push(_createHeadingBlockData(1, convertMarkdownTextToEditorText(blockData.substring(2).trim())));
-                break;
-
-            case new RegExp("^\\!\\[.*(?=\\))").test(blockData):
-                // 이미지 블럭
-                const caption = blockData.match(new RegExp("^\\!\\[(.*)(?=\\])\\]\\(([^ ]*)(\\)?)"))![1];
-                const src = blockData.match(new RegExp("^\\!\\[(.*)(?=\\])\\]\\(([^ ]*)(\\)?)"))![2];
-
-                if (caption !== undefined && src !== undefined) {
-                    blockList.push(_createImageBlockData(src.replace(")", ""), caption, false));
-                }
-                break;
-
-            default:
-                // 기본 텍스트 블럭
-                blockList.push(_createTextBlockData(convertMarkdownTextToEditorText(blockData)));
-                break;
+            }
+            continue;
         }
-    });
+
+        // 2. 코드 블록 시작
+        if (codeBlockReg.test(blockData) === true) {
+            if (tempData !== null) {
+                blockList.push(tempData);
+                tempData = null;
+            }
+
+            isCodeBlock = true;
+            const startLineText = blockData.split("```");
+            let codeBlockLang = "text";
+            const langKey = (startLineText[1] || "").trim();
+
+            if (langKey !== "" && langKey in editorStore.codeBlockLanguageList) {
+                codeBlockLang = langKey;
+            }
+
+            tempData = {
+                id: _generateId(),
+                type: "code",
+                filename: "",
+                language: codeBlockLang,
+                textContent: "",
+            } as DECodeBlock;
+            continue;
+        }
+
+        // 3. 구분선 (---, ___, ***)
+        if (new RegExp("^(---|___|\\*\\*\\*)").test(blockData) === true) {
+            if (tempData !== null) {
+                blockList.push(tempData);
+                tempData = null;
+            }
+            blockList.push(_createDividerBlockData());
+            continue;
+        }
+
+        // 4. 순서 있는 리스트 (1. )
+        const olMatch = blockData.match(/^(\s*)(\d+)\.\s+(.*)$/);
+        if (olMatch !== null) {
+            const indent = olMatch[1] || "";
+            const textContent = olMatch[3] || "";
+            const olDepth = Math.floor(indent.length / 4);
+
+            if (tempData === null || tempData.type !== "list" || tempData.element !== "ol") {
+                if (tempData !== null) {
+                    blockList.push(tempData);
+                }
+                tempData = _createListBlockData("ol", [_createListBlockChildData(convertMarkdownTextToEditorText(textContent), olDepth)]);
+            } else {
+                tempData.child.push(_createListBlockChildData(convertMarkdownTextToEditorText(textContent), olDepth));
+            }
+
+            const nextLine = textDataList[lineIndex + 1];
+            if (nextLine === undefined || orderListReg.test(nextLine) === false) {
+                blockList.push(tempData);
+                tempData = null;
+            }
+            continue;
+        }
+
+        // 5. 순서 없는 리스트 (- , + , * )
+        const ulMatch = blockData.match(/^(\s*)([-+*])\s+(.*)$/);
+        if (ulMatch !== null) {
+            const indent = ulMatch[1] || "";
+            const textContent = ulMatch[3] || "";
+            const ulDepth = Math.floor(indent.length / 4);
+
+            if (tempData === null || tempData.type !== "list" || tempData.element !== "ul") {
+                if (tempData !== null) {
+                    blockList.push(tempData);
+                }
+                tempData = _createListBlockData("ul", [_createListBlockChildData(convertMarkdownTextToEditorText(textContent), ulDepth)]);
+            } else {
+                tempData.child.push(_createListBlockChildData(convertMarkdownTextToEditorText(textContent), ulDepth));
+            }
+
+            const nextLine = textDataList[lineIndex + 1];
+            if (nextLine === undefined || unorderListReg.test(nextLine) === false) {
+                blockList.push(tempData);
+                tempData = null;
+            }
+            continue;
+        }
+
+        // 6. 리스트가 끝난 후 다른 일반 블록이 온 경우 이전 tempData 닫기
+        if (tempData !== null) {
+            blockList.push(tempData);
+            tempData = null;
+        }
+
+        // 7. 헤딩 블록
+        if (new RegExp("^###(?= )").test(blockData) === true) {
+            blockList.push(_createHeadingBlockData(3, convertMarkdownTextToEditorText(blockData.substring(4).trim())));
+            continue;
+        }
+
+        if (new RegExp("^##(?= )").test(blockData) === true) {
+            blockList.push(_createHeadingBlockData(2, convertMarkdownTextToEditorText(blockData.substring(3).trim())));
+            continue;
+        }
+
+        if (new RegExp("^#(?= )").test(blockData) === true) {
+            blockList.push(_createHeadingBlockData(1, convertMarkdownTextToEditorText(blockData.substring(2).trim())));
+            continue;
+        }
+
+        // 8. 이미지 블록 (![caption](src "optional title"))
+        const imgMatch = blockData.match(/^!\[(.*?)\]\((.*?)\)(.*)$/);
+        if (imgMatch !== null) {
+            let caption = imgMatch[1] || "";
+            const insideParen = (imgMatch[2] || "").trim();
+            const afterText = (imgMatch[3] || "").trim();
+            let src = insideParen;
+            let title = "";
+
+            // URL 뒤에 타이틀이나 추가 텍스트가 오는 경우 분리 (예: url "title", url 'title' 등)
+            const titleMatch = insideParen.match(/^(\S+)\s+["']?(.*?)["']?$/);
+            if (titleMatch !== null) {
+                src = titleMatch[1] || "";
+                title = titleMatch[2] || "";
+            } else {
+                const spaceIndex = insideParen.search(/\s/);
+                if (spaceIndex !== -1) {
+                    src = insideParen.substring(0, spaceIndex);
+                    title = insideParen.substring(spaceIndex + 1).replace(/^["']|["']$/g, "").trim();
+                }
+            }
+
+            if (caption === "" && title !== "") {
+                caption = title;
+            }
+
+            if (src !== "") {
+                blockList.push(_createImageBlockData(src, caption, false));
+
+                if (afterText !== "") {
+                    blockList.push(_createTextBlockData(convertMarkdownTextToEditorText(afterText)));
+                }
+
+                continue;
+            }
+        }
+
+        // 9. 기본 텍스트 블록
+        blockList.push(_createTextBlockData(convertMarkdownTextToEditorText(blockData)));
+    }
+
+    // 파일 끝에서 닫히지 않은 블록 처리 (미종료 코드 블록, 미종료 리스트 블록)
+    if (tempData !== null) {
+        if (tempData.type === "code") {
+            tempData.textContent = tempData.textContent.trim();
+        }
+        blockList.push(tempData);
+        tempData = null;
+    }
 
     return blockList;
 }
@@ -815,7 +866,7 @@ export function _checkDataIsEmpty(data?: DEContentData): boolean {
                 break;
 
             case "image":
-                if (blockData.caption !== "") {
+                if (blockData.src !== "" || blockData.caption !== "") {
                     suitable = false;
                 }
                 break;
@@ -846,6 +897,14 @@ export function _checkDataIsEmpty(data?: DEContentData): boolean {
                 if (blockData.textContent !== "") {
                     suitable = false;
                 }
+                break;
+
+            case "file":
+                suitable = false;
+                break;
+
+            case "component":
+                suitable = false;
                 break;
         }
     });

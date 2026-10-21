@@ -17,13 +17,13 @@ export function _updateCursorData(): void {
                     const $parentElement = range.startContainer.parentElement;
 
                     if ($parentElement !== null && $parentElement.tagName === "A") {
-                        editorStore.status.anchorHerf = ($parentElement as HTMLAnchorElement).href;
+                        editorStore.status.anchorHref = ($parentElement as HTMLAnchorElement).href;
                     } else {
-                        editorStore.status.anchorHerf = "";
+                        editorStore.status.anchorHref = "";
                     }
                 }
             } else {
-                editorStore.status.anchorHerf = "";
+                editorStore.status.anchorHref = "";
             }
         }
     } else {

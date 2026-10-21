@@ -52,41 +52,39 @@ function updateData(event: Event, liIndex: number): void {
 }
 
 function keydownEvent(event: KeyboardEvent): void {
-    if (event.isComposing === false) {
-        switch (event.key) {
-            case "Enter":
-                // 엔터 이벤트
-                if (event.shiftKey === false) {
-                    _listBlockEnterEvent(event, props.data, props.index, childIndex.value, setEdit, abortEdit);
-                } else {
-                    // 쉬프트 엔터 이벤트
-                }
-                break;
+    if (event.isComposing === true || event.key === "Process" || event.key === "Unidentified") {
+        return;
+    }
 
-            case "Tab":
-                _listChildTabEvent(event, props.data, props.index, childIndex.value, setEdit, abortEdit);
+    switch (event.key) {
+        case "Enter":
+            // 엔터 이벤트
+            if (event.shiftKey === false) {
+                _listBlockEnterEvent(event, props.data, props.index, childIndex.value, setEdit, abortEdit);
+            } else {
+                // 쉬프트 엔터 이벤트
+            }
+            break;
 
-                break;
+        case "Tab":
+            _listChildTabEvent(event, props.data, props.index, childIndex.value, setEdit, abortEdit);
+            break;
 
-            case "ArrowUp":
-                _moveListChildEvent(event, props.data, props.index, childIndex.value, "up");
+        case "ArrowUp":
+            _moveListChildEvent(event, props.data, props.index, childIndex.value, "up");
+            break;
 
-                break;
+        case "ArrowDown":
+            _moveListChildEvent(event, props.data, props.index, childIndex.value, "down");
+            break;
 
-            case "ArrowDown":
-                _moveListChildEvent(event, props.data, props.index, childIndex.value, "down");
-                break;
+        case "Backspace":
+            _listBackspaceEvent(event, childIndex.value);
+            break;
 
-            case "Backspace":
-                _listBackspaceEvent(event, childIndex.value);
-                break;
-
-            case "Delete":
-                _listDeleteEvent(event, childIndex.value, setEdit, abortEdit);
-                break;
-        }
-    } else {
-        event.preventDefault();
+        case "Delete":
+            _listDeleteEvent(event, childIndex.value, setEdit, abortEdit);
+            break;
     }
 }
 

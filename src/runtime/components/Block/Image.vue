@@ -57,7 +57,7 @@ const emit = defineEmits<{
 }>();
 const memoData = computed<any[]>(() => {
     const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
-    const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
+    const memoKey = isFrozen ? `frozen-${(props.data.classList || []).join(" ")}-${props.data.maxWidth}` : JSON.stringify(props.data);
 
     return [memoKey];
 });
@@ -77,31 +77,29 @@ function abortEdit() {
 }
 
 function keydownEvent(event: KeyboardEvent): void {
-    if (event.isComposing === false) {
-        switch (event.key) {
-            case "Enter":
-                // 엔터 이벤트
-                if (event.shiftKey === false) {
-                    _imageEnterEvent(event, props.data, props.index);
-                } else {
-                    // 쉬프트 엔터 이벤트
-                    event.preventDefault();
-                }
+    if (event.isComposing === true || event.key === "Process" || event.key === "Unidentified") {
+        return;
+    }
 
-                break;
+    switch (event.key) {
+        case "Enter":
+            // 엔터 이벤트
+            if (event.shiftKey === false) {
+                _imageEnterEvent(event, props.data, props.index);
+            } else {
+                // 쉬프트 엔터 이벤트
+                event.preventDefault();
+            }
 
-            case "ArrowUp":
-                _moveBlockDefaultEvent(event, "up");
+            break;
 
-                break;
+        case "ArrowUp":
+            _moveBlockDefaultEvent(event, "up");
+            break;
 
-            case "ArrowDown":
-                _moveBlockDefaultEvent(event, "down");
-
-                break;
-        }
-    } else {
-        event.preventDefault();
+        case "ArrowDown":
+            _moveBlockDefaultEvent(event, "down");
+            break;
     }
 }
 

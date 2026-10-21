@@ -6,7 +6,7 @@ import ImageBlock from "../../components/Block/Image.vue";
 import CodeBlock from "../../components/Block/Code.vue";
 import DividerBlock from "../../components/Block/Divider.vue";
 import CustomBlock from "../../components/Block/Custom.vue";
-import ComponetBlock from "../../components/Block/Componet.vue";
+import ComponentBlock from "../../components/Block/Component.vue";
 import FileBlock from "../../components/Block/File.vue";
 import { useEditorStore } from "../../store/editor";
 import { _generateId } from "../data";
@@ -58,7 +58,7 @@ export function _getBody(data: DEContentData, isEdit: boolean = false): VNode {
                 break;
 
             case "component":
-                component = ComponetBlock;
+                component = ComponentBlock;
                 break;
 
             case "custom":

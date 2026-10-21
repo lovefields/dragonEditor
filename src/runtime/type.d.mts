@@ -27,14 +27,14 @@ export type DEDecorationClass = "de-bold" | "de-italic" | "de-underline" | "de-s
 
 // 에디터 컴포넌트
 export interface DragonEditor {
-    addBlock(name: DEBlockMenutype, textContent: string = ""): Promise<void>;
-    addImageBlock(src: string, caption: string = ""): Promise<void>;
+    addBlock(name: DEBlockMenutype, textContent: string): Promise<void>;
+    addImageBlock(src: string, caption: string): Promise<void>;
     addFileBlock(src: string, name: string, size: number): Promise<void>;
     updateLayout(): void;
     checkDataIsEmpty(data?: DEContentData): boolean;
     setDecoration(type: "bold" | "italic" | "underline" | "strikethrough" | "code"): void;
     setAlign(align: DETextalign): void;
-    addComponentBlock(name: string, props: object = {}): Promise<void>;
+    addComponentBlock(name: string, props: object): Promise<void>;
 }
 
 // 스토어 구조체
@@ -46,7 +46,7 @@ export interface DragonEditorStore {
     status: {
         isParentOverflowHidden: boolean;
         isImageResizeActive: boolean;
-        anchorHerf: string;
+        anchorHref: string;
         menuTop: number;
     };
     cursorSelection: null | Selection;
@@ -61,7 +61,7 @@ export interface DragonEditorStore {
         body: null | HTMLDivElement;
         scrollParentElement: HTMLElement | Window | null;
     };
-    codeBlockLnaguageList: { [key: string]: string };
+    codeBlockLanguageList: { [key: string]: string };
 }
 
 // 스토어용 에디터 옵션

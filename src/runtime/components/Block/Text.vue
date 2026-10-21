@@ -27,7 +27,7 @@ const emit = defineEmits<{
 }>();
 const memoData = computed<any[]>(() => {
     const isFrozen = props.isEdit === true && editorStore.selectedBlockId === props.data.id;
-    const memoKey = isFrozen ? "frozen" : JSON.stringify(props.data);
+    const memoKey = isFrozen ? `frozen-${(props.data.classList || []).join(" ")}-${props.data.depth ?? 0}` : JSON.stringify(props.data);
 
     return [memoKey];
 });
@@ -44,52 +44,52 @@ function abortEdit() {
 }
 
 function keydownEvent(event: KeyboardEvent): void {
-    if (event.isComposing === false) {
-        switch (event.key) {
-            case "Enter":
-                // 엔터 이벤트
-                if (event.shiftKey === false) {
-                    _sliceAndNewTextBlock(event, props.data, props.index);
-                } else {
-                    // 쉬프트 엔터 이벤트
-                }
+    if (event.isComposing === true || event.key === "Process" || event.key === "Unidentified") {
+        return;
+    }
 
-                break;
+    switch (event.key) {
+        case "Enter":
+            // 엔터 이벤트
+            if (event.shiftKey === false) {
+                _sliceAndNewTextBlock(event, props.data, props.index);
+            } else {
+                // 쉬프트 엔터 이벤트
+            }
 
-            case "Tab":
-                _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
-                break;
+            break;
 
-            case "ArrowUp":
-                _moveBlockDefaultEvent(event, "up");
-                break;
+        case "Tab":
+            _blockTabEvent(event, props.data, props.index, setEdit, abortEdit);
+            break;
 
-            case "ArrowDown":
-                _moveBlockDefaultEvent(event, "down");
-                break;
+        case "ArrowUp":
+            _moveBlockDefaultEvent(event, "up");
+            break;
 
-            case "Backspace":
-                _defaultBackspaceEvent(event);
-                break;
+        case "ArrowDown":
+            _moveBlockDefaultEvent(event, "down");
+            break;
 
-            case "Delete":
-                _defaultDeleteEvent(event, setEdit, abortEdit);
-                break;
+        case "Backspace":
+            _defaultBackspaceEvent(event);
+            break;
 
-            case "`":
-                _convertTextBlockToCodeBlock(event, props.data, props.index);
-                break;
+        case "Delete":
+            _defaultDeleteEvent(event, setEdit, abortEdit);
+            break;
 
-            case "-":
-                _convertTextBlockToDividerBlock(event, props.data, props.index);
-                break;
+        case "`":
+            _convertTextBlockToCodeBlock(event, props.data, props.index);
+            break;
 
-            case " ":
-                _convertTextBlockType(event, props.data, props.index);
-                break;
-        }
-    } else {
-        event.preventDefault();
+        case "-":
+            _convertTextBlockToDividerBlock(event, props.data, props.index);
+            break;
+
+        case " ":
+            _convertTextBlockType(event, props.data, props.index);
+            break;
     }
 }
 

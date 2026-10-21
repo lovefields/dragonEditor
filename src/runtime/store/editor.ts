@@ -9,7 +9,7 @@ export const useEditorStore = defineStore("editorStore", {
         status: {
             isParentOverflowHidden: false,
             isImageResizeActive: false,
-            anchorHerf: "",
+            anchorHref: "",
             menuTop: 0,
         },
         option: {
@@ -17,6 +17,7 @@ export const useEditorStore = defineStore("editorStore", {
             isMobile: false,
             codeBlockSpaces: 4,
             acceptImageFormat: "",
+            acceptFileFormat: "",
             anchorTagTarget: "",
         },
         cursorSelection: null,
@@ -29,8 +30,9 @@ export const useEditorStore = defineStore("editorStore", {
         fn: {
             updateEditorData: null,
             uploadImage: null,
+            uploadFile: null,
         },
-        codeBlockLnaguageList: {
+        codeBlockLanguageList: {
             text: "Plain Text",
             markdown: "Markdown",
             html: "HTML, XML",
