@@ -833,6 +833,12 @@ export async function _defaultBackspaceEvent(event: KeyboardEvent): Promise<void
 
         if (editorStore.cursorRange !== null) {
             if (editorStore.cursorRange.collapsed === true) {
+                const { beforeHTML } = _getBeforeAndAfterHTMLOfCursor($target);
+
+                if (beforeHTML !== "") {
+                    return;
+                }
+
                 if (multilinePosition.curruntLine === 1 && cursorPosition.isStart === true) {
                     event.preventDefault();
 
@@ -949,6 +955,12 @@ export async function _listBackspaceEvent(event: KeyboardEvent, childIndex: numb
 
         if (editorStore.cursorRange !== null) {
             if (editorStore.cursorRange.collapsed === true) {
+                const { beforeHTML } = _getBeforeAndAfterHTMLOfCursor($target);
+
+                if (beforeHTML !== "") {
+                    return;
+                }
+
                 if (multilinePosition.curruntLine === 1 && cursorPosition.isStart === true) {
                     event.preventDefault();
 
@@ -1017,6 +1029,16 @@ export async function _defaultDeleteEvent(event: KeyboardEvent, setEvent: (index
     _updateCursorData();
 
     if ($target !== null && editorStore.element.body !== null && editorStore.fn.updateEditorData !== null) {
+        if (editorStore.cursorRange !== null && editorStore.cursorRange.collapsed === false) {
+            return;
+        }
+
+        const { afterHTML } = _getBeforeAndAfterHTMLOfCursor($target);
+
+        if (afterHTML !== "") {
+            return;
+        }
+
         const multilinePosition = _getMultilinePosition($target);
         const cursorPosition = _isCursorAtLineBoundary();
 
@@ -1086,6 +1108,16 @@ export async function _listDeleteEvent(event: KeyboardEvent, childIndex: number,
     _updateCursorData();
 
     if ($target !== null && editorStore.element.body !== null && editorStore.fn.updateEditorData !== null) {
+        if (editorStore.cursorRange !== null && editorStore.cursorRange.collapsed === false) {
+            return;
+        }
+
+        const { afterHTML } = _getBeforeAndAfterHTMLOfCursor($target);
+
+        if (afterHTML !== "") {
+            return;
+        }
+
         const multilinePosition = _getMultilinePosition($target);
         const cursorPosition = _isCursorAtLineBoundary();
 
@@ -1471,7 +1503,7 @@ export async function _globalKeyEvent(event: KeyboardEvent): Promise<void> {
                         } else if (targetIndex > 0) {
                             const nextIndex = targetIndex - 1;
                             editorStore.selectedBlockIndex = nextIndex;
-                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.selectedBlockId = newBlockData[nextIndex]!.id;
                             editorStore.fn.updateEditorData(newBlockData);
                             await nextTick();
 
@@ -1485,7 +1517,7 @@ export async function _globalKeyEvent(event: KeyboardEvent): Promise<void> {
                         } else {
                             const nextIndex = 0;
                             editorStore.selectedBlockIndex = nextIndex;
-                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.selectedBlockId = newBlockData[nextIndex]!.id;
                             editorStore.fn.updateEditorData(newBlockData);
                             await nextTick();
 
@@ -1524,7 +1556,7 @@ export async function _globalKeyEvent(event: KeyboardEvent): Promise<void> {
                         } else if (targetIndex < newBlockData.length) {
                             const nextIndex = targetIndex;
                             editorStore.selectedBlockIndex = nextIndex;
-                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.selectedBlockId = newBlockData[nextIndex]!.id;
                             editorStore.fn.updateEditorData(newBlockData);
                             await nextTick();
 
@@ -1538,7 +1570,7 @@ export async function _globalKeyEvent(event: KeyboardEvent): Promise<void> {
                         } else {
                             const nextIndex = newBlockData.length - 1;
                             editorStore.selectedBlockIndex = nextIndex;
-                            editorStore.selectedBlockId = newBlockData[nextIndex].id;
+                            editorStore.selectedBlockId = newBlockData[nextIndex]!.id;
                             editorStore.fn.updateEditorData(newBlockData);
                             await nextTick();
 

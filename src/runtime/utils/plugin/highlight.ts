@@ -1,5 +1,6 @@
 import hljs from "highlight.js/lib/core";
 
+import plaintext from "highlight.js/lib/languages/plaintext";
 import csharp from "highlight.js/lib/languages/csharp";
 import c from "highlight.js/lib/languages/c";
 import cpp from "highlight.js/lib/languages/cpp";
@@ -24,6 +25,7 @@ import shell from "highlight.js/lib/languages/shell";
 import swift from "highlight.js/lib/languages/swift";
 import yaml from "highlight.js/lib/languages/yaml";
 
+hljs.registerLanguage("plaintext", plaintext);
 hljs.registerLanguage("csharp", csharp);
 hljs.registerLanguage("c", c);
 hljs.registerLanguage("cpp", cpp);
@@ -55,7 +57,7 @@ hljs.registerAliases("tsx", { languageName: "typescript" });
 hljs.registerAliases("shellscript", { languageName: "shell" });
 
 export function _highlightCode(code: string, language: string): string {
-    if (hljs.getLanguage(language) === undefined) {
+    if (hljs.getLanguage(language) === undefined || language === "text") {
         language = "plaintext";
     }
 
