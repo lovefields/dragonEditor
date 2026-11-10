@@ -49,26 +49,30 @@ export function _getBeforeAndAfterHTMLOfCursor($target: HTMLElement): { beforeHT
     const editorStore = useEditorStore();
     const data: { beforeHTML: string; afterHTML: string } = { beforeHTML: "", afterHTML: "" };
 
-    if (editorStore.cursorSelection !== null) {
-        const range = editorStore.cursorSelection.getRangeAt(0);
-        const cloneRangeBefore = range.cloneRange();
-        const cloneRangeAfter = range.cloneRange();
+    if (editorStore.cursorSelection !== null && editorStore.cursorSelection.rangeCount > 0) {
+        try {
+            const range = editorStore.cursorSelection.getRangeAt(0);
+            const cloneRangeBefore = range.cloneRange();
+            const cloneRangeAfter = range.cloneRange();
 
-        cloneRangeBefore.selectNodeContents($target);
-        cloneRangeBefore.setEnd(range.endContainer, range.endOffset);
-        cloneRangeAfter.selectNodeContents($target);
-        cloneRangeAfter.setStart(range.endContainer, range.endOffset);
+            cloneRangeBefore.selectNodeContents($target);
+            cloneRangeBefore.setEnd(range.endContainer, range.endOffset);
+            cloneRangeAfter.selectNodeContents($target);
+            cloneRangeAfter.setStart(range.endContainer, range.endOffset);
 
-        const fragmentBefore = cloneRangeBefore.cloneContents();
-        const tempDivBefore = document.createElement("div");
-        const fragmentAfter = cloneRangeAfter.cloneContents();
-        const tempDivAfter = document.createElement("div");
+            const fragmentBefore = cloneRangeBefore.cloneContents();
+            const tempDivBefore = document.createElement("div");
+            const fragmentAfter = cloneRangeAfter.cloneContents();
+            const tempDivAfter = document.createElement("div");
 
-        tempDivBefore.appendChild(fragmentBefore);
-        tempDivAfter.appendChild(fragmentAfter);
+            tempDivBefore.appendChild(fragmentBefore);
+            tempDivAfter.appendChild(fragmentAfter);
 
-        data.beforeHTML = tempDivBefore.innerHTML;
-        data.afterHTML = tempDivAfter.innerHTML === "<br>" ? "" : tempDivAfter.innerHTML;
+            data.beforeHTML = tempDivBefore.innerHTML === "<br>" ? "" : tempDivBefore.innerHTML;
+            data.afterHTML = tempDivAfter.innerHTML === "<br>" ? "" : tempDivAfter.innerHTML;
+        } catch (e) {
+            console.error("[Dragon Editor]: Failed to get before and after HTML of cursor", e);
+        }
     }
 
     return data;
@@ -98,16 +102,22 @@ export function _isCursorAtLineBoundary(): DECurSorPosition {
 
             // 1. 가장 앞(Start) 여부 확인
             editorStore.cursorSelection.modify("move", "left", "character");
-            let leftRect = editorStore.cursorSelection.getRangeAt(0).getBoundingClientRect();
-            if (leftRect.height === 0) {
-                const rects = editorStore.cursorSelection.getRangeAt(0).getClientRects();
-                if (rects.length > 0) {
-                    leftRect = rects[0]!;
-                }
-            }
+            const leftRange = editorStore.cursorSelection.rangeCount > 0 ? editorStore.cursorSelection.getRangeAt(0) : null;
+            const movedLeft = leftRange !== null && leftRange.compareBoundaryPoints(Range.START_TO_START, originalRange) !== 0;
 
-            if (leftRect.top < currentTop - 5 || (leftRect.top === currentTop && leftRect.left === currentRect.left)) {
+            if (!movedLeft) {
                 result.isStart = true;
+            } else if (leftRange !== null && currentRect.height > 0) {
+                let leftRect = leftRange.getBoundingClientRect();
+                if (leftRect.height === 0) {
+                    const rects = leftRange.getClientRects();
+                    if (rects.length > 0) {
+                        leftRect = rects[0]!;
+                    }
+                }
+                if (leftRect.height > 0 && leftRect.top < currentTop - 5) {
+                    result.isStart = true;
+                }
             }
 
             // Selection 복구
@@ -116,16 +126,22 @@ export function _isCursorAtLineBoundary(): DECurSorPosition {
 
             // 2. 가장 뒤(End) 여부 확인
             editorStore.cursorSelection.modify("move", "right", "character");
-            let rightRect = editorStore.cursorSelection.getRangeAt(0).getBoundingClientRect();
-            if (rightRect.height === 0) {
-                const rects = editorStore.cursorSelection.getRangeAt(0).getClientRects();
-                if (rects.length > 0) {
-                    rightRect = rects[0]!;
-                }
-            }
+            const rightRange = editorStore.cursorSelection.rangeCount > 0 ? editorStore.cursorSelection.getRangeAt(0) : null;
+            const movedRight = rightRange !== null && rightRange.compareBoundaryPoints(Range.END_TO_END, originalRange) !== 0;
 
-            if (rightRect.top > currentTop + 5 || (rightRect.top === currentTop && rightRect.left === currentRect.left)) {
+            if (!movedRight) {
                 result.isEnd = true;
+            } else if (rightRange !== null && currentRect.height > 0) {
+                let rightRect = rightRange.getBoundingClientRect();
+                if (rightRect.height === 0) {
+                    const rects = rightRange.getClientRects();
+                    if (rects.length > 0) {
+                        rightRect = rects[0]!;
+                    }
+                }
+                if (rightRect.height > 0 && rightRect.top > currentTop + 5) {
+                    result.isEnd = true;
+                }
             }
         } catch (e) {
             console.error("[Dragon Editor]: Failed to check cursor line boundary", e);

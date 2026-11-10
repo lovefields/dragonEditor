@@ -3,6 +3,7 @@ import { useEditorStore } from "../../store/editor";
 import { _setCursorPosition } from "../event";
 import { _generateId, _getEditorbleCursorPosition } from "../data";
 import { _findEditableElement, _findEditableParent, _findParentBlock } from "../node";
+import { _highlightCode } from "../plugin";
 import type { DEContentData, DETextBlock, DEHeadingBlock, DEHeadingElementLevel, DEBlockType, DEBlockMenutype, DECodeBlock, DEImageBlock, DEDividerBlock, DECustomBlock, DEBlockData, DEComponentBlock } from "../../type.d.mts";
 
 // 데이터 정리
@@ -329,7 +330,7 @@ export async function _convertMarkdownToEditor(textDataList: string[]): Promise<
             if (codeBlockReg.test(blockData) === true) {
                 // 코드 블록 종료
                 if (tempData !== null && tempData.type === "code") {
-                    tempData.textContent = tempData.textContent.trim();
+                    tempData.textContent = _highlightCode(tempData.textContent.replace(/^\n+|\n+$/g, ""), tempData.language);
                     blockList.push(tempData);
                     isCodeBlock = false;
                     tempData = null;
@@ -353,10 +354,24 @@ export async function _convertMarkdownToEditor(textDataList: string[]): Promise<
             isCodeBlock = true;
             const startLineText = blockData.split("```");
             let codeBlockLang = "text";
-            const langKey = (startLineText[1] || "").trim();
+            const rawLang = (startLineText[1] || "").trim().toLowerCase();
 
-            if (langKey !== "" && langKey in editorStore.codeBlockLanguageList) {
-                codeBlockLang = langKey;
+            const langAliases: { [key: string]: string } = {
+                js: "javascript",
+                ts: "typescript",
+                sh: "shellscript",
+                shell: "shellscript",
+                bash: "shellscript",
+                zsh: "shellscript",
+                py: "python",
+                xml: "html",
+                yml: "yaml",
+                cs: "csharp",
+            };
+
+            const mappedLang = langAliases[rawLang] || rawLang;
+            if (mappedLang !== "" && mappedLang in editorStore.codeBlockLanguageList) {
+                codeBlockLang = mappedLang;
             }
 
             tempData = {
@@ -493,7 +508,7 @@ export async function _convertMarkdownToEditor(textDataList: string[]): Promise<
     // 파일 끝에서 닫히지 않은 블록 처리 (미종료 코드 블록, 미종료 리스트 블록)
     if (tempData !== null) {
         if (tempData.type === "code") {
-            tempData.textContent = tempData.textContent.trim();
+            tempData.textContent = _highlightCode(tempData.textContent.replace(/^\n+|\n+$/g, ""), tempData.language);
         }
         blockList.push(tempData);
         tempData = null;
