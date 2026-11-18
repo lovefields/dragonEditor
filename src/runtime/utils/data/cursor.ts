@@ -15,29 +15,70 @@ export function _getMultilinePosition(element: HTMLElement): DELinePosition {
         const elemTop = elemRect.top + paddingTop;
         const elementHeight = Math.floor(elemRect.height - paddingTop - paddingBottom);
         let rect = range.getBoundingClientRect();
-        let lineHeight = parseInt(computedStyle.lineHeight);
+        let lineHeight = parseFloat(computedStyle.lineHeight);
+
+        if (isNaN(lineHeight) === true) {
+            lineHeight = parseFloat(computedStyle.fontSize) * 1.2;
+        }
 
         if (rect.height === 0) {
             const rects = range.getClientRects();
 
             if (rects.length > 0) {
                 rect = rects[0]!;
+            } else if (range.startContainer.nodeType === Node.TEXT_NODE) {
+                const textLength = range.startContainer.textContent?.length ?? 0;
+                const cloneRange = range.cloneRange();
+
+                if (range.startOffset < textLength) {
+                    cloneRange.setEnd(range.startContainer, range.startOffset + 1);
+                    const expandedRect = cloneRange.getBoundingClientRect();
+                    if (expandedRect.height > 0) {
+                        rect = expandedRect;
+                    }
+                } else if (range.startOffset > 0) {
+                    cloneRange.setStart(range.startContainer, range.startOffset - 1);
+                    const expandedRect = cloneRange.getBoundingClientRect();
+                    if (expandedRect.height > 0) {
+                        rect = expandedRect;
+                    }
+                }
+            } else if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
+                const childNodes = range.startContainer.childNodes;
+                const targetChild = childNodes[range.startOffset] || childNodes[range.startOffset - 1];
+
+                if (targetChild !== undefined) {
+                    if (targetChild.nodeType === Node.ELEMENT_NODE) {
+                        const childRect = (targetChild as HTMLElement).getBoundingClientRect();
+                        if (childRect.height > 0) {
+                            rect = childRect;
+                        }
+                    } else if (targetChild.nodeType === Node.TEXT_NODE && (targetChild.textContent?.length ?? 0) > 0) {
+                        const cloneRange = document.createRange();
+                        cloneRange.setStart(targetChild, 0);
+                        cloneRange.setEnd(targetChild, 1);
+                        const childRect = cloneRange.getBoundingClientRect();
+                        if (childRect.height > 0) {
+                            rect = childRect;
+                        }
+                    }
+                }
             }
         }
 
-        if (isNaN(lineHeight) == true) {
-            lineHeight = parseFloat(computedStyle.fontSize) * 1.2;
-        }
+        position.lineCount = Math.max(1, Math.round(elementHeight / lineHeight));
 
-        position.curruntLine = Math.floor((rect.top - paddingTop - elemTop) / lineHeight) + 1;
-        position.lineCount = Math.floor(elementHeight / lineHeight);
+        if (rect.height === 0) {
+            position.curruntLine = 1;
+        } else {
+            const rectCenterY = rect.top + rect.height / 2;
+            position.curruntLine = Math.floor((rectCenterY - elemTop) / lineHeight) + 1;
+        }
 
         if (position.curruntLine < 1) {
             position.curruntLine = 1;
-        }
-
-        if (position.lineCount < 1) {
-            position.lineCount = 1;
+        } else if (position.curruntLine > position.lineCount) {
+            position.curruntLine = position.lineCount;
         }
     }
 
@@ -68,8 +109,11 @@ export function _getBeforeAndAfterHTMLOfCursor($target: HTMLElement): { beforeHT
             tempDivBefore.appendChild(fragmentBefore);
             tempDivAfter.appendChild(fragmentAfter);
 
-            data.beforeHTML = tempDivBefore.innerHTML === "<br>" ? "" : tempDivBefore.innerHTML;
-            data.afterHTML = tempDivAfter.innerHTML === "<br>" ? "" : tempDivAfter.innerHTML;
+            const isBeforeEmpty = tempDivBefore.innerHTML === "<br>" || (tempDivBefore.textContent === "" && tempDivBefore.querySelector("br, img") === null);
+            const isAfterEmpty = tempDivAfter.innerHTML === "<br>" || (tempDivAfter.textContent === "" && tempDivAfter.querySelector("br, img") === null);
+
+            data.beforeHTML = isBeforeEmpty ? "" : tempDivBefore.innerHTML;
+            data.afterHTML = isAfterEmpty ? "" : tempDivAfter.innerHTML;
         } catch (e) {
             console.error("[Dragon Editor]: Failed to get before and after HTML of cursor", e);
         }
