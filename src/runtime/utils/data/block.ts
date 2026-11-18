@@ -84,7 +84,7 @@ export function _arrangementContentData(data: DEContentData): DEContentData {
         }
     });
 
-    return data;
+    return data.filter((block) => !(block.type === "list" && block.child.length === 0));
 }
 
 // 텍스트 블럭 데이터 생성

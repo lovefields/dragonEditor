@@ -218,6 +218,11 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
                 // 단일커서
 
                 $editableParent.childNodes.forEach((node: Node) => {
+                    if (node.nodeName === "BR") {
+                        nodeList.push(node);
+                        return;
+                    }
+
                     if (cloneRange.startContainer.parentElement === $editableParent) {
                         // 최상위 노드
 
@@ -469,7 +474,7 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
                                 }
                             }
                         } else {
-                            if (isBettween === false) {
+                            if (isBettween === false || node.nodeName === "BR") {
                                 nodeList.push(node);
                             } else {
                                 if (node.nodeType === Node.TEXT_NODE) {
@@ -527,7 +532,7 @@ export async function _setDecoration(className: DEDecorationClass): Promise<void
             }
 
             newList.forEach((node) => {
-                if (node.textContent !== "") {
+                if (node.textContent !== "" || node.nodeName === "BR") {
                     $editableParent.appendChild(node);
                 }
             });
@@ -717,7 +722,7 @@ export async function _setLink(url: string): Promise<void> {
             const { list: newList, cursorStartNode: StartNode, cursorStartNodeOffset: StartNodeOffset, cursorEndNode: EndNode, cursorEndNodeOffset: EndNodeOffset } = _arrangementNodeList(nodeList, cursorStartNode, cursorStartNodeOffset, cursorEndNode, cursorEndNodeOffset);
 
             newList.forEach((node) => {
-                if (node.textContent !== "") {
+                if (node.textContent !== "" || node.nodeName === "BR") {
                     $editableParent.appendChild(node);
                 }
             });
@@ -909,7 +914,7 @@ export async function _removeLink(): Promise<void> {
                                 }
                             }
                         } else {
-                            if (isBettween === false) {
+                            if (isBettween === false || node.nodeName === "BR") {
                                 nodeList.push(node);
                             } else {
                                 if (node.nodeType === Node.TEXT_NODE) {
@@ -936,7 +941,7 @@ export async function _removeLink(): Promise<void> {
             const { list: newList, cursorStartNode: StartNode, cursorStartNodeOffset: StartNodeOffset, cursorEndNode: EndNode, cursorEndNodeOffset: EndNodeOffset } = _arrangementNodeList(nodeList, cursorStartNode, cursorStartNodeOffset, cursorEndNode, cursorEndNodeOffset);
 
             newList.forEach((node) => {
-                if (node.textContent !== "") {
+                if (node.textContent !== "" || node.nodeName === "BR") {
                     $editableParent.appendChild(node);
                 }
             });
